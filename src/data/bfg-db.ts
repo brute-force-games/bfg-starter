@@ -4,7 +4,8 @@ import { FriendAccount } from "../types/core/player/friend";
 import { GameTable } from "../types/core/game-table";
 import { PlayerProfile } from "../types/core/player/player-profile";
 import { GameLobby } from "../types/core/game-lobby";
-import { getEnvSettings } from "~/env/env-utils";
+import { getEnvSettings } from "../env/env-utils";
+
 
 
 // type JustSomeData = {
