@@ -38,6 +38,8 @@ export const addNewPlayerProfile = async (playerProfileParameters: NewPlayerProf
   const newPlayerProfile: DbPlayerProfile = {
     id: newPlayerProfileId,
     handle: playerProfileParameters.handle,
+    createdAt: new Date(),
+    updatedAt: new Date(),
   }
 
   const added = await bfgDb.myPlayerProfiles.add(newPlayerProfile);

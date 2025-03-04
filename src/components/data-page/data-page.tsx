@@ -3,19 +3,32 @@ import { useState } from "react";
 
 
 interface IDataPageProps<T = unknown> {
-  dataName: string;
-  allDetailsComponents: React.ReactNode;
-  addNewDialogComponent: React.ComponentType<{ onNewDataItemCreated: (data: T) => void; onClose: () => void }>;
+  itemName: string;
+  allDataItems: T[];
+  
+  allDataComponents: React.ReactNode;
+
+  addNewDialogComponent: React.ComponentType<{ 
+    allDataItems: T[];
+    onNewDataItemCreated: (data: T) => void; 
+    onClose: () => void 
+  }>;
+  
+  // isNewDataValid: (data: T) => boolean;
   onNewDataItemCreated: (data: T) => Promise<void>;
   onDeleteAllData: () => Promise<void>;
 }
 
 export const DataPage = <T = unknown>({ 
-  dataName, 
+  itemName: dataName, 
+
+  allDataItems,
   addNewDialogComponent: DialogComponent, 
+  
   onNewDataItemCreated, 
   onDeleteAllData,
-  allDetailsComponents
+  allDataComponents,
+  // isNewDataValid
 }: IDataPageProps<T>) => {
 
   const [showAddNewDialog, setShowAddNewDialog] = useState(false);
@@ -28,6 +41,7 @@ export const DataPage = <T = unknown>({
     await onDeleteAllData();
   }
 
+  
   return (
     <div>
       <h1>{dataName} Page</h1>
@@ -45,11 +59,12 @@ export const DataPage = <T = unknown>({
         Delete All
       </Button>
 
-      {allDetailsComponents}
+      {allDataComponents}
 
       {
         showAddNewDialog && 
           <DialogComponent
+            allDataItems={allDataItems}
             onNewDataItemCreated={handleAddNewData}
             onClose={() => setShowAddNewDialog(false)}
           />

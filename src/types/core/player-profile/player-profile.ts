@@ -3,7 +3,7 @@ import { z } from "zod";
 
 
 export const NewPlayerProfileParametersSchema = z.object({
-  handle: z.string(),
+  handle: z.string().min(4, "Handle must be at least 4 characters long"),
   // email: z.string().email("Please enter a valid email address"),
 })
 

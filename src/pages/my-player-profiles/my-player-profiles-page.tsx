@@ -100,6 +100,10 @@ export const MyPlayerProfilesPage = () => {
 
   const allPlayerProfiles = useLivePlayerProfiles();
 
+  if (!allPlayerProfiles) {
+    return <div>No player profiles found</div>;
+  }
+
   console.log("MyPlayerProfilesPage: allPlayerProfiles", allPlayerProfiles);
 
   const onDeleteAllData = async () => {
@@ -111,6 +115,13 @@ export const MyPlayerProfilesPage = () => {
     await addNewPlayerProfile(playerProfileParameters);
   }
 
+  // const isNewDataValid = (playerProfileParameters: NewPlayerProfileParameters) => {
+
+  //   // return playerProfileParameters.handle.length > 0;
+  //   const isHandleFound = allPlayerProfiles?.some(playerProfile => playerProfile.handle === playerProfileParameters.handle);
+  //   return !isHandleFound;
+  // }
+
   const allDetailsComponents = allPlayerProfiles?.map((playerProfile) => (
     <div key={playerProfile.id}>
       {playerProfile.handle}
@@ -119,9 +130,10 @@ export const MyPlayerProfilesPage = () => {
 
   return (
     <>
-      <DataPage
-        dataName="Player Profiles"
-        allDetailsComponents={allDetailsComponents}
+      <DataPage<NewPlayerProfileParameters>
+        itemName="Player Profiles"
+        allDataItems={allPlayerProfiles}
+        allDataComponents={allDetailsComponents}
         addNewDialogComponent={AddPlayerProfileDialog}
         onNewDataItemCreated={onNewDataItemCreated}
         onDeleteAllData={onDeleteAllData}

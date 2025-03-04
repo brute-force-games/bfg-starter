@@ -14,25 +14,45 @@ import { Controller } from 'react-hook-form';
 
 
 interface AddPlayerProfileDialogProps {
+  allDataItems: NewPlayerProfileParameters[];
   onNewDataItemCreated: (playerProfileParameters: NewPlayerProfileParameters) => void;
-
   onClose: () => void;
 }
 
-export const AddPlayerProfileDialog = ({ onNewDataItemCreated, onClose }: AddPlayerProfileDialogProps) => {
+export const AddPlayerProfileDialog = ({ allDataItems, onNewDataItemCreated, onClose }: AddPlayerProfileDialogProps) => {
 
   const defaultFormValues: NewPlayerProfileParameters = {
     handle: "bob",
   }
 
-  const { control, handleSubmit, formState } = useForm<NewPlayerProfileParameters>({
-    resolver: zodResolver(NewPlayerProfileParametersSchema),
+  const doesHandleAlreadyExist = (handle: string) => {
+    return allDataItems?.some(playerProfile => playerProfile.handle === handle);
+  }
+
+  const formSchema = NewPlayerProfileParametersSchema.refine(
+    (data) => !doesHandleAlreadyExist(data.handle),
+    {
+      message: "This handle is already taken",
+      path: ["handle"]
+    }
+  );
+
+  const { control, handleSubmit, formState, trigger } = useForm<NewPlayerProfileParameters>({
+    resolver: zodResolver(formSchema),
     defaultValues: defaultFormValues,
+    mode: 'onChange',
+    reValidateMode: 'onChange',
   });
 
+  // const { errors, isValid, isDirty } = formState;
   const { errors } = formState;
 
-  console.log("control:", control);
+  // console.log("form state:", {
+  //   errors,
+  //   isValid,
+  //   isDirty,
+  //   values: control._formValues
+  // });
 
   const onSubmit = async (formData: NewPlayerProfileParameters) => {
 
@@ -60,28 +80,36 @@ export const AddPlayerProfileDialog = ({ onNewDataItemCreated, onClose }: AddPla
               <Controller
                 name="handle"
                 control={control}
-                render={({ field }) => (
+                render={({ field: { onChange, value, ...field } }) => (
                   <TextField
                     {...field}
                     label="Player Profile Handle"
                     error={!!errors.handle}
                     helperText={errors.handle?.message}
+                    value={value}
+                    onChange={async (e) => {
+                      const newValue = e.target.value.trim();
+                      onChange(newValue);
+                      await trigger('handle');
+                    }}
+                    disabled={formState.isSubmitting}
                   />
                 )}
               />
             </FormControl>
           </Stack>
+          <DialogActions>
+            <Button type="button" onClick={onClose}>Cancel</Button>
+            <Button 
+              type="submit"
+              variant="contained"
+              disabled={!formState.isValid || formState.isSubmitting}
+            >
+              Add Player Profile
+            </Button>
+          </DialogActions>
         </form>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button 
-          onClick={handleSubmit(onSubmit)}
-          variant="contained"
-        >
-          Add Player Profile
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 }

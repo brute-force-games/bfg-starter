@@ -8,4 +8,6 @@ export type NewDbPlayerProfile = NewPlayerProfileParameters
 
 export type DbPlayerProfile = NewDbPlayerProfile & {
   id?: DbPlayerProfileId;
+  createdAt: Date;
+  updatedAt: Date;
 }
