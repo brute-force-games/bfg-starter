@@ -15,6 +15,16 @@ export const MyLobbyDetailsPage = () => {
 
   const lobby = useLiveLobby(dbGameLobbyId);
 
+
+  // // Monitor a single field
+  // const lobbyStatus = useLiveLobbyField(lobbyId, 'status');
+
+  // // Monitor multiple fields
+  // const { status, description } = useLiveLobbyFields(lobbyId, ['status', 'description']) || {};
+
+  // // Monitor all lobbies with a specific status
+  // const activeLobbies = useLiveLobbiesByField('status', 'lobby-status-valid');
+
   return (
     <>
       <div>My Lobby Details</div>

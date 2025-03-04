@@ -1,16 +1,16 @@
 import { Dexie, Table } from "dexie";
 import dexieCloud from "dexie-cloud-addon";
-import { GameFriendAccount } from "../types/core/game-friend/friend";
 import { GameTable } from "../types/core/game-table";
-import { PlayerProfile } from "../types/core/player/player-profile";;
 import { getEnvSettings } from "../env/env-utils";
 import { DbGameLobby } from "../types/core/game-lobby/game-lobby-db";
+import { DbPlayerProfile } from "~/types/core/player-profile/player-profile-db";
+import { DbGameFriendAccount } from "~/types/core/game-friend/friend-db";
 
 
 type BruteForceGamesDbTables = {
   
-  myPlayerProfiles: Table<PlayerProfile, 'id'>;
-  myFriends: Table<GameFriendAccount, 'id'>;
+  myPlayerProfiles: Table<DbPlayerProfile, 'id'>;
+  myFriends: Table<DbGameFriendAccount, 'id'>;
   myGameTables: Table<GameTable, 'id'>;
   myGameLobbies: Table<DbGameLobby, 'id'>;
   
@@ -49,5 +49,9 @@ if (envSettings.cloudConfig.isCloudEnabled) {
     databaseUrl: dexieCloudUrl,
     requireAuth: true, // optional
     customLoginGui: true,
+    tryUseServiceWorker: true,
+    periodicSync: {
+      minInterval: 5000,
+    }
   });
 }

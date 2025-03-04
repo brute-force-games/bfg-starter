@@ -5,6 +5,8 @@ import { bfgDb } from "../../data/bfg-db";
 import { useEnvSettings } from "../../env/EnvSettingsContext";
 import { useBfgWhoAmIContext } from "~/state/who-am-i/BfgWhoAmIContext";
 import { BfgWhoAmIProvider } from "~/state/who-am-i/BfgWhoAmIProvider";
+import { useObservable } from "dexie-react-hooks";
+import { DexieInvitation } from "./dexie-invitation";
 
 
 // export const DEXIE_STATUS_PAGE_PATH = '/dexie-status';
@@ -19,6 +21,10 @@ export const DexieStatusPageContent = () => {
 
   const cloudConfig = envSettings.cloudConfig;
   const isCloudEnabled = cloudConfig.isCloudEnabled;
+
+  const allInvites = useObservable(bfgDb.cloud.invites)
+  const invites = allInvites?.filter((i) => !i.accepted && !i.rejected)
+
 
 
   useEffect(() => {
@@ -67,6 +73,10 @@ export const DexieStatusPageContent = () => {
           <Typography variant="h6">
             User Handle:
             {/* {identity.dbkUserHandle} */}
+          </Typography>
+          <Typography variant="h6">
+            Invites from:
+            {invites?.map((i) => <DexieInvitation invitation={i} />)}
           </Typography>
           <Typography variant="h6">
             {isCloudEnabled ? "Cloud Enabled" : "Cloud Disabled"}

@@ -14,7 +14,6 @@ interface IDataPageProps<T = unknown> {
     onClose: () => void 
   }>;
   
-  // isNewDataValid: (data: T) => boolean;
   onNewDataItemCreated: (data: T) => Promise<void>;
   onDeleteAllData: () => Promise<void>;
 }
@@ -28,7 +27,7 @@ export const DataPage = <T = unknown>({
   onNewDataItemCreated, 
   onDeleteAllData,
   allDataComponents,
-  // isNewDataValid
+  
 }: IDataPageProps<T>) => {
 
   const [showAddNewDialog, setShowAddNewDialog] = useState(false);

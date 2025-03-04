@@ -1,5 +1,5 @@
 import { BfgPlayerId } from "../branded-values/bs-player-id";
-import { DbGameLobbyId } from "../branded-values/branded-strings";
+import { DbGameFriendId, DbGameLobbyId } from "../branded-values/branded-strings";
 import { AvailableGameTitleChoice } from "~/types/enums/game-shelf";
 import { GameLobbyStatusEnum } from "./game-lobby";
 
@@ -10,7 +10,17 @@ export type NewDbGameLobby = {
   lobbyMinNumPlayers: number,
   lobbyMaxNumPlayers: number,
   gameHostPlayerId: BfgPlayerId,
+
+  description?: string,
+
+
+  sharedWith?: DbGameFriendId[],
+
+  realmId?: string,
+  createdAt: string,
+  owner?: string,
 }
+
 
 
 export type DbGameLobby = NewDbGameLobby & {

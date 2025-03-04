@@ -28,6 +28,7 @@ export const MyLobbiesPage = () => {
       lobbyMinNumPlayers: lobbyParameters.lobbyMinNumPlayers,
       lobbyMaxNumPlayers: lobbyParameters.lobbyMaxNumPlayers,
       gameHostPlayerId: lobbyParameters.gameHostPlayerId,
+      createdAt: new Date().toISOString(),
     }
 
     await addNewLobby(newLobby);
