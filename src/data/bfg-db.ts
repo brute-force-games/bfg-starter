@@ -38,8 +38,8 @@ export const bfgDb = new Dexie(DEXIE_BRUTE_FORCE_GAMES_DB_NAME, {addons: [dexieC
 // Schema declaration:
 bfgDb.version(1).stores({
   myFriends: 'id, name, createdAt, updatedAt',
-  myGameTables: '@id, name, createdAt, updatedAt',
-  myGameLobbies: '@id, status, gameTitle, lobbyMinNumPlayers, lobbyMaxNumPlayers, gameHostPlayerId',
+  myGameTables: 'id, name, createdAt, updatedAt',
+  myGameLobbies: 'id, status, gameTitle, lobbyMinNumPlayers, lobbyMaxNumPlayers, gameHostPlayerId',
 
   // dbkKeyValues: '@id, appKey',
 });

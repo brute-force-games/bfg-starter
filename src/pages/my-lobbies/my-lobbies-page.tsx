@@ -3,7 +3,7 @@ import { CreateNewLobbyDialog } from "~/dialogs/create-new-lobby-dialog";
 import { useState } from "react";
 import { MyPlayerProvider } from "~/data/persisted-player/persisted-player-provider";
 import { NewGameLobbyParameters } from "~/types/core/game-lobby/game-lobby";
-import { addNewLobby, useLiveLobbies } from "~/data/bfg-db-lobbies";
+import { addNewLobby, deleteAllLobbies, useLiveLobbies } from "~/data/bfg-db-lobbies";
 import { NewDbGameLobby } from "~/types/core/game-lobby/game-lobby-db";
 import { LobbyDetailsComponent } from "~/components/lobby-details-component";
 
@@ -35,6 +35,11 @@ export const MyLobbiesPage = () => {
     console.log("MyLobbiesPage: onCreateNewLobby: added new lobby");
   }
 
+  const doDeleteAllLobbies = async () => {
+    await deleteAllLobbies();
+    console.log("MyLobbiesPage: doDeleteAllLobbies: deleted all lobbies");
+  }
+
   return (
     <>
       <MyPlayerProvider>
@@ -45,6 +50,14 @@ export const MyLobbiesPage = () => {
           onClick={() => setOpenCreateNewLobbyDialog(true)}
         >
           Create Lobby
+        </Button>
+
+        <Button
+          variant="contained"
+          color="warning" 
+          onClick={doDeleteAllLobbies}
+        >
+          Delete All Lobbies
         </Button>
 
         <Typography variant="h2">All Lobbies</Typography>

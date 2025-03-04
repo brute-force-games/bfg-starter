@@ -2,6 +2,7 @@ import { useLiveQuery } from "dexie-react-hooks"
 import { bfgDb } from "./bfg-db";
 import { DbGameLobbyId } from "~/types/core/branded-values/branded-strings";
 import { DbGameLobby, NewDbGameLobby } from "~/types/core/game-lobby/game-lobby-db";
+import { GameLobbyId } from "~/types/core/branded-values/bfg-branded-ids";
 
 
 
@@ -24,7 +25,20 @@ export const useLiveLobby = (lobbyId: DbGameLobbyId): DbGameLobby | undefined =>
 export const addNewLobby = async (lobby: NewDbGameLobby) => {
   console.log("DB: addNewLobby", bfgDb);
   console.log("DB: myLobbies", bfgDb.myGameLobbies);
-  const added = await bfgDb.myGameLobbies.add(lobby);
+
+  const newLobbyId = GameLobbyId.createId();
+
+  const newLobby: DbGameLobby = {
+    id: newLobbyId,
+    ...lobby,
+  }
+
+  const added = await bfgDb.myGameLobbies.add(newLobby);
 
   console.log("DB: added", added);
 }
+
+
+export const deleteAllLobbies = async () => {
+  await bfgDb.myGameLobbies.clear();
+} 
