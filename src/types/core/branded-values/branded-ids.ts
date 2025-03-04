@@ -51,18 +51,41 @@ export const createRawBrandedIdSchema = (prefix: string): BrandedIdSchema<string
 export type RawBrandedIdSchema = ReturnType<typeof createRawBrandedIdSchema>;
 
 
-export const createBfgBrandedIdMetadata = (prefix: string) => {
-  const rawSchema = createRawBrandedIdSchema(prefix);
-  
-  const bfgBrandedSchema = z.object({
-    brandedSchema: rawSchema,
-    idPrefix: z.literal(prefix),
-  }).brand(prefix);
+export interface IBfgBrandedId<T extends string> {
+  createId: () => BrandedId<T>;
+  parseId: (id: string) => BrandedId<T>;
 
-  return bfgBrandedSchema;
+  idSchema: BrandedIdSchema<T>;
 }
 
-export type BfgBrandedIdMetadata = z.infer<ReturnType<typeof createBfgBrandedIdMetadata>>;
+
+
+export const createBfgBrandedIdMetadata = <T extends string>(prefix: string): IBfgBrandedId<T> => {
+
+
+// const GameLobbyIdPrefix = prefix as const;
+const idPrefix = z.literal(prefix);
+const bfgBrandedSchema = createRawBrandedIdSchema(prefix);
+// const GameLobbyIdMetadata = createBfgBrandedIdMetadata(GameLobbyIdPrefix);
+
+// const rawSchema = createRawBrandedIdSchema(prefix);
+  
+  // const bfgBrandedSchema = z.object({
+  //   brandedSchema: bfgBrandedSchema,
+  //   idPrefix: idPrefix,
+  // }).brand(prefix);
+
+  const metadata: IBfgBrandedId<T> = {
+    createId: () => createBrandedIdValue(idPrefix.value),
+    parseId: (id: string) => bfgBrandedSchema.parse(id) as BrandedId<T>,
+    idSchema: bfgBrandedSchema,
+  } as const;
+
+
+  return metadata;
+}
+
+export type BfgBrandedIdMetadata = ReturnType<typeof createBfgBrandedIdMetadata>;
 
 
 
