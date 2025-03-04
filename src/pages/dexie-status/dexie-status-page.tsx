@@ -1,88 +1,29 @@
-// import { Typography } from "@mui/material";
-// import { UserLogin } from "dexie-cloud-addon";
-// import { useState, useEffect } from "react";
-// import { bfgDb } from "../../data/bfg-db";
-// import { useEnvSettings } from "../../env/EnvSettingsContext";
-// import { useBfgWhoAmIContext } from "~/state/who-am-i/BfgWhoAmIContext";
-// // import { useBfgWhoAmIContext } from "~/state/who-am-i/BfgWhoAmIContext";
+import { BfgWhoAmIProvider } from "~/state/who-am-i/BfgWhoAmIProvider";
+import { DexieStatusPageContent } from "./dexie-status-page-content";
+import { EnvSettingsProvider } from "~/env/EnvSettingsProvider";
+import UserInteractionWrapper from "../sign-in/UserInteractionWrapper";
+// import UserInteractionWrapper from "~/components/user-interaction-wrapper";
 
 
-// // export const DEXIE_STATUS_PAGE_PATH = '/dexie-status';
+// export const DEXIE_STATUS_PAGE_PATH = '/dexie-status';
 
 
-// export const DexieStatusPage = () => {
-
-//   const { dexieStatus } = useBfgWhoAmIContext();
-//   const { envSettings } = useEnvSettings();
-
-//   const [currentUser, setCurrentUser] = useState<UserLogin | null>(null);
-
-//   const cloudConfig = envSettings.cloudConfig;
-//   const isCloudEnabled = cloudConfig.isCloudEnabled;
+export const DexieStatusPage = () => {
 
 
-//   useEffect(() => {
-//     const subscription = bfgDb.cloud.currentUser.subscribe((user) => {
-//       setCurrentUser(user);
-//       bfgDb.cloud.login();
-//       bfgDb.cloud.sync();
-//     });
-
-//     return () => {
-//       subscription.unsubscribe();
-//     }
-//   }, []);
-
-
-//   if (!cloudConfig.isCloudEnabled) {
-//     return <div>Cloud Disabled</div>;
-//   }
-
-//   const dexieCloudUrl = cloudConfig.syncUrl;
-
-//   console.log("ManageSyncPage: dexieCloudUrl", dexieCloudUrl);
-
-//   const handleLogin = () => {
-//     bfgDb.cloud.login();
-//   }
-
-//   const handleLogout = () => {
-//     bfgDb.cloud.logout();
-//   }
-
-
-//   return (
-//     <>
-//       <>
-//         <title>{envSettings.pageTitlePrefix} BFG - Login</title>
-//         <meta name="description" content="DoneBlock" />
-//       </>
-//       <Typography variant="h6">
-//         User Handle:
-//         {/* {identity.dbkUserHandle} */}
-//       </Typography>
-//       <Typography variant="h6">
-//         {isCloudEnabled ? "Cloud Enabled" : "Cloud Disabled"}
-//       </Typography>
-//       <Typography variant="h6">
-//         Dexie Cloud URL: {dexieCloudUrl}
-//       </Typography>
-//       <Typography variant="h6">
-//         {currentUser?.isLoggedIn ? "Logged In to Sync" : "Not Logged In to Sync"}
-//       </Typography>
-//       <Typography variant="h6">
-//         Sync Email: {dexieStatus.dexieEmailValue}
-//       </Typography>
-
-//       {
-//         cloudConfig.isCloudEnabled && 
-//         (currentUser?.isLoggedIn ? (
-//             <button onClick={handleLogout}>Logout</button>
-//           ) : (
-//             <button onClick={handleLogin}>Login</button>
-//           )
-//         )
-//       }
-//     </>
-//   );
-// };
+  return (
+    <>
+      <EnvSettingsProvider>
+        <BfgWhoAmIProvider>
+          <UserInteractionWrapper>
+            <>    
+              <title>BFG - Login</title>
+              <meta name="description" content="DoneBlock" />
+            </>
+            <DexieStatusPageContent />
+          </UserInteractionWrapper>
+        </BfgWhoAmIProvider>
+      </EnvSettingsProvider>
+    </>
+  );
+};

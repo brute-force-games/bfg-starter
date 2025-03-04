@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { PlayerId, createPlayerId } from '../../types/core/branded-values/bs-player-id';
+import { BfgPlayerId, createPlayerId } from '../../types/core/branded-values/bs-player-id';
 import { MyPlayerContext, SpgDevData } from './persisted-player-store';
 
 const PLAYER_ID_KEY = 'my_secret_pyramid_game_player_id';
@@ -9,10 +9,10 @@ const SPG_DEV_KEY = 'spg_dev_data';
 
 
 export const MyPlayerProvider = ({ children }: { children: React.ReactNode }) => {
-  const [myPlayerId, ] = useState<PlayerId>(() => {
+  const [myPlayerId, ] = useState<BfgPlayerId>(() => {
     const storedId = localStorage.getItem(PLAYER_ID_KEY);
     if (storedId) {
-      return storedId as PlayerId;
+      return storedId as BfgPlayerId;
     }
     const newId = createPlayerId();
     localStorage.setItem(PLAYER_ID_KEY, newId);
@@ -24,6 +24,7 @@ export const MyPlayerProvider = ({ children }: { children: React.ReactNode }) =>
     if (storedData) {
       return JSON.parse(storedData) as SpgDevData;
     }
+    
     const newSpgDevData: SpgDevData = {
       player1Id: createPlayerId(),
       player2Id: createPlayerId(),

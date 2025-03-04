@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { PlayerIdSchema } from "./branded-values/bs-player-id";
+import { BfgPlayerIdSchema } from "./branded-values/bs-player-id";
 
 export const GameHostSchema = z.object({
-  id: PlayerIdSchema,
+  id: BfgPlayerIdSchema,
   name: z.string(),
 });
 

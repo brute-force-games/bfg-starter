@@ -1,4 +1,91 @@
+import { Typography, Button } from "@mui/material";
+import { useState } from "react";
+import { MyPlayerProvider } from "~/data/persisted-player/persisted-player-provider";
+import { addNewFriend, deleteAllFriends, useLiveFriends } from "~/data/bfg-db-friends";
+import { GameFriendAccount, NewGameFriendParameters } from "~/types/core/game-friend/friend";
+import { FriendDetailsComponent } from "~/components/friend-details-component";
+import { AddFriendDialog } from "~/dialogs/add-friend-dialog";
+
 
 export const MyFriendsPage = () => {
-  return <div>My Friends</div>;
+
+  const [openCreateNewFriendDialog, setOpenCreateNewFriendDialog] = useState(false);
+
+  const allFriends = useLiveFriends();
+
+  console.log("MyFriendsPage: allFriends", allFriends);
+
+  const doDeleteAllFriends = async () => {
+    await deleteAllFriends();
+  }
+
+  const onCreateNewFriend = async (friendParameters: NewGameFriendParameters) => {
+
+    console.log("MyFriendsPage: onCreateNewFriend");
+    console.log("friendParameters:", friendParameters);
+
+    const newFriend: GameFriendAccount = {
+      status: "pending",
+      name: friendParameters.name,
+      email: friendParameters.email,
+    }
+
+    await addNewFriend(newFriend);
+
+    console.log("MyFriendsPage: onCreateNewFriend: added new friend");
+  }
+
+  return (
+    <>
+      <MyPlayerProvider>
+        <Typography variant="h1">My Friends</Typography>
+        <Button
+          variant="contained"
+          color="primary" 
+          onClick={() => setOpenCreateNewFriendDialog(true)}
+        >
+          Create Friend
+        </Button>
+
+        <Button
+          variant="contained"
+          color="warning" 
+          onClick={doDeleteAllFriends}
+        >
+          Delete All Friends
+        </Button>
+
+        <Typography variant="h2">All Friends</Typography>
+
+        {
+          allFriends && allFriends.length > 0 && (
+            <>
+              <Typography variant="h3">
+                {allFriends.length} friends found
+              </Typography>
+              <div> 
+                {
+                  allFriends?.map(friend => (
+                    <FriendDetailsComponent
+                      key={friend.id} 
+                      friendId={friend.id!}
+                    />
+                  ))
+                }
+              </div>
+            </>
+          )
+        }
+
+        {
+          openCreateNewFriendDialog && (
+            <AddFriendDialog
+              onCreateNewFriend={onCreateNewFriend}
+              onClose={() => setOpenCreateNewFriendDialog(false)}
+            />
+          )
+        }
+      </MyPlayerProvider>
+    </>
+  );
 };

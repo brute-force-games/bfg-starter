@@ -1,16 +1,7 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { UserLogin } from "dexie-cloud-addon";
-
-// import { BfgUserCompositeIdentity } from "~/data/zod-types/schemas/shared/user/user-identity";
-// import { useDexieEnvironment } from "../DexieEnvironmentProvider";
-// import { DbkAppKeyValue, DbkUserIdKey, DbkUserHandleKey } from "~/data/zod-types/schemas/app-key-values";
-// import { dbkAppKvParseString } from "~/data/serdeser/deser-utils";
-// import { dbkUpdateStringAppKv } from "~/data/serdeser/ser-utils";
-// import { DbkUserHandle, DbkUserId, DexieCloudEmail } from "~/data/zod-types/branded-types/branded-strings";
-// import { generateDbkUserId } from "~/data/app-instance/user-handle-generator";
-// import { DbkUserDexieProgress, DbkUserDexieStatus } from "~/data/zod-types/schemas/shared/user/user-dexie-status";
 import { bfgDb } from "~/data/bfg-db";
-import { BfgWhoAmIContextType } from "./BfgWhoAmIContext";
+import { BfgWhoAmIContext } from "./BfgWhoAmIContext";
 import { DexieCloudEmail } from "~/types/core/branded-values/branded-strings";
 import { BfgUserDexieStatus } from "~/types/core/user/user-dexie-status";
 
@@ -36,7 +27,7 @@ export interface BfgWhoAmIProviderProps {
   blah: string;
 }
 
-const BfgWhoAmIContext = createContext<BfgWhoAmIContextType | undefined>(undefined);
+// const BfgWhoAmIContext = createContext<BfgWhoAmIContextType | undefined>(undefined);
 
 interface IBfgWhoAmIProviderProps {
   children: React.ReactNode;
@@ -55,7 +46,7 @@ export const BfgWhoAmIProvider = ({ children }: IBfgWhoAmIProviderProps) => {
 
   const [currentDexieUser, setCurrentDexieUser] = useState<UserLogin | null>(null);
 
-  console.log("DbkWhoAmIProvider: currentDexieUser", currentDexieUser);
+  console.log("BfgWhoAmIProvider: currentDexieUser", currentDexieUser);
 
 
   // useLiveQuery(

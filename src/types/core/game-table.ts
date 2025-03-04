@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { GameLobbySchema } from "./game-lobby";
+import { GameLobbySchema } from "./game-lobby/game-lobby";
 
 
 export const GameTableSchema = z.object({

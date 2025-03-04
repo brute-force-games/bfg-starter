@@ -1,26 +1,18 @@
 import { Dexie, Table } from "dexie";
 import dexieCloud from "dexie-cloud-addon";
-import { FriendAccount } from "../types/core/player/friend";
+import { GameFriendAccount } from "../types/core/game-friend/friend";
 import { GameTable } from "../types/core/game-table";
-import { PlayerProfile } from "../types/core/player/player-profile";
-import { GameLobby } from "../types/core/game-lobby";
+import { PlayerProfile } from "../types/core/player/player-profile";;
 import { getEnvSettings } from "../env/env-utils";
-
-
-
-// type JustSomeData = {
-//   id?: string;
-//   name: string;
-//   other: number;
-// }
+import { DbGameLobby } from "../types/core/game-lobby/game-lobby-db";
 
 
 type BruteForceGamesDbTables = {
-  // myLobbies: Table<GameLobbyComplete, 'id'>;
+  
   myPlayerProfiles: Table<PlayerProfile, 'id'>;
-  myFriends: Table<FriendAccount, 'id'>;
+  myFriends: Table<GameFriendAccount, 'id'>;
   myGameTables: Table<GameTable, 'id'>;
-  myGameLobbies: Table<GameLobby, 'id'>;
+  myGameLobbies: Table<DbGameLobby, 'id'>;
   
   // justSomeData: Table<JustSomeData, 'id'>;
 
@@ -45,19 +37,20 @@ export const bfgDb = new Dexie(DEXIE_BRUTE_FORCE_GAMES_DB_NAME, {addons: [dexieC
 
 // Schema declaration:
 bfgDb.version(1).stores({
-  // myLobbies: '@id, name, createdAt, updatedAt',
-  // justSomeData: '@id, name, other',
-  myFriends: '@id, name, createdAt, updatedAt',
+  myFriends: 'id, name, createdAt, updatedAt',
   myGameTables: '@id, name, createdAt, updatedAt',
+  myGameLobbies: '@id, status, gameTitle, lobbyMinNumPlayers, lobbyMaxNumPlayers, gameHostPlayerId',
 
   // dbkKeyValues: '@id, appKey',
 });
 
 
-// export const DEXIE_CLOUD_URL = "https://zt0h2t1rs.dexie.cloud";
+
 const envSettings = getEnvSettings();
 
 if (envSettings.cloudConfig.isCloudEnabled) {
+  console.log("BFG DB: configuring cloud");
+  console.log("BFG DB: envSettings", envSettings);
   const dexieCloudUrl = envSettings.cloudConfig.syncUrl;
 
   bfgDb.cloud.configure({

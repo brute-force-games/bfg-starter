@@ -29,12 +29,14 @@ import { createBrowserRouter } from 'react-router-dom';
 import { LandingPage } from './pages/landing/landing-page';
 import { NotFound } from './pages/NotFound';
 import { Layout } from './components/Layout';
-import { CreateNewLobbyPage } from './pages/lobby/new';
-import { MyPlayerProvider } from './data/persisted-player/persisted-player-provider';
+// import { CreateNewLobbyPage } from './pages/lobby/new';
 import { MyFriendsPage } from './pages/my-friends/my-friends-page';
 import { MyGamesPage } from './pages/my-games/my-games-page';
 import { MyPlayerProfilesPage } from './pages/my-player-profiles/my-player-profiles-page';
 import { MyLobbiesPage } from './pages/my-lobbies/my-lobbies-page';
+import { DexieStatusPage } from './pages/dexie-status/dexie-status-page';
+import { MyLobbyDetailsPage } from './pages/my-lobbies/my-lobby-details-page';
+import { MyFriendDetailsPage } from './pages/my-friends/my-friend-details-page';
 // import { DexieStatusPage } from './pages/dexie-status/dexie-status-page';
 // import { JoinLobbyPage } from './pages/lobby/join/join-lobby-page';
 // import { NotFound } from './pages/NotFound';
@@ -56,6 +58,7 @@ export const router = createBrowserRouter([
         index: true,
         element: <LandingPage />,
       },
+
       // {
       //   path: "sign-in",
       //   element: (
@@ -68,27 +71,39 @@ export const router = createBrowserRouter([
       //   ),
       // },
       
-      // {
-      //   path: "dexie-status",
-      //   element: <DexieStatusPage />,
-      // },
+      {
+        path: "dexie-status",
+        element: <DexieStatusPage />,
+      },
       
       {
         path: "my-lobbies",
         element: <MyLobbiesPage />,
       },
+
       {
-        path: "lobby/new",
-        element: (
-          <MyPlayerProvider>
-            <CreateNewLobbyPage />
-          </MyPlayerProvider>
-        ),
+        path: "lobbies/:lobbyId",
+        element: <MyLobbyDetailsPage />,
       },
+
+      // {
+      //   path: "lobby/new",
+      //   element: (
+      //     <MyPlayerProvider>
+      //       <CreateNewLobbyPage />
+      //     </MyPlayerProvider>
+      //   ),
+      // },
       {
         path: "my-friends",
         element: <MyFriendsPage />,
       },
+
+      {
+        path: "friends/:friendId",
+        element: <MyFriendDetailsPage />,
+      },
+
       {
         path: "my-games",
         element: <MyGamesPage />,

@@ -1,5 +1,4 @@
-import { getEnvSettings } from './env-utils';
-import { getAppVersionString } from './env-utils';
+import { getAppVersionString, getEnvSettings } from './env-utils';
 import { EnvSettingsContextType } from './env-types';
 import { EnvSettingsContext } from './EnvSettingsContext';
 

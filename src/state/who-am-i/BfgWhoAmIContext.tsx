@@ -26,8 +26,9 @@ export interface BfgWhoAmIContextType {
 }
 
 
-const BfgWhoAmIContext = createContext<BfgWhoAmIContextType | undefined>(undefined);
+export const BfgWhoAmIContext = createContext<BfgWhoAmIContextType | undefined>(undefined);
 
+console.log("BfgWhoAmIContext: created");
 
 
 export const useBfgWhoAmIContext = (): BfgWhoAmIContextType => {
