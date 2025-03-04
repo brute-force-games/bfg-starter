@@ -11,6 +11,7 @@ import {
   TextField} from '@mui/material';
 import { NewPlayerProfileParameters, NewPlayerProfileParametersSchema } from '~/types/core/player-profile/player-profile';
 import { Controller } from 'react-hook-form';
+import { useEffect } from 'react';
 
 
 interface AddPlayerProfileDialogProps {
@@ -22,7 +23,7 @@ interface AddPlayerProfileDialogProps {
 export const AddPlayerProfileDialog = ({ allDataItems, onNewDataItemCreated, onClose }: AddPlayerProfileDialogProps) => {
 
   const defaultFormValues: NewPlayerProfileParameters = {
-    handle: "bob",
+    handle: "Player",
   }
 
   const doesHandleAlreadyExist = (handle: string) => {
@@ -43,6 +44,11 @@ export const AddPlayerProfileDialog = ({ allDataItems, onNewDataItemCreated, onC
     mode: 'onChange',
     reValidateMode: 'onChange',
   });
+
+  // Trigger validation when component mounts
+  useEffect(() => {
+    trigger('handle');
+  }, [trigger]);
 
   // const { errors, isValid, isDirty } = formState;
   const { errors } = formState;
@@ -83,7 +89,7 @@ export const AddPlayerProfileDialog = ({ allDataItems, onNewDataItemCreated, onC
                 render={({ field: { onChange, value, ...field } }) => (
                   <TextField
                     {...field}
-                    label="Player Profile Handle"
+                    label="Profile Handle"
                     error={!!errors.handle}
                     helperText={errors.handle?.message}
                     value={value}
