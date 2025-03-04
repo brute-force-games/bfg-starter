@@ -20,18 +20,6 @@ interface AddFriendDialogProps {
 }
 
 export const AddFriendDialog = ({ onCreateNewFriend, onClose }: AddFriendDialogProps) => {
-  // const { myPlayerId } = useMyPlayerContext();
-
-  // const [selectedGameTitle, setSelectedGameTitle] = useState<GameTitle>('Tic Tac Toe' as GameTitle);
-
-  // const selectedGameDefinition = AllGamesOnShelfArray
-  //   .find(game => game.title === selectedGameTitle);
-
-  // console.log("selectedGameDefinition:", selectedGameDefinition);
-
-  // if (!selectedGameDefinition) {
-  //   throw new Error(`Game definition not found for game title: ${selectedGameTitle}`);
-  // }
 
   const defaultFormValues: NewGameFriendParameters = {
     name: "",
@@ -54,21 +42,7 @@ export const AddFriendDialog = ({ onCreateNewFriend, onClose }: AddFriendDialogP
 
     onClose();
   };
-
-  // const handleSelectedGameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const newGameTitle = event.target.value as GameTitle;
-  //   console.log(`handleSelectedGameChange: ${newGameTitle}`);
-  //   setSelectedGameTitle(newGameTitle);
-    
-  //   // Update form values with new game's min and max players
-  //   const newGameDefinition = AllGamesOnShelfArray.find(game => game.title === newGameTitle);
-  //   if (newGameDefinition) {
-  //     setValue('lobbyMinNumPlayers', newGameDefinition.minNumPlayersForGame);
-  //     setValue('lobbyMaxNumPlayers', newGameDefinition.maxNumPlayersForGame);
-  //     setValue('gameOnShelf', newGameDefinition);
-  //   }
-  // };
-
+  
 
   return (
     <Dialog 

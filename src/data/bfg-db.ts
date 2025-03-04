@@ -16,15 +16,6 @@ type BruteForceGamesDbTables = {
   
   // justSomeData: Table<JustSomeData, 'id'>;
 
-  // projects: EntityTable<ProjectItem, 'id'>;
-  // projectGraphVersions: EntityTable<DbkSavedProjectGraphVersion, 'id'>;
-  // projectItemToActiveGraphVersionLinks: EntityTable<DbkProjectItemToActiveGraphVersionLink, 'id'>;
-
-  // graphNodeData: EntityTable<DbkGraphNodeData, 'id'>;
-  // graphNodePositions: EntityTable<DbkGraphNodePosition, 'id'>;
-  // graphNodeConnections: EntityTable<DbkGraphNodeConnection, 'id'>;
-  // graphViewports: EntityTable<DbkGraphViewport, 'id'>;
-
   // dbkKeyValues: EntityTable<DbkAppKeyValue, 'id'>;
 };
 
@@ -37,6 +28,7 @@ export const bfgDb = new Dexie(DEXIE_BRUTE_FORCE_GAMES_DB_NAME, {addons: [dexieC
 
 // Schema declaration:
 bfgDb.version(1).stores({
+  myPlayerProfiles: 'id, name, createdAt, updatedAt',
   myFriends: 'id, name, createdAt, updatedAt',
   myGameTables: 'id, name, createdAt, updatedAt',
   myGameLobbies: 'id, status, gameTitle, lobbyMinNumPlayers, lobbyMaxNumPlayers, gameHostPlayerId',

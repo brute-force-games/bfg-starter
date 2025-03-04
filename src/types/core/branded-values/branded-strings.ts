@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { GameFriendId, GameLobbyId } from "./bfg-branded-ids";
+import { GameFriendId, GameLobbyId, PlayerProfileId } from "./bfg-branded-ids";
 
 
 export const DexieCloudEmailSchema = z.string().brand('DbkDexieCloudEmail');
@@ -19,3 +19,4 @@ export type GameTitle = z.infer<typeof GameTitleSchema>;
 
 export type DbGameLobbyId = z.infer<typeof GameLobbyId.idSchema>;
 export type DbGameFriendId = z.infer<typeof GameFriendId.idSchema>;
+export type DbPlayerProfileId = z.infer<typeof PlayerProfileId.idSchema>;

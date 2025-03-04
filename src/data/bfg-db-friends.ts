@@ -6,7 +6,6 @@ import { GameFriendId } from "~/types/core/branded-values/bfg-branded-ids";
 import { DbGameFriendId } from "~/types/core/branded-values/branded-strings";
 
 
-
 export const useLiveFriends = (): DbGameFriendAccount[] | undefined => {
   const friends = useLiveQuery(async () => {
     return await bfgDb.myFriends.toArray();
@@ -29,11 +28,7 @@ export const deleteAllFriends = async () => {
 
 
 export const addNewFriend = async (friendParameters: NewGameFriendParameters) => {
-  console.log("DB: addNewFriend", bfgDb);
-  console.log("DB: myFriends", bfgDb.myFriends);
 
-
-  // const newFriendId = createBrandedIdValue(DbGameFriendIdSchema);
   const newFriendId = GameFriendId.createId();
 
   console.log("DB: newFriendId", newFriendId);

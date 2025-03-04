@@ -49,10 +49,13 @@ const GamePlayerIdPrefix = "bfg_game_player" as const;
 
 
 
+const PlayerProfileIdPrefix = "bfg_player_profile" as const;
+
 
 export const GameLobbyId = createBfgBrandedIdMetadata(GameLobbyIdPrefix);
 export const GameFriendId = createBfgBrandedIdMetadata(GameFriendIdPrefix);
 export const GamePlayerId = createBfgBrandedIdMetadata(GamePlayerIdPrefix);
+export const PlayerProfileId = createBfgBrandedIdMetadata(PlayerProfileIdPrefix);
 
 
 
