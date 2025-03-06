@@ -18,16 +18,16 @@ export const asHostStartGame = async (tableId: DbGameTableId, hostPlayerId: DbPl
     throw new Error("Player is not the host");
   }
 
-  const selectedGameStateMetadata = BfgGameEngineMetadata[gameTable.gameTitle];
+  const gameEngineMetadata = BfgGameEngineMetadata[gameTable.gameTitle];
 
-  if (!selectedGameStateMetadata) {
+  if (!gameEngineMetadata) {
     throw new Error("Game state metadata not found");
   }
 
-  const initGameAction = selectedGameStateMetadata.createInitialGameTableAction(gameTable);
-  const initialGameState = selectedGameStateMetadata.createInitialGameState(gameTable);
-  const gameStateJson = selectedGameStateMetadata.createGameStateJson(initialGameState);
-  const nextPlayersToAct = selectedGameStateMetadata.createNextPlayersToAct(initGameAction, initialGameState);
+  const initGameAction = gameEngineMetadata.createInitialGameTableAction(gameTable);
+  const initialGameState = gameEngineMetadata.createInitialGameState(gameTable);
+  const gameStateJson = gameEngineMetadata.createGameStateJson(initialGameState);
+  const nextPlayersToAct = gameEngineMetadata.createNextPlayersToAct(initGameAction, initialGameState);
 
   const mostRecentGameActionId = gameTable.latestActionId;
   const startActionId = BfgGameTableActionId.createId();
@@ -54,7 +54,6 @@ export const asHostStartGame = async (tableId: DbGameTableId, hostPlayerId: DbPl
         ...gameTable,
         tablePhase: "table-phase-game-in-progress",
         latestActionId: startActionId,
-        // gameStateJson,
       }
 
       await bfgDb

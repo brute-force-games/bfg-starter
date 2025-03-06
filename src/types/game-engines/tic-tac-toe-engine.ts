@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createBfgGameEngineProcessor } from "./bfg-game-engine-metadata";
 import { GameTableSeat, GameTableSeatSchema, NewGameTable } from "../core/game-table/game-table";
-import { NewGameTableAction } from "../core/game-table/game-table-action";
+import { createTicTacToeRepresentation, createTicTacToeInput, createTicTacToeComboRepresentationAndInput } from "~/components/games/tic-tac-toe/tic-tac-toe-components";
 
 
 export const TicTacToeResolutionSchema = z.enum([
@@ -23,12 +23,12 @@ export const TicTacToeMoveCellSchema = z.enum([
 export type TicTacToeMoveCell = z.infer<typeof TicTacToeMoveCellSchema>;
 
 
-export const TicTacToeActionJsonSchema = z.object({
+export const TicTacToeMoveSchema = z.object({
   moveCell: TicTacToeMoveCellSchema,
   movePlayer: GameTableSeatSchema,
 })
 
-export type TicTacToeActionJson = z.infer<typeof TicTacToeActionJsonSchema>;
+export type TicTacToeMove = z.infer<typeof TicTacToeMoveSchema>;
 
 
 export const TicTacToeGameStateSchema = z.object({
@@ -54,19 +54,11 @@ const createInitialGameState = (_gameTable: NewGameTable): TicTacToeGameState =>
 }
 
 
-const createInitialGameTableAction = (_gameTable: NewGameTable): NewGameTableAction => {
-  const createdAt = new Date();
-  
-  const retVal: NewGameTableAction = {
-    source: 'game-table-action-source-host',
-    createdAt,
-    actionType: 'game-table-action-host-starts-lobby',
-    actionJson: JSON.stringify({}),
-    actionOutcomeGameStateJson: JSON.stringify(initialGameState),
-    nextPlayersToAct: ['p1'],
-  }
-
-  return retVal;
+const createInitialGameTableAction = (_gameTable: NewGameTable): TicTacToeMove => {
+  return {
+    moveCell: '1',
+    movePlayer: 'p1',
+  };
 }
 
 
@@ -75,9 +67,16 @@ const createNextPlayersToAct = (_gameState: TicTacToeGameState): GameTableSeat[]
 }
 
 
+
 export const TicTacToeGameStateProcessor = createBfgGameEngineProcessor(
   TicTacToeGameStateSchema,
+  TicTacToeMoveSchema,
+  
   createInitialGameState,
   createNextPlayersToAct,
   createInitialGameTableAction,
+
+  createTicTacToeRepresentation,
+  createTicTacToeInput,
+  createTicTacToeComboRepresentationAndInput,
 );

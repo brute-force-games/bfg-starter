@@ -6,7 +6,11 @@ import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
 import { DbGameTable } from "~/types/core/game-table/game-table";
 
 
-export const asPlayerMakeMove = async (tableId: DbGameTableId, playerId: DbPlayerProfileId) => {
+export const asPlayerMakeMove = async <T>(
+  tableId: DbGameTableId, 
+  playerId: DbPlayerProfileId, 
+  playerAction: T
+) => {
   console.log("DB: asPlayerMakeMove", tableId, playerId);
   const gameTable = await bfgDb.gameTables.get(tableId);
 
@@ -14,17 +18,16 @@ export const asPlayerMakeMove = async (tableId: DbGameTableId, playerId: DbPlaye
     throw new Error("Table not found");
   }
 
+  const gameEngineMetadata = BfgGameEngineMetadata[gameTable.gameTitle];
 
-  const selectedGameStateMetadata = BfgGameEngineMetadata[gameTable.gameTitle];
-
-  if (!selectedGameStateMetadata) {
+  if (!gameEngineMetadata) {
     throw new Error("Game state metadata not found");
   }
 
-  const initGameAction = selectedGameStateMetadata.createInitialGameTableAction(gameTable);
-  const initialGameState = selectedGameStateMetadata.createInitialGameState(gameTable);
-  const gameStateJson = selectedGameStateMetadata.createGameStateJson(initialGameState);
-  const nextPlayersToAct = selectedGameStateMetadata.createNextPlayersToAct(initGameAction, initialGameState);
+  const initGameAction = gameEngineMetadata.createInitialGameTableAction(gameTable);
+  const initialGameState = gameEngineMetadata.createInitialGameState(gameTable);
+  const gameStateJson = gameEngineMetadata.createGameStateJson(initialGameState);
+  const nextPlayersToAct = gameEngineMetadata.createNextPlayersToAct(initGameAction, initialGameState);
 
   const mostRecentGameActionId = gameTable.latestActionId;
   const startActionId = BfgGameTableActionId.createId();

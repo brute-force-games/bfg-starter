@@ -4,15 +4,12 @@ import { matchPlayerToSeat } from "~/data/dexie-data-ops/match-player-to-seat";
 import { orderGameTableActions } from "~/data/dexie-data-ops/order-game-table-actions";
 import { useBfgWhoAmIContext } from "~/state/who-am-i/BfgWhoAmIContext";
 import { DbGameTableId } from "~/types/core/branded-values/branded-strings";
+import { BfgGameEngineMetadata } from "~/types/game-engines/bfg-game-engines";
+import { BrandedJson } from "~/types/core/branded-values/bfg-branded-json";
+import { z } from "zod";
 
 
-interface GameTableNextActionPageProps {
-  // myPlayerId: GamePlayerId;
-  // myPlayerSeat: GameTableSeat;
-  // gameTable: DbGameTable;
-}
-
-export const GameTableNextActionPage = (_props: GameTableNextActionPageProps) => {
+export const GameTableNextActionPage = () => {
 
   const { gameTableId } = useParams();
   const whoAmI = useBfgWhoAmIContext();
@@ -51,13 +48,48 @@ export const GameTableNextActionPage = (_props: GameTableNextActionPageProps) =>
 
   const isItMyTurnToAct = latestAction.nextPlayersToAct.includes(myPlayerSeat);
 
+  const gameEngineMetadata = BfgGameEngineMetadata[gameTable.gameTitle];
+
+  if (!gameEngineMetadata) {
+    return <div>No game engine metadata found</div>;
+  }
+
+  const gameState = gameEngineMetadata.parseGameStateJson(
+    latestAction.actionOutcomeGameStateJson as BrandedJson<typeof gameTable.gameTitle>);
+
+  console.log("parsed game state", gameState);
+
+  const onGameAction = (gameAction: z.infer<typeof gameEngineMetadata.gameActionJsonSchema>) => {
+    const gameActionJson = gameEngineMetadata.createGameStateJson(gameState, gameAction);
+    console.log("incompoennt - onGameAction", gameActionJson);
+  }
+
+  const gameRepresentationComponent = gameEngineMetadata.createGameStateRepresentationComponent(gameState);
+  const gameActionInputComponent = gameEngineMetadata.createGameStateActionInputComponent(gameState, onGameAction);
+  const gameCombinationRepresentationAndInputComponent = gameEngineMetadata.createGameStateCombinationRepresentationAndInputComponent(gameState, onGameAction);
+
+  const gameUserInteraction = 
+    gameCombinationRepresentationAndInputComponent ?
+      <>
+        {gameCombinationRepresentationAndInputComponent}
+      </>
+      :
+      <>
+        {gameRepresentationComponent}
+        {gameActionInputComponent}
+      </>
+
+
   return (
     <>
       <div>Is it my turn to act? {isItMyTurnToAct ? "Yes" : "No"}</div>
+      <div>My Seat: {myPlayerSeat}</div>
+      
+      {gameUserInteraction}
+
       <div>Latest action: {latestAction.id}</div>
       <div>Latest action source: {latestAction.source}</div>
       <div>Latest action type: {latestAction.actionType}</div>
-      {/* <div>Latest action json: <pre>{JSON.stringify(latestAction.actionJson, null, 2)}</pre></div> */}
     </>
   )
 }
