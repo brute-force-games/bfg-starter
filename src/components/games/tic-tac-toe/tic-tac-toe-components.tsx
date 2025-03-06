@@ -16,7 +16,7 @@ export const createTicTacToeInput = (gameState: TicTacToeGameState) => {
 
 export const createTicTacToeComboRepresentationAndInput = (
   gameState: TicTacToeGameState,
-  onGameAction: (gameAction: TicTacToeMove) => void
+  onGameAction: (gameState: TicTacToeGameState, gameAction: TicTacToeMove) => void
 ) => {
   // return;
 

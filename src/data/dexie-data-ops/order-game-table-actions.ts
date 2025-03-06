@@ -1,4 +1,6 @@
 import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
+import { bfgDb } from "../bfg-db";
+import { DbGameTableId } from "~/types/core/branded-values/branded-strings";
 
 
 
@@ -41,3 +43,15 @@ export const orderGameTableActions = (actions: DbGameTableAction[]): DbGameTable
 
   return [...orderedActions, ...remainingActions];
 };
+
+
+export const getLatestAction = async (gameTableId: DbGameTableId): Promise<DbGameTableAction> => {
+  const actions = await bfgDb
+    .gameTableActions
+    .where('gameTableId')
+    .equals(gameTableId)
+    .toArray();
+
+  const orderedActions = orderGameTableActions(actions);
+  return orderedActions[orderedActions.length - 1];
+}

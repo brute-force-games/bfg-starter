@@ -4,9 +4,12 @@ import { DbGameTableId, DbPlayerProfileId } from "~/types/core/branded-values/br
 import { BfgGameTableActionId } from "~/types/core/branded-values/bfg-branded-ids";
 import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
 import { DbGameTable } from "~/types/core/game-table/game-table";
+import { BrandedJson } from "~/types/core/branded-values/bfg-branded-json";
+import { getLatestAction } from "./order-game-table-actions";
+import { z } from "zod";
 
 
-export const asPlayerMakeMove = async <T>(
+export const asPlayerMakeMove = async <T extends z.infer<typeof gameEngineMetadata.gameActionJsonSchema>>(
   tableId: DbGameTableId, 
   playerId: DbPlayerProfileId, 
   playerAction: T
@@ -24,10 +27,16 @@ export const asPlayerMakeMove = async <T>(
     throw new Error("Game state metadata not found");
   }
 
-  const initGameAction = gameEngineMetadata.createInitialGameTableAction(gameTable);
-  const initialGameState = gameEngineMetadata.createInitialGameState(gameTable);
-  const gameStateJson = gameEngineMetadata.createGameStateJson(initialGameState);
-  const nextPlayersToAct = gameEngineMetadata.createNextPlayersToAct(initGameAction, initialGameState);
+  const latestAction = await getLatestAction(tableId);
+
+  const initialGameState = gameEngineMetadata.parseGameStateJson(
+    latestAction.actionOutcomeGameStateJson as BrandedJson<typeof gameTable.gameTitle>);
+
+  const afterActionGameState = gameEngineMetadata.applyGameAction(initialGameState, playerAction);
+
+  const nextPlayersToAct = gameEngineMetadata.createNextPlayersToAct(playerAction, afterActionGameState);
+
+  const actionOutcomeGameStateJson = gameEngineMetadata.createGameStateJson(afterActionGameState, playerAction);
 
   const mostRecentGameActionId = gameTable.latestActionId;
   const startActionId = BfgGameTableActionId.createId();
@@ -42,7 +51,7 @@ export const asPlayerMakeMove = async <T>(
     actionType: "game-table-action-host-starts-game",
     nextPlayersToAct,
     actionJson: "start-game",
-    actionOutcomeGameStateJson: gameStateJson,
+    actionOutcomeGameStateJson,
   }
 
   await bfgDb.transaction(

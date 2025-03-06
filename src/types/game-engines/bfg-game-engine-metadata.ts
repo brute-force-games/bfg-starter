@@ -16,8 +16,10 @@ export type BfgGameEngineProcessor<GS, GA, Tname extends string> = {
   parseGameStateJson: (jsonString: BrandedJson<Tname>) => GS;  // this parses the JSON back into the game state
 
   createGameStateRepresentationComponent: (gameState: GS) => React.ReactNode;
-  createGameStateActionInputComponent: (gameState: GS, onGameAction: (gameAction: GA) => void) => React.ReactNode;
-  createGameStateCombinationRepresentationAndInputComponent: (gameState: GS, onGameAction: (gameAction: GA) => void) => React.ReactNode | undefined,
+  createGameStateActionInputComponent: (gameState: GS, onGameAction: (gameState: GS, gameAction: GA) => void) => React.ReactNode;
+  createGameStateCombinationRepresentationAndInputComponent: (gameState: GS, onGameAction: (gameState: GS, gameAction: GA) => void) => React.ReactNode | undefined,
+
+  applyGameAction: (gameState: GS, gameAction: GA) => GS;
 
   gameStateBrandedJsonString: BrandedJsonSchema<Tname>;
   gameStateJsonSchema: z.ZodSchema<GS>;
@@ -32,13 +34,15 @@ export const createBfgGameEngineProcessor = <GS extends z.AnyZodObject, GA exten
   gameStateSchema: GS,
   gameActionSchema: GA,
 
+  applyGameAction: (gameState: z.infer<GS>, gameAction: z.infer<GA>) => z.infer<GS>,
+
   createInitialGameState: (gameTable: NewGameTable) => z.infer<GS>,
   createNextPlayersToAct: (gameState: z.infer<GS>) => GameTableSeat[],
   createInitialGameTableAction: (gameTable: NewGameTable) => z.infer<GA>,
 
   createGameStateRepresentationComponent: (gameState: z.infer<GS>) => React.ReactNode,
-  createGameStateActionInputComponent: (gameState: z.infer<GS>, onGameAction: (gameAction: z.infer<GA>) => void) => React.ReactNode,
-  createGameStateCombinationRepresentationAndInputComponent: (gameState: z.infer<GS>, onGameAction: (gameAction: z.infer<GA>) => void) => React.ReactNode | undefined,
+  createGameStateActionInputComponent: (gameState: z.infer<GS>, onGameAction: (gameState: z.infer<GS>, gameAction: z.infer<GA>) => void) => React.ReactNode,
+  createGameStateCombinationRepresentationAndInputComponent: (gameState: z.infer<GS>, onGameAction: (gameState: z.infer<GS>, gameAction: z.infer<GA>) => void) => React.ReactNode | undefined,
 
 ): BfgGameEngineProcessor<z.infer<GS>, z.infer<GA>, NonNullable<GS['description']>> => {
 
@@ -68,6 +72,8 @@ export const createBfgGameEngineProcessor = <GS extends z.AnyZodObject, GA exten
     createGameStateRepresentationComponent,
     createGameStateActionInputComponent,
     createGameStateCombinationRepresentationAndInputComponent,
+
+    applyGameAction,
 
     gameStateBrandedJsonString,
     gameStateJsonSchema: gameStateSchema,

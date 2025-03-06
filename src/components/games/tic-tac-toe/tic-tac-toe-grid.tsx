@@ -1,23 +1,26 @@
-import { TicTacToeMove, TicTacToeGameState } from "~/types/game-engines/tic-tac-toe-engine";
+import { TicTacToeMove, TicTacToeGameState, TicTacToeMoveCell } from "~/types/game-engines/tic-tac-toe-engine";
 import { Grid, Button, Typography, Box } from '@mui/material';
 
 interface TicTacToeGridProps {
   gameState: TicTacToeGameState;
-  onGameAction: (gameAction: TicTacToeMove) => void;
+  onGameAction: (gameState: TicTacToeGameState, gameAction: TicTacToeMove) => void;
 }
 
 export const TicTacToeGrid = (props: TicTacToeGridProps) => {
   const { gameState, onGameAction } = props;
 
   const handleCellClick = (index: number) => {
-
     console.log("handleCellClick", index);
 
     if (gameState.board[index] !== '-') return;
     
-    const cellNumber = (index + 1).toString() as '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
-    onGameAction({
-      moveCell: cellNumber,
+    // Convert index to coordinate format (a1-c3)
+    const row = Math.floor(index / 3) + 1;
+    const colLetter = ['a', 'b', 'c'][index % 3];
+    const moveCell = `${colLetter}${row}` as TicTacToeMoveCell;
+    
+    onGameAction(gameState, {
+      moveCell,
       movePlayer: gameState.currentPlayer,
     });
   };
