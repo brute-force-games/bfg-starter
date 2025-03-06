@@ -31,12 +31,19 @@ import { NotFound } from './pages/NotFound';
 import { Layout } from './components/Layout';
 // import { CreateNewLobbyPage } from './pages/lobby/new';
 import { MyFriendsPage } from './pages/my-friends/my-friends-page';
-import { MyGamesPage } from './pages/my-games/my-games-page';
+// import { MyGamesPage } from './pages/my-games/my-games-page';
 import { MyPlayerProfilesPage } from './pages/my-player-profiles/my-player-profiles-page';
-import { MyLobbiesPage } from './pages/my-lobbies/my-lobbies-page';
+// import { MyLobbiesPage } from './pages/my-lobbies/my-lobbies-page';
 import { DexieStatusPage } from './pages/dexie-status/dexie-status-page';
-import { MyLobbyDetailsPage } from './pages/my-lobbies/my-lobby-details-page';
+// import { MyLobbyDetailsPage } from './pages/my-lobby-details-page';
 import { MyFriendDetailsPage } from './pages/my-friends/my-friend-details-page';
+// import { JoinLobbyPage } from './pages/join-lobby-page';
+import { GameTablesPage } from './pages/game-tables/game-tables-page';
+import { GameTableDetailsPage } from './pages/game-tables/game-table-details-page';
+import { BfgWhoAmIProvider } from './state/who-am-i/BfgWhoAmIProvider';
+import { GameTableSeatPage } from './pages/game-tables/game-table-seat-page';
+import { GameTableActionsPage } from './pages/game-tables/game-table-actions-page';
+import { GameTableNextActionPage } from './pages/game-tables/game-table-next-action-page';
 // import { DexieStatusPage } from './pages/dexie-status/dexie-status-page';
 // import { JoinLobbyPage } from './pages/lobby/join/join-lobby-page';
 // import { NotFound } from './pages/NotFound';
@@ -75,16 +82,66 @@ export const router = createBrowserRouter([
         path: "dexie-status",
         element: <DexieStatusPage />,
       },
-      
+
       {
-        path: "my-lobbies",
-        element: <MyLobbiesPage />,
+        path: "game-tables",
+        element: (
+          <BfgWhoAmIProvider>
+            <GameTablesPage />
+          </BfgWhoAmIProvider>
+        ),
       },
 
       {
-        path: "lobbies/:lobbyId",
-        element: <MyLobbyDetailsPage />,
+        path: "game-tables/:gameTableId",
+        element: (
+          <BfgWhoAmIProvider>
+            <GameTableDetailsPage />
+          </BfgWhoAmIProvider>
+        ),
       },
+
+      {
+        path: "game-tables/:gameTableId/seat",
+        element: (
+          <BfgWhoAmIProvider>
+            <GameTableSeatPage />
+          </BfgWhoAmIProvider>
+        ),
+      },
+
+      {
+        path: "game-tables/:gameTableId/actions",
+        element: (
+          <BfgWhoAmIProvider>
+            <GameTableActionsPage />
+          </BfgWhoAmIProvider>
+        ),
+      },
+
+      {
+        path: "game-tables/:gameTableId/next-action",
+        element: (
+          <BfgWhoAmIProvider>
+            <GameTableNextActionPage />
+          </BfgWhoAmIProvider>
+        ),
+      },
+
+      // {
+      //   path: "my-lobbies",
+      //   element: <MyLobbiesPage />,
+      // },
+
+      // {
+      //   path: "join-lobby/:lobbyId",
+      //   element: <JoinLobbyPage />,
+      // },
+
+      // {
+      //   path: "lobbies/:lobbyId",
+      //   element: <MyLobbyDetailsPage />,
+      // },
 
       // {
       //   path: "lobby/new",
@@ -96,7 +153,9 @@ export const router = createBrowserRouter([
       // },
       {
         path: "my-friends",
-        element: <MyFriendsPage />,
+        element: (
+          <MyFriendsPage />
+        ),
       },
 
       {
@@ -104,10 +163,10 @@ export const router = createBrowserRouter([
         element: <MyFriendDetailsPage />,
       },
 
-      {
-        path: "my-games",
-        element: <MyGamesPage />,
-      },
+      // {
+      //   path: "my-games",
+      //   element: <MyGamesPage />,
+      // },
       {
         path: "my-player-profiles",
         element: <MyPlayerProfilesPage />,

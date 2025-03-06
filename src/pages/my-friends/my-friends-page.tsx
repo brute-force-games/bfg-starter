@@ -2,7 +2,7 @@ import { Typography, Button } from "@mui/material";
 import { useState } from "react";
 import { MyPlayerProvider } from "~/data/persisted-player/persisted-player-provider";
 import { addNewFriend, deleteAllFriends, useLiveFriends } from "~/data/bfg-db-friends";
-import { GameFriendAccount, NewGameFriendParameters } from "~/types/core/game-friend/friend";
+import { FriendAccount, NewGameFriendParameters } from "~/types/core/friend-account/friend";
 import { FriendDetailsComponent } from "~/components/friend-details-component";
 import { AddFriendDialog } from "~/dialogs/add-friend-dialog";
 
@@ -24,7 +24,7 @@ export const MyFriendsPage = () => {
     console.log("MyFriendsPage: onCreateNewFriend");
     console.log("friendParameters:", friendParameters);
 
-    const newFriend: GameFriendAccount = {
+    const newFriend: FriendAccount = {
       status: "pending",
       name: friendParameters.name,
       email: friendParameters.email,

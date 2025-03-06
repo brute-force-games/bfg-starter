@@ -1,0 +1,233 @@
+import { useLiveQuery } from "dexie-react-hooks"
+import { bfgDb } from "./bfg-db";
+import { DbGameFriendId, DbGameTableId, DbPlayerProfileId } from "~/types/core/branded-values/branded-strings";
+import { DbGameTable, GameTableSeat } from "~/types/core/game-table/game-table";
+import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
+
+
+export const useLiveGameTables = (): DbGameTable[] | undefined => {
+  const gameTables = useLiveQuery(async () => {
+    return await bfgDb.gameTables.toArray();
+  })
+
+  return gameTables;
+}
+
+
+export const useLiveGameTable = (tableId?: DbGameTableId): DbGameTable | undefined => {
+  const table = useLiveQuery(async () => {
+    if (!tableId) {
+      return undefined;
+    }
+    return await bfgDb.gameTables.get(tableId);
+  })
+
+  return table;
+}
+
+
+export const useLiveGameTableActions = (tableId?: DbGameTableId): DbGameTableAction[] | undefined => {
+  const actions = useLiveQuery(async () => {
+    if (!tableId) {
+      return undefined;
+    }
+    return await bfgDb.gameTableActions.where('gameTableId').equals(tableId).toArray();
+  })  
+
+  return actions;
+}
+
+
+// export const addNewGameTable = async (gameTable: NewGameTable, initialGameTableAction: NewGameTableAction) => {
+//   console.log("DB: addNewGameTable", bfgDb);
+//   console.log("DB: myGameTables", bfgDb.gameTables);
+
+//   return bfgDb.transaction(
+//     'rw',
+//     [bfgDb.gameTables],
+//     async () => {
+
+//       const tableId = BfgGameTableId.createId();
+
+//       const newTable: DbGameTable = {
+//         id: tableId,
+//         ...gameTable,
+//         createdAt: new Date(),
+//       }
+
+//       await bfgDb.gameTables.add(newTable);
+
+//       // Add or update a realm, tied to the lobby using getTiedRealmId():
+//       const realmId = getTiedRealmId(tableId);
+
+
+//       // Create a realm for the shared lobby. Use put to not fail if it already exists.
+//       // (Sync consistency)
+//       bfgDb.realms.put({
+//         realmId,
+//         name: "Game Table  - " + gameTable.gameTitle,
+//         represents: `A game table for ${gameTable.gameTitle}`,
+//       });
+//     }
+//   );
+// }
+
+
+export const deleteAllPlayerGameTables = async (playerId: DbPlayerProfileId) => {
+
+  await bfgDb.gameTables
+    .where('gameHostPlayerId')
+    .equals(playerId)
+    .delete();
+} 
+
+
+export const deleteAllGameTables = async () => {
+  await bfgDb.gameTables.clear();
+} 
+
+
+export const shareGameTableWithFriends = async (tableId: DbGameTableId, friendIds: DbGameFriendId[]) => {
+
+  console.log("DB: shareGameTableWithFriends", tableId, friendIds);
+
+  // Do a sync-consistent transaction that moves the space and its cards into a new realm
+  // See http://dexie.org/cloud/docs/consistency
+  return bfgDb.transaction(
+    'rw',
+    [bfgDb.gameTables, bfgDb.myFriends, bfgDb.realms, bfgDb.members],
+    async () => {
+
+      const gameTable = await bfgDb.gameTables.get(tableId);
+
+      console.log("DB: shareGameTableWithFriends in transaction", tableId, gameTable);
+      const friends = await bfgDb.myFriends.where('id').anyOf(friendIds).toArray();
+
+      console.log("DB: shareGameTableWithFriends in transaction - 2", tableId, friends);
+
+      if (!gameTable) {
+        throw new Error("Table not found");
+      }
+
+      const realmId = gameTable.realmId;
+
+      if (!realmId) {
+        throw new Error("Realm not found");
+      }
+
+      // // Add or update a realm, tied to the lobby using getTiedRealmId():
+      // const realmId = getTiedRealmId(tableId)
+
+      // // Create a realm for the shared game table. Use put to not fail if it already exists.
+      // // (Sync consistency)
+      // bfgDb.realms.put({
+      //   realmId,
+      //   name: gameTable.gameTitle,
+      //   represents: `A game table for ${gameTable.gameTitle}`,
+      // })
+
+      // bfgDb.gameTables.update(gameTable, { realmId });
+
+      console.log("DB: shareGameTableWithFriends - sending invite to friends", tableId, friends);
+
+      if (friends.length > 0) {
+        bfgDb.members.bulkAdd(
+          friends.map((friend) => ({
+            realmId,
+            email: friend.email,
+            name: friend.name,
+            invite: true,
+            permissions: {
+              manage: '*', // Give your friend full permissions within this new realm.
+            },
+          })),
+        )
+      }
+    },
+  )
+}
+
+
+export const unshareGameTableFromFriends = async (table: DbGameTable, friendIds: DbGameFriendId[]) => {
+  const realmId = table.realmId || ''
+
+  const friends = await bfgDb.myFriends.where('id').anyOf(friendIds).toArray();
+
+  return bfgDb
+    .members
+    .where('[email+realmId]')
+    .anyOf(
+      friends.map(
+        (friend) => [friend.email ?? '', realmId] as [string, string],
+      ),
+    )
+    .delete()
+}
+
+
+export const sitAtGameTable = async (tableId: DbGameTableId, playerId: DbPlayerProfileId, playerSeat: GameTableSeat) => {
+
+  const txResult = await bfgDb.transaction(
+    'rw',
+    [bfgDb.gameTables, bfgDb.myFriends, bfgDb.realms, bfgDb.members],
+    async () => {
+
+      const gameTable = await bfgDb.gameTables.get(tableId);
+
+      if (!gameTable) {
+        throw new Error("Table not found");
+      }
+
+      gameTable[playerSeat] = playerId;
+
+      bfgDb.gameTables.update( gameTable, {
+        ...gameTable,
+        [playerSeat]: playerId,
+      })
+    }
+  )
+
+  return txResult;
+}
+
+
+// export const asHostStartGame = async (tableId: DbGameTableId) => {
+//   console.log("DB: asHostStartGame", tableId);
+//   const gameTable = await bfgDb.gameTables.get(tableId);
+
+//   if (!gameTable) {
+//     throw new Error("Table not found");
+//   }
+
+//   const selectedGameStateMetadata = BfgGameEngineMetadata[gameTable.gameTitle];
+
+//   if (!selectedGameStateMetadata) {
+//     throw new Error("Game state metadata not found");
+//   }
+
+// //   const initialGameState = selectedGameStateMetadata.createInitialGameState(gameTable);
+// //   // const gameStateJson = selectedGameStateMetadata.createJson(initialGameState);
+// //   const nextPlayersToAct = selectedGameStateMetadata.createNextPlayersToAct(initialGameState);
+
+// //   const startActionId = BfgGameTableActionId.createId();
+
+// //   const hostStartsGameAction: DbGameTableAction = {
+// //     id: startActionId,
+// //     gameTableId: tableId,
+// //     // actionJson: gameStateJson,
+// //     // previousActionId: undefined,
+// //     createdAt: new Date(),
+// //     source: "game-table-action-source-host",
+// //     actionType: "game-table-action-host-starts-game",
+// //     nextPlayersToAct,
+// //   }
+
+// //   bfgDb.gameTables.update(gameTable, {
+// //     ...gameTable,
+// //     tablePhase: "table-phase-game-in-progress",
+// //     latestActionId: startActionId,
+// //     // gameStateJson,
+// //   })
+
+// //   bfgDb.gameTableActions.add(hostStartsGameAction);
+// }

@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { BfgPlayerIdSchema } from "../branded-values/bs-player-id";
+import { BfgPlayerProfileId } from "../branded-values/bfg-branded-ids";
+// import { BfgPlayerIdSchema } from "../branded-values/bs-player-id";
 
 
 
@@ -13,7 +14,8 @@ export type PlayerInGameStatus = z.infer<typeof PlayerInGameStatusSchema>;
 
 
 export const PlayerInLobbySchema = z.object({
-  playerId: BfgPlayerIdSchema,
+  
+  profileId: BfgPlayerProfileId.idSchema,
   name: z.string().readonly(),
 });
 

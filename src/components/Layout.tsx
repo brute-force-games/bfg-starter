@@ -53,17 +53,17 @@ export const Layout = () => {
             >
               My Friends
             </Button>
-            <Button 
+            {/* <Button 
               color="inherit" 
               onClick={() => navigate('/my-lobbies')}
             >
               My Lobbies
-            </Button>
+            </Button> */}
             <Button 
               color="inherit" 
-              onClick={() => navigate('/my-games')}
+              onClick={() => navigate('/game-tables')}
             >
-              My Games
+              Game Tables
             </Button>
           </Toolbar>
         </Container>

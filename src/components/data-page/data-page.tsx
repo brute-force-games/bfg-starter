@@ -2,23 +2,23 @@ import { Button } from "@mui/material";
 import { useState } from "react";
 
 
-interface IDataPageProps<T = unknown> {
+interface IDataPageProps<NewT, DbT> {
   itemName: string;
-  allDataItems: T[];
+  allDataItems: DbT[];
   
   allDataComponents: React.ReactNode;
 
   addNewDialogComponent: React.ComponentType<{ 
-    allDataItems: T[];
-    onNewDataItemCreated: (data: T) => void; 
+    allDataItems: DbT[];
+    onNewDataItemCreated: (data: NewT) => void; 
     onClose: () => void 
   }>;
   
-  onNewDataItemCreated: (data: T) => Promise<void>;
+  onNewDataItemCreated: (data: NewT) => Promise<void>;
   onDeleteAllData: () => Promise<void>;
 }
 
-export const DataPage = <T = unknown>({ 
+export const DataPage = <NewT, DbT>({ 
   itemName: dataName, 
 
   allDataItems,
@@ -28,11 +28,11 @@ export const DataPage = <T = unknown>({
   onDeleteAllData,
   allDataComponents,
   
-}: IDataPageProps<T>) => {
+}: IDataPageProps<NewT, DbT>) => {
 
   const [showAddNewDialog, setShowAddNewDialog] = useState(false);
 
-  const handleAddNewData = (data: T) => {
+  const handleAddNewData = (data: NewT) => {
     onNewDataItemCreated(data);
   }
 

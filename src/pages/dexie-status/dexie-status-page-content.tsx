@@ -9,9 +9,6 @@ import { useObservable } from "dexie-react-hooks";
 import { DexieInvitation } from "./dexie-invitation";
 
 
-// export const DEXIE_STATUS_PAGE_PATH = '/dexie-status';
-
-
 export const DexieStatusPageContent = () => {
 
   const { dexieStatus } = useBfgWhoAmIContext();
@@ -23,8 +20,9 @@ export const DexieStatusPageContent = () => {
   const isCloudEnabled = cloudConfig.isCloudEnabled;
 
   const allInvites = useObservable(bfgDb.cloud.invites)
-  const invites = allInvites?.filter((i) => !i.accepted && !i.rejected)
 
+  console.log("DexieStatusPageContent: allInvites", allInvites);
+  const invites = allInvites?.filter((i) => !i.accepted && !i.rejected)
 
 
   useEffect(() => {

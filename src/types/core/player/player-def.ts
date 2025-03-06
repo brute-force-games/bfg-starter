@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createAllPlayersSchema } from "./all-players";
-import { BfgPlayerIdSchema } from "../branded-values/bs-player-id";
+import { BfgPlayerProfileId } from "../branded-values/bfg-branded-ids";
 
 
 export const PlayerKeySchema = z.union([
@@ -21,7 +21,7 @@ export type PlayerIndex = z.infer<typeof PlayerIndexSchema>;
 export const PlayerDefSchema = z.object({
   // playerIndex: PlayerIndexSchema,
   playerKey: PlayerKeySchema,
-  playerId: BfgPlayerIdSchema,
+  playerId: BfgPlayerProfileId.idSchema,
   playerName: z.string(),
 });
 

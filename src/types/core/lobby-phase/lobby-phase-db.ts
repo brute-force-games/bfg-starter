@@ -1,28 +1,25 @@
-import { BfgPlayerId } from "../branded-values/bs-player-id";
-import { DbGameFriendId, DbGameLobbyId } from "../branded-values/branded-strings";
+import { DbGameFriendId, DbGameLobbyId, DbPlayerProfileId } from "../branded-values/branded-strings";
 import { AvailableGameTitleChoice } from "~/types/enums/game-shelf";
-import { GameLobbyStatusEnum } from "./game-lobby";
+import { LobbyStatusEnum } from "./lobby-phase";
 
 
 export type NewDbGameLobby = {
-  status: GameLobbyStatusEnum,
+  status: LobbyStatusEnum,
   gameTitle: AvailableGameTitleChoice,
   lobbyMinNumPlayers: number,
   lobbyMaxNumPlayers: number,
-  gameHostPlayerId: BfgPlayerId,
+  gameHostPlayerId: DbPlayerProfileId,
 
   description?: string,
 
-
   sharedWith?: DbGameFriendId[],
-
-  realmId?: string,
-  createdAt: string,
-  owner?: string,
+  createdAt: string;
+  owner?: string;    
 }
-
 
 
 export type DbGameLobby = NewDbGameLobby & {
   id?: DbGameLobbyId;
+
+  realmId?: string;
 }

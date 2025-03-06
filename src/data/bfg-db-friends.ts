@@ -1,12 +1,12 @@
 import { useLiveQuery } from "dexie-react-hooks"
 import { bfgDb } from "./bfg-db";
-import { NewGameFriendParameters } from "~/types/core/game-friend/friend";
-import { DbGameFriendAccount } from "~/types/core/game-friend/friend-db";
-import { GameFriendId } from "~/types/core/branded-values/bfg-branded-ids";
+import { NewGameFriendParameters } from "~/types/core/friend-account/friend";
+import { DbFriendAccount } from "~/types/core/friend-account/friend-db";
+import { BfgGameFriendId } from "~/types/core/branded-values/bfg-branded-ids";
 import { DbGameFriendId } from "~/types/core/branded-values/branded-strings";
 
 
-export const useLiveFriends = (): DbGameFriendAccount[] | undefined => {
+export const useLiveFriends = (): DbFriendAccount[] | undefined => {
   const friends = useLiveQuery(async () => {
     return await bfgDb.myFriends.toArray();
   })
@@ -14,7 +14,7 @@ export const useLiveFriends = (): DbGameFriendAccount[] | undefined => {
 }
 
 
-export const useLiveFriend = (friendId: DbGameFriendId): DbGameFriendAccount | undefined => {
+export const useLiveFriend = (friendId: DbGameFriendId): DbFriendAccount | undefined => {
   const friend = useLiveQuery(async () => {
     return await bfgDb.myFriends.get(friendId);
   })
@@ -29,11 +29,11 @@ export const deleteAllFriends = async () => {
 
 export const addNewFriend = async (friendParameters: NewGameFriendParameters) => {
 
-  const newFriendId = GameFriendId.createId();
+  const newFriendId = BfgGameFriendId.createId();
 
   console.log("DB: newFriendId", newFriendId);
 
-  const newFriend: DbGameFriendAccount = {
+  const newFriend: DbFriendAccount = {
     id: newFriendId,
     status: "pending",
     name: friendParameters.name,

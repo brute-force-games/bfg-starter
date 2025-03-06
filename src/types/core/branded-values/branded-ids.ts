@@ -1,44 +1,10 @@
 import { z } from "zod";
 
 
-
-
-// // const playerIdRegex = /^player_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
-
-// /**
-//  * A globally unique identifier for a player
-//  * Format: 'player_' followed by a UUID v4
-//  * Example: player_123e4567-e89b-12d3-a456-426614174000
-//  */
-// export const BfgPlayerIdSchema = z.string().regex(playerIdRegex).brand('BfgPlayerId');
-
-// export type BfgPlayerId = z.infer<typeof BfgPlayerIdSchema>;
-
-// export function createPlayerId(): BfgPlayerId {
-//     const uuid = crypto.randomUUID();
-//     const playerId = `player_${uuid}`;
-//     return BfgPlayerIdSchema.parse(playerId);
-// }
-
-// export function isValidPlayerId(id: string): id is BfgPlayerId {
-//     return /^player_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(id);
-// }
-
-// game, friend, lobby, 
-
-
 export type BrandedIdSchema<T extends string> = z.ZodBranded<z.ZodString, T>;
 
 export type BrandedId<T extends string> = z.infer<BrandedIdSchema<T>>;
 
-
-// export const createBrandedIdSchema = (prefix: string): BrandedIdSchema<string> => {
-//   const idRegex = new RegExp(`^${prefix}_[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`);
-
-//   // const uuid = crypto.randomUUID();
-//   const retVal = z.string().regex(idRegex).brand(prefix).describe(`bfg-${prefix}`);
-//   return retVal;
-// }
 
 
 export const createRawBrandedIdSchema = (prefix: string): BrandedIdSchema<string> => {
@@ -57,7 +23,6 @@ export interface IBfgBrandedId<T extends string> {
 
   idSchema: BrandedIdSchema<T>;
 }
-
 
 
 export const createBfgBrandedIdMetadata = <T extends string>(prefix: string): IBfgBrandedId<T> => {

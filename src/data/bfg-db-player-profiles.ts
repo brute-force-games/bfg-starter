@@ -1,6 +1,6 @@
 import { useLiveQuery } from "dexie-react-hooks"
 import { bfgDb } from "./bfg-db";
-import { PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids";
+import { BfgPlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids";
 import { DbPlayerProfileId } from "~/types/core/branded-values/branded-strings";
 import { DbPlayerProfile } from "~/types/core/player-profile/player-profile-db";
 import { NewPlayerProfileParameters } from "~/types/core/player-profile/player-profile";
@@ -31,7 +31,7 @@ export const deleteAllPlayerProfiles = async () => {
 
 export const addNewPlayerProfile = async (playerProfileParameters: NewPlayerProfileParameters) => {
 
-  const newPlayerProfileId = PlayerProfileId.createId();
+  const newPlayerProfileId = BfgPlayerProfileId.createId();
 
   console.log("DB: newPlayerProfileId", newPlayerProfileId);
 

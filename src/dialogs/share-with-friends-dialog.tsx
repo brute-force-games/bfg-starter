@@ -14,10 +14,10 @@ import {
   Checkbox,
   Stack,
 } from '@mui/material';
-import { useLiveLobbies } from '~/data/bfg-db-lobbies';
 import { useLiveFriends } from '~/data/bfg-db-friends';
 import { DbGameLobbyId } from '~/types/core/branded-values/branded-strings';
 import { DbGameFriendId } from '~/types/core/branded-values/branded-strings';
+import { useLiveGameTables } from '~/data/bfg-db-game-tables';
 
 
 interface ShareWithFriendsDialogProps {
@@ -29,7 +29,7 @@ export const ShareWithFriendsDialog = ({ onShare, onClose }: ShareWithFriendsDia
   const [selectedLobbyId, setSelectedLobbyId] = useState<DbGameLobbyId | ''>('');
   const [selectedFriendIds, setSelectedFriendIds] = useState<DbGameFriendId[]>([]);
 
-  const lobbies = useLiveLobbies();
+  const gameTables = useLiveGameTables();
   const friends = useLiveFriends();
 
   const handleShare = () => {
@@ -57,7 +57,7 @@ export const ShareWithFriendsDialog = ({ onShare, onClose }: ShareWithFriendsDia
       fullWidth
     >
       <DialogTitle>
-        Share Lobby with Friends
+        Share Game Table with Friends
       </DialogTitle>
       <DialogContent>
         <Stack spacing={3} sx={{ mt: 2 }}>
@@ -68,9 +68,9 @@ export const ShareWithFriendsDialog = ({ onShare, onClose }: ShareWithFriendsDia
               label="Select Lobby"
               onChange={(e) => setSelectedLobbyId(e.target.value as DbGameLobbyId)}
             >
-              {lobbies?.map(lobby => (
-                <MenuItem key={lobby.id} value={lobby.id}>
-                  {lobby.gameTitle} (ID: {lobby.id})
+              {gameTables?.map(gameTable => (
+                <MenuItem key={gameTable.id} value={gameTable.id}>
+                  {gameTable.gameTitle} (ID: {gameTable.id})
                 </MenuItem>
               ))}
             </Select>

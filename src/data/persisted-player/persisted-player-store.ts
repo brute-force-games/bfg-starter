@@ -1,16 +1,16 @@
 import { createContext, useContext } from 'react';
-import { BfgPlayerId } from '../../types/core/branded-values/bs-player-id';
+import { DbPlayerProfileId } from '~/types/core/branded-values/branded-strings';
 
 
 export interface SpgDevData {
-  player1Id: BfgPlayerId;
-  player2Id: BfgPlayerId;
-  player3Id: BfgPlayerId;
-  player4Id: BfgPlayerId;
+  player1Id: DbPlayerProfileId;
+  player2Id: DbPlayerProfileId;
+  player3Id: DbPlayerProfileId;
+  player4Id: DbPlayerProfileId;
 }
 
 export interface MyPlayerContextData {
-  myPlayerId: BfgPlayerId;
+  myPlayerId: DbPlayerProfileId;
   spgDevData: SpgDevData;
 }
 

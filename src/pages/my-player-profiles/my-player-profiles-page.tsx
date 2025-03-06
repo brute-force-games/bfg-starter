@@ -95,6 +95,7 @@ import { DataPage } from "~/components/data-page/data-page";
 import { addNewPlayerProfile, deleteAllPlayerProfiles, useLivePlayerProfiles } from "~/data/bfg-db-player-profiles";
 import { AddPlayerProfileDialog } from "~/dialogs/add-player-profile-dialog";
 import { NewPlayerProfileParameters } from "~/types/core/player-profile/player-profile";
+import { DbPlayerProfile } from "~/types/core/player-profile/player-profile-db";
 
 export const MyPlayerProfilesPage = () => {
 
@@ -130,7 +131,7 @@ export const MyPlayerProfilesPage = () => {
 
   return (
     <>
-      <DataPage<NewPlayerProfileParameters>
+      <DataPage<NewPlayerProfileParameters, DbPlayerProfile>
         itemName="Player Profiles"
         allDataItems={allPlayerProfiles}
         allDataComponents={allDetailsComponents}

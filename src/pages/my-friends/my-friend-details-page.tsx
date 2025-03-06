@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { useLiveFriend } from "~/data/bfg-db-friends";
 import { FriendDetailsComponent } from "~/components/friend-details-component";
-import { GameFriendId } from "~/types/core/branded-values/bfg-branded-ids";
+import { BfgGameFriendId } from "~/types/core/branded-values/bfg-branded-ids";
 
 
 export const MyFriendDetailsPage = () => {
@@ -13,7 +13,7 @@ export const MyFriendDetailsPage = () => {
     throw new Error("Friend ID is required");
   }
 
-  const dbGameFriendId = GameFriendId.parseId(friendId);
+  const dbGameFriendId = BfgGameFriendId.parseId(friendId);
 
   const friend = useLiveFriend(dbGameFriendId);
 

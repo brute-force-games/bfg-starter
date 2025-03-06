@@ -1,19 +1,22 @@
 import { z } from "zod";
 import { AllGamesOnShelfSchema, AvailableGameTitlesSchema } from "../../enums/game-shelf";
-import { BfgPlayerIdSchema } from "../branded-values/bs-player-id";
+import { BfgPlayerProfileId } from "../branded-values/bfg-branded-ids";
 
 
-export const GameLobbyStatusEnumSchema = z.enum([
-  "lobby-status-invalid",
-  "lobby-status-valid",
-  "lobby-status-all-players-ready",
-  "lobby-status-game-in-progress",
-  "lobby-status-game-complete",
-  "lobby-status-game-abandoned",
+export const LobbyStatusInvalid = "lobby-status-invalid" as const;
+export const LobbyStatusValid = "lobby-status-valid" as const;
+export const LobbyStatusAllPlayersReady = "lobby-status-all-players-ready" as const;
+export const LobbyStatusComplete = "lobby-status-complete" as const;
+
+
+export const LobbyStatusEnumSchema = z.enum([
+  LobbyStatusInvalid,
+  LobbyStatusValid,
+  LobbyStatusAllPlayersReady,
+  LobbyStatusComplete,
 ]);
 
-export type GameLobbyStatusEnum = z.infer<typeof GameLobbyStatusEnumSchema>;
-
+export type LobbyStatusEnum = z.infer<typeof LobbyStatusEnumSchema>;
 
 
 export const NewGameLobbyParametersSchema = z.object({
@@ -25,7 +28,7 @@ export const NewGameLobbyParametersSchema = z.object({
   ),
   lobbyMaxNumPlayers: z.coerce.number().int().positive().min(2).max(6),
 
-  gameHostPlayerId: BfgPlayerIdSchema,
+  gameHostPlayerId: BfgPlayerProfileId.idSchema,
 })
 
 export type NewGameLobbyParameters = z.infer<typeof NewGameLobbyParametersSchema>;
@@ -45,7 +48,7 @@ export type ValidatedCreateGameLobbyParameters = z.infer<typeof ValidatedCreateG
 
 
 export const AnyGameLobbySchema = NewGameLobbyParametersSchema.extend({
-  status: GameLobbyStatusEnumSchema,
+  status: LobbyStatusEnumSchema,
   gameTitle: AvailableGameTitlesSchema,
   lobbyMinNumPlayers: z.coerce.number().int().positive().min(1, "Minimum number of players must be at least 1").refine(
     (val) => val > 0,

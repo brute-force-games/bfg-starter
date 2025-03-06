@@ -9,7 +9,7 @@ import {
   FormControl,
   Stack,
   TextField} from '@mui/material';
-import { NewGameFriendParameters, NewGameFriendParametersSchema } from '~/types/core/game-friend/friend';
+import { NewGameFriendParameters, NewGameFriendParametersSchema } from '~/types/core/friend-account/friend';
 import { Controller } from 'react-hook-form';
 
 

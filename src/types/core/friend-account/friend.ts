@@ -33,10 +33,10 @@ export const FriendAccountStatusSchema = z.enum([
 export type FriendAccountStatus = z.infer<typeof FriendAccountStatusSchema>;
 
 
-export const GameFriendAccountSchema = z.object({
+export const FriendAccountSchema = z.object({
   status: FriendAccountStatusSchema,
   name: z.string(),
   email: z.string(),
 });
 
-export type GameFriendAccount = z.infer<typeof GameFriendAccountSchema>;
+export type FriendAccount = z.infer<typeof FriendAccountSchema>;
