@@ -20,7 +20,6 @@ export const GameTableSeatPage = () => {
   if (!playerId) {
     return <div>Player ID not found</div>;
   }
-
   
   return (
     <div>

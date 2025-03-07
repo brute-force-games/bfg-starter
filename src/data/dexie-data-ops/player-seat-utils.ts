@@ -83,3 +83,15 @@ export const isActionForMyPlayer = (actionSource: GameTableActionSource, playerI
       return false;
   }
 }
+
+
+export const isPlayerSeatedAtGameTable = (playerId: DbPlayerProfileId, gameTable: DbGameTable): boolean => {
+  return gameTable.p1 === playerId ||
+    gameTable.p2 === playerId ||
+    gameTable.p3 === playerId ||
+    gameTable.p4 === playerId ||
+    gameTable.p5 === playerId ||
+    gameTable.p6 === playerId ||
+    gameTable.p7 === playerId ||
+    gameTable.p8 === playerId;
+}

@@ -1,4 +1,5 @@
 import { sitAtGameTable } from "~/data/bfg-db-game-tables";
+import { isPlayerSeatedAtGameTable } from "~/data/dexie-data-ops/player-seat-utils";
 import { DbPlayerProfileId } from "~/types/core/branded-values/branded-strings";
 import { DbGameTable, GameTableSeat } from "~/types/core/game-table/game-table";
 
@@ -19,6 +20,16 @@ export const TableSeatComponent = ({
   const playerInSeatId = gameTable[playerSeat];
   const isSeatAvailable = !playerInSeatId;
   const seatLabel = playerSeat.toUpperCase() + ": ";
+
+  const amIAlreadySeated = isPlayerSeatedAtGameTable(myPlayerId, gameTable);
+
+  if (amIAlreadySeated) {
+    if (playerInSeatId === myPlayerId) {
+      return <div>{seatLabel}My seat</div>;
+    } else {
+      return <div>{seatLabel}Waiting for other players...</div>;
+    }
+  }
 
   if (isSeatAvailable) {
     return (

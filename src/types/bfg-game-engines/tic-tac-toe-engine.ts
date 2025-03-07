@@ -3,6 +3,7 @@ import { createBfgGameEngineProcessor } from "./bfg-game-engine-metadata";
 import { GameTableSeat, GameTableSeatSchema, NewGameTable } from "../core/game-table/game-table";
 import { createTicTacToeRepresentation, createTicTacToeInput, createTicTacToeComboRepresentationAndInput } from "~/game-engine-components/tic-tac-toe/tic-tac-toe-components";
 import { GameTableActionResult } from "../core/game-table/table-phase";
+import { TicTacToeGameName } from "./supported-games";
 
 
 export const TicTacToeResolutionSchema = z.enum([
@@ -58,7 +59,7 @@ export const TicTacToeGameStateSchema = z.object({
 
 export type TicTacToeGameState = z.infer<typeof TicTacToeGameStateSchema>;
 
-export const TicTacToeGameName = 'Tic Tac Toe' as const;
+// export const TicTacToeGameName = 'Tic Tac Toe' as const;
 
 
 // const initialGameState: TicTacToeGameState = {
@@ -181,6 +182,7 @@ const applyGameAction = (
 
 
 export const TicTacToeGameStateProcessor = createBfgGameEngineProcessor(
+  TicTacToeGameName,
   TicTacToeGameStateSchema,
   TicTacToeGameActionSchema,
 

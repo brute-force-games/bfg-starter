@@ -12,9 +12,10 @@ import {
   RadioGroup,
   Stack,
 } from '@mui/material';
-import { AvailableGameTitles, AvailableGameTitleChoice } from '~/types/enums/game-shelf';
+import { AvailableGameTitleChoice } from '~/types/enums/game-shelf';
 import { useBfgWhoAmIContext } from '~/state/who-am-i/BfgWhoAmIContext';
 import { NewGameTable, DbGameTable, NewGameTableSchema } from '~/types/core/game-table/game-table';
+import { AvailableGameTitles } from '~/types/bfg-game-engines/supported-games';
 
 
 

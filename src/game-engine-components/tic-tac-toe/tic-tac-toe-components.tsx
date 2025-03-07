@@ -1,4 +1,4 @@
-import { TicTacToeGameState, TicTacToeMove } from "~/types/game-engines/tic-tac-toe-engine";
+import { TicTacToeGameState, TicTacToeMove } from "~/types/bfg-game-engines/tic-tac-toe-engine";
 import { TicTacToeInput } from "./tic-tac-toe-input";
 import { TicTacToeGrid } from "./tic-tac-toe-grid";
 import { TicTacToeRepresentation } from "./tic-tac-toe-representation";

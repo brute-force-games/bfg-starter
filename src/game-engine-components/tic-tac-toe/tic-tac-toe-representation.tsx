@@ -1,4 +1,4 @@
-import { TicTacToeGameState } from "~/types/game-engines/tic-tac-toe-engine";
+import { TicTacToeGameState } from "~/types/bfg-game-engines/tic-tac-toe-engine";
 import { GameTableSeat } from "~/types/core/game-table/game-table";
 
 

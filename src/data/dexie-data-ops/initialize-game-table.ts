@@ -2,9 +2,9 @@ import { NewGameTable, DbGameTable } from "~/types/core/game-table/game-table";
 import { bfgDb } from "../bfg-db";
 import { getTiedRealmId } from "dexie-cloud-addon";
 import { BfgGameTableId, BfgGameTableActionId } from "~/types/core/branded-values/bfg-branded-ids";
-import { BfgGameEngineMetadata } from "~/types/game-engines/bfg-game-engines";
-import { AvailableGameTitles } from "~/types/enums/game-shelf";
+import { getGameEngineMetadataForGameTable } from "~/types/bfg-game-engines/bfg-game-engines";
 import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
+import { AvailableGameTitles } from "~/types/bfg-game-engines/supported-games";
 
 
 // TODO: how much of this is necessary vs host starting game?
@@ -17,15 +17,24 @@ export const initializeGameTable = async (gameTable: NewGameTable) => {
     throw new Error("Game title is required");
   }
 
-  const selectedGameProcessor = BfgGameEngineMetadata[selectedGameTitle];
+  // const selectedGameProcessor = BfgGameEngineMetadata[selectedGameTitle];
+
+
+  const selectedGameProcessor = getGameEngineMetadataForGameTable(gameTable);
+
+  // const selectedGameProcessor = BfgGameEngineMetadata[selectedGameTitle] as BfgGameEngineProcessor<
+  //   z.infer<typeof BfgGameEngineMetadata[typeof selectedGameTitle]["gameStateJsonSchema"]>,
+  //   z.infer<typeof BfgGameEngineMetadata[typeof selectedGameTitle]["gameActionJsonSchema"]>,
+  //   // typeof selectedGameTitle,
+  //   typeof selectedGameTitle
+  // >;
+
 
   const initGameAction = selectedGameProcessor.createInitialGameTableAction(gameTable);
   const initialGameState = selectedGameProcessor.createInitialGameState(initGameAction);
 
   const initialGameStateJson = selectedGameProcessor.createGameStateJson(initialGameState);
   const actionJson = selectedGameProcessor.createGameActionJson(initGameAction);
-
-  // const nextPlayersToAct = selectedGameProcessor.createNextPlayersToAct(initialGameTableAction, initialGameState);
 
   
   console.log("actionJson", actionJson);

@@ -30,7 +30,7 @@ export const GameTableDetailsComponent = ({ gameTable }: IGameTableDetailsCompon
 
   return (
     <>
-      <div>Game Table Details</div>
+      <div>Game Table Details for {gameTable.gameTitle}</div>
       <div>Game Started: {gameTable.createdAt.toLocaleString()}</div>
       <div>Game Phase: {gameTable.tablePhase}</div>
       

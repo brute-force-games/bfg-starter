@@ -4,9 +4,9 @@ import { GameTableSeat } from "~/types/core/game-table/game-table";
 import { DbGameTable } from "~/types/core/game-table/game-table";
 import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
 import { DbPlayerProfileId } from "~/types/core/branded-values/branded-strings";
-import { BfgGameEngineMetadata } from "~/types/game-engines/bfg-game-engines";
-import { BrandedJson } from "~/types/core/branded-values/bfg-branded-json";
-import { TicTacToeGameAction } from "~/types/game-engines/tic-tac-toe-engine";
+import { BfgGameEngineMetadata } from "~/types/bfg-game-engines/bfg-game-engines";
+import { TicTacToeGameAction } from "~/types/bfg-game-engines/tic-tac-toe-engine";
+import { BfgGameTypedJson } from "~/types/core/branded-values/bfg-game-typed-json";
 
 
 interface ITicTacToeActionComponentProps {
@@ -42,7 +42,7 @@ export const TicTacToeActionComponent = (props: ITicTacToeActionComponentProps) 
 
   const actionPlayerLabel = actionPlayerSeat === 'p1' ? 'X' : 'O';
   
-  const actionMoveJson = action.actionJson as BrandedJson<typeof gameTable.gameTitle>;
+  const actionMoveJson = action.actionJson as BfgGameTypedJson<typeof gameTable.gameTitle>;
   const parsedMove = gameEngineMetadata.parseGameActionJson(actionMoveJson);
 
   const getActionMoveText = (action: TicTacToeGameAction) => {
@@ -51,7 +51,9 @@ export const TicTacToeActionComponent = (props: ITicTacToeActionComponentProps) 
     }
     return '';
   }
-  const actionMoveText = getActionMoveText(parsedMove);
+  const actionMoveText = parsedMove.actionType === 'game-table-action-player-move' 
+    ? getActionMoveText(parsedMove)
+    : '';
 
   if (action.actionType === 'game-table-action-player-move') {
     const playerId = gameTable[myPlayerSeat] as DbPlayerProfileId;

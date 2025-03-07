@@ -1,4 +1,4 @@
-import { BfgGameEngineMetadata } from "~/types/game-engines/bfg-game-engines";
+import { getGameEngineMetadataForGameTable } from "~/types/bfg-game-engines/bfg-game-engines";
 import { bfgDb } from "../bfg-db";
 import { DbGameTableId, DbPlayerProfileId } from "~/types/core/branded-values/branded-strings";
 import { BfgGameTableActionId } from "~/types/core/branded-values/bfg-branded-ids";
@@ -18,7 +18,13 @@ export const asHostStartGame = async (tableId: DbGameTableId, hostPlayerId: DbPl
     throw new Error("Player is not the host");
   }
 
-  const gameEngineMetadata = BfgGameEngineMetadata[gameTable.gameTitle];
+  // const gameEngineMetadata = BfgGameEngineMetadata[gameTable.gameTitle] as BfgGameEngineProcessor<
+  //   z.infer<typeof BfgGameEngineMetadata[typeof gameTable.gameTitle]["gameStateJsonSchema"]>,
+  //   z.infer<typeof BfgGameEngineMetadata[typeof gameTable.gameTitle]["gameActionJsonSchema"]>,
+  //   typeof gameTable.gameTitle
+  // >;
+
+  const gameEngineMetadata = getGameEngineMetadataForGameTable(gameTable);
 
   if (!gameEngineMetadata) {
     throw new Error("Game state metadata not found");

@@ -1,27 +1,32 @@
 import { z } from "zod";
 import { GameTitle } from "../core/branded-values/branded-strings";
+import { BfgSupportedGameTitle, BfgSupportedGameTitlesSchema } from "../bfg-game-engines/supported-games";
 
 
-export const TIC_TAC_TOE_GAME_TITLE = "Tic Tac Toe" as const;
-export const HANGMAN_GAME_TITLE = "Hangman" as const;
-export const BACKGAMMON_GAME_TITLE = "Backgammon" as const;
-export const CHESS_GAME_TITLE = "Chess" as const;
-export const FLIP_A_COIN_GAME_TITLE = "Flip a Coin" as const;
+// export const TIC_TAC_TOE_GAME_TITLE = "Tic Tac Toe" as const;
+// export const HANGMAN_GAME_TITLE = "Hangman" as const;
+// export const BACKGAMMON_GAME_TITLE = "Backgammon" as const;
+// export const CHESS_GAME_TITLE = "Chess" as const;
+// export const FLIP_A_COIN_GAME_TITLE = "Flip a Coin" as const;
 
 
-export const AvailableGameTitles = [
-  FLIP_A_COIN_GAME_TITLE,
-  TIC_TAC_TOE_GAME_TITLE,
-  HANGMAN_GAME_TITLE,
-  BACKGAMMON_GAME_TITLE,
-  CHESS_GAME_TITLE,
-] as const;
+// export const AvailableGameTitles = [
+//   FLIP_A_COIN_GAME_TITLE,
+//   TIC_TAC_TOE_GAME_TITLE,
+//   HANGMAN_GAME_TITLE,
+//   BACKGAMMON_GAME_TITLE,
+//   CHESS_GAME_TITLE,
+// ] as const;
 
-export type AvailableGameTitlesType = typeof AvailableGameTitles;
+// export type AvailableGameTitlesType = typeof AvailableGameTitles;
+export type AvailableGameTitlesType = BfgSupportedGameTitle;
 
-export const AvailableGameTitlesSchema = z.enum(AvailableGameTitles);
+// export const AvailableGameTitlesSchema = z.enum(AvailableGameTitles);
 
-export type AvailableGameTitleChoice = z.infer<typeof AvailableGameTitlesSchema>;
+export const AvailableGameTitlesSchema = BfgSupportedGameTitlesSchema;
+
+// export type AvailableGameTitleChoice = z.infer<typeof AvailableGameTitlesSchema>;
+export type AvailableGameTitleChoice = BfgSupportedGameTitle;
 
 
 

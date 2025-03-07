@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { BfgGameFriendId, BfgGamePlayerId, BfgGameTableActionId, BfgGameTableId } from "../branded-values/bfg-branded-ids";
 import { TablePhaseEnumSchema } from "./table-phase";
-import { AvailableGameTitlesSchema } from "~/types/enums/game-shelf";
+import { BfgSupportedGameTitlesSchema } from "~/types/bfg-game-engines/supported-games";
 
 
 export const GameTableSeatSchema = z.enum([
@@ -20,7 +20,8 @@ export type GameTableSeat = z.infer<typeof GameTableSeatSchema>;
 
 export const NewGameTableSchema = z.object({
   
-  gameTitle: AvailableGameTitlesSchema,
+  // gameTitle: AvailableGameTitlesSchema,
+  gameTitle: BfgSupportedGameTitlesSchema,
   gameHostPlayerId: BfgGamePlayerId.idSchema,
   tablePhase: TablePhaseEnumSchema,
 
