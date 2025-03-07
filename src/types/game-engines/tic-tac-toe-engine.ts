@@ -1,7 +1,8 @@
 import { z } from "zod";
 import { createBfgGameEngineProcessor } from "./bfg-game-engine-metadata";
 import { GameTableSeat, GameTableSeatSchema, NewGameTable } from "../core/game-table/game-table";
-import { createTicTacToeRepresentation, createTicTacToeInput, createTicTacToeComboRepresentationAndInput } from "~/components/games/tic-tac-toe/tic-tac-toe-components";
+import { createTicTacToeRepresentation, createTicTacToeInput, createTicTacToeComboRepresentationAndInput } from "~/game-engine-components/tic-tac-toe/tic-tac-toe-components";
+import { GameTableActionResult } from "../core/game-table/table-phase";
 
 
 export const TicTacToeResolutionSchema = z.enum([
@@ -23,7 +24,16 @@ export const TicTacToeMoveCellSchema = z.enum([
 export type TicTacToeMoveCell = z.infer<typeof TicTacToeMoveCellSchema>;
 
 
+export const TicTacToeSetupBoardSchema = z.object({
+  actionType: z.literal('game-table-action-host-setup-board'),
+  board: z.string().length(9),
+})
+
+export type TicTacToeSetupBoard = z.infer<typeof TicTacToeSetupBoardSchema>;
+
+
 export const TicTacToeMoveSchema = z.object({
+  actionType: z.literal('game-table-action-player-move'),
   moveCell: TicTacToeMoveCellSchema,
   movePlayer: GameTableSeatSchema,
 })
@@ -31,9 +41,18 @@ export const TicTacToeMoveSchema = z.object({
 export type TicTacToeMove = z.infer<typeof TicTacToeMoveSchema>;
 
 
+export const TicTacToeGameActionSchema = z.discriminatedUnion('actionType', [
+  TicTacToeSetupBoardSchema,
+  TicTacToeMoveSchema,
+])
+
+export type TicTacToeGameAction = z.infer<typeof TicTacToeGameActionSchema>;
+
+
 export const TicTacToeGameStateSchema = z.object({
   board: z.string().length(9),
-  currentPlayer: GameTableSeatSchema,
+  // currentPlayer: GameTableSeatSchema,
+  nextPlayersToAct: z.array(GameTableSeatSchema),
   resolution: TicTacToeResolutionSchema,
 }).describe('Tic Tac Toe');
 
@@ -42,37 +61,65 @@ export type TicTacToeGameState = z.infer<typeof TicTacToeGameStateSchema>;
 export const TicTacToeGameName = 'Tic Tac Toe' as const;
 
 
-const initialGameState: TicTacToeGameState = {
-  board: "---------",
-  currentPlayer: 'p1' as GameTableSeat,
-  resolution: 'game-in-progress' as TicTacToeResolution,
-}
+// const initialGameState: TicTacToeGameState = {
+//   board: "---------",
+//   // currentPlayer: 'p1' as GameTableSeat,
+//   nextPlayersToAct: ['p1'],
+//   resolution: 'game-in-progress' as TicTacToeResolution,
+// }
 
 
-const createInitialGameState = (_gameTable: NewGameTable): TicTacToeGameState => {
-  return initialGameState;
-}
+const createInitialGameState = (
+  initialGameTableAction: TicTacToeGameAction,
+): TicTacToeGameState => {
 
+  if (initialGameTableAction.actionType !== 'game-table-action-host-setup-board') {
+    throw new Error("Initial game table action must be a host setup board");
+  }
 
-const createInitialGameTableAction = (_gameTable: NewGameTable): TicTacToeMove => {
   return {
-    moveCell: 'a1',
-    movePlayer: 'p1',
+    board: initialGameTableAction.board,
+    nextPlayersToAct: ['p1'],
+    resolution: 'game-in-progress' as TicTacToeResolution,
+  }
+}
+
+
+const createInitialGameTableAction = (
+  _gameTable: NewGameTable,
+): TicTacToeGameAction => {
+  return {
+    actionType: 'game-table-action-host-setup-board',
+    board: "---------",
   };
 }
 
 
-const createNextPlayersToAct = (gameState: TicTacToeGameState): GameTableSeat[] => {
-  if (!gameState.currentPlayer) {
+const createNextPlayersToAct = (gameAction: TicTacToeMove, _gameState: TicTacToeGameState): GameTableSeat[] => {
+  if (gameAction.movePlayer === 'p2') {
     return ['p1'];
   }
-  return [gameState.currentPlayer];
+
+  return ['p2'];
 }
 
 
-const applyGameAction = (gameState: TicTacToeGameState, gameAction: TicTacToeMove): TicTacToeGameState => {
+const applyGameAction = (
+  gameState: TicTacToeGameState,
+  gameAction: TicTacToeGameAction,
+): GameTableActionResult<TicTacToeGameState> => {
+
+  if (gameAction.actionType === 'game-table-action-host-setup-board') {
+    throw new Error("Host setup board is not a valid game action");
+  }
+
   const board = gameState.board;
-  const currentPlayer = gameState.currentPlayer;
+  // const currentPlayer = gameState.currentPlayer;
+  if (gameState.nextPlayersToAct.length !== 1) {
+    throw new Error(`Invalid number of next players to act: ${gameState.nextPlayersToAct.length}`);
+  }
+
+  // const currentPlayer = gameState.nextPlayersToAct[0];
   const moveCell = gameAction.moveCell;
   const movePlayer = gameAction.movePlayer;
 
@@ -87,9 +134,12 @@ const applyGameAction = (gameState: TicTacToeGameState, gameAction: TicTacToeMov
   boardArray[moveIndex] = playerSymbol;
   const newBoard = boardArray.join('');
 
+  const nextPlayersToAct = createNextPlayersToAct(gameAction, gameState);
+
   const newGameState: TicTacToeGameState = {
     board: newBoard,
-    currentPlayer: currentPlayer === 'p1' ? 'p2' : 'p1', // Switch players
+    // currentPlayer: currentPlayer === 'p1' ? 'p2' : 'p1', // Switch players
+    nextPlayersToAct,
     resolution: 'game-in-progress' as TicTacToeResolution,
   }
 
@@ -107,30 +157,60 @@ const applyGameAction = (gameState: TicTacToeGameState, gameAction: TicTacToeMov
         newBoard[c] === playerSymbol)
     {
       newGameState.resolution = playerSymbol === 'X' ? 'game-over-x-wins' : 'game-over-o-wins';
-      return newGameState;
+      return {
+        tablePhase: 'table-phase-game-complete-with-winners',
+        gameState: newGameState,
+      };
     }
   }
 
   // Check for draw
   if (!newBoard.includes('-')) {
     newGameState.resolution = 'game-over-draw';
+    return {
+      tablePhase: 'table-phase-game-complete-with-draw',
+      gameState: newGameState,
+    };
   }
 
-  return newGameState;
+  return {
+    tablePhase: 'table-phase-game-in-progress',
+    gameState: newGameState,
+  };
 }
 
 
 export const TicTacToeGameStateProcessor = createBfgGameEngineProcessor(
   TicTacToeGameStateSchema,
-  TicTacToeMoveSchema,
+  TicTacToeGameActionSchema,
 
   applyGameAction,
 
   createInitialGameState,
-  createNextPlayersToAct,
+  // createNextPlayersToAct,
   createInitialGameTableAction,
 
   createTicTacToeRepresentation,
   createTicTacToeInput,
   createTicTacToeComboRepresentationAndInput,
 );
+
+
+
+export const getCurrentPlayer = (gameState: TicTacToeGameState): GameTableSeat => {
+  if (gameState.nextPlayersToAct.length !== 1) {
+    throw new Error(`Invalid number of next players to act: ${gameState.nextPlayersToAct.length}`);
+  }
+  return gameState.nextPlayersToAct[0];
+}
+
+export const getPlayerSeatSymbol = (playerSeat: GameTableSeat) => {
+  switch (playerSeat) {
+    case "p1":
+      return "X";
+    case "p2":
+      return "O";
+    default:
+      return "Observer";
+  }
+}

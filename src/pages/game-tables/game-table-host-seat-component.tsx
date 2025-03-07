@@ -47,7 +47,7 @@ export const GameTableHostSeatComponent = (props: IGameTableHostSeatComponentPro
   }
 
   const GameInProgressComponent = () => {
-    return <div>Game is already in progress</div>;
+    return <div>Game is in progress</div>;
   }
 
   const getHostActionComponent = () => {

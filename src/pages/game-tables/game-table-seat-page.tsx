@@ -25,12 +25,14 @@ export const GameTableSeatPage = () => {
   return (
     <div>
       <h1>Game Table Seat Page</h1>
-      <p>Game Table ID: {gameTableId}</p>
-      <p>MyPlayer ID: {playerId}</p>
 
-      <p>Game Host Player ID: {gameTable.gameHostPlayerId}</p>
       <GameTableHostSeatComponent myPlayerId={playerId} gameTable={gameTable} />
-      <Link to={`/game-tables/${gameTableId}/next-action`}>Next Action</Link>
+
+      {
+        gameTable.tablePhase === 'table-phase-game-in-progress' && (
+          <Link to={`/game-tables/${gameTableId}/next-action`}>Next Action</Link>
+        )
+      }
       
       <TableSeatComponent myPlayerId={playerId} playerSeat="p1" gameTable={gameTable} />
       <TableSeatComponent myPlayerId={playerId} playerSeat="p2" gameTable={gameTable} />

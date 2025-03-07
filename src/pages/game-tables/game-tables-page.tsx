@@ -24,6 +24,11 @@ export const GameTablesPage = () => {
 
   console.log("GameTablesPage: allGameTables", allGameTables);
 
+  const orderedGameTables = allGameTables.sort((a, b) => {
+    return b.createdAt.getTime() - a.createdAt.getTime();
+  });
+
+
   const onDeleteAllData = async () => {
     await deleteAllPlayerGameTables(playerId);
   }
@@ -65,7 +70,7 @@ export const GameTablesPage = () => {
     <>
       <DataPage<NewGameTable, DbGameTable>
         itemName="Game Tables"
-        allDataItems={allGameTables}
+        allDataItems={orderedGameTables}
         allDataComponents={allDetailsComponents}
         addNewDialogComponent={CreateNewGameTableDialog}
         onNewDataItemCreated={onNewDataItemCreated}

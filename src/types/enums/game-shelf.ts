@@ -6,9 +6,11 @@ export const TIC_TAC_TOE_GAME_TITLE = "Tic Tac Toe" as const;
 export const HANGMAN_GAME_TITLE = "Hangman" as const;
 export const BACKGAMMON_GAME_TITLE = "Backgammon" as const;
 export const CHESS_GAME_TITLE = "Chess" as const;
+export const FLIP_A_COIN_GAME_TITLE = "Flip a Coin" as const;
 
 
 export const AvailableGameTitles = [
+  FLIP_A_COIN_GAME_TITLE,
   TIC_TAC_TOE_GAME_TITLE,
   HANGMAN_GAME_TITLE,
   BACKGAMMON_GAME_TITLE,

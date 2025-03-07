@@ -70,7 +70,8 @@ export const ShareWithFriendsDialog = ({ onShare, onClose }: ShareWithFriendsDia
             >
               {gameTables?.map(gameTable => (
                 <MenuItem key={gameTable.id} value={gameTable.id}>
-                  {gameTable.gameTitle} (ID: {gameTable.id})
+                  {/* {gameTable.gameTitle} (ID: {gameTable.id}) */}
+                  {gameTable.gameTitle} - {gameTable.createdAt.toLocaleString()}
                 </MenuItem>
               ))}
             </Select>

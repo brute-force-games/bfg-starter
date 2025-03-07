@@ -25,8 +25,10 @@ export const asHostStartGame = async (tableId: DbGameTableId, hostPlayerId: DbPl
   }
 
   const initGameAction = gameEngineMetadata.createInitialGameTableAction(gameTable);
-  const initialGameState = gameEngineMetadata.createInitialGameState(gameTable);
-  const nextPlayersToAct = gameEngineMetadata.createNextPlayersToAct(initGameAction, initialGameState);
+  const initialGameState = gameEngineMetadata.createInitialGameState(initGameAction);
+  // const nextPlayersToAct = gameEngineMetadata.createNextPlayersToAct(initGameAction, initialGameState);
+
+  // console.log("HOST STARTING GAME - NEXT PLAYERS TO ACT", nextPlayersToAct);
 
   const gameStateJson = gameEngineMetadata.createGameStateJson(initialGameState);
   const actionJson = gameEngineMetadata.createGameActionJson(initGameAction);
@@ -42,7 +44,7 @@ export const asHostStartGame = async (tableId: DbGameTableId, hostPlayerId: DbPl
 
     source: "game-table-action-source-host",
     actionType: "game-table-action-host-starts-game",
-    nextPlayersToAct,
+    // nextPlayersToAct,
     actionJson,
     actionOutcomeGameStateJson: gameStateJson,
 

@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { useParams } from "react-router-dom";
 import { useLiveGameTable, useLiveGameTableActions } from "~/data/bfg-db-game-tables";
 import { matchPlayerToSeat } from "~/data/dexie-data-ops/match-player-to-seat";
@@ -6,8 +7,9 @@ import { useBfgWhoAmIContext } from "~/state/who-am-i/BfgWhoAmIContext";
 import { DbGameTableId } from "~/types/core/branded-values/branded-strings";
 import { BfgGameEngineMetadata } from "~/types/game-engines/bfg-game-engines";
 import { BrandedJson } from "~/types/core/branded-values/bfg-branded-json";
-import { z } from "zod";
 import { asPlayerMakeMove } from "~/data/dexie-data-ops/as-player-make-move";
+import { TicTacToeActionComponent } from "~/game-engine-components/tic-tac-toe/tic-tac-toe-action-component";
+import { getPlayerSeatSymbol } from "~/types/game-engines/tic-tac-toe-engine";
 
 
 export const GameTableNextActionPage = () => {
@@ -48,11 +50,12 @@ export const GameTableNextActionPage = () => {
     return <div>No latest action found</div>;
   }
 
-  console.log("latestAction.nextPlayersToAct", latestAction.nextPlayersToAct);
-  const isItMyTurnToAct = latestAction.nextPlayersToAct.includes(myPlayerSeat);
+  // console.log("latestAction.nextPlayersToAct", latestAction.nextPlayersToAct);
+  // const isItMyTurnToAct = latestAction.nextPlayersToAct.includes(myPlayerSeat);
+  // const isItMyTurnToAct = gameTable.currentPlayer === myPlayerSeat;
 
-  console.log("isItMyTurnToAct", isItMyTurnToAct);
-  console.log("nextPlayersToAct", latestAction.nextPlayersToAct);
+  // console.log("isItMyTurnToAct", isItMyTurnToAct);
+  // console.log("nextPlayersToAct", latestAction.nextPlayersToAct);
 
   const gameEngineMetadata = BfgGameEngineMetadata[gameTable.gameTitle];
 
@@ -67,17 +70,21 @@ export const GameTableNextActionPage = () => {
 
   console.log("parsed game state", gameState);
 
-  const onGameAction = async (gameState: z.infer<typeof gameEngineMetadata.gameStateJsonSchema>, gameAction: z.infer<typeof gameEngineMetadata.gameActionJsonSchema>) => {
-    const newGameState = gameEngineMetadata.applyGameAction(gameState, gameAction);
-    console.log("next action - new game state", newGameState);
+  const onGameAction = async (
+    gameState: z.infer<typeof gameEngineMetadata.gameStateJsonSchema>,
+    gameAction: z.infer<typeof gameEngineMetadata.gameActionJsonSchema>
+  ) => {
+  
+    // const gameResult = gameEngineMetadata.applyGameAction(gameState, gameAction);
+    // console.log("after action - game result", gameResult);
 
     await asPlayerMakeMove(gameTable.id, playerId, gameAction);
   }
   
   
-  const gameRepresentationComponent = gameEngineMetadata.createGameStateRepresentationComponent(gameState);
-  const gameActionInputComponent = gameEngineMetadata.createGameStateActionInputComponent(gameState, onGameAction);
-  const gameCombinationRepresentationAndInputComponent = gameEngineMetadata.createGameStateCombinationRepresentationAndInputComponent(gameState, onGameAction);
+  const gameRepresentationComponent = gameEngineMetadata.createGameStateRepresentationComponent(myPlayerSeat, gameState);
+  const gameActionInputComponent = gameEngineMetadata.createGameStateActionInputComponent(myPlayerSeat, gameState, onGameAction);
+  const gameCombinationRepresentationAndInputComponent = gameEngineMetadata.createGameStateCombinationRepresentationAndInputComponent(myPlayerSeat, gameState, onGameAction);
 
   const gameUserInteraction = 
     gameCombinationRepresentationAndInputComponent ?
@@ -90,31 +97,27 @@ export const GameTableNextActionPage = () => {
         {gameActionInputComponent}
       </>
 
+  const myPlayerSeatSymbol = getPlayerSeatSymbol(myPlayerSeat);
+
 
   return (
     <>
-      <div>Is it my turn to act? {isItMyTurnToAct ? "Yes" : "No"}</div>
-      <div>My Seat: {myPlayerSeat}</div>
-
+      {/* <div>Is it my turn to act? {isItMyTurnToAct ? "Yes" : "No"}</div> */}
+      <div>My Seat: {myPlayerSeat} [{myPlayerSeatSymbol}]</div>
       
       {gameUserInteraction}
 
       <div>Game History [{orderedGameTableActions.length}]</div>
       <div>
         {orderedGameTableActions.map(action => (
-          <div key={action.id}>
-            <div>Action ID: {action.id}</div>
-            <div>Prior Action ID: {action.previousActionId}</div>
-            <div>Action Type: {action.actionType}</div>
-            <div>Action Source: {action.source}</div>
-            <div>Action Outcome Game State JSON: {action.actionOutcomeGameStateJson}</div>
-          </div>
+          <TicTacToeActionComponent
+            myPlayerSeat={myPlayerSeat}
+            key={action.id}
+            gameTable={gameTable}
+            action={action}
+          />
         ))}
       </div>
-
-      <div>Latest action: {latestAction.id}</div>
-      <div>Latest action source: {latestAction.source}</div>
-      <div>Latest action type: {latestAction.actionType}</div>
     </>
   )
 }

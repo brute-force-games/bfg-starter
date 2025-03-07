@@ -38,41 +38,6 @@ export const useLiveGameTableActions = (tableId?: DbGameTableId): DbGameTableAct
 }
 
 
-// export const addNewGameTable = async (gameTable: NewGameTable, initialGameTableAction: NewGameTableAction) => {
-//   console.log("DB: addNewGameTable", bfgDb);
-//   console.log("DB: myGameTables", bfgDb.gameTables);
-
-//   return bfgDb.transaction(
-//     'rw',
-//     [bfgDb.gameTables],
-//     async () => {
-
-//       const tableId = BfgGameTableId.createId();
-
-//       const newTable: DbGameTable = {
-//         id: tableId,
-//         ...gameTable,
-//         createdAt: new Date(),
-//       }
-
-//       await bfgDb.gameTables.add(newTable);
-
-//       // Add or update a realm, tied to the lobby using getTiedRealmId():
-//       const realmId = getTiedRealmId(tableId);
-
-
-//       // Create a realm for the shared lobby. Use put to not fail if it already exists.
-//       // (Sync consistency)
-//       bfgDb.realms.put({
-//         realmId,
-//         name: "Game Table  - " + gameTable.gameTitle,
-//         represents: `A game table for ${gameTable.gameTitle}`,
-//       });
-//     }
-//   );
-// }
-
-
 export const deleteAllPlayerGameTables = async (playerId: DbPlayerProfileId) => {
 
   await bfgDb.gameTables
@@ -189,45 +154,3 @@ export const sitAtGameTable = async (tableId: DbGameTableId, playerId: DbPlayerP
 
   return txResult;
 }
-
-
-// export const asHostStartGame = async (tableId: DbGameTableId) => {
-//   console.log("DB: asHostStartGame", tableId);
-//   const gameTable = await bfgDb.gameTables.get(tableId);
-
-//   if (!gameTable) {
-//     throw new Error("Table not found");
-//   }
-
-//   const selectedGameStateMetadata = BfgGameEngineMetadata[gameTable.gameTitle];
-
-//   if (!selectedGameStateMetadata) {
-//     throw new Error("Game state metadata not found");
-//   }
-
-// //   const initialGameState = selectedGameStateMetadata.createInitialGameState(gameTable);
-// //   // const gameStateJson = selectedGameStateMetadata.createJson(initialGameState);
-// //   const nextPlayersToAct = selectedGameStateMetadata.createNextPlayersToAct(initialGameState);
-
-// //   const startActionId = BfgGameTableActionId.createId();
-
-// //   const hostStartsGameAction: DbGameTableAction = {
-// //     id: startActionId,
-// //     gameTableId: tableId,
-// //     // actionJson: gameStateJson,
-// //     // previousActionId: undefined,
-// //     createdAt: new Date(),
-// //     source: "game-table-action-source-host",
-// //     actionType: "game-table-action-host-starts-game",
-// //     nextPlayersToAct,
-// //   }
-
-// //   bfgDb.gameTables.update(gameTable, {
-// //     ...gameTable,
-// //     tablePhase: "table-phase-game-in-progress",
-// //     latestActionId: startActionId,
-// //     // gameStateJson,
-// //   })
-
-// //   bfgDb.gameTableActions.add(hostStartsGameAction);
-// }

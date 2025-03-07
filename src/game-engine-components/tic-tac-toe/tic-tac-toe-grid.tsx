@@ -1,13 +1,28 @@
-import { TicTacToeMove, TicTacToeGameState, TicTacToeMoveCell } from "~/types/game-engines/tic-tac-toe-engine";
+import { TicTacToeMove, TicTacToeGameState, TicTacToeMoveCell, getPlayerSeatSymbol, getCurrentPlayer } from "~/types/game-engines/tic-tac-toe-engine";
 import { Grid, Button, Typography, Box } from '@mui/material';
+import { GameTableSeat } from "~/types/core/game-table/game-table";
+
 
 interface TicTacToeGridProps {
+  myPlayerSeat: GameTableSeat;
   gameState: TicTacToeGameState;
   onGameAction: (gameState: TicTacToeGameState, gameAction: TicTacToeMove) => void;
 }
 
+
 export const TicTacToeGrid = (props: TicTacToeGridProps) => {
-  const { gameState, onGameAction } = props;
+  const { myPlayerSeat, gameState, onGameAction } = props;
+
+  // const currentPlayer = gameState.currentPlayer;
+  // const isMyTurn = currentPlayer === myPlayerSeat;
+  const currentPlayer = getCurrentPlayer(gameState);
+  const isMyTurn = currentPlayer === myPlayerSeat;
+  const currentPlayerSymbol = getPlayerSeatSymbol(currentPlayer);
+  const myPlayerSeatSymbol = getPlayerSeatSymbol(myPlayerSeat);
+
+  console.log("IS MY TURN", isMyTurn);
+  console.log("CURRENT PLAYER", currentPlayer, currentPlayerSymbol);
+  console.log("MY PLAYER SEAT", myPlayerSeat, myPlayerSeatSymbol);
 
   const handleCellClick = (index: number) => {
     console.log("handleCellClick", index);
@@ -20,8 +35,9 @@ export const TicTacToeGrid = (props: TicTacToeGridProps) => {
     const moveCell = `${colLetter}${row}` as TicTacToeMoveCell;
     
     onGameAction(gameState, {
+      actionType: 'game-table-action-player-move',
       moveCell,
-      movePlayer: gameState.currentPlayer,
+      movePlayer: currentPlayer,
     });
   };
 
@@ -36,7 +52,7 @@ export const TicTacToeGrid = (props: TicTacToeGridProps) => {
                 console.log("onClick", index);
                 handleCellClick(index);
               }}
-              disabled={cell !== '-' || gameState.resolution !== 'game-in-progress'}
+              disabled={cell !== '-' || gameState.resolution !== 'game-in-progress' || !isMyTurn}
               sx={{
                 width: 64,
                 height: 64,
@@ -55,7 +71,8 @@ export const TicTacToeGrid = (props: TicTacToeGridProps) => {
       </Grid>
       <Typography variant="h6" fontWeight="semibold">
         {gameState.resolution === 'game-in-progress' 
-          ? `Current player: ${gameState.currentPlayer === 'p1' ? 'X' : 'O'}`
+          // ? `Current player: ${gameState.currentPlayer === 'p1' ? 'X' : 'O'}`
+          ? `Current player: ${currentPlayerSymbol} [I am ${myPlayerSeatSymbol}]`
           : gameState.resolution === 'game-over-draw'
             ? "Game Over - Draw!"
             : gameState.resolution === 'game-over-x-wins'

@@ -7,5 +7,6 @@ export const BfgGameEngineMetadata = {
   ['Hangman']: TicTacToeGameStateProcessor,
   ['Backgammon']: TicTacToeGameStateProcessor,
   ['Chess']: TicTacToeGameStateProcessor,
+  ['Flip a Coin']: TicTacToeGameStateProcessor,
 } as const;
 

@@ -7,6 +7,7 @@ import { AvailableGameTitles } from "~/types/enums/game-shelf";
 import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
 
 
+// TODO: how much of this is necessary vs host starting game?
 export const initializeGameTable = async (gameTable: NewGameTable) => {
 
   const selectedGameTitle = AvailableGameTitles
@@ -18,13 +19,13 @@ export const initializeGameTable = async (gameTable: NewGameTable) => {
 
   const selectedGameProcessor = BfgGameEngineMetadata[selectedGameTitle];
 
-  const initialGameState = selectedGameProcessor.createInitialGameState(gameTable);
-  const initialGameTableAction = selectedGameProcessor.createInitialGameTableAction(gameTable);
+  const initGameAction = selectedGameProcessor.createInitialGameTableAction(gameTable);
+  const initialGameState = selectedGameProcessor.createInitialGameState(initGameAction);
 
   const initialGameStateJson = selectedGameProcessor.createGameStateJson(initialGameState);
-  const actionJson = selectedGameProcessor.createGameActionJson(initialGameTableAction);
+  const actionJson = selectedGameProcessor.createGameActionJson(initGameAction);
 
-  const nextPlayersToAct = selectedGameProcessor.createNextPlayersToAct(initialGameTableAction, initialGameState);
+  // const nextPlayersToAct = selectedGameProcessor.createNextPlayersToAct(initialGameTableAction, initialGameState);
 
   
   console.log("actionJson", actionJson);
@@ -47,17 +48,10 @@ export const initializeGameTable = async (gameTable: NewGameTable) => {
         name: "Game Table  - " + gameTable.gameTitle,
         represents: `A game table for ${gameTable.gameTitle}`,
       });
-
-      // const initGameAction = selectedGameProcessor.createInitialGameTableAction(gameTable);
-      // const initialGameState = selectedGameProcessor.createInitialGameState(gameTable);
-      // const nextPlayersToAct = selectedGameProcessor.createNextPlayersToAct(initGameAction, initialGameState);
-
-      // const initialActionJson = selectedGameProcessor.createGameStateJson(initialGameState);
-      // const initialActionOutcomeGameStateJson = selectedGameProcessor.createGameStateJson(initialGameState);
-
+      
       
       const newAction: DbGameTableAction = {
-        ...initialGameTableAction,
+        ...initGameAction,
         id: newActionId,
         previousActionId: null,
         gameTableId: newTableId,
@@ -67,7 +61,7 @@ export const initializeGameTable = async (gameTable: NewGameTable) => {
         actionType: "game-table-action-host-starts-lobby",
         actionJson: actionJson,
         actionOutcomeGameStateJson: initialGameStateJson,
-        nextPlayersToAct,
+        // nextPlayersToAct,
       }
 
       const newTable: DbGameTable = {

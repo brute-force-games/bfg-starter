@@ -31,6 +31,8 @@ export const GameTableDetailsComponent = ({ gameTable }: IGameTableDetailsCompon
   return (
     <>
       <div>Game Table Details</div>
+      <div>Game Started: {gameTable.createdAt.toLocaleString()}</div>
+      <div>Game Phase: {gameTable.tablePhase}</div>
       
       <div><Link to={`/game-tables/${gameTable.id}/seat`}>Take Seat</Link></div>
       <div><Link to={`/game-tables/${gameTable.id}/actions`}>Game Actions</Link></div>

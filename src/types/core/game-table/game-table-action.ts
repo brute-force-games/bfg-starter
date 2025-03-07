@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { BfgGameTableActionId } from "../branded-values/bfg-branded-ids";
 import { BfgGameTableId } from "../branded-values/bfg-branded-ids";
-import { GameTableSeatSchema } from "./game-table";
 
 
 export const GameTableActionSourceSchema = z.enum([
@@ -24,8 +23,14 @@ export type GameTableActionSource = z.infer<typeof GameTableActionSourceSchema>;
 export const GameTableActionTypeSchema = z.enum([
   'game-table-action-host-starts-lobby',
   'game-table-action-host-starts-game',
-  'game-table-action-player-move',
   'game-table-action-host-event',
+
+  'game-table-action-player-move',
+  
+  'game-table-action-host-declares-winner',
+  'game-table-action-host-declares-draw',
+  'game-table-action-host-eliminates-player',
+  'game-table-action-host-ends-game',
 ]);
 
 export type GameTableActionType = z.infer<typeof GameTableActionTypeSchema>;
@@ -34,12 +39,12 @@ export type GameTableActionType = z.infer<typeof GameTableActionTypeSchema>;
 
 export const NewGameTableActionSchema = z.object({
   source: GameTableActionSourceSchema,
-
   actionType: GameTableActionTypeSchema,
+  
   actionJson: z.string(),
   actionOutcomeGameStateJson: z.string(),
 
-  nextPlayersToAct: z.array(GameTableSeatSchema),
+  // nextPlayersToAct: z.array(GameTableSeatSchema),
 
   createdAt: z.date(),
 });
