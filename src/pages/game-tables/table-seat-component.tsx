@@ -27,7 +27,11 @@ export const TableSeatComponent = ({
     if (playerInSeatId === myPlayerId) {
       return <div>{seatLabel}My seat</div>;
     } else {
-      return <div>{seatLabel}Waiting for other players...</div>;
+      if (isSeatAvailable) {
+        return <div>{seatLabel}Waiting for other players...</div>;
+      } else {
+        return <div>{seatLabel}Seat taken {playerInSeatId}</div>;
+      }
     }
   }
 

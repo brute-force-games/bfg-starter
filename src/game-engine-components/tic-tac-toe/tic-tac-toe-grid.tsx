@@ -13,8 +13,6 @@ interface TicTacToeGridProps {
 export const TicTacToeGrid = (props: TicTacToeGridProps) => {
   const { myPlayerSeat, gameState, onGameAction } = props;
 
-  // const currentPlayer = gameState.currentPlayer;
-  // const isMyTurn = currentPlayer === myPlayerSeat;
   const currentPlayer = getCurrentPlayer(gameState);
   const isMyTurn = currentPlayer === myPlayerSeat;
   const currentPlayerSymbol = getPlayerSeatSymbol(currentPlayer);
@@ -71,7 +69,6 @@ export const TicTacToeGrid = (props: TicTacToeGridProps) => {
       </Grid>
       <Typography variant="h6" fontWeight="semibold">
         {gameState.resolution === 'game-in-progress' 
-          // ? `Current player: ${gameState.currentPlayer === 'p1' ? 'X' : 'O'}`
           ? `Current player: ${currentPlayerSymbol} [I am ${myPlayerSeatSymbol}]`
           : gameState.resolution === 'game-over-draw'
             ? "Game Over - Draw!"
