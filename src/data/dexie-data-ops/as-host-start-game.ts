@@ -26,8 +26,10 @@ export const asHostStartGame = async (tableId: DbGameTableId, hostPlayerId: DbPl
 
   const initGameAction = gameEngineMetadata.createInitialGameTableAction(gameTable);
   const initialGameState = gameEngineMetadata.createInitialGameState(gameTable);
-  const gameStateJson = gameEngineMetadata.createGameStateJson(initialGameState);
   const nextPlayersToAct = gameEngineMetadata.createNextPlayersToAct(initGameAction, initialGameState);
+
+  const gameStateJson = gameEngineMetadata.createGameStateJson(initialGameState);
+  const actionJson = gameEngineMetadata.createGameActionJson(initGameAction);
 
   const mostRecentGameActionId = gameTable.latestActionId;
   const startActionId = BfgGameTableActionId.createId();
@@ -41,8 +43,10 @@ export const asHostStartGame = async (tableId: DbGameTableId, hostPlayerId: DbPl
     source: "game-table-action-source-host",
     actionType: "game-table-action-host-starts-game",
     nextPlayersToAct,
-    actionJson: "start-game",
+    actionJson,
     actionOutcomeGameStateJson: gameStateJson,
+
+    realmId: gameTable.realmId,
   }
 
   await bfgDb.transaction(

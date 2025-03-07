@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { UserLogin } from "dexie-cloud-addon";
-import { bfgDb, fetchAppKeyValuesFromDb } from "~/data/bfg-db";
+import { bfgDb } from "~/data/bfg-db";
 import { BfgWhoAmIContext } from "./BfgWhoAmIContext";
 import { DexieCloudEmail } from "~/types/core/branded-values/branded-strings";
 import { BfgUserDexieStatus } from "~/types/core/user/user-dexie-status";
 import UserInteractionWrapper from "~/pages/sign-in/UserInteractionWrapper";
-import { GamePlayerId } from "~/types/core/branded-values/bfg-branded-ids";
+import { BfgGamePlayerId, GamePlayerId } from "~/types/core/branded-values/bfg-branded-ids";
 import { BfgPlayerIdKey } from "~/types/core/app-key-values/app-key-values";
 import { MyPlayerProvider } from "~/data/persisted-player/persisted-player-provider";
+// import { fetchAppKeyValues } from "~/data/app-key-values";
+import { setPlayerIdAppKey, useLiveAppKeys } from "~/data/bfg-db-appkeys";
 
 
-export const LOCAL_STORAGE_KEY_DBK_USER_IDENTITY_KEY = "dbk-userIdentity";
+// export const LOCAL_STORAGE_KEY_DBK_USER_IDENTITY_KEY = "dbk-userIdentity";
 
 
 export interface BfgWhoAmIProviderProps { 
@@ -24,10 +26,17 @@ interface IBfgWhoAmIProviderProps {
 
 export const BfgWhoAmIProvider = ({ children }: IBfgWhoAmIProviderProps) => {
 
-  const [currentDexieUser, setCurrentDexieUser] = useState<UserLogin | null>(null);
-  const [playerId, setPlayerId] = useState<GamePlayerId | null>(null);
+  // const { myPlayerId } = useMyPlayerContext();
 
-  console.log("BfgWhoAmIProvider: currentDexieUser", currentDexieUser);
+  const [currentDexieUser, setCurrentDexieUser] = useState<UserLogin | null>(null);
+  // const [playerId, setPlayerId] = useState<GamePlayerId | null>(null);
+
+
+  const appKeys = useLiveAppKeys();
+  console.log("appKeys", appKeys);
+
+  const playerId = appKeys?.find((appKey) => appKey.appKey === BfgPlayerIdKey)?.appEncodedValue as GamePlayerId;
+  console.log("playerId", playerId);
 
 
   useEffect(() => {
@@ -37,7 +46,16 @@ export const BfgWhoAmIProvider = ({ children }: IBfgWhoAmIProviderProps) => {
       return;
     }
 
-    bfgDb.cloud.currentUser.subscribe((user) => {
+    if (!playerId) {
+      // console.error("DbkWhoAmIProvider: playerId is not available");
+      // setCurrentDexieUser(null);
+      const newPlayerId = BfgGamePlayerId.createId();
+      console.log("DbkWhoAmIProvider: setting newPlayerId", newPlayerId);
+      setPlayerIdAppKey(newPlayerId as GamePlayerId);
+      return;
+    }
+
+    const userSubscription = bfgDb.cloud.currentUser.subscribe(async (user) => {
       if (user.isLoggedIn) {
         setCurrentDexieUser(user);
 
@@ -53,47 +71,52 @@ export const BfgWhoAmIProvider = ({ children }: IBfgWhoAmIProviderProps) => {
         setCurrentDexieUser(null);
       }
     });
-  }, []);
 
-
-  useEffect(() => {
-    console.log("BfgWhoAmIProvider: useEffect: Starting effect");
-    
-    if (!bfgDb) {
-      console.error("BfgWhoAmIProvider: bfgDb is not available");
-      return;
+    return () => {
+      userSubscription.unsubscribe();
     }
+  }, [playerId]);
 
-    // Check if the database is open
-    // if (!bfgDb.isOpen()) {
-    //   console.error("BfgWhoAmIProvider: Database is not open");
-    //   return;
-    // }
 
-    const initializeAppKeyValues = async () => {
-      try {
-        console.log("BfgWhoAmIProvider: useEffect: initializeAppKeyValues: Starting");
-        console.log("BfgWhoAmIProvider: useEffect: initializeAppKeyValues: fetching app key values");
+  // useEffect(() => {
+  //   console.log("BfgWhoAmIProvider: useEffect: Starting effect");
+    
+  //   if (!bfgDb) {
+  //     console.error("BfgWhoAmIProvider: bfgDb is not available");
+  //     return;
+  //   }
+
+  //   // Check if the database is open
+  //   if (!bfgDb.isOpen()) {
+  //     console.error("BfgWhoAmIProvider: Database is not open");
+  //     // return;
+  //   }
+
+  //   const initializeAppKeyValues = async () => {
+  //     try {
+  //       console.log("BfgWhoAmIProvider: useEffect: initializeAppKeyValues: Starting");
+  //       console.log("BfgWhoAmIProvider: useEffect: initializeAppKeyValues: fetching app key values");
         
-        const appKeyValues = await fetchAppKeyValuesFromDb(bfgDb);
+  //       // const appKeyValues = await fetchAppKeyValues(bfgDb);
+  //       const appKeyValues = await fetchAppKeyValuesFromDb(bfgDb);
 
-        console.log("BfgWhoAmIProvider: appKeyValues", appKeyValues);
+  //       console.log("BfgWhoAmIProvider: appKeyValues", appKeyValues);
 
-        if (appKeyValues.appInstanceKeyValues[BfgPlayerIdKey]) {
-          setPlayerId(appKeyValues.appInstanceKeyValues[BfgPlayerIdKey]);
-          console.log("BfgWhoAmIProvider: Successfully set playerId");
-        } else {
-          console.log("BfgWhoAmIProvider: No playerId found in appKeyValues");
-        }
-      } catch (error) {
-        console.error("BfgWhoAmIProvider: Error in initializeAppKeyValues:", error);
-      }
-    };
+  //       if (appKeyValues.appInstanceKeyValues[BfgPlayerIdKey]) {
+  //         setPlayerId(appKeyValues.appInstanceKeyValues[BfgPlayerIdKey]);
+  //         console.log("BfgWhoAmIProvider: Successfully set playerId");
+  //       } else {
+  //         console.log("BfgWhoAmIProvider: No playerId found in appKeyValues");
+  //       }
+  //     } catch (error) {
+  //       console.error("BfgWhoAmIProvider: Error in initializeAppKeyValues:", error);
+  //     }
+  //   };
 
-    console.log("BfgWhoAmIProvider: useEffect: Calling initializeAppKeyValues");
-    initializeAppKeyValues();
-    console.log("BfgWhoAmIProvider: useEffect: Called initializeAppKeyValues");
-  }, []);
+  //   console.log("BfgWhoAmIProvider: useEffect: Calling initializeAppKeyValues");
+  //   initializeAppKeyValues();
+  //   console.log("BfgWhoAmIProvider: useEffect: Called initializeAppKeyValues");
+  // }, []);
 
 
 

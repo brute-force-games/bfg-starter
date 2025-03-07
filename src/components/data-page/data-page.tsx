@@ -22,7 +22,7 @@ export const DataPage = <NewT, DbT>({
   itemName: dataName, 
 
   allDataItems,
-  addNewDialogComponent: DialogComponent, 
+  addNewDialogComponent: DialogComponent,
   
   onNewDataItemCreated, 
   onDeleteAllData,
@@ -43,7 +43,7 @@ export const DataPage = <NewT, DbT>({
   
   return (
     <div>
-      <h1>{dataName} Page</h1>
+      <h1>{dataName} Page [{allDataItems.length}]</h1>
       <Button 
         variant="contained"
         onClick={() => setShowAddNewDialog(true)}

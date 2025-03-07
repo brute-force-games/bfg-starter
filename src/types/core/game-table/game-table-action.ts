@@ -5,8 +5,16 @@ import { GameTableSeatSchema } from "./game-table";
 
 
 export const GameTableActionSourceSchema = z.enum([
-  'game-table-action-source-player',
   'game-table-action-source-host',
+
+  'game-table-action-source-player-p1',
+  'game-table-action-source-player-p2',
+  'game-table-action-source-player-p3',
+  'game-table-action-source-player-p4',
+  'game-table-action-source-player-p5',
+  'game-table-action-source-player-p6',
+  'game-table-action-source-player-p7',
+  'game-table-action-source-player-p8',  
 ]);
 
 export type GameTableActionSource = z.infer<typeof GameTableActionSourceSchema>;

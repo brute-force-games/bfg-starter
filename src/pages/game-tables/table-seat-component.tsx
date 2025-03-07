@@ -20,8 +20,6 @@ export const TableSeatComponent = ({
   const isSeatAvailable = !playerInSeatId;
   const seatLabel = playerSeat.toUpperCase() + ": ";
 
-  console.log("TableSeatComponent: playerSeat", playerSeat, playerInSeatId);
-
   if (isSeatAvailable) {
     return (
       <>

@@ -11,8 +11,6 @@ export const GameTableSeatPage = () => {
   const { gameTableId } = useParams();
   const { playerId } = useBfgWhoAmIContext();
 
-  console.log("GameTableSeatPage: gameTableId", gameTableId);
-
   const gameTable = useLiveGameTable(gameTableId as DbGameTableId);
 
   if (!gameTable) {

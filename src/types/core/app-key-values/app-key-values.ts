@@ -44,4 +44,4 @@ export const BfgAppKeyValueSchema = z.object({
 }).describe('DbkAppKeyValue');
 
 export type BfgAppKeyValue = z.infer<typeof BfgAppKeyValueSchema>;
-export type NewBfgAppKeyValue = Omit<BfgAppKeyValue, 'id'>;
+// export type NewBfgAppKeyValue = Omit<BfgAppKeyValue, 'id'>;

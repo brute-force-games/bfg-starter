@@ -62,8 +62,11 @@ const createInitialGameTableAction = (_gameTable: NewGameTable): TicTacToeMove =
 }
 
 
-const createNextPlayersToAct = (_gameState: TicTacToeGameState): GameTableSeat[] => {
-  return ['p1'];
+const createNextPlayersToAct = (gameState: TicTacToeGameState): GameTableSeat[] => {
+  if (!gameState.currentPlayer) {
+    return ['p1'];
+  }
+  return [gameState.currentPlayer];
 }
 
 

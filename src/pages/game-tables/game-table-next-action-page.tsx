@@ -34,6 +34,7 @@ export const GameTableNextActionPage = () => {
 
 
   const orderedGameTableActions = orderGameTableActions(gameTableActions);
+  console.log("orderedGameTableActions", orderedGameTableActions);
 
   const myPlayerSeat = matchPlayerToSeat(playerId, gameTable);
 
@@ -47,13 +48,19 @@ export const GameTableNextActionPage = () => {
     return <div>No latest action found</div>;
   }
 
+  console.log("latestAction.nextPlayersToAct", latestAction.nextPlayersToAct);
   const isItMyTurnToAct = latestAction.nextPlayersToAct.includes(myPlayerSeat);
+
+  console.log("isItMyTurnToAct", isItMyTurnToAct);
+  console.log("nextPlayersToAct", latestAction.nextPlayersToAct);
 
   const gameEngineMetadata = BfgGameEngineMetadata[gameTable.gameTitle];
 
   if (!gameEngineMetadata) {
     return <div>No game engine metadata found</div>;
   }
+
+  console.log("latestAction.actionOutcomeGameStateJson", latestAction.actionOutcomeGameStateJson);
 
   const gameState = gameEngineMetadata.parseGameStateJson(
     latestAction.actionOutcomeGameStateJson as BrandedJson<typeof gameTable.gameTitle>);
@@ -88,14 +95,16 @@ export const GameTableNextActionPage = () => {
     <>
       <div>Is it my turn to act? {isItMyTurnToAct ? "Yes" : "No"}</div>
       <div>My Seat: {myPlayerSeat}</div>
+
       
       {gameUserInteraction}
 
-      <div>Game History</div>
+      <div>Game History [{orderedGameTableActions.length}]</div>
       <div>
         {orderedGameTableActions.map(action => (
           <div key={action.id}>
             <div>Action ID: {action.id}</div>
+            <div>Prior Action ID: {action.previousActionId}</div>
             <div>Action Type: {action.actionType}</div>
             <div>Action Source: {action.source}</div>
             <div>Action Outcome Game State JSON: {action.actionOutcomeGameStateJson}</div>

@@ -18,11 +18,16 @@ export const initializeGameTable = async (gameTable: NewGameTable) => {
 
   const selectedGameProcessor = BfgGameEngineMetadata[selectedGameTitle];
 
-  const initialGameTableAction = selectedGameProcessor.createInitialGameTableAction(gameTable);
   const initialGameState = selectedGameProcessor.createInitialGameState(gameTable);
-  const initialGameTableActionJson = selectedGameProcessor.createGameStateJson(initialGameState);
+  const initialGameTableAction = selectedGameProcessor.createInitialGameTableAction(gameTable);
 
-  console.log("initialGameTableActionJson", initialGameTableActionJson);
+  const initialGameStateJson = selectedGameProcessor.createGameStateJson(initialGameState);
+  const actionJson = selectedGameProcessor.createGameActionJson(initialGameTableAction);
+
+  const nextPlayersToAct = selectedGameProcessor.createNextPlayersToAct(initialGameTableAction, initialGameState);
+
+  
+  console.log("actionJson", actionJson);
 
   const retVal = await bfgDb.transaction(
     'rw',
@@ -43,12 +48,12 @@ export const initializeGameTable = async (gameTable: NewGameTable) => {
         represents: `A game table for ${gameTable.gameTitle}`,
       });
 
-      const initGameAction = selectedGameProcessor.createInitialGameTableAction(gameTable);
-      const initialGameState = selectedGameProcessor.createInitialGameState(gameTable);
-      const nextPlayersToAct = selectedGameProcessor.createNextPlayersToAct(initGameAction, initialGameState);
+      // const initGameAction = selectedGameProcessor.createInitialGameTableAction(gameTable);
+      // const initialGameState = selectedGameProcessor.createInitialGameState(gameTable);
+      // const nextPlayersToAct = selectedGameProcessor.createNextPlayersToAct(initGameAction, initialGameState);
 
-      const initialActionJson = selectedGameProcessor.createGameStateJson(initialGameState);
-      const initialActionOutcomeGameStateJson = selectedGameProcessor.createGameStateJson(initialGameState);
+      // const initialActionJson = selectedGameProcessor.createGameStateJson(initialGameState);
+      // const initialActionOutcomeGameStateJson = selectedGameProcessor.createGameStateJson(initialGameState);
 
       
       const newAction: DbGameTableAction = {
@@ -60,8 +65,8 @@ export const initializeGameTable = async (gameTable: NewGameTable) => {
         createdAt: new Date(),
         source: "game-table-action-source-host",
         actionType: "game-table-action-host-starts-lobby",
-        actionJson: initialActionJson,
-        actionOutcomeGameStateJson: initialActionOutcomeGameStateJson,
+        actionJson: actionJson,
+        actionOutcomeGameStateJson: initialGameStateJson,
         nextPlayersToAct,
       }
 

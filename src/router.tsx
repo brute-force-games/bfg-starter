@@ -44,6 +44,7 @@ import { BfgWhoAmIProvider } from './state/who-am-i/BfgWhoAmIProvider';
 import { GameTableSeatPage } from './pages/game-tables/game-table-seat-page';
 import { GameTableActionsPage } from './pages/game-tables/game-table-actions-page';
 import { GameTableNextActionPage } from './pages/game-tables/game-table-next-action-page';
+import { DexieAdminPage } from './pages/dexie-admin/dexie-admin-page';
 // import { DexieStatusPage } from './pages/dexie-status/dexie-status-page';
 // import { JoinLobbyPage } from './pages/lobby/join/join-lobby-page';
 // import { NotFound } from './pages/NotFound';
@@ -128,6 +129,13 @@ export const router = createBrowserRouter([
         ),
       },
 
+      {
+        path: "dexie-admin",
+        element: (
+          <DexieAdminPage />
+        ),
+      },
+
       // {
       //   path: "my-lobbies",
       //   element: <MyLobbiesPage />,
@@ -169,7 +177,11 @@ export const router = createBrowserRouter([
       // },
       {
         path: "my-player-profiles",
-        element: <MyPlayerProfilesPage />,
+        element: (
+          <BfgWhoAmIProvider>
+            <MyPlayerProfilesPage />
+          </BfgWhoAmIProvider>
+        ),
       },
 
       // {

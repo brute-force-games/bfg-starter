@@ -7,13 +7,16 @@ import { GameTableSeat } from "../core/game-table/game-table";
 
 
 
-export type BfgGameEngineProcessor<GS, GA, Tname extends string> = {
+export type BfgGameEngineProcessor<GS, GA, GSname extends string, GAname extends string> = {
   createInitialGameState: (gameTable: NewGameTable) => GS;  // for tic-tac-toe, this is the empty board
   createInitialGameTableAction: (gameTable: NewGameTable) => GA;  // for tic-tac-toe, this is creating the board
   createNextPlayersToAct: (gameAction: GA, gameState: GS) => GameTableSeat[];  // for tic-tac-toe, this is ping-ponging between players
 
-  createGameStateJson: (gameState: GS, gameAction: GA) => BrandedJson<Tname>;  // this creates the representation of the board as JSON
-  parseGameStateJson: (jsonString: BrandedJson<Tname>) => GS;  // this parses the JSON back into the game state
+  createGameStateJson: (gameState: GS) => BrandedJson<GSname>;  // this creates the representation of the board as JSON
+  parseGameStateJson: (jsonString: BrandedJson<GSname>) => GS;  // this parses the JSON back into the game state
+
+  createGameActionJson: (gameAction: GA) => BrandedJson<GAname>;  // this creates the representation of the game action as JSON
+  parseGameActionJson: (jsonString: BrandedJson<GSname>) => GA;  // this parses the JSON back into the game action
 
   createGameStateRepresentationComponent: (gameState: GS) => React.ReactNode;
   createGameStateActionInputComponent: (gameState: GS, onGameAction: (gameState: GS, gameAction: GA) => void) => React.ReactNode;
@@ -21,10 +24,10 @@ export type BfgGameEngineProcessor<GS, GA, Tname extends string> = {
 
   applyGameAction: (gameState: GS, gameAction: GA) => GS;
 
-  gameStateBrandedJsonString: BrandedJsonSchema<Tname>;
+  gameStateBrandedJsonString: BrandedJsonSchema<GSname>;
   gameStateJsonSchema: z.ZodSchema<GS>;
 
-  gameActionBrandedJsonString: BrandedJsonSchema<Tname>;
+  gameActionBrandedJsonString: BrandedJsonSchema<GSname>;
   gameActionJsonSchema: z.ZodSchema<GA>;
 }
 
@@ -44,7 +47,7 @@ export const createBfgGameEngineProcessor = <GS extends z.AnyZodObject, GA exten
   createGameStateActionInputComponent: (gameState: z.infer<GS>, onGameAction: (gameState: z.infer<GS>, gameAction: z.infer<GA>) => void) => React.ReactNode,
   createGameStateCombinationRepresentationAndInputComponent: (gameState: z.infer<GS>, onGameAction: (gameState: z.infer<GS>, gameAction: z.infer<GA>) => void) => React.ReactNode | undefined,
 
-): BfgGameEngineProcessor<z.infer<GS>, z.infer<GA>, NonNullable<GS['description']>> => {
+): BfgGameEngineProcessor<z.infer<GS>, z.infer<GA>, NonNullable<GS['description']>, NonNullable<GA['description']>> => {
 
   type TGSname = NonNullable<GS['description']>;
   type TGAname = NonNullable<GA['description']>;
@@ -58,7 +61,7 @@ export const createBfgGameEngineProcessor = <GS extends z.AnyZodObject, GA exten
   const gameStateBrandedJsonString = createBrandedJsonSchema(gameStateSchema);
   const gameActionBrandedJsonString = createBrandedJsonSchema(gameActionSchema);
 
-  const processor: BfgGameEngineProcessor<z.infer<GS>, z.infer<GA>, TGSname> = {
+  const processor: BfgGameEngineProcessor<z.infer<GS>, z.infer<GA>, TGSname, TGAname> = {
     createInitialGameState,
     createNextPlayersToAct,
     createInitialGameTableAction,
@@ -67,6 +70,12 @@ export const createBfgGameEngineProcessor = <GS extends z.AnyZodObject, GA exten
     parseGameStateJson: (jsonString: BrandedJson<TGSname>) => {
       const json = JSON.parse(jsonString);
       return gameStateSchema.parse(json) as GS;
+    },
+
+    createGameActionJson: (obj: TInfer) => createBrandedJsonValue(obj),
+    parseGameActionJson: (jsonString: BrandedJson<TGAname>) => {
+      const json = JSON.parse(jsonString);
+      return gameActionSchema.parse(json) as GA;
     },
 
     createGameStateRepresentationComponent,

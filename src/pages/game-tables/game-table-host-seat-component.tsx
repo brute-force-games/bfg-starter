@@ -10,6 +10,18 @@ export type IGameTableHostSeatComponentProps = {
 }
 
 
+// const NotReadyToStartGameComponent = () => {
+//   return <div>Not ready to start game</div>;
+// }
+
+// const ReadyToStartGameComponent = () => {
+//   return <div>Ready to start game</div>;
+// }
+
+// const GameInProgressComponent = () => {
+//   return <div>Game is already in progress</div>;
+// }
+
 export const GameTableHostSeatComponent = (props: IGameTableHostSeatComponentProps) => {
 
   const { myPlayerId, gameTable } = props;
@@ -18,15 +30,59 @@ export const GameTableHostSeatComponent = (props: IGameTableHostSeatComponentPro
     return <div>I am not the host</div>;
   }
 
-  return (
-    <div>
-      <p>I am host</p>
+
+  const NotReadyToStartGameComponent = () => {
+    return <div>Not ready to start game</div>;
+  }
+
+  const ReadyToStartGameComponent = () => {
+    return (
       <Button onClick={async () => {
-        console.log("GameTableHostSeatPage: gameTable", gameTable);
+        console.log("ReadyToStartGameComponent:", gameTable);
         await asHostStartGame(gameTable.id, myPlayerId);
       }}>
         Start Game
       </Button>
+    )
+  }
+
+  const GameInProgressComponent = () => {
+    return <div>Game is already in progress</div>;
+  }
+
+  const getHostActionComponent = () => {
+    if (gameTable.tablePhase === "table-phase-lobby") {
+      if (gameTable.p1 && gameTable.p2) {
+        return <ReadyToStartGameComponent />;
+      }
+      return <NotReadyToStartGameComponent />;
+    }
+
+    return <GameInProgressComponent />;
+  }
+
+  const hostActionComponent = getHostActionComponent();
+
+  // if (gameTable.tablePhase === "table-phase-lobby") {
+  //   if (gameTable.p1 && gameTable.p2) {
+  //     return <ReadyToStartGameComponent />;
+  //   }
+  //   return <NotReadyToStartGameComponent />;
+  // }
+
+  // return <GameInProgressComponent />;
+
+
+  return (
+    <div>
+      <p>I am host</p>
+      {hostActionComponent}
+      {/* <Button onClick={async () => {
+        console.log("GameTableHostSeatPage: gameTable", gameTable);
+        await asHostStartGame(gameTable.id, myPlayerId);
+      }}>
+        Start Game
+      </Button> */}
     </div>
   )
 };

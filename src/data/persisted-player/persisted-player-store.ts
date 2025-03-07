@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react';
+import { GamePlayerId } from '~/types/core/branded-values/bfg-branded-ids';
 import { DbPlayerProfileId } from '~/types/core/branded-values/branded-strings';
 
 
@@ -10,7 +11,7 @@ export interface SpgDevData {
 }
 
 export interface MyPlayerContextData {
-  myPlayerId: DbPlayerProfileId;
+  myPlayerId: GamePlayerId;
   spgDevData: SpgDevData;
 }
 

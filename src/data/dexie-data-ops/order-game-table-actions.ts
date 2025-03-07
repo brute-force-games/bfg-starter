@@ -13,35 +13,33 @@ export const orderGameTableActions = (actions: DbGameTableAction[]): DbGameTable
     console.error("Messed up game table actions: rootActions", rootActions.length);
   }
 
-  const linkedActions = actions.filter(action => action.previousActionId);
+  // const linkedActions = actions.filter(action => action.previousActionId);
 
   // Create a map for quick lookup of actions by their id
-  const actionMap = new Map(actions.map(action => [action.id, action]));
+  // const actionMap = new Map(actions.map(action => [action.id, action]));
 
   // Function to build a chain of actions starting from a root action
   const buildActionChain = (rootAction: DbGameTableAction): DbGameTableAction[] => {
     const chain: DbGameTableAction[] = [rootAction];
     let currentAction = rootAction;
 
-    while (currentAction.previousActionId) {
-      const previousAction = actionMap.get(currentAction.previousActionId);
-      if (!previousAction) break;
-      chain.push(previousAction);
-      currentAction = previousAction;
+    let nextAction = actions.find(action => action.previousActionId === currentAction.id);
+
+    while (nextAction) {
+      chain.push(nextAction);
+      currentAction = nextAction;
+      nextAction = actions.find(action => action.previousActionId === currentAction.id);
     }
 
     return chain;
   };
 
   // Build chains for each root action and combine them
-  const orderedActions = rootActions.flatMap(rootAction => buildActionChain(rootAction));
+  // const orderedActions = 
+  
+  const actionChains = buildActionChain(rootActions[0]);
 
-  // Add any remaining actions that might be orphaned
-  const remainingActions = linkedActions.filter(
-    action => !orderedActions.some(ordered => ordered.id === action.id)
-  );
-
-  return [...orderedActions, ...remainingActions];
+  return actionChains;
 };
 
 
