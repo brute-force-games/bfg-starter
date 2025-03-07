@@ -1,10 +1,11 @@
-import { getGameEngineMetadataForGameTable } from "~/types/bfg-game-engines/bfg-game-engines";
+import { getBfgGameMetadata } from "~/types/bfg-game-engines/bfg-game-engines";
 import { bfgDb } from "../bfg-db";
 import { DbGameTableId, DbPlayerProfileId } from "~/types/core/branded-values/branded-strings";
 import { BfgGameTableActionId } from "~/types/core/branded-values/bfg-branded-ids";
 import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
 import { DbGameTable } from "~/types/core/game-table/game-table";
-
+import { BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engine-metadata";
+import { z } from "zod";
 
 export const asHostStartGame = async (tableId: DbGameTableId, hostPlayerId: DbPlayerProfileId) => {
   console.log("DB: asHostStartGame", tableId);
@@ -24,20 +25,26 @@ export const asHostStartGame = async (tableId: DbGameTableId, hostPlayerId: DbPl
   //   typeof gameTable.gameTitle
   // >;
 
-  const gameEngineMetadata = getGameEngineMetadataForGameTable(gameTable);
+  const gameMetadata = getBfgGameMetadata(gameTable);
 
-  if (!gameEngineMetadata) {
+  if (!gameMetadata) {
     throw new Error("Game state metadata not found");
   }
 
-  const initGameAction = gameEngineMetadata.createInitialGameTableAction(gameTable);
-  const initialGameState = gameEngineMetadata.createInitialGameState(initGameAction);
+  const gameEngine = gameMetadata.processor as BfgGameEngineProcessor<
+    typeof gameTable.gameTitle,
+    z.infer<typeof gameMetadata.processor["gameStateJsonSchema"]>,
+    z.infer<typeof gameMetadata.processor["gameActionJsonSchema"]>
+  >;
+
+  const initGameAction = gameEngine.createInitialGameTableAction(gameTable);
+  const initialGameState = gameEngine.createInitialGameState(initGameAction);
   // const nextPlayersToAct = gameEngineMetadata.createNextPlayersToAct(initGameAction, initialGameState);
 
   // console.log("HOST STARTING GAME - NEXT PLAYERS TO ACT", nextPlayersToAct);
 
-  const gameStateJson = gameEngineMetadata.createGameStateJson(initialGameState);
-  const actionJson = gameEngineMetadata.createGameActionJson(initGameAction);
+  const gameStateJson = gameEngine.createGameStateJson(initialGameState);
+  const actionJson = gameEngine.createGameActionJson(initGameAction);
 
   const mostRecentGameActionId = gameTable.latestActionId;
   const startActionId = BfgGameTableActionId.createId();

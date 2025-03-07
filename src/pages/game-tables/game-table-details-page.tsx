@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { GameTableDetailsComponent } from "~/components/game-table-details-component";
+import { GameTableDetailsComponent } from "~/components/game-table-details/game-table-details-component";
 import { useLiveGameTable } from "~/data/bfg-db-game-tables";
 import { useBfgWhoAmIContext } from "~/state/who-am-i/BfgWhoAmIContext";
 import { DbGameTableId } from "~/types/core/branded-values/branded-strings";

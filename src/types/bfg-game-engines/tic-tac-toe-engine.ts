@@ -139,7 +139,6 @@ const applyGameAction = (
 
   const newGameState: TicTacToeGameState = {
     board: newBoard,
-    // currentPlayer: currentPlayer === 'p1' ? 'p2' : 'p1', // Switch players
     nextPlayersToAct,
     resolution: 'game-in-progress' as TicTacToeResolution,
   }
@@ -189,7 +188,6 @@ export const TicTacToeGameStateProcessor = createBfgGameEngineProcessor(
   applyGameAction,
 
   createInitialGameState,
-  // createNextPlayersToAct,
   createInitialGameTableAction,
 
   createTicTacToeRepresentation,

@@ -1,4 +1,4 @@
-import { FlipACoinGameState } from "~/types/bfg-game-engines/flip-a-coin-engine";
+import { FlipACoinGameAction, FlipACoinGameState } from "~/types/bfg-game-engines/flip-a-coin-engine";
 import { GameTableSeat } from "~/types/core/game-table/game-table";
 import { FlipACoinRepresentation } from "./flip-a-coin-representation";
 import { FlipACoinInput } from "./flip-a-coin-input";
@@ -19,12 +19,14 @@ export const createFlipACoinRepresentation = (
 
 export const createFlipACoinInput = (
   myPlayerSeat: GameTableSeat,
-  gameState: FlipACoinGameState
+  gameState: FlipACoinGameState,
+  onGameAction: (gameState: FlipACoinGameState, gameAction: FlipACoinGameAction) => void
 ) => {
   return (
     <FlipACoinInput 
       myPlayerSeat={myPlayerSeat} 
       gameState={gameState} 
+      onGameAction={onGameAction}
     />
   );
 }

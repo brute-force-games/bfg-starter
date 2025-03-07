@@ -1,6 +1,7 @@
 import { z } from "zod";
-import { AllGamesOnShelfSchema, AvailableGameTitlesSchema } from "../../enums/game-shelf";
+import { AvailableGameTitlesSchema } from "../../enums/game-shelf";
 import { BfgPlayerProfileId } from "../branded-values/bfg-branded-ids";
+import { BfgSupportedGameTitlesSchema } from "~/types/bfg-game-engines/supported-games";
 
 
 export const LobbyStatusInvalid = "lobby-status-invalid" as const;
@@ -20,7 +21,7 @@ export type LobbyStatusEnum = z.infer<typeof LobbyStatusEnumSchema>;
 
 
 export const NewGameLobbyParametersSchema = z.object({
-  gameOnShelf: AllGamesOnShelfSchema,
+  gameOnShelf: BfgSupportedGameTitlesSchema,
 
   lobbyMinNumPlayers: z.coerce.number().int().positive().min(1, "Minimum number of players must be at least 1").refine(
     (val) => val > 0,

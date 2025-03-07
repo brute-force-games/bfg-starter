@@ -1,6 +1,5 @@
 import { z } from "zod";
-import { GameTitle } from "../core/branded-values/branded-strings";
-import { BfgSupportedGameTitle, BfgSupportedGameTitlesSchema } from "../bfg-game-engines/supported-games";
+import { BfgSupportedGameTitle, BfgSupportedGameTitlesSchema, FlipACoinGameName, TicTacToeGameName } from "../bfg-game-engines/supported-games";
 
 
 // export const TIC_TAC_TOE_GAME_TITLE = "Tic Tac Toe" as const;
@@ -32,7 +31,8 @@ export type AvailableGameTitleChoice = BfgSupportedGameTitle;
 
 
 const GameDefinitionSchema = z.object({
-  title: AvailableGameTitlesSchema,
+  // title: AvailableGameTitlesSchema,
+  title: BfgSupportedGameTitlesSchema,
   minNumPlayersForGame: z.number().int().positive(),
   maxNumPlayersForGame: z.number().int().positive(),
 });
@@ -40,40 +40,62 @@ const GameDefinitionSchema = z.object({
 export type GameDefinition = z.infer<typeof GameDefinitionSchema>;
 
 
-export const TicTacToeGameDefinition = GameDefinitionSchema.extend({
-  title: z.literal("Tic Tac Toe"),
+export const TicTacToeGameDefinitionSchema = GameDefinitionSchema.extend({
+  title: z.literal(TicTacToeGameName),
   minNumPlayersForGame: z.literal(2),
   maxNumPlayersForGame: z.literal(2),
 });
 
-export type TicTacToeGameDefinition = z.infer<typeof TicTacToeGameDefinition>;
 
-export const HangmanGameDefinition = GameDefinitionSchema.extend({
+export type TicTacToeGameDefinition = z.infer<typeof TicTacToeGameDefinitionSchema>;
+
+export const TicTacToeGameDefinition: TicTacToeGameDefinition = {
+  title: TicTacToeGameName,
+  minNumPlayersForGame: 2,
+  maxNumPlayersForGame: 2
+};
+
+
+export const HangmanGameDefinitionSchema = GameDefinitionSchema.extend({
   title: z.literal("Hangman"),
   minNumPlayersForGame: z.literal(2),
   maxNumPlayersForGame: z.literal(6),
 });
 
-export type HangmanGameDefinition = z.infer<typeof HangmanGameDefinition>;
+export type HangmanGameDefinition = z.infer<typeof HangmanGameDefinitionSchema>;
 
-export const BackgammonGameDefinition = GameDefinitionSchema.extend({
+
+export const BackgammonGameDefinitionSchema = GameDefinitionSchema.extend({
   title: z.literal("Backgammon"),
   minNumPlayersForGame: z.literal(2),
   maxNumPlayersForGame: z.literal(2),
 });
 
-export type BackgammonGameDefinition = z.infer<typeof BackgammonGameDefinition>;
+export type BackgammonGameDefinition = z.infer<typeof BackgammonGameDefinitionSchema>;
 
-export const ChessGameDefinition = GameDefinitionSchema.extend({
+
+export const ChessGameDefinitionSchema = GameDefinitionSchema.extend({
   title: z.literal("Chess"),
   minNumPlayersForGame: z.literal(2),
   maxNumPlayersForGame: z.literal(2),
 });
 
-export type ChessGameDefinition = z.infer<typeof ChessGameDefinition>;
+export type ChessGameDefinition = z.infer<typeof ChessGameDefinitionSchema>;
 
 
+export const FlipACoinGameDefinitionSchema = GameDefinitionSchema.extend({
+  title: z.literal(FlipACoinGameName),
+  minNumPlayersForGame: z.literal(2),
+  maxNumPlayersForGame: z.literal(6),
+});
 
+export type FlipACoinGameDefinition = z.infer<typeof FlipACoinGameDefinitionSchema>;
+
+export const FlipACoinGameDefinition: FlipACoinGameDefinition = {
+  title: FlipACoinGameName,
+  minNumPlayersForGame: 2,
+  maxNumPlayersForGame: 6
+};
 
 
 
@@ -86,15 +108,15 @@ export type ChessGameDefinition = z.infer<typeof ChessGameDefinition>;
 //   CHESS: "Chess",
 // } as const;
 
-const AllGamesOnShelf = [
-  TicTacToeGameDefinition,
-  HangmanGameDefinition,
-  BackgammonGameDefinition,
-  ChessGameDefinition,
-] as const;
+// const AllGamesOnShelf = [
+//   TicTacToeGameDefinition,
+//   HangmanGameDefinition,
+//   BackgammonGameDefinition,
+//   ChessGameDefinition,
+// ] as const;
 
 
-export const AllGamesOnShelfSchema = z.discriminatedUnion("title", AllGamesOnShelf);
+// export const AllGamesOnShelfSchema = z.discriminatedUnion("title", AllGamesOnShelf);
 
 // export const AllGameTitles = AllGamesOnShelfSchema.options.map(x => x.shape.title._def.value);
 
@@ -103,23 +125,23 @@ export const AllGamesOnShelfSchema = z.discriminatedUnion("title", AllGamesOnShe
 
 // console.log(AllGameTitles);
 
-export const AllGamesOnShelfArray = [
-  TicTacToeGameDefinition.parse({ title: "Tic Tac Toe", minNumPlayersForGame: 2, maxNumPlayersForGame: 2 }),
-  HangmanGameDefinition.parse({ title: "Hangman", minNumPlayersForGame: 2, maxNumPlayersForGame: 6 }),
-  BackgammonGameDefinition.parse({ title: "Backgammon", minNumPlayersForGame: 2, maxNumPlayersForGame: 2 }),
-  ChessGameDefinition.parse({ title: "Chess", minNumPlayersForGame: 2, maxNumPlayersForGame: 2 }),
-] as const;
+// export const AllGamesOnShelfArray = [
+//   TicTacToeGameDefinition.parse({ title: "Tic Tac Toe", minNumPlayersForGame: 2, maxNumPlayersForGame: 2 }),
+//   HangmanGameDefinition.parse({ title: "Hangman", minNumPlayersForGame: 2, maxNumPlayersForGame: 6 }),
+//   BackgammonGameDefinition.parse({ title: "Backgammon", minNumPlayersForGame: 2, maxNumPlayersForGame: 2 }),
+//   ChessGameDefinition.parse({ title: "Chess", minNumPlayersForGame: 2, maxNumPlayersForGame: 2 }),
+// ] as const;
 
-export type AllGamesOnShelf = z.infer<typeof AllGamesOnShelfSchema>;
+// export type AllGamesOnShelf = z.infer<typeof AllGamesOnShelfSchema>;
 
-export type AllGamesOnShelfOptions = z.infer<typeof AllGamesOnShelfSchema>;
-
-
-export const GameTitles = AllGamesOnShelf.map(game => 
-  game.shape.title._def.value) as [GameTitle, ...GameTitle[]];
-
-export const GameOnShelfSchema = z.enum(GameTitles);
+// export type AllGamesOnShelfOptions = z.infer<typeof AllGamesOnShelfSchema>;
 
 
+// export const GameTitles = AllGamesOnShelf.map(game => 
+//   game.shape.title._def.value) as [GameTitle, ...GameTitle[]];
 
-export type GameOnShelf = z.infer<typeof GameOnShelfSchema>;
+// export const GameOnShelfSchema = z.enum(GameTitles);
+
+
+
+// export type GameOnShelf = z.infer<typeof GameOnShelfSchema>;

@@ -23,7 +23,8 @@ export const GameTableSeatPage = () => {
   
   return (
     <div>
-      <h1>Game Table Seat Page</h1>
+      <h2>Table - {gameTable.gameTitle}</h2>
+      <h5>{gameTable.createdAt.toLocaleString()}</h5>
 
       <GameTableHostSeatComponent myPlayerId={playerId} gameTable={gameTable} />
 

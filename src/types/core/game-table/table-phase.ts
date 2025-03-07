@@ -7,6 +7,7 @@ export const TablePhaseEnumSchema = z.enum([
   "table-phase-game-complete-with-winners",
   "table-phase-game-complete-with-draw",
   "table-phase-game-abandoned",
+  "table-phase-error",
 ]);
 
 export type TablePhase = z.infer<typeof TablePhaseEnumSchema>;

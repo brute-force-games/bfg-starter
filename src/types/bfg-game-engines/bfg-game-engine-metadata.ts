@@ -8,7 +8,7 @@ import { BfgSupportedGameTitle, BfgSupportedGameTitlesSchema } from "./supported
 
 
 
-export type BfgGameEngineProcessor<GS, GA, TGameTitle extends z.infer<typeof BfgSupportedGameTitlesSchema>> = {
+export type BfgGameEngineProcessor<TGameTitle extends z.infer<typeof BfgSupportedGameTitlesSchema>, GS, GA> = {
   createInitialGameState: (initialGameTableAction: GA) => GS;  // for tic-tac-toe, this is the empty board
   createInitialGameTableAction: (gameTable: NewGameTable) => GA;  // for tic-tac-toe, this is creating the board
   // createInitialGameTableAction: (gameTable: NewGameTable) => GA;  // for tic-tac-toe, this is creating the board
@@ -35,7 +35,7 @@ export type BfgGameEngineProcessor<GS, GA, TGameTitle extends z.infer<typeof Bfg
 
 
 
-export const createBfgGameEngineProcessor = <GS extends z.AnyZodObject, GA extends z.ZodType>(
+export const createBfgGameEngineProcessor = <GS extends z.ZodType, GA extends z.ZodType>(
   gameTitle: BfgSupportedGameTitle,
   gameStateSchema: GS,
   gameActionSchema: GA,
@@ -43,7 +43,6 @@ export const createBfgGameEngineProcessor = <GS extends z.AnyZodObject, GA exten
   applyGameAction: (gameState: z.infer<GS>, gameAction: z.infer<GA>) => GameTableActionResult<z.infer<GS>>,
 
   createInitialGameState: (initialGameTableAction: z.infer<GA>) => z.infer<GS>,
-  // createNextPlayersToAct: (gameAction: z.infer<GA>, gameState: z.infer<GS>) => GameTableSeat[],
   createInitialGameTableAction: (gameTable: NewGameTable) => z.infer<GA>,
 
   createGameStateRepresentationComponent: (
@@ -61,10 +60,9 @@ export const createBfgGameEngineProcessor = <GS extends z.AnyZodObject, GA exten
     onGameAction: (gameState: z.infer<GS>, gameAction: z.infer<GA>) => void
   ) => React.ReactNode | undefined,
 
-): BfgGameEngineProcessor<z.infer<GS>, z.infer<GA>, BfgSupportedGameTitle> => {
+): BfgGameEngineProcessor<BfgSupportedGameTitle, z.infer<GS>, z.infer<GA>> => {
 
   type TGameTitle = z.infer<typeof BfgSupportedGameTitlesSchema>;
-  // type TGAname = z.infer<typeof BfgSupportedGameTitlesSchema>;
   type TInfer = z.infer<GS>;
 
   const createBrandedJsonValue = (obj: TInfer): BfgGameTypedJson<TGameTitle> => {
@@ -75,7 +73,7 @@ export const createBfgGameEngineProcessor = <GS extends z.AnyZodObject, GA exten
   const gameStateBrandedJsonString = createBfgGameTypedJsonMetadata(gameTitle, 'game-state', gameStateSchema);
   const gameActionBrandedJsonString = createBfgGameTypedJsonMetadata(gameTitle, 'game-action', gameActionSchema);
 
-  const processor: BfgGameEngineProcessor<z.infer<GS>, z.infer<GA>, BfgSupportedGameTitle> = {
+  const processor: BfgGameEngineProcessor<BfgSupportedGameTitle, z.infer<GS>, z.infer<GA>> = {
     createInitialGameState,
     createInitialGameTableAction,
     

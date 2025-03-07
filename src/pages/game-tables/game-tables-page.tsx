@@ -1,5 +1,5 @@
 import { DataPage } from "~/components/data-page/data-page";
-import { GameTableDetailsComponent } from "~/components/game-table-details-component";
+import { GameTableDetailsComponent } from "~/components/game-table-details/game-table-details-component";
 import { deleteAllPlayerGameTables, useLiveGameTables } from "~/data/bfg-db-game-tables";
 import { CreateNewGameTableDialog } from "~/dialogs/create-new-game-table-dialog";
 import { useBfgWhoAmIContext } from "~/state/who-am-i/BfgWhoAmIContext";

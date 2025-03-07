@@ -2,9 +2,11 @@ import { NewGameTable, DbGameTable } from "~/types/core/game-table/game-table";
 import { bfgDb } from "../bfg-db";
 import { getTiedRealmId } from "dexie-cloud-addon";
 import { BfgGameTableId, BfgGameTableActionId } from "~/types/core/branded-values/bfg-branded-ids";
-import { getGameEngineMetadataForGameTable } from "~/types/bfg-game-engines/bfg-game-engines";
+import { getBfgGameMetadata } from "~/types/bfg-game-engines/bfg-game-engines";
 import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
 import { AvailableGameTitles } from "~/types/bfg-game-engines/supported-games";
+import { z } from "zod";
+import { BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engine-metadata";
 
 
 // TODO: how much of this is necessary vs host starting game?
@@ -20,7 +22,12 @@ export const initializeGameTable = async (gameTable: NewGameTable) => {
   // const selectedGameProcessor = BfgGameEngineMetadata[selectedGameTitle];
 
 
-  const selectedGameProcessor = getGameEngineMetadataForGameTable(gameTable);
+  const selectedGameProcessor = getBfgGameMetadata(gameTable);
+  const selectedGameEngine = selectedGameProcessor.processor as BfgGameEngineProcessor<
+    typeof gameTable.gameTitle,
+    z.infer<typeof selectedGameProcessor.processor["gameStateJsonSchema"]>,
+    z.infer<typeof selectedGameProcessor.processor["gameActionJsonSchema"]>
+  >;
 
   // const selectedGameProcessor = BfgGameEngineMetadata[selectedGameTitle] as BfgGameEngineProcessor<
   //   z.infer<typeof BfgGameEngineMetadata[typeof selectedGameTitle]["gameStateJsonSchema"]>,
@@ -30,11 +37,11 @@ export const initializeGameTable = async (gameTable: NewGameTable) => {
   // >;
 
 
-  const initGameAction = selectedGameProcessor.createInitialGameTableAction(gameTable);
-  const initialGameState = selectedGameProcessor.createInitialGameState(initGameAction);
+  const initGameAction = selectedGameEngine.createInitialGameTableAction(gameTable);
+  const initialGameState = selectedGameEngine.createInitialGameState(initGameAction);
 
-  const initialGameStateJson = selectedGameProcessor.createGameStateJson(initialGameState);
-  const actionJson = selectedGameProcessor.createGameActionJson(initGameAction);
+  const initialGameStateJson = selectedGameEngine.createGameStateJson(initialGameState);
+  const actionJson = selectedGameEngine.createGameActionJson(initGameAction);
 
   
   console.log("actionJson", actionJson);
