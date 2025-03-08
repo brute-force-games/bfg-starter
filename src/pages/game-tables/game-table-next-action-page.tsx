@@ -21,6 +21,13 @@ export const GameTableNextActionPage = () => {
   const gameTable = useLiveGameTable(gameTableId as DbGameTableId);
   const gameTableActions = useLiveGameTableActions(gameTableId as DbGameTableId);
 
+  // const gameTableActions = useLiveQuery(async () => {
+  //   if (!gameTableId) {
+  //     return undefined;
+  //   }
+  //   return await bfgDb.gameTableActions.where('gameTableId').equals(gameTableId).toArray();
+  // })  
+
   const playerId = whoAmI.playerId;
 
   if (!playerId) {

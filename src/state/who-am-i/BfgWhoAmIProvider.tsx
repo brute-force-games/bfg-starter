@@ -29,6 +29,7 @@ export const BfgWhoAmIProvider = ({ children }: IBfgWhoAmIProviderProps) => {
   // const { myPlayerId } = useMyPlayerContext();
 
   const [currentDexieUser, setCurrentDexieUser] = useState<UserLogin | null>(null);
+  const [ , setTimer] = useState(0);
   // const [playerId, setPlayerId] = useState<GamePlayerId | null>(null);
 
 
@@ -76,6 +77,15 @@ export const BfgWhoAmIProvider = ({ children }: IBfgWhoAmIProviderProps) => {
       userSubscription.unsubscribe();
     }
   }, [playerId]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimer(prev => prev + 1);
+      bfgDb.cloud.sync({purpose: 'pull', wait: false}) 
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
 
   // useEffect(() => {
