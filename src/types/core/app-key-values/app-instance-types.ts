@@ -1,7 +1,7 @@
-import { AppInstanceKeyValues } from "./app-instance-kv";
+// import { AppInstanceKeyValues } from "./app-instance-kv";
 
 
-export type InitAppInstanceKeyValuesResult = {
-  appInstanceKeyValues: AppInstanceKeyValues;
-  errors: string[];
-};
+// export type InitAppInstanceKeyValuesResult = {
+//   appInstanceKeyValues: AppInstanceKeyValues;
+//   errors: string[];
+// };

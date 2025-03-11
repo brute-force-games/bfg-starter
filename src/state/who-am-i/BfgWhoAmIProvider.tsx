@@ -5,11 +5,13 @@ import { BfgWhoAmIContext } from "./BfgWhoAmIContext";
 import { DexieCloudEmail } from "~/types/core/branded-values/branded-strings";
 import { BfgUserDexieStatus } from "~/types/core/user/user-dexie-status";
 import UserInteractionWrapper from "~/pages/sign-in/UserInteractionWrapper";
-import { BfgGamePlayerId, GamePlayerId } from "~/types/core/branded-values/bfg-branded-ids";
-import { BfgPlayerIdKey } from "~/types/core/app-key-values/app-key-values";
+import { PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids";
 import { MyPlayerProvider } from "~/data/persisted-player/persisted-player-provider";
+import { useLivePlayerProfiles } from "~/data/bfg-db-player-profiles";
+import { CloudNotification } from "~/types/core/player/notifications";
+import { useObservable } from "dexie-react-hooks";
 // import { fetchAppKeyValues } from "~/data/app-key-values";
-import { setPlayerIdAppKey, useLiveAppKeys } from "~/data/bfg-db-appkeys";
+// import { setPlayerIdAppKey, useLiveAppKeys } from "~/data/bfg-db-appkeys";
 
 
 // export const LOCAL_STORAGE_KEY_DBK_USER_IDENTITY_KEY = "dbk-userIdentity";
@@ -29,15 +31,25 @@ export const BfgWhoAmIProvider = ({ children }: IBfgWhoAmIProviderProps) => {
   // const { myPlayerId } = useMyPlayerContext();
 
   const [currentDexieUser, setCurrentDexieUser] = useState<UserLogin | null>(null);
-  const [ , setTimer] = useState(0);
+  // const [ , setTimer] = useState(0);
   // const [playerId, setPlayerId] = useState<GamePlayerId | null>(null);
 
 
-  const appKeys = useLiveAppKeys();
-  console.log("appKeys", appKeys);
+  // const appKeys = useLiveAppKeys();
+  // console.log("appKeys", appKeys);
 
-  const playerId = appKeys?.find((appKey) => appKey.appKey === BfgPlayerIdKey)?.appEncodedValue as GamePlayerId;
-  console.log("playerId", playerId);
+  // const playerId = appKeys?.find((appKey) => appKey.appKey === BfgPlayerIdKey)?.appEncodedValue as GamePlayerId;
+  // console.log("playerId", playerId);
+
+  const allPlayerProfiles = useLivePlayerProfiles();
+
+  const allPlayerProfileIds = allPlayerProfiles
+    ?.map((playerProfile) => playerProfile.id)
+    .filter((id) => id !== null) as PlayerProfileId[];
+
+  const defaultPlayerProfileId = allPlayerProfiles
+    ?.find((playerProfile) => playerProfile.isDefault)?.id as PlayerProfileId | undefined
+    ?? null;
 
 
   useEffect(() => {
@@ -47,14 +59,14 @@ export const BfgWhoAmIProvider = ({ children }: IBfgWhoAmIProviderProps) => {
       return;
     }
 
-    if (!playerId) {
-      // console.error("DbkWhoAmIProvider: playerId is not available");
-      // setCurrentDexieUser(null);
-      const newPlayerId = BfgGamePlayerId.createId();
-      console.log("DbkWhoAmIProvider: setting newPlayerId", newPlayerId);
-      setPlayerIdAppKey(newPlayerId as GamePlayerId);
-      return;
-    }
+    // if (!playerId) {
+    //   // console.error("DbkWhoAmIProvider: playerId is not available");
+    //   // setCurrentDexieUser(null);
+    //   const newPlayerId = BfgGamePlayerId.createId();
+    //   console.log("DbkWhoAmIProvider: setting newPlayerId", newPlayerId);
+    //   setPlayerIdAppKey(newPlayerId as GamePlayerId);
+    //   return;
+    // }
 
     const userSubscription = bfgDb.cloud.currentUser.subscribe(async (user) => {
       if (user.isLoggedIn) {
@@ -76,16 +88,41 @@ export const BfgWhoAmIProvider = ({ children }: IBfgWhoAmIProviderProps) => {
     return () => {
       userSubscription.unsubscribe();
     }
-  }, [playerId]);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTimer(prev => prev + 1);
-      bfgDb.cloud.sync({purpose: 'pull', wait: false}) 
-    }, 1000);
-
-    return () => clearInterval(interval);
   }, []);
+
+
+  const allInvites = useObservable(bfgDb.cloud.invites);
+
+  const getNotifications = (): CloudNotification[] => {
+    if (!allInvites) {
+      return [];
+    }
+
+    const notifications = allInvites
+      .filter((i) => !i.accepted && !i.rejected)
+      .map((i) => ({
+        id: i.id,
+        // message: `An invitation from ${i.invitedBy?.name}`,
+        // message: `Play with ${i.invitedBy?.name}`,
+        message: `Play ${i.name}`,
+        from: i.invitedBy?.name ?? '',
+        to: i.email ?? '',
+        createdAt: i.invitedDate ?? new Date(),
+      }));
+
+    return notifications;
+  }
+
+  const notifications = getNotifications();
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setTimer(prev => prev + 1);
+  //     bfgDb.cloud.sync({purpose: 'pull', wait: false}) 
+  //   }, 1000);
+
+  //   return () => clearInterval(interval);
+  // }, []);
 
 
   // useEffect(() => {
@@ -158,9 +195,11 @@ export const BfgWhoAmIProvider = ({ children }: IBfgWhoAmIProviderProps) => {
     <BfgWhoAmIContext.Provider
       value={{
         dexieStatus,
-
-        playerId,
-        profileIds: [],
+        
+        myNotifications: notifications,
+        
+        profileIds: allPlayerProfileIds,
+        defaultPlayerProfileId,
       }}>
         <UserInteractionWrapper>
           <MyPlayerProvider>

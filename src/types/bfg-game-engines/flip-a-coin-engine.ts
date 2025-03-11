@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createBfgGameEngineProcessor } from "./bfg-game-engine-metadata";
-import { NewGameTable } from "../core/game-table/game-table";
+import { NewGameTable, PLAYER_SEATS } from "../core/game-table/game-table";
 import { GameTableActionResult } from "../core/game-table/table-phase";
 import { createFlipACoinInput, createFlipACoinRepresentation } from "~/game-engine-components/flip-a-coin/flip-a-coin-components";
 import { BfgSupportedGameTitle } from "./supported-games";
@@ -16,21 +16,21 @@ export const FlipACoinResolutionSchema = z.enum([
 export type FlipACoinResolution = z.infer<typeof FlipACoinResolutionSchema>;
 
 
-export const FlipACoinOutcomeSchema = z.enum([
+export const FlipACoinResultSchema = z.enum([
   'heads',
   'tails',
 ])
 
-export type FlipACoinOutcome = z.infer<typeof FlipACoinOutcomeSchema>;
+export type FlipACoinResult = z.infer<typeof FlipACoinResultSchema>;
 
 
-export const FlipACoinPlayerOutcomePreferenceSchema = z.enum([
+export const FlipACoinPlayerFlipResultPreferenceSchema = z.enum([
   'heads',
   'tails',
   'no-preference',
 ])
 
-export type FlipACoinPlayerOutcomePreference = z.infer<typeof FlipACoinPlayerOutcomePreferenceSchema>;
+export type FlipACoinPlayerFlipResultPreference = z.infer<typeof FlipACoinPlayerFlipResultPreferenceSchema>;
 
 
 export const CoinChoiceSchema = z.enum([
@@ -43,29 +43,49 @@ export const CoinChoiceSchema = z.enum([
 export type CoinChoice = z.infer<typeof CoinChoiceSchema>;
 
 
+export const FLIP_A_COIN_GAME_TABLE_ACTION_START_GAME = 'game-table-action-host-start-game' as const;
+export const FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_CHOOSE_COIN = 'game-table-action-player-choose-coin' as const;
+export const FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_FLIP_COIN = 'game-table-action-player-flip-coin' as const;
+export const FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_PREFER_FLIP_RESULT = 'game-table-action-player-prefer-flip-result' as const;
+export const FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_CALL_IT_AND_FINISH_GAME = 'game-table-action-player-call-it-and-finish-game' as const;
+export const FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_CANCEL_GAME = 'game-table-action-player-cancel-game' as const;
+
+
 export const FlipACoinStartGameSchema = z.object({
-  actionType: z.literal('game-table-action-host-start-game'),
+  actionType: z.literal(FLIP_A_COIN_GAME_TABLE_ACTION_START_GAME),
 })
 
 export type FlipACoinStartGame = z.infer<typeof FlipACoinStartGameSchema>;
 
 
 export const FlipACoinActionChooseCoinSchema = z.object({
-  actionType: z.literal('game-table-action-player-choose-coin'),
+  actionType: z.literal(FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_CHOOSE_COIN),
+  seat: GameTableSeatSchema,
   chosenCoin: CoinChoiceSchema,
 })
 
-
 export const FlipACoinActionFlipCoinSchema = z.object({
-  actionType: z.literal('game-table-action-player-flip-coin'),
-  // chosenCoin: CoinChoiceSchema,
-  outcome: FlipACoinOutcomeSchema,
+  actionType: z.literal(FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_FLIP_COIN),
+  seat: GameTableSeatSchema,
+  flipResult: FlipACoinResultSchema,
 })
 
 export const FlipACoinActionPreferOutcomeSchema = z.object({
-  actionType: z.literal('game-table-action-player-prefer-outcome'),
+  actionType: z.literal(FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_PREFER_FLIP_RESULT),
   seat: GameTableSeatSchema,
-  preferredOutcome: FlipACoinPlayerOutcomePreferenceSchema,
+  preferredFlipResult: FlipACoinPlayerFlipResultPreferenceSchema,
+})
+
+export const FlipACoinActionCallItAndFinishGameSchema = z.object({
+  actionType: z.literal(FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_CALL_IT_AND_FINISH_GAME),
+  seat: GameTableSeatSchema,
+  calledFlipResult: FlipACoinResultSchema,
+})
+
+export const FlipACoinActionCancelGameSchema = z.object({
+  actionType: z.literal(FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_CANCEL_GAME),
+  seat: GameTableSeatSchema,
+  cancellationReason: z.string(),
 })
 
 export const FlipACoinGameActionSchema = z.discriminatedUnion('actionType', [
@@ -73,6 +93,8 @@ export const FlipACoinGameActionSchema = z.discriminatedUnion('actionType', [
   FlipACoinActionChooseCoinSchema, 
   FlipACoinActionFlipCoinSchema,
   FlipACoinActionPreferOutcomeSchema,
+  FlipACoinActionCallItAndFinishGameSchema,
+  FlipACoinActionCancelGameSchema,
 ])
 
 export type FlipACoinGameAction = z.infer<typeof FlipACoinGameActionSchema>;
@@ -80,9 +102,15 @@ export type FlipACoinGameAction = z.infer<typeof FlipACoinGameActionSchema>;
 
 export const FlipACoinGameStateSchema = z.object({
   chosenCoin: CoinChoiceSchema,
+  
+  isGameOver: z.boolean(),
+  finalFlipResult: FlipACoinResultSchema.optional(),
+  outcomeSummary: z.string().optional(),
+
   isFlipped: z.boolean(),
-  outcome: FlipACoinOutcomeSchema.optional(),
-  playerOutcomePreferences: z.record(GameTableSeatSchema, FlipACoinPlayerOutcomePreferenceSchema)
+  flipResult: FlipACoinResultSchema.optional(),  
+  
+  playerFlipResultPreferences: z.record(GameTableSeatSchema, FlipACoinPlayerFlipResultPreferenceSchema)
     .optional()
     .default({
       'p1': 'no-preference',
@@ -112,8 +140,9 @@ const createInitialGameState = (
   return {
     chosenCoin: 'penny',
     isFlipped: false,
-    outcome: undefined,
-    playerOutcomePreferences: {
+    isGameOver: false,
+    flipResult: undefined,
+    playerFlipResultPreferences: {
       'p1': 'no-preference',
       'p2': 'no-preference',
       'p3': 'no-preference',
@@ -131,7 +160,7 @@ const createInitialGameTableAction = (
   _gameTable: NewGameTable,
 ): FlipACoinGameAction => {
   return {
-    actionType: 'game-table-action-host-start-game',
+    actionType: FLIP_A_COIN_GAME_TABLE_ACTION_START_GAME,
   };
 }
 
@@ -141,44 +170,120 @@ const applyGameAction = (
   gameAction: FlipACoinGameAction,
 ): GameTableActionResult<FlipACoinGameState> => {
 
-  if (gameAction.actionType === 'game-table-action-player-choose-coin') {
+  if (gameAction.actionType === FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_CHOOSE_COIN) {
+
+    const summary = `Player ${gameAction.seat} chose ${gameAction.chosenCoin}`;
 
     return {
       tablePhase: 'table-phase-game-in-progress',
       gameState: {
         ...gameState,
         chosenCoin: gameAction.chosenCoin,
-      }
+        outcomeSummary: summary,
+      },
+      description: summary,
     }
   } 
 
-  if (gameAction.actionType === 'game-table-action-player-prefer-outcome') {
+  if (gameAction.actionType === FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_PREFER_FLIP_RESULT) {
+    const summary = `Player ${gameAction.seat} prefers ${gameAction.preferredFlipResult}`;
+
     return {
       tablePhase: 'table-phase-game-in-progress',
       gameState: {
         ...gameState,
-        playerOutcomePreferences: { 
-          ...gameState.playerOutcomePreferences,
-          [gameAction.seat]: gameAction.preferredOutcome,
+        playerFlipResultPreferences: { 
+          ...gameState.playerFlipResultPreferences,
+          [gameAction.seat]: gameAction.preferredFlipResult,
         },
-      }
+        outcomeSummary: summary,
+      },
+      description: summary,
     }
   }
   
-  if (gameAction.actionType === 'game-table-action-player-flip-coin') {
+  if (gameAction.actionType === FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_FLIP_COIN) {
+    const summary = `Player ${gameAction.seat} flipped the ${gameState.chosenCoin} and got ${gameAction.flipResult}`;
+
     return {
       tablePhase: 'table-phase-game-in-progress',
       gameState: {
         ...gameState,
         isFlipped: true,
-        outcome: gameAction.outcome,
+        flipResult: gameAction.flipResult,
+        outcomeSummary: summary,
+      },
+      description: summary,
+    }
+  }
+
+  if (gameAction.actionType === FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_CALL_IT_AND_FINISH_GAME) {
+    const summary = `Player ${gameAction.seat} called it for ${gameState.flipResult}`;
+
+    if (!gameState.isFlipped) {
+      return {
+        tablePhase: 'table-phase-error',
+        gameState: {
+          ...gameState,
+          isGameOver: true,
+          outcomeSummary: summary,
+        },
+        description: summary,
       }
+    }
+
+    const winningPlayers = PLAYER_SEATS.filter(seat => {
+      const playerFlipResultPreference = gameState.playerFlipResultPreferences[seat];
+      return playerFlipResultPreference === gameState.flipResult;
+    });
+
+    const anyWinners = winningPlayers.length > 0;
+
+    if (anyWinners) {
+      const summary = `Player ${gameAction.seat} called it for ${gameState.flipResult} - ${winningPlayers.join(', ')} win`;
+
+      return {
+        tablePhase: 'table-phase-game-complete-with-winners',
+        gameState: {
+          ...gameState,
+          isGameOver: true,
+          finalFlipResult: gameState.flipResult,
+          outcomeSummary: summary,
+        },
+        description: summary,
+      }
+    }
+
+    const drawSummary = `Player ${gameAction.seat} called it for ${gameState.flipResult} - no winners`;
+
+    return {
+      tablePhase: 'table-phase-game-complete-with-draw',
+      gameState: {
+        ...gameState,
+        isGameOver: true,
+        finalFlipResult: gameState.flipResult,
+        outcomeSummary: drawSummary,
+      },
+      description: drawSummary,
+    }
+  }
+
+  if (gameAction.actionType === FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_CANCEL_GAME) {
+    return {
+      tablePhase: 'table-phase-game-abandoned',
+      gameState: {
+        ...gameState,
+        isGameOver: true,
+        outcomeSummary: gameAction.cancellationReason,
+      },
+      description: gameAction.cancellationReason,
     }
   }
 
   return {
     tablePhase: 'table-phase-error',
     gameState: gameState,
+    description: `Error - invalid game action`,
   };
 }
 

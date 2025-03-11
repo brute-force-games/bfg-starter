@@ -26,7 +26,7 @@ export const GameTableHostSeatComponent = (props: IGameTableHostSeatComponentPro
 
   const { myPlayerId, gameTable } = props;
 
-  if (myPlayerId !== gameTable.gameHostPlayerId) {
+  if (myPlayerId !== gameTable.gameHostPlayerProfileId) {
     return <div>I am not the host</div>;
   }
 

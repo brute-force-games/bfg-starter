@@ -1,8 +1,9 @@
 import { useLiveQuery } from "dexie-react-hooks"
 import { bfgDb } from "./bfg-db";
 import { DbGameFriendId, DbGameTableId, DbPlayerProfileId } from "~/types/core/branded-values/branded-strings";
-import { DbGameTable, GameTableSeat } from "~/types/core/game-table/game-table";
+import { DbGameTable, GameTableSeat, NewGameTable } from "~/types/core/game-table/game-table";
 import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
+import { initializeGameTable } from "./dexie-data-ops/initialize-game-table";
 
 
 export const useLiveGameTables = (): DbGameTable[] | undefined => {
@@ -20,19 +21,22 @@ export const useLiveGameTable = (tableId?: DbGameTableId): DbGameTable | undefin
       return undefined;
     }
     return await bfgDb.gameTables.get(tableId);
-  })
+  }, [tableId])
 
   return table;
 }
 
 
+
 export const useLiveGameTableActions = (tableId?: DbGameTableId): DbGameTableAction[] | undefined => {
   const actions = useLiveQuery(async () => {
     if (!tableId) {
-      return undefined;
+      // return undefined;
+      return [];
     }
     return await bfgDb.gameTableActions.where('gameTableId').equals(tableId).toArray();
-  })  
+    
+  }, [tableId, bfgDb.gameTableActions])
 
   return actions;
 }
@@ -52,7 +56,7 @@ export const deleteAllGameTables = async () => {
 } 
 
 
-export const shareGameTableWithFriends = async (tableId: DbGameTableId, friendIds: DbGameFriendId[]) => {
+export const shareGameTableWithFriends = async (tableId: DbGameTableId, invitationText: string, friendIds: DbGameFriendId[]) => {
 
   console.log("DB: shareGameTableWithFriends", tableId, friendIds);
 
@@ -100,7 +104,7 @@ export const shareGameTableWithFriends = async (tableId: DbGameTableId, friendId
           friends.map((friend) => ({
             realmId,
             email: friend.email,
-            name: friend.name,
+            name: invitationText,
             invite: true,
             permissions: {
               manage: '*', // Give your friend full permissions within this new realm.
@@ -110,6 +114,20 @@ export const shareGameTableWithFriends = async (tableId: DbGameTableId, friendId
       }
     },
   )
+}
+
+
+export const startGameTableWithFriends = async (newGameTable: NewGameTable, inviteMessage: string, friendIds: DbGameFriendId[]) => {
+
+  const gameTable = await initializeGameTable(newGameTable);
+  
+  await shareGameTableWithFriends(gameTable.id, inviteMessage, friendIds);
+
+  // const gameTable = await bfgDb.gameTables.get(tableId);
+
+  if (!gameTable) {
+    throw new Error("Table not found");
+  }
 }
 
 

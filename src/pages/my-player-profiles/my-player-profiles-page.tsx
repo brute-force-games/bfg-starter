@@ -1,34 +1,23 @@
-import { Button, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { DataPage } from "~/components/data-page/data-page";
-import { clearAppKeys, useLiveAppKeys } from "~/data/bfg-db-appkeys";
-import { addNewPlayerProfile, deleteAllPlayerProfiles, useLivePlayerProfiles } from "~/data/bfg-db-player-profiles";
+import { PlayerProfileComponent } from "~/components/player-profile-component";
+import { addNewPlayerProfile, deleteAllPlayerProfiles, useLiveDefaultPlayerProfile, useLivePlayerProfiles } from "~/data/bfg-db-player-profiles";
 import { AddPlayerProfileDialog } from "~/dialogs/add-player-profile-dialog";
-import { useBfgWhoAmIContext } from "~/state/who-am-i/BfgWhoAmIContext";
 import { NewPlayerProfileParameters } from "~/types/core/player-profile/player-profile";
 import { DbPlayerProfile } from "~/types/core/player-profile/player-profile-db";
 
 
 export const MyPlayerProfilesPage = () => {
 
-  const { playerId } = useBfgWhoAmIContext();
-
   const allPlayerProfiles = useLivePlayerProfiles();
-  const appKeys = useLiveAppKeys();
+  const defaultPlayerProfile = useLiveDefaultPlayerProfile();
 
-  if (!allPlayerProfiles) {
-    return <div>No player profiles found</div>;
-  }
+  const alertUserToCreatePlayerProfile = (!allPlayerProfiles || allPlayerProfiles.length === 0);
+  const alertUserToSetDefaultPlayerProfile = (!alertUserToCreatePlayerProfile && !defaultPlayerProfile);
 
-  console.log("MyPlayerProfilesPage: allPlayerProfiles", allPlayerProfiles);
 
   const onDeleteAllData = async () => {
     await deleteAllPlayerProfiles();
-  }
-
-  const logAppKeys = () => {
-    appKeys?.forEach((appKey) => {
-      console.log("MyPlayerProfilesPage: appKey", appKey);
-    });
   }
 
   const onNewDataItemCreated = async (playerProfileParameters: NewPlayerProfileParameters) => {
@@ -37,22 +26,39 @@ export const MyPlayerProfilesPage = () => {
   }
 
   const allDetailsComponents = allPlayerProfiles?.map((playerProfile) => (
-    <div key={playerProfile.id}>
-      {playerProfile.handle}
-    </div>
+    <PlayerProfileComponent
+      key={playerProfile.id}
+      playerProfile={playerProfile}
+      defaultPlayerProfileId={defaultPlayerProfile?.id || null}
+    />
   ))
+
+  const defaultPlayerProfileHandle = defaultPlayerProfile?.handle;
   
 
   return (
     <>
-      <Typography variant="h6">My Player ID: {playerId}</Typography>
-      <Button onClick={() => clearAppKeys()}>Clear App Keys</Button>
-      <Button onClick={() => logAppKeys()}>Show App Keys</Button>
+      {alertUserToCreatePlayerProfile && (
+        <div>
+          No player profiles found. You'll have to add one to get started.
+        </div>
+      )}
+
+      {alertUserToSetDefaultPlayerProfile && (
+        <div>
+          No default player profile found. You'll have to set one to get started.
+        </div>
+      )}
+
+
+      <Typography variant="h6">
+        Default Player Profile: {defaultPlayerProfileHandle}
+      </Typography>
       
 
       <DataPage<NewPlayerProfileParameters, DbPlayerProfile>
         itemName="Player Profiles"
-        allDataItems={allPlayerProfiles}
+        allDataItems={allPlayerProfiles ?? []}
         allDataComponents={allDetailsComponents}
         addNewDialogComponent={AddPlayerProfileDialog}
         onNewDataItemCreated={onNewDataItemCreated}

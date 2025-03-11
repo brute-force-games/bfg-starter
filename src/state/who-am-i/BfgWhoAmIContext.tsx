@@ -1,13 +1,16 @@
 import { createContext, useContext } from "react";
-import { GamePlayerId, PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids";
+import { PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids";
+import { CloudNotification } from "~/types/core/player/notifications";
 import { BfgUserDexieStatus } from "~/types/core/user/user-dexie-status";
 
 
 export interface BfgWhoAmIContextType {
   dexieStatus: BfgUserDexieStatus;
-
-  playerId: GamePlayerId | null;
+  
+  defaultPlayerProfileId: PlayerProfileId | null;
   profileIds: PlayerProfileId[];
+
+  myNotifications: CloudNotification[];
 }
 
 

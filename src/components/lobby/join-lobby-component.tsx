@@ -11,7 +11,7 @@ interface IJoinGameTableComponentProps {
 export const JoinGameTableComponent = ({ gameTableId }: IJoinGameTableComponentProps) => {
 
   // const myPlayerProfile = useMyPlayerProfile();
-  const { dexieStatus, playerId } = useBfgWhoAmIContext();
+  const { dexieStatus, defaultPlayerProfileId: playerId } = useBfgWhoAmIContext();
 
   // const [openShareDialog, setOpenShareDialog] = useState(false);
   // const [timer, setTimer] = useState(0);

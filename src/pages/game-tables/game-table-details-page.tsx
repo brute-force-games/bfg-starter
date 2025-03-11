@@ -12,10 +12,16 @@ export const GameTableDetailsPage = () => {
 
   const gameTable = useLiveGameTable(gameTableId as DbGameTableId);
 
-  const playerId = whoAmI.playerId;
+  // const playerId = whoAmI.playerId;
 
-  if (!playerId) {
-    return <div>No player id found</div>;
+  // if (!playerId) {
+  //   return <div>No player id found</div>;
+  // }
+
+  const profileId = whoAmI.defaultPlayerProfileId;
+
+  if (!profileId) {
+    return <div>No player profile id found</div>;
   }
 
   if (!gameTable) {

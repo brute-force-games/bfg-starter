@@ -1,20 +1,52 @@
 import { GameTableSeat } from "~/types/core/game-table/game-table";
-import { FlipACoinGameState } from "~/types/bfg-game-engines/flip-a-coin-engine";
+import { FlipACoinGameAction, FlipACoinGameState } from "~/types/bfg-game-engines/flip-a-coin-engine";
+
 
 
 interface FlipACoinRepresentationProps {
   myPlayerSeat: GameTableSeat;
   gameState: FlipACoinGameState;
+  mostRecentAction: FlipACoinGameAction;
 }
 
 export const FlipACoinRepresentation = (props: FlipACoinRepresentationProps) => {
   const { myPlayerSeat, gameState } = props;
 
+  // if (isGameOver(gameState.tablePhase)) {
+  if (gameState.isGameOver) {
+    return (
+      <div>
+        <div>Game is complete - {gameState.outcomeSummary}</div>
+      </div>
+    );
+  }
+
+  if (gameState.isFlipped) {
+    return (
+      <>
+        <div>
+          A {gameState.chosenCoin} was flipped and got {gameState.flipResult}
+        </div>
+        <div>My preferred outcome: {gameState.playerFlipResultPreferences?.[myPlayerSeat]}</div>
+        <div>
+          {gameState.playerFlipResultPreferences?.[myPlayerSeat] === gameState.flipResult ? (
+            <div>:D</div>
+          ) : (
+            <div>:(</div>
+          )}
+        </div>
+      </>
+    );
+  }
+
+  
+
+  const coinType = gameState.chosenCoin;
+
   return (
-    <div>
-      <div>Flip A Coin Representation</div>
-      <div>My Player Seat: {myPlayerSeat}</div>
-      <div>Game State: {JSON.stringify(gameState)}</div>
-    </div>
+    <>
+      <div>Flipping a {coinType}</div>
+      <div>My preferred outcome: {gameState.playerFlipResultPreferences?.[myPlayerSeat]}</div>
+    </>
   );
 }

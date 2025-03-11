@@ -1,4 +1,4 @@
-import { TicTacToeGameState, TicTacToeMove } from "~/types/bfg-game-engines/tic-tac-toe-engine";
+import { TicTacToeGameAction, TicTacToeGameState, TicTacToeMove } from "~/types/bfg-game-engines/tic-tac-toe-engine";
 import { TicTacToeInput } from "./tic-tac-toe-input";
 import { TicTacToeGrid } from "./tic-tac-toe-grid";
 import { TicTacToeRepresentation } from "./tic-tac-toe-representation";
@@ -34,6 +34,7 @@ export const createTicTacToeInput = (
 export const createTicTacToeComboRepresentationAndInput = (
   myPlayerSeat: GameTableSeat,
   gameState: TicTacToeGameState,
+  _mostRecentAction: TicTacToeGameAction,
   onGameAction: (gameState: TicTacToeGameState, gameAction: TicTacToeMove) => void
 ) => {
   // return;
@@ -48,3 +49,23 @@ export const createTicTacToeComboRepresentationAndInput = (
     </>
   )
 }
+
+
+// export const createTicTacToeHistory = (
+//   myPlayerSeat: GameTableSeat,
+//   gameState: TicTacToeGameState,
+//   timeOrderedGameActions: BfgGameSpecificTableAction<typeof TicTacToeGameActionSchema, typeof TicTacToeGameActionSchema>[]
+// ) => {
+//   return (
+//     <>
+//       {timeOrderedGameActions.map(action => (
+//         <TicTacToeActionComponent
+//           myPlayerSeat={myPlayerSeat}
+//           key={action.gameTableActionId}
+//           gameTable={gameTable}
+//           action={action.gameSpecificAction}
+//         />
+//       ))}
+//     </>
+//   )
+// }

@@ -18,10 +18,11 @@ export const GameTableActionsPage = () => {
   //   return await bfgDb.gameTableActions.where('gameTableId').equals(gameTableId).toArray();
   // })  
 
-  const playerId = whoAmI.playerId;
+  // const playerId = whoAmI.playerId;
+  const profileId = whoAmI.defaultPlayerProfileId;
 
-  if (!playerId) {
-    return <div>No player id found</div>;
+  if (!profileId) {
+    return <div>No player profile id found</div>;
   }
 
   if (!gameTableActions) {

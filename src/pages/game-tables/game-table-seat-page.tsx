@@ -9,7 +9,7 @@ import { GameTableHostSeatComponent } from "./game-table-host-seat-component";
 export const GameTableSeatPage = () => {
 
   const { gameTableId } = useParams();
-  const { playerId } = useBfgWhoAmIContext();
+  const { defaultPlayerProfileId: playerId } = useBfgWhoAmIContext();
 
   const gameTable = useLiveGameTable(gameTableId as DbGameTableId);
 
@@ -18,7 +18,7 @@ export const GameTableSeatPage = () => {
   }
 
   if (!playerId) {
-    return <div>Player ID not found</div>;
+    return <div>Player Profile ID not found</div>;
   }
   
   return (

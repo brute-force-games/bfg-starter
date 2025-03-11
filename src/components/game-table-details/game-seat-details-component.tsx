@@ -1,4 +1,5 @@
 import { DbGameTable, GameTableSeat } from "~/types/core/game-table/game-table"
+import { isGameOver } from "~/types/core/game-table/table-phase";
 
 
 interface IGameTableSeatDetailsComponentProps {
@@ -8,6 +9,10 @@ interface IGameTableSeatDetailsComponentProps {
 }
 
 export const GameTableSeatDetailsComponent = ({ gameSeat, gameTable, maxNumPlayers }: IGameTableSeatDetailsComponentProps) => {
+
+  if (isGameOver(gameTable.tablePhase)) {
+    return null;
+  }
 
   if (gameTable.tablePhase === "table-phase-lobby") {
     switch (gameSeat) {

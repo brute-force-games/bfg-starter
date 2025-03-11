@@ -69,10 +69,6 @@ export const DexieStatusPageContent = () => {
         </>
         <>
           <Typography variant="h6">
-            User Handle:
-            {/* {identity.dbkUserHandle} */}
-          </Typography>
-          <Typography variant="h6">
             Invites from:
             {invites?.map((i) => <DexieInvitation invitation={i} />)}
           </Typography>

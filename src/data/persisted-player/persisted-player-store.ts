@@ -1,17 +1,16 @@
 import { createContext, useContext } from 'react';
-import { GamePlayerId } from '~/types/core/branded-values/bfg-branded-ids';
 import { DbPlayerProfileId } from '~/types/core/branded-values/branded-strings';
 
 
 export interface SpgDevData {
-  player1Id: DbPlayerProfileId;
-  player2Id: DbPlayerProfileId;
-  player3Id: DbPlayerProfileId;
-  player4Id: DbPlayerProfileId;
+  player1ProfileId: DbPlayerProfileId;
+  player2ProfileId: DbPlayerProfileId;
+  player3ProfileId: DbPlayerProfileId;
+  player4ProfileId: DbPlayerProfileId;
 }
 
 export interface MyPlayerContextData {
-  myPlayerId: GamePlayerId;
+  myPlayerId: DbPlayerProfileId;
   spgDevData: SpgDevData;
 }
 

@@ -1,5 +1,6 @@
 import { Button } from "@mui/material";
 import { useState } from "react";
+import { VerticalSpacerDiv } from "../special-divs";
 
 
 interface IDataPageProps<NewT, DbT> {
@@ -57,6 +58,8 @@ export const DataPage = <NewT, DbT>({
       >
         Delete All
       </Button>
+
+      <VerticalSpacerDiv height={20} />
 
       {allDataComponents}
 

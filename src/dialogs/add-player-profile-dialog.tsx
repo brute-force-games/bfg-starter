@@ -12,6 +12,7 @@ import {
 import { NewPlayerProfileParameters, NewPlayerProfileParametersSchema } from '~/types/core/player-profile/player-profile';
 import { Controller } from 'react-hook-form';
 import { useEffect } from 'react';
+import { useBfgWhoAmIContext } from '~/state/who-am-i/BfgWhoAmIContext';
 
 
 interface AddPlayerProfileDialogProps {
@@ -22,8 +23,14 @@ interface AddPlayerProfileDialogProps {
 
 export const AddPlayerProfileDialog = ({ allDataItems, onNewDataItemCreated, onClose }: AddPlayerProfileDialogProps) => {
 
+  const { dexieStatus } = useBfgWhoAmIContext();
+
+  const defaultNewHandleValue = dexieStatus.dexieEmailValue ?
+    dexieStatus.dexieEmailValue.valueOf() :
+    "Player";
+
   const defaultFormValues: NewPlayerProfileParameters = {
-    handle: "Player",
+    handle: defaultNewHandleValue,
   }
 
   const doesHandleAlreadyExist = (handle: string) => {
@@ -33,7 +40,7 @@ export const AddPlayerProfileDialog = ({ allDataItems, onNewDataItemCreated, onC
   const formSchema = NewPlayerProfileParametersSchema.refine(
     (data) => !doesHandleAlreadyExist(data.handle),
     {
-      message: "This handle is already taken",
+      message: "You already have a profile with this handle",
       path: ["handle"]
     }
   );
@@ -50,15 +57,7 @@ export const AddPlayerProfileDialog = ({ allDataItems, onNewDataItemCreated, onC
     trigger('handle');
   }, [trigger]);
 
-  // const { errors, isValid, isDirty } = formState;
   const { errors } = formState;
-
-  // console.log("form state:", {
-  //   errors,
-  //   isValid,
-  //   isDirty,
-  //   values: control._formValues
-  // });
 
   const onSubmit = async (formData: NewPlayerProfileParameters) => {
 

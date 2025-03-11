@@ -27,7 +27,7 @@ interface CreateNewGameTableDialogProps {
 
 
 export const CreateNewGameTableDialog = ({ onNewDataItemCreated, onClose }: CreateNewGameTableDialogProps) => {
-  const { playerId } = useBfgWhoAmIContext();
+  const { defaultPlayerProfileId: playerId } = useBfgWhoAmIContext();
 
   if (!playerId) {
     throw new Error("Player ID is required");
@@ -36,7 +36,7 @@ export const CreateNewGameTableDialog = ({ onNewDataItemCreated, onClose }: Crea
   const { control, handleSubmit, formState, setValue } = useForm<NewGameTable>({
     resolver: zodResolver(NewGameTableSchema),
     defaultValues: {
-      gameHostPlayerId: playerId,
+      gameHostPlayerProfileId: playerId,
       p1: playerId,
       gameTitle: 'Tic Tac Toe' as AvailableGameTitleChoice,
       createdAt: new Date(),

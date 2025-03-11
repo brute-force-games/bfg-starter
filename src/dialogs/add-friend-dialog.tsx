@@ -95,6 +95,7 @@ export const AddFriendDialog = ({ onCreateNewFriend, onClose }: AddFriendDialogP
         <Button 
           onClick={handleSubmit(onSubmit)}
           variant="contained"
+          disabled={!formState.isValid || formState.isSubmitting}
         >
           Add Friend
         </Button>

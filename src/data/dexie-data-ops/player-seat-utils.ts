@@ -1,7 +1,6 @@
 import { GameTableActionSource } from "~/types/core/game-table/game-table-action";
 import { DbGameTable, GameTableSeat } from "~/types/core/game-table/game-table";
 import { DbPlayerProfileId } from "~/types/core/branded-values/branded-strings";
-import { GamePlayerId } from "~/types/core/branded-values/bfg-branded-ids";
 
 
 export const getPlayerActionSource = (
@@ -98,12 +97,12 @@ export const isPlayerSeatedAtGameTable = (playerId: DbPlayerProfileId, gameTable
 }
 
 
-export const isPlayerAtGameTable = (playerId: GamePlayerId, gameTable: DbGameTable): boolean => {
+export const isPlayerAtGameTable = (playerId: DbPlayerProfileId, gameTable: DbGameTable): boolean => {
   return matchPlayerToSeat(playerId, gameTable) !== undefined;
 }
 
 
-export const matchPlayerToSeat = (playerId: GamePlayerId, gameTable: DbGameTable): GameTableSeat | undefined => {
+export const matchPlayerToSeat = (playerId: DbPlayerProfileId, gameTable: DbGameTable): GameTableSeat | undefined => {
   if (gameTable.p1 === playerId) {
     return 'p1';
   }
@@ -130,3 +129,4 @@ export const matchPlayerToSeat = (playerId: GamePlayerId, gameTable: DbGameTable
   }
   return undefined;
 }
+

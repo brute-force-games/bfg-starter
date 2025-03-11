@@ -3,31 +3,25 @@ import dexieCloud from "dexie-cloud-addon";
 import { getEnvSettings } from "../env/env-utils";
 import { DbPlayerProfile } from "~/types/core/player-profile/player-profile-db";
 import { DbFriendAccount } from "~/types/core/friend-account/friend-db";
-// import { AppValueEncodingEnum, BfgAppKeyValue, BfgPlayerIdKey } from "~/types/core/app-key-values/app-key-values";
-// import { bfgAppKvParseString } from "~/env/serdeser/deser-utils";
-// import { BfgGamePlayerId, GamePlayerId } from "~/types/core/branded-values/bfg-branded-ids";
-// import { InitAppInstanceKeyValuesResult } from "~/types/core/app-key-values/app-instance-types";
-// import { AppInstanceKeyValues } from "~/types/core/app-key-values/app-instance-kv";
 import { DbGameTable } from "~/types/core/game-table/game-table";
 import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
-import { BfgAppKeyValue } from "~/types/core/app-key-values/app-key-values";
-// import { AppValueEncodingEnum, BfgAppKeyValue, BfgPlayerIdKey } from "~/types/core/app-key-values/app-key-values";
-// import { AppInstanceKeyValues } from "~/types/core/app-key-values/app-instance-kv";
-// import { InitAppInstanceKeyValuesResult } from "~/types/core/app-key-values/app-instance-types";
-// import { BfgGamePlayerId, GamePlayerId } from "~/types/core/branded-values/bfg-branded-ids";
-// import { bfgAppKvParseString } from "~/env/serdeser/deser-utils";
+import { DbGamingGroup } from "~/types/core/play-group/play-group-db";
+import { DbPublicRealmNote } from "~/types/public-realm-data/public-realm-note-db";
 
 
 type BruteForceGamesDbTables = {
   
   myPlayerProfiles: Table<DbPlayerProfile, 'id'>;
+  myGamingGroups: Table<DbGamingGroup, 'id'>;
   myFriends: Table<DbFriendAccount, 'id'>;
 
   gameTables: Table<DbGameTable, 'id'>;
   gameTableActions: Table<DbGameTableAction, 'id'>;
 
+  publicRealmNotes: Table<DbPublicRealmNote, 'id'>;
+
   // abcAppKeyValues: Table<BfgAppKeyValue, 'id'>;
-  appKeyValues: Table<BfgAppKeyValue, 'id'>;
+  // appKeyValues: Table<BfgAppKeyValue, 'id'>;
 };
 
 const DEXIE_BRUTE_FORCE_GAMES_DB_NAME = 'BruteForceGamesDb';
@@ -38,12 +32,15 @@ export type BruteForceGamesDb = Dexie & BruteForceGamesDbTables;
 export const bfgDb = new Dexie(DEXIE_BRUTE_FORCE_GAMES_DB_NAME, {addons: [dexieCloud]}) as BruteForceGamesDb;
 
 // Schema declaration:
-bfgDb.version(1).stores({
+bfgDb.version(2).stores({
   myPlayerProfiles: 'id, name, createdAt, updatedAt',
+  myGamingGroups: 'id, name, createdAt, updatedAt',
   myFriends: 'id, name, createdAt, updatedAt',
   
   gameTables: 'id, gameHostPlayerId, gameTitle, createdAt, updatedAt',
   gameTableActions: 'id, gameTableId, previousActionId, createdAt',
+
+  publicRealmNotes: 'id, realmId, note, createdAt, updatedAt',
   
   // abcAppKeyValues: 'appKey',
   appKeyValues: 'appKey',

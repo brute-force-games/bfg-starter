@@ -15,7 +15,7 @@ export const asHostStartGame = async (tableId: DbGameTableId, hostPlayerId: DbPl
     throw new Error("Table not found");
   }
 
-  if (gameTable.gameHostPlayerId !== hostPlayerId) {
+  if (gameTable.gameHostPlayerProfileId !== hostPlayerId) {
     throw new Error("Player is not the host");
   }
 

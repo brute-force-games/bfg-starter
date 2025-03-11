@@ -6,12 +6,14 @@ import { FlipACoinInput } from "./flip-a-coin-input";
 
 export const createFlipACoinRepresentation = (
   myPlayerSeat: GameTableSeat,
-  gameState: FlipACoinGameState
+  gameState: FlipACoinGameState,
+  mostRecentAction: FlipACoinGameAction
 ) => {
   return (
     <FlipACoinRepresentation 
       myPlayerSeat={myPlayerSeat} 
       gameState={gameState} 
+      mostRecentAction={mostRecentAction}
     />
   );
   
@@ -20,12 +22,14 @@ export const createFlipACoinRepresentation = (
 export const createFlipACoinInput = (
   myPlayerSeat: GameTableSeat,
   gameState: FlipACoinGameState,
+  mostRecentAction: FlipACoinGameAction,
   onGameAction: (gameState: FlipACoinGameState, gameAction: FlipACoinGameAction) => void
 ) => {
   return (
     <FlipACoinInput 
       myPlayerSeat={myPlayerSeat} 
       gameState={gameState} 
+      mostRecentAction={mostRecentAction}
       onGameAction={onGameAction}
     />
   );

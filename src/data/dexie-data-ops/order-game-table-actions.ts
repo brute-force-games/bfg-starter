@@ -23,6 +23,13 @@ export const orderGameTableActions = (actions: DbGameTableAction[]): DbGameTable
     const chain: DbGameTableAction[] = [rootAction];
     let currentAction = rootAction;
 
+    if (!rootAction) {
+      console.error("No root action found");
+      return [];
+    }
+
+    console.log("ROOT ACTION", rootAction);
+
     let nextAction = actions.find(action => action.previousActionId === currentAction.id);
 
     while (nextAction) {

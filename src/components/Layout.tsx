@@ -6,13 +6,20 @@ import {
   Button 
 } from '@mui/material';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { BruteForceGamesAppBar } from './bfg-app-bar/app-bar';
+import { useBfgWhoAmIContext } from '~/state/who-am-i/BfgWhoAmIContext';
 
 export const Layout = () => {
   const navigate = useNavigate();
 
+  const bfgWhoAmIContext = useBfgWhoAmIContext();
+
+  console.log("bfgWhoAmIContext", bfgWhoAmIContext);
   return (
     <>
     <Box sx={{ display: 'flex', width: '100vw', flexDirection: 'column', minHeight: '100vh' }}>
+      <BruteForceGamesAppBar />
+
       <AppBar position="static" sx={{ width: '100%' }}>
         <Container 
           maxWidth={false}

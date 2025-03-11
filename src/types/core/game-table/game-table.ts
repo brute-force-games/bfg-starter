@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { BfgGameFriendId, BfgGamePlayerId, BfgGameTableActionId, BfgGameTableId } from "../branded-values/bfg-branded-ids";
+import { BfgGameFriendId, BfgGameTableActionId, BfgGameTableId, BfgPlayerProfileId } from "../branded-values/bfg-branded-ids";
 import { TablePhaseEnumSchema } from "./table-phase";
 import { BfgSupportedGameTitlesSchema } from "~/types/bfg-game-engines/supported-games";
 
 
-export const GameTableSeatSchema = z.enum([
+export const PLAYER_SEATS = [
   'p1',
   'p2',
   'p3',
@@ -13,28 +13,30 @@ export const GameTableSeatSchema = z.enum([
   'p6',
   'p7',
   'p8',
-]);
+] as const;
+
+
+export const GameTableSeatSchema = z.enum(PLAYER_SEATS);
 
 export type GameTableSeat = z.infer<typeof GameTableSeatSchema>;
 
 
 export const NewGameTableSchema = z.object({
   
-  // gameTitle: AvailableGameTitlesSchema,
   gameTitle: BfgSupportedGameTitlesSchema,
-  gameHostPlayerId: BfgGamePlayerId.idSchema,
+  gameHostPlayerProfileId: BfgPlayerProfileId.idSchema,
   tablePhase: TablePhaseEnumSchema,
 
   sharedWith: z.array(BfgGameFriendId.idSchema),
 
-  p1: BfgGamePlayerId.idSchema,
-  p2: BfgGamePlayerId.idSchema.optional(),
-  p3: BfgGamePlayerId.idSchema.optional(),
-  p4: BfgGamePlayerId.idSchema.optional(),
-  p5: BfgGamePlayerId.idSchema.optional(),
-  p6: BfgGamePlayerId.idSchema.optional(),
-  p7: BfgGamePlayerId.idSchema.optional(),
-  p8: BfgGamePlayerId.idSchema.optional(),
+  p1: BfgPlayerProfileId.idSchema,
+  p2: BfgPlayerProfileId.idSchema.optional(),
+  p3: BfgPlayerProfileId.idSchema.optional(),
+  p4: BfgPlayerProfileId.idSchema.optional(),
+  p5: BfgPlayerProfileId.idSchema.optional(),
+  p6: BfgPlayerProfileId.idSchema.optional(),
+  p7: BfgPlayerProfileId.idSchema.optional(),
+  p8: BfgPlayerProfileId.idSchema.optional(),
 
   createdAt: z.date(),
 });

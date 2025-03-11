@@ -17,7 +17,7 @@ export const useLiveFriends = (): DbFriendAccount[] | undefined => {
 export const useLiveFriend = (friendId: DbGameFriendId): DbFriendAccount | undefined => {
   const friend = useLiveQuery(async () => {
     return await bfgDb.myFriends.get(friendId);
-  })
+  }, [friendId])
   return friend;
 }
 

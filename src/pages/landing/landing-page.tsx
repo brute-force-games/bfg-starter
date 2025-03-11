@@ -1,33 +1,25 @@
-import { useState } from 'react'
-// import reactLogo from '../../assets/react.svg'
-// import viteLogo from '../../assets/vite.svg'
 import '../../App.css'
 
 
 export const LandingPage = () => {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      <div>
-        {/* <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
+      <h1>Welcome to Brute Force Games</h1>
+      <h3>
+        Brute Force Games - an open source, browser-based board game engine
+      </h3>
+
+      <p>
+        No "server" required. Game state is stored locally in player browsers and shared via sync engines.
+      </p>
+      <p>
+        State based programming - use Redux-like actions to change your game state
+      </p>
+      <p>
+        <a href="https://github.com/brute-force-games/bfg-starter">
+          Brute Force Games Starter on GitHub
         </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a> */}
-      </div>
-      <h1>Brute Force Games Starter</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
       </p>
     </>
   )

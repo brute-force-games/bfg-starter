@@ -1,5 +1,6 @@
 import { Invite } from "dexie-cloud-addon";
 import { Button, Typography } from "@mui/material";
+import { CenteredHorizontalContainerDiv } from "~/components/special-divs";
 
 
 interface DexieInvitationProps {
@@ -8,7 +9,7 @@ interface DexieInvitationProps {
 
 export const DexieInvitation = ({ invitation }: DexieInvitationProps) => {
 
-  const { invitedBy, realmId, realm } = invitation;
+  const { invitedBy, name } = invitation;
 
   if (!invitedBy) {
     return (
@@ -18,20 +19,23 @@ export const DexieInvitation = ({ invitation }: DexieInvitationProps) => {
     )
   }
 
-  const { email, name, userId } = invitedBy;
+  // const { email, name: InvitedByName, userId } = invitedBy;
 
   return (
     <>
-      <Typography variant="h6">
-        {email} | {name} | {userId} | {realmId} 
+      <CenteredHorizontalContainerDiv>
+        <Typography variant="h6">
+          {/* {name}: {email} | {InvitedByName} | {userId} | {realmId} 
         <br />
-        {realm?.name}
+        {realm?.name} */}
+          {name}
       </Typography>
       <Button variant="contained" color="primary" onClick={() => {
         invitation.accept();
-      }}>
-        Accept
-      </Button>
+        }}>
+          Accept
+        </Button>
+      </CenteredHorizontalContainerDiv>
     </>
   );
 };

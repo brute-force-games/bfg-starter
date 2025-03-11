@@ -45,6 +45,15 @@ import { GameTableSeatPage } from './pages/game-tables/game-table-seat-page';
 import { GameTableActionsPage } from './pages/game-tables/game-table-actions-page';
 import { GameTableNextActionPage } from './pages/game-tables/game-table-next-action-page';
 import { DexieAdminPage } from './pages/dexie-admin/dexie-admin-page';
+import { GamesShelfPage } from './pages/games-shelf/games-shelf-page';
+import { NotificationsPage } from './pages/notifications/notifications-page';
+import { GamingGroupsPage } from './pages/gaming-groups/gaming-groups-page';
+import { PublicRealmNotesPage } from './pages/public-realm-data/public-realm-notes-page';
+import { ACTIVE_TABLES_ROUTE, ActiveTablesPage } from './pages/active-tables/active-tables-page';
+import { DexieDataPage } from './pages/dexie-data/dexie-data-page';
+import { DEXIE_DATA_PAGE_ROUTE } from './pages/dexie-data/dexie-data-page';
+import { FinishedGamesPage } from './pages/finished-games/finished-games-page';
+import { FINISHED_GAMES_ROUTE } from './pages/finished-games/finished-games-page';
 // import { DexieStatusPage } from './pages/dexie-status/dexie-status-page';
 // import { JoinLobbyPage } from './pages/lobby/join/join-lobby-page';
 // import { NotFound } from './pages/NotFound';
@@ -59,29 +68,26 @@ import { DexieAdminPage } from './pages/dexie-admin/dexie-admin-page';
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Layout />,
+    element: (
+      <BfgWhoAmIProvider>
+        <Layout />
+      </BfgWhoAmIProvider>
+    ),
     errorElement: <NotFound />,
     children: [
       {
         index: true,
         element: <LandingPage />,
       },
-
-      // {
-      //   path: "sign-in",
-      //   element: (
-      //     <> 
-      //       <div>you are here</div>
-      //       <UserInteractionWrapper>
-      //         <div>you are here2</div>
-      //       </UserInteractionWrapper>
-      //     </>
-      //   ),
-      // },
       
       {
         path: "dexie-status",
         element: <DexieStatusPage />,
+      },
+
+      {
+        path: "games-shelf",
+        element: <GamesShelfPage />,
       },
 
       {
@@ -134,6 +140,36 @@ export const router = createBrowserRouter([
         element: (
           <DexieAdminPage />
         ),
+      },
+
+      {
+        path: "notifications",
+        element: <NotificationsPage />,
+      },
+
+      {
+        path: "gaming-groups",
+        element: <GamingGroupsPage />,
+      },
+
+      {
+        path: "public-realm-notes",
+        element: <PublicRealmNotesPage />,
+      },
+
+      {
+        path: ACTIVE_TABLES_ROUTE,
+        element: <ActiveTablesPage />,
+      },
+
+      {
+        path: DEXIE_DATA_PAGE_ROUTE,
+        element: <DexieDataPage />,
+      },
+
+      {
+        path: FINISHED_GAMES_ROUTE,
+        element: <FinishedGamesPage />,
       },
 
       // {

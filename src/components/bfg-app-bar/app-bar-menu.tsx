@@ -1,7 +1,7 @@
 import { Divider, Menu, MenuItem, Typography } from '@mui/material';
 import { useState } from 'react';
 import { DbkAppBarSubMenu } from './app-bar-sub-menu';
-import { LinkProps } from 'react-router';
+import { Link, LinkProps } from 'react-router';
 
 
 export type SubMenuAction = {
@@ -111,14 +111,14 @@ export const DbkAppBarMenu = ({ anchorElUser, userMenuItems, handleCloseUserMenu
             )
           } else if (menuItem.type === 'menu-link') {
             return (
-              <a 
+              <Link
                 key={`link-${menuItem.title}-${index}`}
-                href={menuItem.link.to as string}
+                to={menuItem.link.to as string}
               >
                 <MenuItem>
                   <Typography sx={{ textAlign: 'center' }}>{menuItem.title}</Typography>
                 </MenuItem>
-              </a>
+              </Link>
             )
           } else if (menuItem.type === 'menu-divider') {
             return (

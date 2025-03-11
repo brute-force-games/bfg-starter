@@ -22,3 +22,5 @@ export type BfgGameDataJsonType = z.infer<typeof BfgGameDataJsonTypesSchema>;
 
 
 export const AvailableGameTitles = BfgSupportedGameTitlesSchema.options;
+
+export const AvailableGameTitlesArray = AvailableGameTitles.sort();

@@ -89,6 +89,8 @@ export const initializeGameTable = async (gameTable: NewGameTable) => {
 
       await bfgDb.gameTables.add(newTable);
       await bfgDb.gameTableActions.add(newAction);
+
+      return newTable;
     }
   );
 

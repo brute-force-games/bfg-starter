@@ -1,10 +1,12 @@
 import { GameTableSeat } from "~/types/core/game-table/game-table";
-import { FlipACoinGameAction, FlipACoinGameState } from "~/types/bfg-game-engines/flip-a-coin-engine";
+import { FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_CALL_IT_AND_FINISH_GAME, FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_CANCEL_GAME, FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_FLIP_COIN, FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_PREFER_FLIP_RESULT, FlipACoinGameAction, FlipACoinGameState } from "~/types/bfg-game-engines/flip-a-coin-engine";
 import { Button } from "@mui/material";
+
 
 interface FlipACoinInputProps {
   myPlayerSeat: GameTableSeat;
   gameState: FlipACoinGameState;
+  mostRecentAction: FlipACoinGameAction;
   onGameAction: (gameState: FlipACoinGameState, gameAction: FlipACoinGameAction) => void;
 }
 
@@ -12,18 +14,23 @@ export const FlipACoinInput = (props: FlipACoinInputProps) => {
   const { myPlayerSeat, gameState, onGameAction } = props;
   
   const chosenCoin = gameState.chosenCoin;
-  const myPlayerOutcomePreference = gameState.playerOutcomePreferences[myPlayerSeat];
+  const flipOutcome = gameState.flipResult;
+  const myPlayerOutcomePreference = gameState.playerFlipResultPreferences[myPlayerSeat];
 
 
   const chooseCoin = (coinType: "penny" | "nickel" | "dime" | "quarter") => {
-    onGameAction(gameState, { actionType: "game-table-action-player-choose-coin", chosenCoin: coinType });
+    onGameAction(gameState, { 
+      actionType: "game-table-action-player-choose-coin", 
+      seat: myPlayerSeat,
+      chosenCoin: coinType,
+    });
   }
 
   const preferOutcome = (outcome: "heads" | "tails" | "no-preference") => {
     onGameAction(gameState, { 
-      actionType: "game-table-action-player-prefer-outcome",
+      actionType: FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_PREFER_FLIP_RESULT,
       seat: myPlayerSeat,
-      preferredOutcome: outcome,
+      preferredFlipResult: outcome,
     });
   }
 
@@ -31,17 +38,48 @@ export const FlipACoinInput = (props: FlipACoinInputProps) => {
     const outcome = Math.random() < 0.5 ? "heads" : "tails";
     
     onGameAction(gameState, { 
-      actionType: "game-table-action-player-flip-coin",
-      outcome: outcome,
+      actionType: FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_FLIP_COIN,
+      seat: myPlayerSeat,
+      flipResult: outcome,
     });
+  }
+
+  const doFinishGame = () => {
+    if (flipOutcome === undefined) {
+      onGameAction(gameState, {
+        actionType: FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_CANCEL_GAME,
+        seat: myPlayerSeat,
+        cancellationReason: "Error - coin has not been flipped before someone can call it",
+      });
+      return;
+    }
+
+    onGameAction(gameState, { 
+      actionType: FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_CALL_IT_AND_FINISH_GAME,
+      seat: myPlayerSeat,
+      calledFlipResult: flipOutcome,
+    });
+  }
+
+  const doCancelGame = () => {
+    onGameAction(gameState, {
+      actionType: FLIP_A_COIN_GAME_TABLE_ACTION_PLAYER_CANCEL_GAME,
+      seat: myPlayerSeat,
+      cancellationReason: `Flip cancelled by ${myPlayerSeat}`,
+    });
+  }
+
+  if (gameState.isGameOver) {
+    return (
+      <div>
+        <div>--------------------------------</div>
+      </div>
+    );
   }
 
 
   return (
     <div>
-      {/* <div>Flip A Coin Input</div> */}
-      {/* <div>My Player Seat: {myPlayerSeat}</div>
-      <div>Game State: {JSON.stringify(gameState)}</div> */}
       <div>--------------------------------</div>
       <div>
         <Button onClick={() => chooseCoin("penny")} disabled={chosenCoin === "penny"}>Use Penny</Button>
@@ -56,6 +94,8 @@ export const FlipACoinInput = (props: FlipACoinInputProps) => {
       </div>
       <div>
         <Button onClick={doFlipCoin}>Flip Coin</Button>
+        <Button onClick={doFinishGame} disabled={flipOutcome === undefined}>Call the Flip</Button>
+        <Button onClick={doCancelGame} disabled={flipOutcome !== undefined}>Cancel the Flip</Button>
       </div>
     </div>
   );

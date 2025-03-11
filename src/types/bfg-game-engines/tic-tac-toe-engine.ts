@@ -160,6 +160,7 @@ const applyGameAction = (
       return {
         tablePhase: 'table-phase-game-complete-with-winners',
         gameState: newGameState,
+        description: `Player ${movePlayer} ${playerSymbol} wins`,
       };
     }
   }
@@ -170,12 +171,14 @@ const applyGameAction = (
     return {
       tablePhase: 'table-phase-game-complete-with-draw',
       gameState: newGameState,
+      description: 'Game is a draw',
     };
   }
 
   return {
     tablePhase: 'table-phase-game-in-progress',
     gameState: newGameState,
+    description: `Player ${movePlayer} ${playerSymbol} takes ${moveCell}`,
   };
 }
 
@@ -189,6 +192,9 @@ export const TicTacToeGameStateProcessor = createBfgGameEngineProcessor(
 
   createInitialGameState,
   createInitialGameTableAction,
+
+  // createTicTacToeHistory,
+
 
   createTicTacToeRepresentation,
   createTicTacToeInput,

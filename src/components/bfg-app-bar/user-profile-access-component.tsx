@@ -5,8 +5,9 @@ import { useState } from "react";
 import md5 from 'md5';
 // import { BfgUserCompositeIdentity } from "~/data/zod-types/schemas/shared/user/user-identity";
 import { BfgUserDexieStatus } from "~/types/core/user/user-dexie-status";
-import { useEnvSettings } from "~/env/EnvSettingsContext";
+// import { useEnvSettings } from "~/env/EnvSettingsContext";
 import { bfgDb } from "~/data/bfg-db";
+import { DEXIE_DATA_PAGE_ROUTE } from "~/pages/dexie-data/dexie-data-page";
 // import { DEXIE_STATUS_PAGE_PATH } from "~/pages/dexie-status/dexie-status-page";
 // import { DbkUserDexieStatus } from "~/data/zod-types/schemas/shared/user/user-dexie-status";
 // import { MANAGE_SYNC_PAGE_PATH } from "~/pages/manage-sync/manage-sync";
@@ -25,7 +26,7 @@ interface UserProfileAccessComponentProps {
 
 export const UserProfileAccessComponent = (props: UserProfileAccessComponentProps) => {
 
-  const { envSettings } = useEnvSettings();
+  // const { envSettings } = useEnvSettings();
   // const { myProjects, exportSavedProject } = useAllMyProjectsDataContext();
 
   const { dexieStatus } = props;
@@ -45,19 +46,19 @@ export const UserProfileAccessComponent = (props: UserProfileAccessComponentProp
   // const userName = dbkIdentity.dbkUserHandle;
   const emailToUse = dexieStatus?.dexieEmailValue;
   const userName = emailToUse || '???';
-  const isCloudEnabled = envSettings.cloudConfig.isCloudEnabled;
+  // const isCloudEnabled = envSettings.cloudConfig.isCloudEnabled;
 
   const getCloudActionMenuItem = () => {
-    if (isCloudEnabled) {
+    // if (isCloudEnabled) {
       const logInOrOutMenuItem = dexieStatus.isLoggedIn ?
         { type: 'menu-action' as const, title: 'Log Out', action: () => bfgDb.cloud.logout() } :
         { type: 'menu-action' as const, title: 'Log In', action: () => bfgDb.cloud.login() };
 
       return logInOrOutMenuItem;
-    }
+    // }
     
-    // return { type: 'menu-link' as const, title: 'Dexie Status', link: { to: DEXIE_STATUS_PAGE_PATH } };
-    return { type: 'menu-link' as const, title: 'Dexie Status', link: { to: '/dexie-status' } };
+    // // return { type: 'menu-link' as const, title: 'Dexie Status', link: { to: DEXIE_STATUS_PAGE_PATH } };
+    // return { type: 'menu-link' as const, title: 'Dexie Status', link: { to: '/dexie-status' } };
     
   }
 
@@ -76,9 +77,12 @@ export const UserProfileAccessComponent = (props: UserProfileAccessComponentProp
   const menuItems: DbkAppBarMenuItem[] = [
     { type: 'menu-label', title: userName },
     { type: 'menu-divider' },
-    { type: 'menu-link', title: 'My Profile', link: { to: '/my-profile' } },
-    { type: 'menu-link', title: 'My Settings', link: { to: '/user-settings' } },
-    { type: 'menu-link', title: 'About DoneBlock', link: { to: '/about' } },
+    { type: 'menu-link', title: 'Player Profile', link: { to: '/my-player-profiles' } },
+    { type: 'menu-link', title: 'Gaming Groups', link: { to: '/gaming-groups' } },
+    { type: 'menu-link', title: 'My Friends', link: { to: '/my-friends' } },
+    { type: 'menu-link', title: 'Dexie Data', link: { to: '/dexie-data' } },
+    { type: 'menu-link', title: 'Dexie Status', link: { to: DEXIE_DATA_PAGE_ROUTE } },
+    { type: 'menu-link', title: 'BFG Starter on Github', link: { to: 'https://github.com/brute-force-games/bfg-starter' } },
     // { type: 'menu-divider' },
     // { type: 'menu-action', title: 'Download Profile Backup', action: doDownloadProfileBackup },
     { type: 'menu-divider' },
