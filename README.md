@@ -1,54 +1,19 @@
-# React + TypeScript + Vite
+# bfg-starter
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+I created this repo to better understand local-first dev and cloud syncing for board games (they're just fancy state machines, really) using a React frontend. I'm trying to shake out the common layers of abstraction (e.g. user IDs, emails, invitations/notifications, how data is structured for sharing) that are present so someone can write a board game engine and UI like they would a react component - a board game state, and actions that mutate that state, but with players and secret information accounted for. 
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+I'm really trying to figure out how to get multiplayer security for the best value. Engines I've been messing with along with some notes for my future reference...
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### [Dexie / Dexie Cloud](https://dexie.org/cloud/)
+I like the concept of the Dexie Cloud plan - reasonable price with a decent security model at the web application layer. It's the most multiplayer plug and play I've come across that doesn't require any server maintenance and Big Tech.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+#### Configuring for your own Dexie Cloud instance
+Update the [Dexie Cloud Config](./src/data/sync-engines/dexie-cloud/dexie-config.ts) file with your own DB instance URL.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+### [Tinybase / Cloudflare Durable Objects](https://tinybase.org/guides/integrations/cloudflare-durable-objects/)
+
+This demo could also use Tinybase Durable Objects, but we're not there yet. I've had luck with it in other scenarios, so it could work here.
