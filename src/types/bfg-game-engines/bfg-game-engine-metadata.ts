@@ -27,7 +27,11 @@ export interface IBfgGameEngineProcessor<
   // type GS = z.infer<typeof GSZ>,
   // type GA = z.infer<typeof GAZ>,
 
-  applyGameAction: (tableState: DbGameTable, gameState: z.infer<GS>, gameAction: z.infer<GA>) => GameTableActionResult<z.infer<GS>>,
+  applyGameAction: (
+    tableState: DbGameTable,
+    gameState: z.infer<GS>,
+    gameAction: z.infer<GA>
+  ) => GameTableActionResult<z.infer<GS>>,
 
   // createInitialGameSpecificState: (initialGameSpecificAction: z.infer<GA>) => GameTableActionResult<z.infer<GS>>,
   createInitialGameSpecificState: (initialGameSpecificAction: z.infer<GA>) => z.infer<GS>,
@@ -227,6 +231,8 @@ export const createBfgGameEngineProcessor = <
 
     createGameSpecificGameStateJson: (obj: TGameStateInferred) => createBrandedGameStateJsonValue(obj),
     parseGameSpecificGameStateJson: (jsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>) => {
+
+      console.log("parseGameSpecificGameStateJson", jsonString);
       const json = JSON.parse(jsonString);
       return gameStateSchema.parse(json) as GS;
     },

@@ -116,6 +116,9 @@ export const GameTableNextActionPage = () => {
   
   // const gameState = gameEngine.parseGameStateJson(
   //   latestAction.actionOutcomeGameStateJson as BfgGameTypedJson<typeof gameTable.gameTitle>);
+
+  console.log("latestAction.actionOutcomeGameStateJson", latestAction.actionOutcomeGameStateJson);
+
   const gameSpecificState = gameEngine.parseGameSpecificGameStateJson(
     latestAction.actionOutcomeGameStateJson as BfgGameSpecificGameStateTypedJson<typeof gameTable.gameTitle>);
 

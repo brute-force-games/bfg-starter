@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createBfgGameEngineProcessor, IBfgGameEngineProcessor } from "./bfg-game-engine-metadata";
-import { DbGameTable, GameTableSeat, GameTableSeatSchema, NewGameTable } from "../core/game-table/game-table";
+import { DbGameTable, GameTableSeat, GameTableSeatSchema } from "../core/game-table/game-table";
 import { createTicTacToeRepresentation, createTicTacToeInput, createTicTacToeComboRepresentationAndInput, createTicTacToeHistory } from "~/game-engine-components/tic-tac-toe/tic-tac-toe-components";
 import { GameTableActionResult } from "../core/game-table/table-phase";
 import { TicTacToeGameName } from "./supported-games";
@@ -98,8 +98,8 @@ const createTicTacToeInitialGameState = (
 }
 
 
-const createInitialGameTableAction = (
-  gameTable: NewGameTable,
+const createTicTacToeInitialGameTableAction = (
+  // gameTable: NewGameTable,
 ): BfgGameSpecificTableAction<TicTacToeGameAction> => {
   const initialGameTableAction: TicTacToeGameAction = {
     actionType: 'game-table-action-host-setup-board',
@@ -109,7 +109,7 @@ const createInitialGameTableAction = (
   const gameTableActionId = BfgGameTableActionId.createId();
 
   const gameSpecificTableAction: BfgGameSpecificTableAction<TicTacToeGameAction> = {  
-    ...gameTable,
+    // ...gameTable,
     gameSpecificAction: initialGameTableAction,
     gameTableActionId: gameTableActionId,
     // gameTableActionId: gameTable.gameTableActionId,
@@ -131,7 +131,7 @@ const createNextPlayersToAct = (gameAction: TicTacToeMove, _gameState: TicTacToe
 
 
 const applyTicTacToeGameAction = (
-  tableState: DbGameTable,
+  _tableState: DbGameTable,
   gameState: TicTacToeGameState,
   gameAction: TicTacToeGameAction,
 ): GameTableActionResult<TicTacToeGameState> => {
@@ -199,7 +199,7 @@ const applyTicTacToeGameAction = (
   if (!newBoard.includes('-')) {
     newGameState.resolution = 'game-over-draw';
     return {
-      ...tableState,
+      // ...tableState,
       tablePhase: 'table-phase-game-complete-with-draw',
       gameSpecificState: newGameState,
       gameSpecificStateSummary: 'Game is a draw',
@@ -207,7 +207,7 @@ const applyTicTacToeGameAction = (
   }
 
   return {
-    ...tableState,
+    // ...tableState,
     tablePhase: 'table-phase-game-in-progress',
     gameSpecificState: newGameState,
     gameSpecificStateSummary: `Player ${movePlayer} ${playerSymbol} takes ${moveCell}`,
@@ -224,7 +224,7 @@ const ticTacToeProcessorImplementation: IBfgGameEngineProcessor<
   applyGameAction: applyTicTacToeGameAction,
 
   createInitialGameSpecificState: createTicTacToeInitialGameState,
-  createInitialGameTableAction: createInitialGameTableAction,
+  createInitialGameTableAction: createTicTacToeInitialGameTableAction,
 
   createGameStateRepresentationComponent: createTicTacToeRepresentation,
   createGameStateActionInputComponent: createTicTacToeInput,

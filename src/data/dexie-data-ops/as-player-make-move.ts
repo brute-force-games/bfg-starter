@@ -38,12 +38,15 @@ export const asPlayerMakeMove = async <GameSpecificAction extends z.ZodType>(
   const initialGameState = selectedGameEngine.parseGameSpecificGameStateJson(
     latestAction.actionOutcomeGameStateJson as BfgGameSpecificGameStateTypedJson<typeof gameTable.gameTitle>);
 
+  console.log("MAKE MOVE - INITIAL GAME STATE", initialGameState);
+
   const afterActionResult = selectedGameEngine.applyGameAction(gameTable, initialGameState, playerAction);
 
   const gameStateSummary = afterActionResult.gameSpecificStateSummary;
 
   // const gameSpecificAction = playerAction.gameSpecificAction;
   console.log("MAKE MOVE - PLAYER ACTION", playerAction);
+  console.log("MAKE MOVE - AFTER ACTION RESULT", afterActionResult);
 
   const playerActionJson = selectedGameEngine.createGameSpecificActionJson(playerAction);
 
@@ -56,7 +59,7 @@ export const asPlayerMakeMove = async <GameSpecificAction extends z.ZodType>(
   const mostRecentGameActionId = gameTable.latestActionId;
   const startActionId = BfgGameTableActionId.createId();
 
-  const hostStartsGameAction: DbGameTableAction = {
+  const playerMoveAction: DbGameTableAction = {
     id: startActionId,
     gameTableId: tableId,
     previousActionId: mostRecentGameActionId,
@@ -87,7 +90,7 @@ export const asPlayerMakeMove = async <GameSpecificAction extends z.ZodType>(
         .gameTables
         .update(gameTable, updatedGameTable);
 
-      await bfgDb.gameTableActions.add(hostStartsGameAction);
+      await bfgDb.gameTableActions.add(playerMoveAction);
     }
   );
 }

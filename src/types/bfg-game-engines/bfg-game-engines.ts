@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { TicTacToeGameActionSchema, TicTacToeGameStateSchema, TicTacToeGameStateProcessor } from "./tic-tac-toe-engine";
 import { AbfgSupportedGameTitle } from "./supported-games";
-// import { FlipACoinGameActionSchema, FlipACoinGameStateSchema, FlipACoinGameStateProcessor } from "./flip-a-coin-engine";
+import { FlipACoinGameActionSchema, FlipACoinGameStateSchema, FlipACoinGameStateProcessor } from "./flip-a-coin-engine";
 import { DbGameTable, NewGameTable, GameTableSeat } from "../core/game-table/game-table";
-import { GameDefinition, TicTacToeGameDefinition } from "../enums/game-shelf";
+import { FlipACoinGameDefinition, GameDefinition, TicTacToeGameDefinition } from "../enums/game-shelf";
 import { BfgGameSpecificGameStateTypedJson } from "../core/branded-values/bfg-game-state-typed-json";
 import { BfgGameSpecificActionSchema, BfgGameSpecificGameStateSchema, BfgGameSpecificTableAction, DbGameTableAction } from "../core/game-table/game-table-action";
 import { GameTableActionResult } from "../core/game-table/table-phase";
@@ -124,14 +124,14 @@ export const TicTacToeGameMetadata: BfgGameEngineMetadata<
   processor: TicTacToeGameStateProcessor,
 }
 
-// export const FlipACoinGameMetadata: BfgGameEngineMetadata<typeof FlipACoinGameStateSchema, typeof FlipACoinGameActionSchema> = {
-//   definition: FlipACoinGameDefinition,
-//   processor: FlipACoinGameStateProcessor,
-// }
+export const FlipACoinGameMetadata: BfgGameEngineMetadata<typeof FlipACoinGameStateSchema, typeof FlipACoinGameActionSchema> = {
+  definition: FlipACoinGameDefinition,
+  processor: FlipACoinGameStateProcessor,
+}
 
 export const AllBfgGameMetadata = {
   ['Tic Tac Toe']: TicTacToeGameMetadata,
-  // ['Flip a Coin']: FlipACoinGameMetadata,
+  ['Flip a Coin']: FlipACoinGameMetadata,
 
   // ['Hangman']: TicTacToeGameStateProcessor,
   // ['Backgammon']: TicTacToeGameStateProcessor,
