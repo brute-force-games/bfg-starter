@@ -31,10 +31,16 @@ export const useLiveGameTable = (tableId?: DbGameTableId): DbGameTable | undefin
 export const useLiveGameTableActions = (tableId?: DbGameTableId): DbGameTableAction[] | undefined => {
   const actions = useLiveQuery(async () => {
     if (!tableId) {
-      // return undefined;
-      return [];
+      return undefined;
     }
-    return await bfgDb.gameTableActions.where('gameTableId').equals(tableId).toArray();
+
+    console.log("DB: useLiveGameTableActions ACTIVE", tableId);
+
+    // return await bfgDb.gameTableActions.where('gameTableId').equals(tableId).toArray();
+
+    const allActions = await bfgDb.gameTableActions.toArray();
+    const allActionsForTable = allActions.filter((action) => action.gameTableId === tableId);
+    return allActionsForTable;
     
   }, [tableId, bfgDb.gameTableActions])
 

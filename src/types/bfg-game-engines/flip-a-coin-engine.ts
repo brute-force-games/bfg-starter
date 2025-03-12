@@ -299,7 +299,10 @@ const applyFlipACoinGameAction = (
 }
 
 
-const flipACoinProcessorImplementation: IBfgGameEngineProcessor<typeof FlipACoinGameStateSchema, typeof FlipACoinGameActionSchema> = {
+const flipACoinProcessorImplementation: IBfgGameEngineProcessor<
+  typeof FlipACoinGameStateSchema,
+  typeof FlipACoinGameActionSchema
+> = {
   gameTitle: FlipACoinGameName,
   // gameStateSchema: FlipACoinGameStateSchema,
   // gameActionSchema: FlipACoinGameActionSchema,
@@ -323,13 +326,4 @@ export const FlipACoinGameStateProcessor = createBfgGameEngineProcessor(
   FlipACoinGameActionSchema,
 
   flipACoinProcessorImplementation,
-
-  // applyGameAction,
-
-  // createInitialGameState,
-  // createInitialGameTableAction,
-
-  // createFlipACoinRepresentation,
-  // createFlipACoinInput,
-  // createFlipACoinComboRepresentationAndInput,
 );

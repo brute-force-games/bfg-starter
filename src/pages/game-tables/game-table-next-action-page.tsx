@@ -12,6 +12,8 @@ import { matchPlayerToSeat } from "~/data/dexie-data-ops/player-seat-utils";
 import { VerticalSpacerDiv } from "~/components/special-divs";
 import { BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engines";
 import { BfgGameSpecificActionSchema, BfgGameSpecificGameStateSchema } from "~/types/core/game-table/game-table-action";
+import { useLiveQuery } from "dexie-react-hooks";
+import { bfgDb } from "~/data/bfg-db";
 
 
 export const GameTableNextActionPage = () => {
@@ -19,8 +21,25 @@ export const GameTableNextActionPage = () => {
   const { gameTableId } = useParams();
   const whoAmI = useBfgWhoAmIContext();
 
-  const gameTable = useLiveGameTable(gameTableId as DbGameTableId);
-  const gameTableActions = useLiveGameTableActions(gameTableId as DbGameTableId);
+  const dbGameTableId = gameTableId as DbGameTableId | undefined;
+
+  const gameTable = useLiveGameTable(dbGameTableId);
+  // const gameTableActions = useLiveGameTableActions(dbGameTableId);
+
+  const gameTableActions = useLiveQuery(async () => {
+    if (!dbGameTableId) {
+      return undefined;
+    }
+
+    console.log("DB: useLiveGameTableActions ACTIVE", dbGameTableId);
+
+    return await bfgDb.gameTableActions.where('gameTableId').equals(dbGameTableId).toArray();
+
+    // const allActions = bfgDb.gameTableActions.toArray();
+    // const allActionsForTable = allActions.filter((action) => action.gameTableId === dbGameTableId);
+    // return allActionsForTable;
+    
+  }, [dbGameTableId])
 
   const profileId = whoAmI.defaultPlayerProfileId;
 
@@ -56,7 +75,7 @@ export const GameTableNextActionPage = () => {
     // typeof gameTable.gameTitle,
     // z.infer<typeof gameEngineMetadata.processor["gameStateJsonSchema"]>,
     // z.infer<typeof gameEngineMetadata.processor["gameActionJsonSchema"]>
-     GameStateType,
+    GameStateType,
     GameActionType
   >;
 
@@ -87,9 +106,10 @@ export const GameTableNextActionPage = () => {
 
   // const validGameActions = narrowGameActionsToValidGameActions(gameTableActions);
 
+  const toProcessGameTableActions = gameTableActions;
 
   console.log("gameTable - next action page", gameTable);
-  const orderedGameTableActions = orderGameTableActions(gameTableActions);
+  const orderedGameTableActions = orderGameTableActions(toProcessGameTableActions);
   console.log("orderedGameTableActions", orderedGameTableActions);
 
   const latestAction = orderedGameTableActions[orderedGameTableActions.length - 1];
@@ -135,17 +155,7 @@ export const GameTableNextActionPage = () => {
     .createGameStateCombinationRepresentationAndInputComponent ?
     gameEngine.createGameStateCombinationRepresentationAndInputComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction, onGameAction) : 
     undefined;
-
-  // const validGameActions = orderedGameTableActions.filter(action => {
-  //   return (
-  //     action.actionType === "game-table-action-player-move" && 
-  //     action.moveCell && 
-  //     action.movePlayer
-  //   ) || (
-  //     action.actionType === "game-table-action-host-setup-board" && 
-  //     action.board
-  //   );
-  // });
+    
 
   const validGameActions = gameEngine.narrowGameActionsToValidGameActions(orderedGameTableActions);
 
