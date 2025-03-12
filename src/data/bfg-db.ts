@@ -6,7 +6,7 @@ import { DbFriendAccount } from "~/types/core/friend-account/friend-db";
 import { DbGameTable } from "~/types/core/game-table/game-table";
 import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
 import { DbGamingGroup } from "~/types/core/play-group/play-group-db";
-import { DbPublicRealmNote } from "~/types/public-realm-data/public-realm-note-db";
+
 
 
 type BruteForceGamesDbTables = {
@@ -18,7 +18,7 @@ type BruteForceGamesDbTables = {
   gameTables: Table<DbGameTable, 'id'>;
   gameTableActions: Table<DbGameTableAction, 'id'>;
 
-  publicRealmNotes: Table<DbPublicRealmNote, 'id'>;
+  // publicRealmNotes: Table<DbPublicRealmNote, 'id'>;
 
   // abcAppKeyValues: Table<BfgAppKeyValue, 'id'>;
   // appKeyValues: Table<BfgAppKeyValue, 'id'>;
@@ -40,7 +40,7 @@ bfgDb.version(2).stores({
   gameTables: 'id, gameHostPlayerId, gameTitle, createdAt, updatedAt',
   gameTableActions: 'id, gameTableId, previousActionId, createdAt',
 
-  publicRealmNotes: 'id, realmId, note, createdAt, updatedAt',
+  // publicRealmNotes: 'id, realmId, note, createdAt, updatedAt',
   
   // abcAppKeyValues: 'appKey',
   appKeyValues: 'appKey',

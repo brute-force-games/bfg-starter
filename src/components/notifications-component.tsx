@@ -25,9 +25,8 @@ export const NotificationsComponent = () => {
 
   return (
     <div>
-      {/* <VerticalSpacerDiv height={20} /> */}
       <h4>{notificationsLabel}</h4>
-      {/* <VerticalSpacerDiv height={20} /> */}
+
       {
         invites?.map((invitation) => (
           <DexieInvitation invitation={invitation} />

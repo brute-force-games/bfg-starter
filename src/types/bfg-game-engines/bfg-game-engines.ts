@@ -5,7 +5,7 @@ import { FlipACoinGameActionSchema, FlipACoinGameStateSchema, FlipACoinGameState
 import { DbGameTable, NewGameTable, GameTableSeat } from "../core/game-table/game-table";
 import { FlipACoinGameDefinition, GameDefinition, TicTacToeGameDefinition } from "../enums/game-shelf";
 import { BfgGameSpecificGameStateTypedJson } from "../core/branded-values/bfg-game-state-typed-json";
-import { BfgGameSpecificActionSchema, BfgGameSpecificGameStateSchema, BfgGameSpecificTableAction, DbGameTableAction } from "../core/game-table/game-table-action";
+import { BfgGameSpecificTableAction, DbGameTableAction } from "../core/game-table/game-table-action";
 import { GameTableActionResult } from "../core/game-table/table-phase";
 
 
@@ -34,8 +34,8 @@ import { GameTableActionResult } from "../core/game-table/table-phase";
 
 
 export type BfgGameEngineProcessor<
-  GS extends z.infer<typeof BfgGameSpecificGameStateSchema>, 
-  GA extends z.infer<typeof BfgGameSpecificActionSchema>
+  GS extends z.ZodTypeAny, 
+  GA extends z.ZodTypeAny
 > = {
   
   createBfgGameSpecificInitialGameTableAction: (
@@ -109,8 +109,8 @@ export type BfgGameEngineProcessor<
 
 
 export type BfgGameEngineMetadata<
-  GS extends z.infer<typeof BfgGameSpecificGameStateSchema>,
-  GA extends z.infer<typeof BfgGameSpecificActionSchema>
+  GS extends z.ZodTypeAny,
+  GA extends z.ZodTypeAny
 > = {
   definition: GameDefinition;
   processor: BfgGameEngineProcessor<GS, GA>;

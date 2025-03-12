@@ -1,6 +1,5 @@
 import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell } from "@mui/material";
 import { useState } from "react";
-import { GameTablePlayerOptionsComponent } from "~/components/game-table-details/game-table-player-options-component";
 import { DataSorting, SortingColumnHeader } from "~/components/sorting-column-header/sorting-column-header";
 import { useLiveGameTables } from "~/data/bfg-db-game-tables";
 import { useBfgWhoAmIContext } from "~/state/who-am-i/BfgWhoAmIContext";
@@ -37,7 +36,7 @@ export const FinishedGamesPage = () => {
     setSorting(sorting === "asc" ? "desc" : "asc");
   }
 
-  const handleRequestSortByTablePhase = () => {
+  const handleRequestSortByStatus = () => {
     setActiveSortingColumn("tablePhase");
     setSorting(sorting === "asc" ? "desc" : "asc");
   }
@@ -51,7 +50,16 @@ export const FinishedGamesPage = () => {
     if (sorting === "none") {
       return allMyFinishedTables;
     }
-    
+
+    if (activeSortingColumn === "tablePhase") {
+      return allMyFinishedTables?.sort((a, b) => {
+        if (sorting === "asc") {
+          return a.tablePhase.localeCompare(b.currentStatusDescription);
+        } else {
+          return b.tablePhase.localeCompare(a.currentStatusDescription);
+        }
+      });
+    }
     if (activeSortingColumn === "name") {
       return allMyFinishedTables?.sort((a, b) => {
         if (sorting === "asc") {
@@ -72,12 +80,12 @@ export const FinishedGamesPage = () => {
       });
     }
 
-    if (activeSortingColumn === "tablePhase") {
+    if (activeSortingColumn === "status") {
       return allMyFinishedTables?.sort((a, b) => {
         if (sorting === "asc") {
-          return a.tablePhase.localeCompare(b.tablePhase);
+          return a.currentStatusDescription.localeCompare(b.currentStatusDescription);
         } else {
-          return b.tablePhase.localeCompare(a.tablePhase);
+          return b.currentStatusDescription.localeCompare(a.currentStatusDescription);
         }
       });
     }
@@ -117,7 +125,15 @@ export const FinishedGamesPage = () => {
             sorting={sorting}
             thisSortingColumn={"tablePhase"}
             activeSortingColumn={activeSortingColumn}
-            handleRequestSort={handleRequestSortByTablePhase}
+            handleRequestSort={handleRequestSortByStatus}
+            titleAlign="left"
+          />
+          <SortingColumnHeader
+            title="Status"
+            sorting={sorting}
+            thisSortingColumn={"gameEngine"}
+            activeSortingColumn={activeSortingColumn}
+            handleRequestSort={handleRequestSortByStatus}
             titleAlign="left"
           />
           <SortingColumnHeader
@@ -147,10 +163,13 @@ export const FinishedGamesPage = () => {
               </TableCell>
               <TableCell>
                 {table.tablePhase}
-                <GameTablePlayerOptionsComponent
+                {/* <GameTablePlayerOptionsComponent
                   myPlayerProfileId={defaultPlayerProfileId}
                   gameTable={table}
-                />
+                /> */}
+              </TableCell>
+              <TableCell>
+                {table.currentStatusDescription}
               </TableCell>
               <TableCell>
                 {table.createdAt.toLocaleString()}

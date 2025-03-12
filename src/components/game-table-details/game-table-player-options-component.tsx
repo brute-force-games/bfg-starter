@@ -11,9 +11,6 @@ export const GameTablePlayerOptionsComponent = (props: {
 
   const { myPlayerProfileId, gameTable } = props;
 
-  // const gameEngineMetadata = getBfgGameMetadata(gameTable);
-  // console.log("gameEngineMetadata", gameEngineMetadata);
-  
   const amIAtTable = isPlayerAtGameTable(myPlayerProfileId, gameTable);
 
   if (gameTable.tablePhase === 'table-phase-lobby') {

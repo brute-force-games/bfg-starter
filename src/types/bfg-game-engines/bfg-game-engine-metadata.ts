@@ -10,14 +10,23 @@ import { BfgGameSpecificTableAction } from "../core/game-table/game-table-action
 import { BfgGameEngineProcessor } from "./bfg-game-engines";
 
 
+// export const BfgGameSpecificGameStateSchema = z.object({
+//   gameSpecificState: z.any(),
+//   gameSpecificStateSummary: z.string(),
+// })
+
+// export type BfgGameSpecificGameState = z.infer<typeof BfgGameSpecificGameStateSchema>;
+
+
+
 export interface IBfgGameEngineProcessor<
   // GS, GA
   // GS extends BfgGameSpecificGameState,
   // GA extends BfgGameSpecificAction,
   // GS extends z.ZodType,
   // GA extends z.ZodType,
-  GS extends z.ZodSchema,
-  GA extends z.ZodSchema
+  GS extends z.ZodTypeAny,
+  GA extends z.ZodTypeAny
 > {
 
   gameTitle: AbfgSupportedGameTitle,
@@ -128,8 +137,8 @@ export const createBfgGameEngineProcessor = <
   // GA extends z.infer<typeof BfgGameSpecificActionSchema>
   // GS extends z.ZodSchema<typeof BfgGameSpecificGameStateSchema>,
   // GA extends z.ZodSchema<typeof BfgGameSpecificActionSchema>
-  GS extends z.ZodSchema,
-  GA extends z.ZodSchema
+  GS extends z.ZodTypeAny,
+  GA extends z.ZodTypeAny
 >(
   gameTitle: AbfgSupportedGameTitle,
   gameStateSchema: GS,
@@ -142,8 +151,8 @@ export const createBfgGameEngineProcessor = <
   // type TGameStateInferred = z.infer<GS>;
   // type TGameActionInferred = z.infer<GA>;
 
-  type TGameStateInferred = GS;
-  type TGameActionInferred = GA;
+  type TGameStateInferred = z.infer<GS>;
+  type TGameActionInferred = z.infer<GA>;
 
   const createBrandedGameStateJsonValue = (obj: TGameStateInferred): BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle> => {
     const json = JSON.stringify(obj);

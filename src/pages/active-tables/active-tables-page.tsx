@@ -8,7 +8,13 @@ import { GameTablePlayerOptionsComponent } from "~/components/game-table-details
 
 export const ACTIVE_TABLES_ROUTE = "/active-tables";
 
-export type DataSortingColumn = "lastModifiedTimestamp" | "createdAt" | "name" | "tablePhase" | "gameHostPlayerProfileId";
+export type DataSortingColumn =
+  "lastModifiedTimestamp" | 
+  "createdAt" |
+  "name" |
+  "tablePhase" |
+  "gameHostPlayerProfileId" |
+  "status";
 
 
 export const ActiveTablesPage = () => {
@@ -123,7 +129,7 @@ export const ActiveTablesPage = () => {
             handleRequestSort={handleRequestSortByTablePhase}
             titleAlign="left"
           />
-          <TableCell>Current Status</TableCell>
+          <TableCell>Status</TableCell>
           <SortingColumnHeader
             title="Created"
             sorting={sorting}

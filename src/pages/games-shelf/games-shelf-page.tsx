@@ -7,9 +7,12 @@ import { startGameTableWithFriends } from "~/data/bfg-db-game-tables";
 import { NewGameTable } from "~/types/core/game-table/game-table";
 import { DbGameFriendId } from "~/types/core/branded-values/branded-strings";
 import { useLiveDefaultPlayerProfile } from "~/data/bfg-db-player-profiles";
+import { useNavigate } from "react-router-dom";
 
 
 export const GamesShelfPage = () => {
+
+  const navigate = useNavigate();
 
   const [startTableGameTitle, setStartTableGameTitle] = useState<AbfgSupportedGameTitle | null>(null);
 
@@ -37,8 +40,11 @@ export const GamesShelfPage = () => {
 
     const inviteMessage = `Play ${gameTitle} with ${inviterHandle}`;
     
-    await startGameTableWithFriends(newGameTable, inviteMessage, friendIds);
+    const gameTable = await startGameTableWithFriends(newGameTable, inviteMessage, friendIds);
+
     setStartTableGameTitle(null);
+
+    navigate(`/game-tables/${gameTable.id}/seat`);
   }
 
   return (

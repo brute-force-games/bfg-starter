@@ -11,7 +11,7 @@ import { BfgGameSpecificGameStateTypedJson } from "~/types/core/branded-values/b
 import { BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engines";
 
 
-export const asPlayerMakeMove = async <GameSpecificAction extends z.ZodType>(
+export const asPlayerMakeMove = async <GameSpecificAction extends z.ZodTypeAny>(
   tableId: DbGameTableId, 
   playerId: DbPlayerProfileId, 
   playerAction: z.infer<GameSpecificAction>
@@ -30,7 +30,9 @@ export const asPlayerMakeMove = async <GameSpecificAction extends z.ZodType>(
     z.infer<typeof selectedGameMetadata.processor["gameStateJsonSchema"]>,
     z.infer<typeof selectedGameMetadata.processor["gameActionJsonSchema"]>
   >;
-  
+
+  // const selectedGameEngine = selectedGameMetadata.processor;
+
   const playerActionSource = getPlayerActionSource(gameTable, playerId);  
 
   const latestAction = await getLatestAction(tableId);

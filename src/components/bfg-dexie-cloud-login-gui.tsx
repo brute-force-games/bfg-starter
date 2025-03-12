@@ -37,7 +37,8 @@ export const MyDexieLoginGUI = () => {
 
   if (!bfgDb.cloud) {
     console.log("bfgDb.cloud is not available");
-    return null;
+    // return null;
+    throw new Error("bfgDb.cloud is not available");
   }
 
   const ui = useObservable(bfgDb.cloud.userInteraction);
@@ -122,7 +123,7 @@ const MyDialogStyling = styled.div`
     background-color: #000;
     z-index: 150;
     backdrop-filter: blur(2px);
-    webkit-backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
   }
   .dlg-outer {
     z-index: 150;

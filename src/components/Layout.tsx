@@ -1,16 +1,11 @@
 import { 
-  AppBar, 
-  Box, 
-  Container, 
-  Toolbar, 
-  Button 
-} from '@mui/material';
-import { Outlet, useNavigate } from 'react-router-dom';
+  Box} from '@mui/material';
+import { Outlet } from 'react-router-dom';
 import { BruteForceGamesAppBar } from './bfg-app-bar/app-bar';
 import { useBfgWhoAmIContext } from '~/state/who-am-i/BfgWhoAmIContext';
 
 export const Layout = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const bfgWhoAmIContext = useBfgWhoAmIContext();
 
@@ -20,7 +15,7 @@ export const Layout = () => {
     <Box sx={{ display: 'flex', width: '100vw', flexDirection: 'column', minHeight: '100vh' }}>
       <BruteForceGamesAppBar />
 
-      <AppBar position="static" sx={{ width: '100%' }}>
+      {/* <AppBar position="static" sx={{ width: '100%' }}>
         <Container 
           maxWidth={false}
           disableGutters
@@ -42,12 +37,6 @@ export const Layout = () => {
             >
               Dexie Status
             </Button>
-            {/* <Button 
-              color="inherit" 
-              onClick={() => navigate('/lobby/new')}
-            >
-              Start New Game
-            </Button> */}
             <Button 
               color="inherit" 
               onClick={() => navigate('/my-player-profiles')}
@@ -60,12 +49,6 @@ export const Layout = () => {
             >
               My Friends
             </Button>
-            {/* <Button 
-              color="inherit" 
-              onClick={() => navigate('/my-lobbies')}
-            >
-              My Lobbies
-            </Button> */}
             <Button 
               color="inherit" 
               onClick={() => navigate('/game-tables')}
@@ -74,7 +57,7 @@ export const Layout = () => {
             </Button>
           </Toolbar>
         </Container>
-      </AppBar>
+      </AppBar> */}
 
       {/* <Container 
         component="main"

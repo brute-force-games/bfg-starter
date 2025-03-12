@@ -121,13 +121,13 @@ export const startGameTableWithFriends = async (newGameTable: NewGameTable, invi
 
   const gameTable = await initializeGameTable(newGameTable);
   
-  await shareGameTableWithFriends(gameTable.id, inviteMessage, friendIds);
-
-  // const gameTable = await bfgDb.gameTables.get(tableId);
-
   if (!gameTable) {
     throw new Error("Table not found");
   }
+
+  await shareGameTableWithFriends(gameTable.id, inviteMessage, friendIds);
+
+  return gameTable;
 }
 
 
