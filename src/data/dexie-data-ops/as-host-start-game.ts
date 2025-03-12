@@ -20,22 +20,19 @@ export const asHostStartGame = async (tableId: DbGameTableId, hostPlayerId: DbPl
     throw new Error("Player is not the host");
   }
 
-  // const gameEngineMetadata = BfgGameEngineMetadata[gameTable.gameTitle] as BfgGameEngineProcessor<
-  //   z.infer<typeof BfgGameEngineMetadata[typeof gameTable.gameTitle]["gameStateJsonSchema"]>,
-  //   z.infer<typeof BfgGameEngineMetadata[typeof gameTable.gameTitle]["gameActionJsonSchema"]>,
-  //   typeof gameTable.gameTitle
-  // >;
-
   const gameMetadata = getBfgGameMetadata(gameTable);
 
   if (!gameMetadata) {
     throw new Error("Game state metadata not found");
   }
 
-  const gameEngine = gameMetadata.processor as BfgGameEngineProcessor<
-    // typeof gameTable.gameTitle,
-    z.infer<typeof gameMetadata.processor["gameStateJsonSchema"]>,
-    z.infer<typeof gameMetadata.processor["gameActionJsonSchema"]>
+  const gameProcessor = gameMetadata.processor;
+  type GameStateType = z.infer<typeof gameProcessor.gameStateSchema>;
+  type GameActionType = z.infer<typeof gameProcessor.gameActionSchema>;
+
+  const gameEngine = gameProcessor as BfgGameEngineProcessor<
+    GameStateType,
+    GameActionType
   >;
 
   const initGameAction = gameEngine.createBfgGameSpecificInitialGameTableAction(gameTable);
@@ -43,7 +40,7 @@ export const asHostStartGame = async (tableId: DbGameTableId, hostPlayerId: DbPl
 
   const gameSpecificSummary = `Game started`;
 
-  const initialGameState: GameTableActionResult<z.infer<typeof gameMetadata.processor["gameStateJsonSchema"]>> = {
+  const initialGameState: GameTableActionResult<GameStateType> = {
     gameSpecificState: initialGameSpecificState,
     tablePhase: 'table-phase-game-in-progress',
     gameSpecificStateSummary: gameSpecificSummary,

@@ -4,7 +4,7 @@ import { DbGameTable, GameTableSeat, GameTableSeatSchema } from "../core/game-ta
 import { createTicTacToeRepresentation, createTicTacToeInput, createTicTacToeComboRepresentationAndInput, createTicTacToeHistory } from "~/game-engine-components/tic-tac-toe/tic-tac-toe-components";
 import { GameTableActionResult } from "../core/game-table/table-phase";
 import { TicTacToeGameName } from "./supported-games";
-import { BfgGameSpecificActionSchema, BfgGameSpecificGameStateSchema, BfgGameSpecificTableAction } from "../core/game-table/game-table-action";
+import { BfgGameSpecificTableAction } from "../core/game-table/game-table-action";
 import { BfgGameTableActionId } from "../core/branded-values/bfg-branded-ids";
 
 
@@ -27,7 +27,7 @@ export const TicTacToeMoveCellSchema = z.enum([
 export type TicTacToeMoveCell = z.infer<typeof TicTacToeMoveCellSchema>;
 
 
-export const TicTacToeSetupBoardSchema = BfgGameSpecificActionSchema.extend({
+export const TicTacToeSetupBoardSchema = z.object({
   actionType: z.literal('game-table-action-host-setup-board'),
   board: z.string().length(9),
 })
@@ -35,7 +35,7 @@ export const TicTacToeSetupBoardSchema = BfgGameSpecificActionSchema.extend({
 export type TicTacToeSetupBoard = z.infer<typeof TicTacToeSetupBoardSchema>;
 
 
-export const TicTacToeMoveSchema = BfgGameSpecificActionSchema.extend({
+export const TicTacToeMoveSchema = z.object({
   actionType: z.literal('game-table-action-player-move'),
   moveCell: TicTacToeMoveCellSchema,
   movePlayer: GameTableSeatSchema,
@@ -52,32 +52,19 @@ export const TicTacToeGameActionSchema = z.discriminatedUnion('actionType', [
 export type TicTacToeGameAction = z.infer<typeof TicTacToeGameActionSchema>;
 
 
-export const TicTacToeGameStateSchema = BfgGameSpecificGameStateSchema.extend({
-  // board: z.string().length(9),
+export const TicTacToeGameStateSchema = z.object({
   board: z.string().length(9),
-  // currentPlayer: GameTableSeatSchema,
   nextPlayersToAct: z.array(GameTableSeatSchema),
   resolution: TicTacToeResolutionSchema,
 }).describe('Tic Tac Toe');
 
 export type TicTacToeGameState = z.infer<typeof TicTacToeGameStateSchema>;
 
-// export const TicTacToeGameName = 'Tic Tac Toe' as const;
-
-
-// const initialGameState: TicTacToeGameState = {
-//   board: "---------",
-//   // currentPlayer: 'p1' as GameTableSeat,
-//   nextPlayersToAct: ['p1'],
-//   resolution: 'game-in-progress' as TicTacToeResolution,
-// }
-
 
 const createTicTacToeInitialGameState = (
   initialGameTableAction: TicTacToeGameAction,
 ): TicTacToeGameState => {
 
-  // createInitialGameSpecificState: (initialGameSpecificAction: GA) => GameTableActionResult<GS>,
   if (initialGameTableAction.actionType !== 'game-table-action-host-setup-board') {
     throw new Error("Initial game table action must be a host setup board");
   }
@@ -89,12 +76,6 @@ const createTicTacToeInitialGameState = (
   }
 
   return initialGameState;
-
-  // return {
-  //   gameSpecificState: initialGameState,
-  //   tablePhase: 'table-phase-game-in-progress',
-  //   gameSpecificStateSummary: `Game started with board: ${initialGameState.board}`,
-  // };
 }
 
 
@@ -109,10 +90,8 @@ const createTicTacToeInitialGameTableAction = (
   const gameTableActionId = BfgGameTableActionId.createId();
 
   const gameSpecificTableAction: BfgGameSpecificTableAction<TicTacToeGameAction> = {  
-    // ...gameTable,
     gameSpecificAction: initialGameTableAction,
     gameTableActionId: gameTableActionId,
-    // gameTableActionId: gameTable.gameTableActionId,
     source: 'game-table-action-source-host',
     actionType: 'game-table-action-host-setup-board',
   }
@@ -136,19 +115,15 @@ const applyTicTacToeGameAction = (
   gameAction: TicTacToeGameAction,
 ): GameTableActionResult<TicTacToeGameState> => {
 
-  // applyGameAction: (tableState: DbGameTable, gameState: GS, gameAction: GA) => GameTableActionResult<GS>,
-
   if (gameAction.actionType === 'game-table-action-host-setup-board') {
     throw new Error("Host setup board is not a valid game action");
   }
 
   const board = gameState.board;
-  // const currentPlayer = gameState.currentPlayer;
   if (gameState.nextPlayersToAct.length !== 1) {
     throw new Error(`Invalid number of next players to act: ${gameState.nextPlayersToAct.length}`);
   }
 
-  // const currentPlayer = gameState.nextPlayersToAct[0];
   const moveCell = gameAction.moveCell;
   const movePlayer = gameAction.movePlayer;
 
@@ -186,9 +161,7 @@ const applyTicTacToeGameAction = (
     {
       newGameState.resolution = playerSymbol === 'X' ? 'game-over-x-wins' : 'game-over-o-wins';
       return {
-        // gameTableState: tableState,
         gameSpecificState: newGameState,
-        // gameSpecificStateJson: selectedGameEngine.createGameStateJson(newGameState),
         tablePhase: 'table-phase-game-complete-with-winners',
         gameSpecificStateSummary: `Player ${movePlayer} ${playerSymbol} wins`,
       };
@@ -199,7 +172,6 @@ const applyTicTacToeGameAction = (
   if (!newBoard.includes('-')) {
     newGameState.resolution = 'game-over-draw';
     return {
-      // ...tableState,
       tablePhase: 'table-phase-game-complete-with-draw',
       gameSpecificState: newGameState,
       gameSpecificStateSummary: 'Game is a draw',
@@ -207,7 +179,6 @@ const applyTicTacToeGameAction = (
   }
 
   return {
-    // ...tableState,
     tablePhase: 'table-phase-game-in-progress',
     gameSpecificState: newGameState,
     gameSpecificStateSummary: `Player ${movePlayer} ${playerSymbol} takes ${moveCell}`,
@@ -238,18 +209,7 @@ export const TicTacToeGameStateProcessor = createBfgGameEngineProcessor(
   TicTacToeGameActionSchema,
 
   ticTacToeProcessorImplementation,
-
-  // Use a double type assertion to safely bridge the incompatible types
-  // ticTacToeProcessorImplementation as unknown as IBfgGameEngineProcessor<
-  //   typeof TicTacToeGameStateSchema,
-  //   typeof TicTacToeGameActionSchema
-  // >,
-
 );
-// ) as unknown as BfgGameEngineProcessor<
-//   TicTacToeGameState,
-//   TicTacToeGameAction
-// >;
 
 
 export const getCurrentPlayer = (gameState: TicTacToeGameState): GameTableSeat => {

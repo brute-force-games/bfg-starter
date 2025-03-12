@@ -10,7 +10,6 @@ import { TicTacToeActionComponent } from "~/game-engine-components/tic-tac-toe/t
 import { matchPlayerToSeat } from "~/data/dexie-data-ops/player-seat-utils";
 import { VerticalSpacerDiv } from "~/components/special-divs";
 import { BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engines";
-import { BfgGameSpecificActionSchema, BfgGameSpecificGameStateSchema } from "~/types/core/game-table/game-table-action";
 import { useLiveQuery } from "dexie-react-hooks";
 import { bfgDb } from "~/data/bfg-db";
 import { BfgGameSpecificActionJsonString, BfgGameSpecificGameStateJsonString } from "~/types/core/branded-values/bfg-game-state-typed-json";
@@ -83,8 +82,12 @@ export const GameTableNextActionPage = () => {
     return <div>No game engine found</div>;
   }
 
-  type GameStateType = z.infer<typeof gameEngineMetadata.processor["gameStateJsonSchema"]>;
-  type GameActionType = z.infer<typeof gameEngineMetadata.processor["gameActionJsonSchema"]>;
+  const gameProcessor = gameEngineMetadata.processor;
+  type GameStateType = z.infer<typeof gameProcessor.gameStateSchema>;
+  type GameActionType = z.infer<typeof gameProcessor.gameActionSchema>;
+
+  // type GameStateType = z.infer<typeof gameEngineMetadata.processor["gameStateJsonSchema"]>;
+  // type GameActionType = z.infer<typeof gameEngineMetadata.processor["gameActionJsonSchema"]>;
 
   // const validGameActions = gameEngineMetadata.processor
   //   .narrowGameActionsToValidGameActions(gameTableActions);
@@ -119,17 +122,16 @@ export const GameTableNextActionPage = () => {
   }
 
 
-
   console.log("latestAction.actionOutcomeGameStateJson", latestAction.actionOutcomeGameStateJson);
 
   const onGameAction = async <
-    GameSpecificState extends z.infer<typeof BfgGameSpecificGameStateSchema>,
-    GameSpecificAction extends z.infer<typeof BfgGameSpecificActionSchema>
+    GameStateType,
+    GameActionType
   >(
     // _gameState: z.infer<typeof gameEngine.gameStateJsonSchema>,
     // gameAction: z.infer<typeof gameEngine.gameActionJsonSchema>
-    _gameState: GameSpecificState,
-    gameAction: GameSpecificAction
+    _gameState: GameStateType,
+    gameAction: GameActionType
   ) => {
     await asPlayerMakeMove(gameTable.id, profileId, gameAction);
   }
@@ -161,8 +163,8 @@ export const GameTableNextActionPage = () => {
   const gameRepresentationComponent = gameEngine.createGameStateRepresentationComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction);
   const gameActionInputComponent = gameEngine.createGameStateActionInputComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction, onGameAction);
   
-  const gameCombinationRepresentationAndInputComponent = gameEngine
-    .createGameStateCombinationRepresentationAndInputComponent ?
+  const gameCombinationRepresentationAndInputComponent = 
+    gameEngine.createGameStateCombinationRepresentationAndInputComponent ?
     gameEngine.createGameStateCombinationRepresentationAndInputComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction, onGameAction) : 
     undefined;
     

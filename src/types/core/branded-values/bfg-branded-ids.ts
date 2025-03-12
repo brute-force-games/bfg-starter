@@ -28,7 +28,6 @@ const PublicRealmNoteIdPrefix = "bfg_public_realm_note" as const;
 
 export const BfgAppKeyValueId = createBfgBrandedIdMetadata("bfg_app_kv" as const);
 export const BfgGameFriendId = createBfgBrandedIdMetadata(GameFriendIdPrefix);
-// export const BfgGamePlayerId = createBfgBrandedIdMetadata(GamePlayerIdPrefix);
 export const BfgPlayerProfileId = createBfgBrandedIdMetadata(PlayerProfileIdPrefix);
 export const BfgGameLobbyId = createBfgBrandedIdMetadata(GameLobbyIdPrefix);
 export const BfgGameMoveId = createBfgBrandedIdMetadata(GameMoveIdPrefix);
@@ -42,15 +41,12 @@ export const BfgPublicRealmNoteId = createBfgBrandedIdMetadata(PublicRealmNoteId
 
 export type AppKeyValueId = typeof BfgAppKeyValueId;
 export type GameFriendId = typeof BfgGameFriendId;
-// export type GamePlayerId = typeof BfgGamePlayerId;
-// export type PlayerProfileId = typeof BfgPlayerProfileId;
 export type GameLobbyId = typeof BfgGameLobbyId;
 export type GameMoveId = typeof BfgGameMoveId;
 export type DexieRealmId = typeof BfgDexieRealmId;
 export type PublicRealmNoteId = typeof BfgPublicRealmNoteId;
 
 
-// export type GamePlayerId = BrandedId<typeof GamePlayerIdPrefix>;
 export type PlayerProfileId = BrandedId<typeof PlayerProfileIdPrefix>;
 export type CommMessageChannelId = BrandedId<typeof CommMessageChannelIdPrefix>;
 export type GameTableId = BrandedId<typeof GameTableIdPrefix>;
@@ -60,7 +56,6 @@ export type GameTableActionId = BrandedId<typeof GameTableActionIdPrefix>;
 export const BfgBrandedIds: _BfgBrandedIds = {
   GameFriendId: BfgGameFriendId,
   GameLobbyId: BfgGameLobbyId,
-  // GamePlayerId: BfgGamePlayerId,
   PlayerProfileId: BfgPlayerProfileId,
   GameMoveId: BfgGameMoveId,
 } as const;

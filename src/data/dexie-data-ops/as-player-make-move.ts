@@ -22,16 +22,16 @@ export const asPlayerMakeMove = async <GameSpecificAction extends z.ZodTypeAny>(
     throw new Error("Table not found");
   }
 
-  console.log("INCOMING PLAYER ACTION", playerAction);
+  const gameMetadata = getBfgGameMetadata(gameTable);
+  const gameProcessor = gameMetadata.processor;
 
-  const selectedGameMetadata = getBfgGameMetadata(gameTable);
-  const selectedGameEngine = selectedGameMetadata.processor as BfgGameEngineProcessor<
-    // typeof gameTable.gameTitle,
-    z.infer<typeof selectedGameMetadata.processor["gameStateJsonSchema"]>,
-    z.infer<typeof selectedGameMetadata.processor["gameActionJsonSchema"]>
+  type GameStateType = z.infer<typeof gameProcessor.gameStateSchema>;
+  type GameActionType = z.infer<typeof gameProcessor.gameActionSchema>;
+
+  const selectedGameEngine = gameProcessor as BfgGameEngineProcessor<
+    GameStateType,
+    GameActionType
   >;
-
-  // const selectedGameEngine = selectedGameMetadata.processor;
 
   const playerActionSource = getPlayerActionSource(gameTable, playerId);  
 

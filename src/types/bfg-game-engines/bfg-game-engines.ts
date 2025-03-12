@@ -1,36 +1,11 @@
 import { z } from "zod";
 import { TicTacToeGameActionSchema, TicTacToeGameStateSchema, TicTacToeGameStateProcessor } from "./tic-tac-toe-engine";
-// import { AbfgSupportedGameTitle } from "./supported-games";
 import { FlipACoinGameActionSchema, FlipACoinGameStateSchema, FlipACoinGameStateProcessor } from "./flip-a-coin-engine";
 import { DbGameTable, NewGameTable, GameTableSeat } from "../core/game-table/game-table";
 import { FlipACoinGameDefinition, GameDefinition, TicTacToeGameDefinition } from "../enums/game-shelf";
 import { BfgGameSpecificActionJsonString, BfgGameSpecificGameStateJsonString } from "../core/branded-values/bfg-game-state-typed-json";
 import { BfgGameSpecificTableAction, DbGameTableAction } from "../core/game-table/game-table-action";
 import { GameTableActionResult } from "../core/game-table/table-phase";
-
-
-
-
-// export type BfgGameEngineProcessor<
-//   TGameTitle extends "Tic Tac Toe" | "Flip a Coin", 
-//   GS extends z.ZodType, 
-//   GA extends z.ZodType
-// > = {
-//   createInitialGameState: (initialGameTableAction: z.infer<GA>) => z.infer<GS>;
-//   createBfgGameSpecificInitialGameTableAction: (gameTable: NewGameTable) => BfgGameSpecificTableAction<GA>;
-
-//   createGameStateJson: (gameState: z.infer<GS>) => TGameTitle extends "Tic Tac Toe" ? BfgGameTypedJsonTicTacToe : BfgGameTypedJsonFlipACoin;
-//   parseGameStateJson: (jsonString: TGameTitle extends "Tic Tac Toe" ? BfgGameTypedJsonTicTacToe : BfgGameTypedJsonFlipACoin) => z.infer<GS>;
-
-//   createGameActionJson: (gameAction: z.infer<GA>) => TGameTitle extends "Tic Tac Toe" ? BfgGameTypedJsonTicTacToe : BfgGameTypedJsonFlipACoin;
-//   parseGameActionJson: (jsonString: TGameTitle extends "Tic Tac Toe" ? BfgGameTypedJsonTicTacToe : BfgGameTypedJsonFlipACoin) => z.infer<GA>;
-
-//   // Other methods...
-// }
-
-
-// export type BfgWrappedGameSpecificAction<GA extends z.ZodType> = BfgGameSpecificTableAction<z.infer<GA>>;
-
 
 
 export type BfgGameEngineProcessor<
@@ -99,11 +74,9 @@ export type BfgGameEngineProcessor<
     gameAction: GA
   ) => GameTableActionResult<GS>;
 
-  // gameStateBrandedJsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;
-  gameStateJsonSchema: z.ZodSchema<GS>;
+  gameStateSchema: z.ZodSchema<GS>;
 
-  // gameActionBrandedJsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;
-  gameActionJsonSchema: z.ZodSchema<GA>;
+  gameActionSchema: z.ZodSchema<GA>;
 }
 
 
@@ -139,32 +112,10 @@ export const AllBfgGameMetadata = {
 } as const;
 
 
-// export const AllBfgGameMetadata = {
-//   ['Tic Tac Toe']: TicTacToeGameStateProcessor,
-//   // ['Hangman']: TicTacToeGameStateProcessor,
-//   // ['Backgammon']: TicTacToeGameStateProcessor,
-//   // ['Chess']: TicTacToeGameStateProcessor,
-//   ['Flip a Coin']: FlipACoinGameStateProcessor,
-// } as const;
-
-
 export const getBfgGameMetadata = (gameTable: DbGameTable | NewGameTable) => {
 
   const gameTitle = gameTable.gameTitle as keyof typeof AllBfgGameMetadata;
   const gameMetadata = AllBfgGameMetadata[gameTitle];
-
-  // const gameStateJsonSchema = gameMetadata["gameStateJsonSchema"];
-  // const gameActionJsonSchema = gameMetadata["gameActionJsonSchema"];
-  
-  // const gameMetadata = AllBfgGameMetadata[gameTitle] as BfgGameEngineMetadata<
-  //   z.infer<typeof AllBfgGameMetadata[typeof gameTable.gameTitle]["gameStateJsonSchema"]>,
-  //   z.infer<typeof AllBfgGameMetadata[typeof gameTable.gameTitle]["gameActionJsonSchema"]>
-  // >;
-
-  // const gameMetadata = AllBfgGameMetadata[gameTitle] as BfgGameEngineMetadata<
-  //   z.infer<typeof AllBfgGameMetadata[typeof gameTable.gameTitle]>,
-  //   z.infer<typeof AllBfgGameMetadata[typeof gameTable.gameTitle]>
-  // >;
 
   return gameMetadata;
 }
@@ -180,16 +131,3 @@ export const getBfgGameDefinition = (gameTable: DbGameTable | NewGameTable) => {
   const gameMetadata = getBfgGameMetadata(gameTable);
   return gameMetadata.definition;
 }
-
-
-// export type BfgGameEngineProcessor<
-//   TGameTitle extends z.infer<typeof BfgSupportedGameTitlesSchema>, 
-//   GS extends z.ZodType, 
-//   GA extends z.ZodType
-// > = {
-//   createInitialGameState: (initialGameTableAction: z.infer<GA>) => GS;  // Ensure this is inferred from Zod schema
-//   createInitialGameTableAction: (gameTable: NewGameTable) => z.infer<GA>;  // Ensure this is inferred from Zod schema
-
-//   // Other methods...
-// }
-

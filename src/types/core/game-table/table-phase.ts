@@ -14,22 +14,10 @@ export const TablePhaseEnumSchema = z.enum([
 export type TablePhase = z.infer<typeof TablePhaseEnumSchema>;
 
 
-// export const TablePhaseSchema = z.discriminatedUnion('tablePhase', [
-//   z.object({
-//     tablePhase: z.literal("table-phase-lobby"),
-//   }),
-  
-// ]);
-
-
 export type GameTableActionResult<T> = {
   tablePhase: TablePhase;
-  // gameTableState: DbGameTable;
   gameSpecificState: T;
-  // gameSpecificStateJson: BfgGameTypedJson<AbfgSupportedGameTitle>;
-  // gameTableState: T;
   gameSpecificStateSummary: string;
-  // this could also include a list of players that can act next (right now, held per game in its game state)
 }
 
 

@@ -19,7 +19,6 @@ export const PlayerIndexSchema = z.number().nonnegative().brand('PlayerIndex');
 export type PlayerIndex = z.infer<typeof PlayerIndexSchema>;
 
 export const PlayerDefSchema = z.object({
-  // playerIndex: PlayerIndexSchema,
   playerKey: PlayerKeySchema,
   playerId: BfgPlayerProfileId.idSchema,
   playerName: z.string(),
@@ -27,11 +26,6 @@ export const PlayerDefSchema = z.object({
 
 export type PlayerDef = z.infer<typeof PlayerDefSchema>;
 
-
-// export type AllPlayerDefs = PlayerDef[];
-// export type AllPlayerDefs = { [key: PlayerIndex]: PlayerDef };
-
-// export type AllPlayerDefsJson = { [key: PlayerIndex]: PlayerDefJson };
 
 export const AllPlayerDefsSchema = createAllPlayersSchema(PlayerDefSchema);
 

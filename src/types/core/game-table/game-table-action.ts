@@ -23,7 +23,6 @@ export const GameTableActionSourceSchema = z.enum([
 export type GameTableActionSource = z.infer<typeof GameTableActionSourceSchema>;
 
 
-
 export const GameTableActionTypeSchema = z.enum([
   'game-table-action-host-starts-lobby',
   'game-table-action-host-starts-game',
@@ -39,48 +38,6 @@ export const GameTableActionTypeSchema = z.enum([
 ]);
 
 export type GameTableActionType = z.infer<typeof GameTableActionTypeSchema>;
-
-
-
-// const createGameSpecificGameStateJsonSchema = (gameTitle: AbfgSupportedGameTitle) => {
-//   return createBrandedGameAndTypeJsonSchema(gameTitle, 'game-state');
-// }
-
-// const createGameSpecificActionJsonSchema = (gameTitle: AbfgSupportedGameTitle) => {
-//   return createBrandedGameAndTypeJsonSchema(gameTitle, 'game-action');
-// }
-
-// const createGameSpecificGameStateJsonSchema = (gameTitle: AbfgSupportedGameTitle) => {
-//   return createBrandedGameAndTypeJsonSchema(gameTitle, 'game-state');
-// }
-
-// const createGameSpecificActionJsonSchema = (gameTitle: AbfgSupportedGameTitle) => {
-//   return createBrandedGameAndTypeJsonSchema(gameTitle, 'game-action');
-// }
-
-
-// export const BfgGameSpecificTypedJsonStringSchema = z.object({
-//   bfgGameTitle: createGameSpecificGameStateJsonSchema("Flip a Coin"),
-//   bfgGameDataJsonType: createGameSpecificActionJsonSchema("Flip a Coin"),
-//   jsonString: z.string(),
-// });
-
-
-
-// export const NewGameTableActionSchema = z.object({
-//   source: GameTableActionSourceSchema,
-//   actionType: GameTableActionTypeSchema,
-  
-//   // actionJson: z.string(),
-//   actionJson: createGameSpecificActionJsonSchema("Flip a Coin"),
-//   actionOutcomeGameStateJson: createGameSpecificGameStateJsonSchema("Flip a Coin"),
-
-//   // nextPlayersToAct: z.array(GameTableSeatSchema),
-
-//   createdAt: z.date(),
-// });
-
-// export type NewGameTableAction = z.infer<typeof NewGameTableActionSchema>;
 
 
 export const createNewGameTableActionSchema = (gameTitle: AbfgSupportedGameTitle) => {
@@ -102,34 +59,6 @@ export const createNewGameTableActionSchema = (gameTitle: AbfgSupportedGameTitle
 export type NewGameTableAction = z.infer<ReturnType<typeof createNewGameTableActionSchema>>;
 
 
-
-
-
-// export const DbGameTableActionSchema = NewGameTableActionSchema.extend({
-//   id: BfgGameTableActionId.idSchema,
-
-//   gameTableId: BfgGameTableId.idSchema,
-//   previousActionId: BfgGameTableActionId.idSchema.nullable(),
-
-//   realmId: z.string().optional(),
-// });
-
-// export const createNewGameTableActionSchema = (gameTitle: AbfgSupportedGameTitle) => {
-
-//   const actionJsonSchema = createGameSpecificActionJsonSchema(gameTitle);
-//   const gameStateJsonSchema = createGameSpecificGameStateJsonSchema(gameTitle);
-
-//   const retVal = z.object({
-//     source: GameTableActionSourceSchema,
-//     actionType: GameTableActionTypeSchema,
-//     actionJson: actionJsonSchema,
-//     actionOutcomeGameStateJson: gameStateJsonSchema,
-//     createdAt: z.date(),
-//   });
-
-//   return retVal;
-// }
-
 export const createDbGameTableActionSchema = (gameTitle: AbfgSupportedGameTitle) => {
   const newGameTableActionSchema = createNewGameTableActionSchema(gameTitle);
 
@@ -148,12 +77,6 @@ export const createDbGameTableActionSchema = (gameTitle: AbfgSupportedGameTitle)
 export type DbGameTableAction = z.infer<ReturnType<typeof createDbGameTableActionSchema>>;  
 
 
-// const BfgGameTableActionTypeSchema = z.object({
-//   gameActionType: GameActionTypeSchema,
-// });
-
-
-
 export type BfgGameSpecificTableAction<TA> = {
   gameTableActionId: z.infer<typeof BfgGameTableActionId.idSchema>,
   source: z.infer<typeof GameTableActionSourceSchema>,
@@ -161,62 +84,3 @@ export type BfgGameSpecificTableAction<TA> = {
 
   gameSpecificAction: TA;
 }
-
-
-// export const createBfgGameSpecificTableActionSchema = <T extends z.ZodType>(
-//   // gameActionTypeId: z.ZodBranded<z.ZodTypeAny, 'game-action-type-id'>,
-
-  
-//   gameActionTypeSchema: z.ZodSchema,
-// ): BfgGameSpecificTableAction<z.infer<typeof gameActionTypeSchema>> => {
-
-//   // GameTableActionTypeSchema
-
-//   // source: GameTableActionSourceSchema,
-//   // actionType: GameTableActionTypeSchema,
-  
-//   // actionJson: z.string(),
-//   // actionOutcomeGameStateJson: z.string(),
-
-//   // // nextPlayersToAct: z.array(GameTableSeatSchema),
-
-//   // createdAt: z.date(),
-
-
-//   const retVal = z.object({
-//     // id: BfgGameTableActionId.idSchema,
-//     // source: GameTableActionSourceSchema,
-//     // actionType: GameTableActionTypeSchema,
-//     actionId: z.infer<T>,
-//     source: GameTableActionSourceSchema,
-//     actionType: GameTableActionTypeSchema,
-  
-//     gameActionType: gameActionTypeSchema,
-//     // actionJson: z.string(),
-//     // actionOutcomeGameStateJson: z.string(),
-//   });
-
-//   return retVal;
-// }
-
-
-export const BfgGameSpecificGameStateSchema = z.object({
-  // gameTableActionId: BfgGameTableActionId.idSchema,
-  // source: GameTableActionSourceSchema,
-  // actionType: GameTableActionTypeSchema,
-  // gameSpecificAction: z.any(),
-})
-// .brand('game-specific-game-state');
-
-export type BfgGameSpecificGameState = z.infer<typeof BfgGameSpecificGameStateSchema>;
-
-
-export const BfgGameSpecificActionSchema = z.object({
-  // gameTableActionId: BfgGameTableActionId.idSchema,
-  // source: GameTableActionSourceSchema,
-  // actionType: GameTableActionTypeSchema,
-  // gameSpecificAction: z.any(),
-})
-// .brand('game-specific-action');
-
-export type BfgGameSpecificAction = z.infer<typeof BfgGameSpecificActionSchema>;

@@ -29,13 +29,20 @@ export const initializeGameTable = async (gameTable: NewGameTable) => {
   //   z.infer<typeof selectedGameProcessor.processor["gameActionJsonSchema"]>
   // >;
 
-  type gameSpecificStateType = z.infer<typeof selectedGameProcessor.processor["gameStateJsonSchema"]>;
-  type gameSpecificActionType = z.infer<typeof selectedGameProcessor.processor["gameActionJsonSchema"]>;
+  const gameMetadata = getBfgGameMetadata(gameTable);
 
-  const selectedGameProcessor = getBfgGameMetadata(gameTable);
-  const selectedGameEngine = selectedGameProcessor.processor as BfgGameEngineProcessor<
-    gameSpecificStateType,
-    gameSpecificActionType
+  const gameProcessor = gameMetadata.processor;
+  type GameStateType = z.infer<typeof gameProcessor.gameStateSchema>;
+  type GameActionType = z.infer<typeof gameProcessor.gameActionSchema>;
+
+
+  // type gameSpecificStateType = z.infer<typeof selectedGameProcessor.processor["gameStateJsonSchema"]>;
+  // type gameSpecificActionType = z.infer<typeof selectedGameProcessor.processor["gameActionJsonSchema"]>;
+
+  // const selectedGameProcessor = getBfgGameMetadata(gameTable);
+  const selectedGameEngine = gameProcessor as BfgGameEngineProcessor<
+    GameStateType,
+    GameActionType
     >;
   // > & {
   //   createInitialGameState: (initialGameTableAction: gameSpecificActionType) => gameSpecificStateType;
