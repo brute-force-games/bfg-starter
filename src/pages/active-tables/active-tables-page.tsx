@@ -123,6 +123,7 @@ export const ActiveTablesPage = () => {
             handleRequestSort={handleRequestSortByTablePhase}
             titleAlign="left"
           />
+          <TableCell>Current Status</TableCell>
           <SortingColumnHeader
             title="Created"
             sorting={sorting}
@@ -154,6 +155,9 @@ export const ActiveTablesPage = () => {
                   myPlayerProfileId={defaultPlayerProfileId}
                   gameTable={table}
                 />
+              </TableCell>
+              <TableCell>
+                {table.currentStatusDescription}
               </TableCell>
               <TableCell>
                 {table.createdAt.toLocaleString()}

@@ -40,6 +40,8 @@ export const asPlayerMakeMove = async <GameSpecificAction extends z.ZodType>(
 
   const afterActionResult = selectedGameEngine.applyGameAction(gameTable, initialGameState, playerAction);
 
+  const gameStateSummary = afterActionResult.gameSpecificStateSummary;
+
   // const gameSpecificAction = playerAction.gameSpecificAction;
   console.log("MAKE MOVE - PLAYER ACTION", playerAction);
 
@@ -78,6 +80,7 @@ export const asPlayerMakeMove = async <GameSpecificAction extends z.ZodType>(
         ...gameTable,
         tablePhase,
         latestActionId: startActionId,
+        currentStatusDescription: gameStateSummary,
       }
 
       await bfgDb
