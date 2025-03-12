@@ -7,10 +7,13 @@ export const FlipACoinGameName = 'Flip a Coin' as const;
 
 export const BfgSupportedGameTitlesSchema = z.enum([
   TicTacToeGameName,
-  FlipACoinGameName,
+  // FlipACoinGameName,
 ] as const);
 
-export type BfgSupportedGameTitle = z.infer<typeof BfgSupportedGameTitlesSchema>;
+// export type AbfgSupportedGameTitle = z.infer<typeof BfgSupportedGameTitlesSchema>;
+export type BfgSupportedGameTitles = z.infer<typeof BfgSupportedGameTitlesSchema>;
+
+export type AbfgSupportedGameTitle = string & BfgSupportedGameTitles;
 
 
 export const BfgGameDataJsonTypesSchema = z.enum([

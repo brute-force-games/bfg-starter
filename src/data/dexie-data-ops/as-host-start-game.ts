@@ -4,7 +4,7 @@ import { DbGameTableId, DbPlayerProfileId } from "~/types/core/branded-values/br
 import { BfgGameTableActionId } from "~/types/core/branded-values/bfg-branded-ids";
 import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
 import { DbGameTable } from "~/types/core/game-table/game-table";
-import { BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engine-metadata";
+import { BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engines";
 import { z } from "zod";
 
 export const asHostStartGame = async (tableId: DbGameTableId, hostPlayerId: DbPlayerProfileId) => {
@@ -32,19 +32,19 @@ export const asHostStartGame = async (tableId: DbGameTableId, hostPlayerId: DbPl
   }
 
   const gameEngine = gameMetadata.processor as BfgGameEngineProcessor<
-    typeof gameTable.gameTitle,
+    // typeof gameTable.gameTitle,
     z.infer<typeof gameMetadata.processor["gameStateJsonSchema"]>,
     z.infer<typeof gameMetadata.processor["gameActionJsonSchema"]>
   >;
 
-  const initGameAction = gameEngine.createInitialGameTableAction(gameTable);
-  const initialGameState = gameEngine.createInitialGameState(initGameAction);
+  const initGameAction = gameEngine.createBfgGameSpecificInitialGameTableAction(gameTable);
+  const initialGameState = gameEngine.createBfgInitialGameState(initGameAction);
   // const nextPlayersToAct = gameEngineMetadata.createNextPlayersToAct(initGameAction, initialGameState);
 
   // console.log("HOST STARTING GAME - NEXT PLAYERS TO ACT", nextPlayersToAct);
 
-  const gameStateJson = gameEngine.createGameStateJson(initialGameState);
-  const actionJson = gameEngine.createGameActionJson(initGameAction);
+  const gameStateJson = gameEngine.createGameSpecificStateJson(initialGameState);
+  const actionJson = gameEngine.createGameSpecificActionJson(initGameAction.gameSpecificAction);
 
   const mostRecentGameActionId = gameTable.latestActionId;
   const startActionId = BfgGameTableActionId.createId();

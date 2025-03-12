@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AllBfgGameMetadata, getBfgGameMetadata } from "~/types/bfg-game-engines/bfg-game-engines";
+import { getBfgGameMetadata } from "~/types/bfg-game-engines/bfg-game-engines";
 import { bfgDb } from "../bfg-db";
 import { DbGameTableId, DbPlayerProfileId } from "~/types/core/branded-values/branded-strings";
 import { BfgGameTableActionId } from "~/types/core/branded-values/bfg-branded-ids";
@@ -8,13 +8,13 @@ import { DbGameTable } from "~/types/core/game-table/game-table";
 import { getLatestAction } from "./order-game-table-actions";
 import { getPlayerActionSource } from "./player-seat-utils";
 import { BfgGameTypedJson } from "~/types/core/branded-values/bfg-game-typed-json";
-import { BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engine-metadata";
+import { BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engines";
 
 
-export const asPlayerMakeMove = async (
+export const asPlayerMakeMove = async <GameSpecificAction extends z.ZodType>(
   tableId: DbGameTableId, 
   playerId: DbPlayerProfileId, 
-  playerAction: z.infer<typeof AllBfgGameMetadata[keyof typeof AllBfgGameMetadata]["processor"]["gameActionJsonSchema"]>
+  playerAction: z.infer<GameSpecificAction>
 ) => {
   const gameTable = await bfgDb.gameTables.get(tableId);
 
@@ -24,7 +24,7 @@ export const asPlayerMakeMove = async (
 
   const selectedGameMetadata = getBfgGameMetadata(gameTable);
   const selectedGameEngine = selectedGameMetadata.processor as BfgGameEngineProcessor<
-    typeof gameTable.gameTitle,
+    // typeof gameTable.gameTitle,
     z.infer<typeof selectedGameMetadata.processor["gameStateJsonSchema"]>,
     z.infer<typeof selectedGameMetadata.processor["gameActionJsonSchema"]>
   >;
@@ -33,14 +33,17 @@ export const asPlayerMakeMove = async (
 
   const latestAction = await getLatestAction(tableId);
 
-  const initialGameState = selectedGameEngine.parseGameStateJson(
+  const initialGameState = selectedGameEngine.parseGameSpecificStateJson(
     latestAction.actionOutcomeGameStateJson as BfgGameTypedJson<typeof gameTable.gameTitle>);
 
-  const afterActionResult = selectedGameEngine.applyGameAction(initialGameState, playerAction);
-  const afterActionGameState = afterActionResult.gameState;
+  const afterActionResult = selectedGameEngine.applyGameAction(gameTable, initialGameState, playerAction);
 
-  const playerActionJson = selectedGameEngine.createGameActionJson(playerAction);
-  const actionOutcomeGameStateJson = selectedGameEngine.createGameStateJson(afterActionGameState);
+  const gameSpecificAction = playerAction.gameSpecificAction;
+
+  const playerActionJson = selectedGameEngine.createGameSpecificActionJson(gameSpecificAction);
+
+  const actionOutcomeGameState = afterActionResult.gameSpecificState;
+  const actionOutcomeGameStateJson = selectedGameEngine.createGameSpecificStateJson(actionOutcomeGameState);
 
   const mostRecentGameActionId = gameTable.latestActionId;
   const startActionId = BfgGameTableActionId.createId();

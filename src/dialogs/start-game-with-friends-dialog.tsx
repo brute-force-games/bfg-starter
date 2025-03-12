@@ -12,13 +12,13 @@ import {
 } from '@mui/material';
 import { useLiveFriends } from '~/data/bfg-db-friends';
 import { DbGameFriendId } from '~/types/core/branded-values/branded-strings';
-import { BfgSupportedGameTitle } from '~/types/bfg-game-engines/supported-games';
+import { AbfgSupportedGameTitle } from '~/types/bfg-game-engines/supported-games';
 import { AllBfgGameMetadata } from '~/types/bfg-game-engines/bfg-game-engines';
 
 
 interface StartGameWithFriendsDialogProps {
-  gameTitle: BfgSupportedGameTitle;
-  onStart: (gameTitle: BfgSupportedGameTitle, friendIds: DbGameFriendId[]) => void;
+  gameTitle: AbfgSupportedGameTitle;
+  onStart: (gameTitle: AbfgSupportedGameTitle, friendIds: DbGameFriendId[]) => void;
   onClose: () => void;
 }
 

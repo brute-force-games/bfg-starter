@@ -1,4 +1,4 @@
-import { AvailableGameTitlesArray, BfgSupportedGameTitle } from "~/types/bfg-game-engines/supported-games";
+import { AvailableGameTitlesArray, AbfgSupportedGameTitle } from "~/types/bfg-game-engines/supported-games";
 import { GameOnShelf } from "./game-on-shelf";
 import { Stack } from "@mui/material";
 import { useState } from "react";
@@ -11,13 +11,13 @@ import { useLiveDefaultPlayerProfile } from "~/data/bfg-db-player-profiles";
 
 export const GamesShelfPage = () => {
 
-  const [startTableGameTitle, setStartTableGameTitle] = useState<BfgSupportedGameTitle | null>(null);
+  const [startTableGameTitle, setStartTableGameTitle] = useState<AbfgSupportedGameTitle | null>(null);
 
   const myProfile = useLiveDefaultPlayerProfile();
 
   const myProfileId = myProfile?.id;
 
-  const handleStartTable = async (gameTitle: BfgSupportedGameTitle, friendIds: DbGameFriendId[]) => {
+  const handleStartTable = async (gameTitle: AbfgSupportedGameTitle, friendIds: DbGameFriendId[]) => {
 
     if (!myProfile || !myProfileId) {
       throw new Error("No default player profile/profile id");
@@ -30,6 +30,7 @@ export const GamesShelfPage = () => {
       sharedWith: [],
       p1: myProfileId,
       createdAt: new Date(),
+      currentStatusDescription: "Game table created",
     }
 
     const inviterHandle = myProfile.handle;

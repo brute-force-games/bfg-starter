@@ -8,7 +8,7 @@ export const DEXIE_DATA_PAGE_ROUTE = "/dexie-data";
 export const DexieDataPage = () => {
 
   const allTableNames = Object.keys(bfgDb.tables)
-    .map((key, index) => ({ name: bfgDb.tables[index].schema.name, index }));
+    .map((_key, index) => ({ name: bfgDb.tables[index].schema.name, index }));
 
   console.log("ALL TABLE NAMES");
   console.log(allTableNames);

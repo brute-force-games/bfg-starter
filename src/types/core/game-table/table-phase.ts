@@ -24,8 +24,11 @@ export type TablePhase = z.infer<typeof TablePhaseEnumSchema>;
 
 export type GameTableActionResult<T> = {
   tablePhase: TablePhase;
-  gameState: T;
-  description: string;
+  // gameTableState: DbGameTable;
+  gameSpecificState: T;
+  // gameSpecificStateJson: BfgGameTypedJson<AbfgSupportedGameTitle>;
+  // gameTableState: T;
+  gameSpecificStateSummary: string;
   // this could also include a list of players that can act next (right now, held per game in its game state)
 }
 

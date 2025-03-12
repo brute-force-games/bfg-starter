@@ -1,9 +1,12 @@
 import { z } from "zod";
-import { createBfgGameEngineProcessor } from "./bfg-game-engine-metadata";
-import { GameTableSeat, GameTableSeatSchema, NewGameTable } from "../core/game-table/game-table";
-import { createTicTacToeRepresentation, createTicTacToeInput, createTicTacToeComboRepresentationAndInput } from "~/game-engine-components/tic-tac-toe/tic-tac-toe-components";
+import { createBfgGameEngineProcessor, IBfgGameEngineProcessor } from "./bfg-game-engine-metadata";
+import { DbGameTable, GameTableSeat, GameTableSeatSchema, NewGameTable } from "../core/game-table/game-table";
+import { createTicTacToeRepresentation, createTicTacToeInput, createTicTacToeComboRepresentationAndInput, createTicTacToeHistory } from "~/game-engine-components/tic-tac-toe/tic-tac-toe-components";
 import { GameTableActionResult } from "../core/game-table/table-phase";
 import { TicTacToeGameName } from "./supported-games";
+import { BfgGameEngineProcessor } from "./bfg-game-engines";
+import { BfgGameSpecificActionSchema, BfgGameSpecificGameStateSchema, BfgGameSpecificTableAction } from "../core/game-table/game-table-action";
+import { BfgGameTableActionId } from "../core/branded-values/bfg-branded-ids";
 
 
 export const TicTacToeResolutionSchema = z.enum([
@@ -25,7 +28,7 @@ export const TicTacToeMoveCellSchema = z.enum([
 export type TicTacToeMoveCell = z.infer<typeof TicTacToeMoveCellSchema>;
 
 
-export const TicTacToeSetupBoardSchema = z.object({
+export const TicTacToeSetupBoardSchema = BfgGameSpecificActionSchema.extend({
   actionType: z.literal('game-table-action-host-setup-board'),
   board: z.string().length(9),
 })
@@ -33,7 +36,7 @@ export const TicTacToeSetupBoardSchema = z.object({
 export type TicTacToeSetupBoard = z.infer<typeof TicTacToeSetupBoardSchema>;
 
 
-export const TicTacToeMoveSchema = z.object({
+export const TicTacToeMoveSchema = BfgGameSpecificActionSchema.extend({
   actionType: z.literal('game-table-action-player-move'),
   moveCell: TicTacToeMoveCellSchema,
   movePlayer: GameTableSeatSchema,
@@ -50,7 +53,8 @@ export const TicTacToeGameActionSchema = z.discriminatedUnion('actionType', [
 export type TicTacToeGameAction = z.infer<typeof TicTacToeGameActionSchema>;
 
 
-export const TicTacToeGameStateSchema = z.object({
+export const TicTacToeGameStateSchema = BfgGameSpecificGameStateSchema.extend({
+  // board: z.string().length(9),
   board: z.string().length(9),
   // currentPlayer: GameTableSeatSchema,
   nextPlayersToAct: z.array(GameTableSeatSchema),
@@ -70,29 +74,49 @@ export type TicTacToeGameState = z.infer<typeof TicTacToeGameStateSchema>;
 // }
 
 
-const createInitialGameState = (
+const createTicTacToeInitialGameState = (
   initialGameTableAction: TicTacToeGameAction,
-): TicTacToeGameState => {
+): GameTableActionResult<TicTacToeGameState> => {
 
+  // createInitialGameSpecificState: (initialGameSpecificAction: GA) => GameTableActionResult<GS>,
   if (initialGameTableAction.actionType !== 'game-table-action-host-setup-board') {
     throw new Error("Initial game table action must be a host setup board");
   }
 
-  return {
+  const initialGameState: TicTacToeGameState = {
     board: initialGameTableAction.board,
     nextPlayersToAct: ['p1'],
     resolution: 'game-in-progress' as TicTacToeResolution,
   }
+
+  return {
+    gameSpecificState: initialGameState,
+    tablePhase: 'table-phase-game-in-progress',
+    gameSpecificStateSummary: `Game started with board: ${initialGameState.board}`,
+  };
 }
 
 
 const createInitialGameTableAction = (
-  _gameTable: NewGameTable,
-): TicTacToeGameAction => {
-  return {
+  gameTable: NewGameTable,
+): BfgGameSpecificTableAction<TicTacToeGameAction> => {
+  const initialGameTableAction: TicTacToeGameAction = {
     actionType: 'game-table-action-host-setup-board',
     board: "---------",
-  };
+  }
+
+  const gameTableActionId = BfgGameTableActionId.createId();
+
+  const gameSpecificTableAction: BfgGameSpecificTableAction<TicTacToeGameAction> = {  
+    ...gameTable,
+    gameSpecificAction: initialGameTableAction,
+    gameTableActionId: gameTableActionId,
+    // gameTableActionId: gameTable.gameTableActionId,
+    source: 'game-table-action-source-host',
+    actionType: 'game-table-action-host-setup-board',
+  }
+
+  return gameSpecificTableAction;
 }
 
 
@@ -105,10 +129,13 @@ const createNextPlayersToAct = (gameAction: TicTacToeMove, _gameState: TicTacToe
 }
 
 
-const applyGameAction = (
+const applyTicTacToeGameAction = (
+  tableState: DbGameTable,
   gameState: TicTacToeGameState,
   gameAction: TicTacToeGameAction,
 ): GameTableActionResult<TicTacToeGameState> => {
+
+  // applyGameAction: (tableState: DbGameTable, gameState: GS, gameAction: GA) => GameTableActionResult<GS>,
 
   if (gameAction.actionType === 'game-table-action-host-setup-board') {
     throw new Error("Host setup board is not a valid game action");
@@ -158,9 +185,11 @@ const applyGameAction = (
     {
       newGameState.resolution = playerSymbol === 'X' ? 'game-over-x-wins' : 'game-over-o-wins';
       return {
+        // gameTableState: tableState,
+        gameSpecificState: newGameState,
+        // gameSpecificStateJson: selectedGameEngine.createGameStateJson(newGameState),
         tablePhase: 'table-phase-game-complete-with-winners',
-        gameState: newGameState,
-        description: `Player ${movePlayer} ${playerSymbol} wins`,
+        gameSpecificStateSummary: `Player ${movePlayer} ${playerSymbol} wins`,
       };
     }
   }
@@ -169,36 +198,60 @@ const applyGameAction = (
   if (!newBoard.includes('-')) {
     newGameState.resolution = 'game-over-draw';
     return {
+      ...tableState,
       tablePhase: 'table-phase-game-complete-with-draw',
-      gameState: newGameState,
-      description: 'Game is a draw',
+      gameSpecificState: newGameState,
+      gameSpecificStateSummary: 'Game is a draw',
     };
   }
 
   return {
+    ...tableState,
     tablePhase: 'table-phase-game-in-progress',
-    gameState: newGameState,
-    description: `Player ${movePlayer} ${playerSymbol} takes ${moveCell}`,
+    gameSpecificState: newGameState,
+    gameSpecificStateSummary: `Player ${movePlayer} ${playerSymbol} takes ${moveCell}`,
   };
 }
 
 
-export const TicTacToeGameStateProcessor = createBfgGameEngineProcessor(
+const ticTacToeProcessorImplementation: IBfgGameEngineProcessor<
+  // typeof TicTacToeGameStateSchema,
+  // typeof TicTacToeGameActionSchema
+  TicTacToeGameState,
+  TicTacToeGameAction
+> = {
+
+  gameTitle: TicTacToeGameName,
+  // gameStateSchema: TicTacToeGameStateSchema,
+  // gameActionSchema: TicTacToeGameActionSchema,
+
+  applyGameAction: applyTicTacToeGameAction,
+  createInitialGameSpecificState: createTicTacToeInitialGameState,
+  createInitialGameTableAction: createInitialGameTableAction,
+
+  createGameStateRepresentationComponent: createTicTacToeRepresentation,
+  createGameStateActionInputComponent: createTicTacToeInput,
+
+  createGameStateCombinationRepresentationAndInputComponent: createTicTacToeComboRepresentationAndInput,
+
+  createGameHistoryComponent: createTicTacToeHistory,
+}
+
+
+
+export const TicTacToeGameStateProcessor: BfgGameEngineProcessor<
+  TicTacToeGameState, 
+  TicTacToeGameAction
+> = createBfgGameEngineProcessor(
+
   TicTacToeGameName,
   TicTacToeGameStateSchema,
   TicTacToeGameActionSchema,
 
-  applyGameAction,
-
-  createInitialGameState,
-  createInitialGameTableAction,
-
-  // createTicTacToeHistory,
-
-
-  createTicTacToeRepresentation,
-  createTicTacToeInput,
-  createTicTacToeComboRepresentationAndInput,
+  ticTacToeProcessorImplementation as unknown as IBfgGameEngineProcessor<
+    typeof TicTacToeGameStateSchema,
+    typeof TicTacToeGameActionSchema
+  >,
 );
 
 

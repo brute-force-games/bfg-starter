@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BfgSupportedGameTitle, BfgSupportedGameTitlesSchema, FlipACoinGameName, TicTacToeGameName } from "../bfg-game-engines/supported-games";
+import { AbfgSupportedGameTitle, BfgSupportedGameTitlesSchema, FlipACoinGameName, TicTacToeGameName } from "../bfg-game-engines/supported-games";
 
 
 // export const TIC_TAC_TOE_GAME_TITLE = "Tic Tac Toe" as const;
@@ -18,14 +18,14 @@ import { BfgSupportedGameTitle, BfgSupportedGameTitlesSchema, FlipACoinGameName,
 // ] as const;
 
 // export type AvailableGameTitlesType = typeof AvailableGameTitles;
-export type AvailableGameTitlesType = BfgSupportedGameTitle;
+export type AvailableGameTitlesType = AbfgSupportedGameTitle;
 
 // export const AvailableGameTitlesSchema = z.enum(AvailableGameTitles);
 
 export const AvailableGameTitlesSchema = BfgSupportedGameTitlesSchema;
 
 // export type AvailableGameTitleChoice = z.infer<typeof AvailableGameTitlesSchema>;
-export type AvailableGameTitleChoice = BfgSupportedGameTitle;
+export type AvailableGameTitleChoice = AbfgSupportedGameTitle;
 
 
 

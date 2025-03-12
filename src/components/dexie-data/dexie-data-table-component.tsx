@@ -12,7 +12,7 @@ export const DexieDataTableComponent = (props: DexieDataTableComponentProps) => 
   const { tableName, table } = props;
   const [isOpen, setIsOpen] = useState(false);
 
-  const tableData = table?.toArray();
+  // const tableData = table?.toArray();
 
 
   // const tableNamesToShow = allTableNames?.filter((name) => !name.startsWith('$'));

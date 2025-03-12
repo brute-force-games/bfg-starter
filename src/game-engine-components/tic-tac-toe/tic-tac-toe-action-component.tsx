@@ -43,7 +43,7 @@ export const TicTacToeActionComponent = (props: ITicTacToeActionComponentProps) 
   const actionPlayerLabel = actionPlayerSeat === 'p1' ? 'X' : 'O';
   
   const actionMoveJson = action.actionJson as BfgGameTypedJson<typeof gameTable.gameTitle>;
-  const parsedMove = gameEngineMetadata.processor.parseGameActionJson(actionMoveJson);
+  const parsedMove = gameEngineMetadata.processor.parseGameSpecificActionJson(actionMoveJson);
 
   const getActionMoveText = (action: TicTacToeGameAction) => {
     if (action.actionType === 'game-table-action-player-move') {

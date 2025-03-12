@@ -1,10 +1,10 @@
 import { CardContent, Typography, CardActions, Button, Card } from "@mui/material";
-import { BfgSupportedGameTitle } from "~/types/bfg-game-engines/supported-games";
+import { AbfgSupportedGameTitle } from "~/types/bfg-game-engines/supported-games";
 
 
 interface GameOnShelfProps {
-  title: BfgSupportedGameTitle;
-  onStartGame: (gameTitle: BfgSupportedGameTitle) => void;
+  title: AbfgSupportedGameTitle;
+  onStartGame: (gameTitle: AbfgSupportedGameTitle) => void;
 }
 
 export const GameOnShelf = (props: GameOnShelfProps) => {

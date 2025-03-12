@@ -32,7 +32,7 @@ export const GameTablesPage = () => {
     await deleteAllPlayerGameTables(profileId);
   }
 
-  const onNewDataItemCreated = async (gameTableParameters: NewGameTable) => {
+  const onNewDataItemCreated = async (_gameTableParameters: NewGameTable) => {
     console.log("MyPlayerProfilesPage: onNewDataItemCreated");
 
     

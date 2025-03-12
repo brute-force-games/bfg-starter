@@ -27,6 +27,8 @@ export const NewGameTableSchema = z.object({
   gameHostPlayerProfileId: BfgPlayerProfileId.idSchema,
   tablePhase: TablePhaseEnumSchema,
 
+  currentStatusDescription: z.string(),
+
   sharedWith: z.array(BfgGameFriendId.idSchema),
 
   p1: BfgPlayerProfileId.idSchema,

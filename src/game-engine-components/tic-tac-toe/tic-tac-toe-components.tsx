@@ -3,6 +3,7 @@ import { TicTacToeInput } from "./tic-tac-toe-input";
 import { TicTacToeGrid } from "./tic-tac-toe-grid";
 import { TicTacToeRepresentation } from "./tic-tac-toe-representation";
 import { GameTableSeat } from "~/types/core/game-table/game-table";
+import { BfgGameSpecificTableAction } from "~/types/core/game-table/game-table-action";
 
 
 export const createTicTacToeRepresentation = (
@@ -51,21 +52,22 @@ export const createTicTacToeComboRepresentationAndInput = (
 }
 
 
-// export const createTicTacToeHistory = (
-//   myPlayerSeat: GameTableSeat,
-//   gameState: TicTacToeGameState,
-//   timeOrderedGameActions: BfgGameSpecificTableAction<typeof TicTacToeGameActionSchema, typeof TicTacToeGameActionSchema>[]
-// ) => {
-//   return (
-//     <>
-//       {timeOrderedGameActions.map(action => (
-//         <TicTacToeActionComponent
-//           myPlayerSeat={myPlayerSeat}
-//           key={action.gameTableActionId}
-//           gameTable={gameTable}
-//           action={action.gameSpecificAction}
-//         />
-//       ))}
-//     </>
-//   )
-// }
+export const createTicTacToeHistory = (
+  _myPlayerSeat: GameTableSeat,
+  _gameState: TicTacToeGameState,
+  _timeOrderedGameActions: BfgGameSpecificTableAction<TicTacToeGameAction>[]
+) => {
+  return (
+    <>
+      Tic Tac Toe History
+      {/* {timeOrderedGameActions.map(action => (
+        <TicTacToeActionComponent
+          myPlayerSeat={myPlayerSeat}
+          key={action.gameTableActionId}
+          gameTable={gameTable}
+          action={action.gameSpecificAction}
+        />
+      ))} */}
+    </>
+  )
+}

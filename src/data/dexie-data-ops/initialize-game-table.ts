@@ -6,7 +6,7 @@ import { getBfgGameMetadata } from "~/types/bfg-game-engines/bfg-game-engines";
 import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
 import { AvailableGameTitles } from "~/types/bfg-game-engines/supported-games";
 import { z } from "zod";
-import { BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engine-metadata";
+import { BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engines";
 
 
 // TODO: how much of this is necessary vs host starting game?
@@ -22,12 +22,24 @@ export const initializeGameTable = async (gameTable: NewGameTable) => {
   // const selectedGameProcessor = BfgGameEngineMetadata[selectedGameTitle];
 
 
+  // const selectedGameProcessor = getBfgGameMetadata(gameTable);
+  // const selectedGameEngine = selectedGameProcessor.processor as BfgGameEngineProcessor<
+  //   // typeof gameTable.gameTitle,
+  //   z.infer<typeof selectedGameProcessor.processor["gameStateJsonSchema"]>,
+  //   z.infer<typeof selectedGameProcessor.processor["gameActionJsonSchema"]>
+  // >;
+
+  type gameSpecificStateType = z.infer<typeof selectedGameProcessor.processor["gameStateJsonSchema"]>;
+  type gameSpecificActionType = z.infer<typeof selectedGameProcessor.processor["gameActionJsonSchema"]>;
+
   const selectedGameProcessor = getBfgGameMetadata(gameTable);
   const selectedGameEngine = selectedGameProcessor.processor as BfgGameEngineProcessor<
-    typeof gameTable.gameTitle,
-    z.infer<typeof selectedGameProcessor.processor["gameStateJsonSchema"]>,
-    z.infer<typeof selectedGameProcessor.processor["gameActionJsonSchema"]>
-  >;
+    gameSpecificStateType,
+    gameSpecificActionType
+    >;
+  // > & {
+  //   createInitialGameState: (initialGameTableAction: gameSpecificActionType) => gameSpecificStateType;
+  // };
 
   // const selectedGameProcessor = BfgGameEngineMetadata[selectedGameTitle] as BfgGameEngineProcessor<
   //   z.infer<typeof BfgGameEngineMetadata[typeof selectedGameTitle]["gameStateJsonSchema"]>,
@@ -37,11 +49,11 @@ export const initializeGameTable = async (gameTable: NewGameTable) => {
   // >;
 
 
-  const initGameAction = selectedGameEngine.createInitialGameTableAction(gameTable);
-  const initialGameState = selectedGameEngine.createInitialGameState(initGameAction);
+  const initGameAction = selectedGameEngine.createBfgGameSpecificInitialGameTableAction(gameTable);
+  const initialGameState = selectedGameEngine.createBfgInitialGameState(initGameAction);
 
-  const initialGameStateJson = selectedGameEngine.createGameStateJson(initialGameState);
-  const actionJson = selectedGameEngine.createGameActionJson(initGameAction);
+  const initialGameStateJson = selectedGameEngine.createGameSpecificStateJson(initialGameState);
+  const actionJson = selectedGameEngine.createGameSpecificActionJson(initGameAction.gameSpecificAction);
 
   
   console.log("actionJson", actionJson);

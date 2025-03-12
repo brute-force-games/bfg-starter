@@ -52,7 +52,7 @@ export const GameTableDetailsComponent = ({ gameTable }: IGameTableDetailsCompon
       <div>Game Started: {gameTable.createdAt.toLocaleString()}</div>
       <div>Game Phase: {gameTable.tablePhase}</div>
 
-      <GameTablePlayerOptionsComponent myPlayerId={defaultPlayerProfileId} gameTable={gameTable} />
+      <GameTablePlayerOptionsComponent myPlayerProfileId={defaultPlayerProfileId} gameTable={gameTable} />
 
       <div>My Table? {gameTable.gameHostPlayerProfileId === defaultPlayerProfileId ? "Yes" : "No"}</div>
       <div>Shared with: {gameTable.sharedWith.map(friendId => friendId).join(', ')}</div>

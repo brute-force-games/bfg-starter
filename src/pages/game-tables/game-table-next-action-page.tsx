@@ -8,9 +8,10 @@ import { AllBfgGameMetadata } from "~/types/bfg-game-engines/bfg-game-engines";
 import { BfgGameTypedJson } from "~/types/core/branded-values/bfg-game-typed-json";
 import { asPlayerMakeMove } from "~/data/dexie-data-ops/as-player-make-move";
 import { TicTacToeActionComponent } from "~/game-engine-components/tic-tac-toe/tic-tac-toe-action-component";
-import { BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engine-metadata";
 import { matchPlayerToSeat } from "~/data/dexie-data-ops/player-seat-utils";
 import { VerticalSpacerDiv } from "~/components/special-divs";
+import { BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engines";
+import { BfgGameSpecificActionSchema, BfgGameSpecificGameStateSchema } from "~/types/core/game-table/game-table-action";
 
 
 export const GameTableNextActionPage = () => {
@@ -52,10 +53,10 @@ export const GameTableNextActionPage = () => {
   const gameEngineMetadata = AllBfgGameMetadata[gameTable.gameTitle];
 
   const gameEngine = gameEngineMetadata.processor as BfgGameEngineProcessor<
-    typeof gameTable.gameTitle,
+    // typeof gameTable.gameTitle,
     // z.infer<typeof gameEngineMetadata.processor["gameStateJsonSchema"]>,
     // z.infer<typeof gameEngineMetadata.processor["gameActionJsonSchema"]>
-    GameStateType,
+     GameStateType,
     GameActionType
   >;
 
@@ -101,32 +102,35 @@ export const GameTableNextActionPage = () => {
 
   console.log("latestAction.actionOutcomeGameStateJson", latestAction.actionOutcomeGameStateJson);
 
-  const onGameAction = async (
+  const onGameAction = async <
+    GameSpecificState extends z.infer<typeof BfgGameSpecificGameStateSchema>,
+    GameSpecificAction extends z.infer<typeof BfgGameSpecificActionSchema>
+  >(
     // _gameState: z.infer<typeof gameEngine.gameStateJsonSchema>,
     // gameAction: z.infer<typeof gameEngine.gameActionJsonSchema>
-    _gameState: GameStateType,
-    gameAction: GameActionType
+    _gameState: GameSpecificState,
+    gameAction: GameSpecificAction
   ) => {
     await asPlayerMakeMove(gameTable.id, profileId, gameAction);
   }
   
   // const gameState = gameEngine.parseGameStateJson(
   //   latestAction.actionOutcomeGameStateJson as BfgGameTypedJson<typeof gameTable.gameTitle>);
-  const gameState = gameEngine.parseGameStateJson(
+  const gameSpecificState = gameEngine.parseGameSpecificStateJson(
     latestAction.actionOutcomeGameStateJson as BfgGameTypedJson<typeof gameTable.gameTitle>);
 
-  const latestGameAction = gameEngine.parseGameActionJson(
+  const latestGameSpecificAction = gameEngine.parseGameSpecificActionJson(
     latestAction.actionJson as BfgGameTypedJson<typeof gameTable.gameTitle>);
 
-  console.log("parsed game state", gameState);
+  console.log("parsed game state", gameSpecificState);
 
 
-  const gameRepresentationComponent = gameEngine.createGameStateRepresentationComponent(myPlayerSeat, gameState, latestGameAction);
-  const gameActionInputComponent = gameEngine.createGameStateActionInputComponent(myPlayerSeat, gameState, latestGameAction, onGameAction);
+  const gameRepresentationComponent = gameEngine.createGameStateRepresentationComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction);
+  const gameActionInputComponent = gameEngine.createGameStateActionInputComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction, onGameAction);
   
   const gameCombinationRepresentationAndInputComponent = gameEngine
     .createGameStateCombinationRepresentationAndInputComponent ?
-    gameEngine.createGameStateCombinationRepresentationAndInputComponent(myPlayerSeat, gameState, latestGameAction, onGameAction) : 
+    gameEngine.createGameStateCombinationRepresentationAndInputComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction, onGameAction) : 
     undefined;
 
   // const validGameActions = orderedGameTableActions.filter(action => {
@@ -140,7 +144,11 @@ export const GameTableNextActionPage = () => {
   //   );
   // });
 
-  // const gameHistoryComponent = gameEngine.createGameHistoryComponent(myPlayerSeat, gameState, validGameActions);
+  const validGameActions = gameEngine.narrowGameActionsToValidGameActions(orderedGameTableActions);
+
+  const gameHistoryComponent = gameEngine.createGameHistoryComponent ?
+    gameEngine.createGameHistoryComponent(myPlayerSeat, gameSpecificState, validGameActions) :
+    undefined;
 
 
   const gameUserInteraction = 
@@ -162,6 +170,8 @@ export const GameTableNextActionPage = () => {
       {gameUserInteraction}
 
       <div>Game History [{orderedGameTableActions.length}]</div>
+      {gameHistoryComponent}
+      
       <div>
         {orderedGameTableActions.map(action => (
           <TicTacToeActionComponent

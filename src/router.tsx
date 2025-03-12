@@ -48,7 +48,7 @@ import { DexieAdminPage } from './pages/dexie-admin/dexie-admin-page';
 import { GamesShelfPage } from './pages/games-shelf/games-shelf-page';
 import { NotificationsPage } from './pages/notifications/notifications-page';
 import { GamingGroupsPage } from './pages/gaming-groups/gaming-groups-page';
-import { PublicRealmNotesPage } from './pages/public-realm-data/public-realm-notes-page';
+// import { PublicRealmNotesPage } from './pages/public-realm-data/public-realm-notes-page';
 import { ACTIVE_TABLES_ROUTE, ActiveTablesPage } from './pages/active-tables/active-tables-page';
 import { DexieDataPage } from './pages/dexie-data/dexie-data-page';
 import { DEXIE_DATA_PAGE_ROUTE } from './pages/dexie-data/dexie-data-page';
@@ -152,10 +152,10 @@ export const router = createBrowserRouter([
         element: <GamingGroupsPage />,
       },
 
-      {
-        path: "public-realm-notes",
-        element: <PublicRealmNotesPage />,
-      },
+      // {
+      //   path: "public-realm-notes",
+      //   element: <PublicRealmNotesPage />,
+      // },
 
       {
         path: ACTIVE_TABLES_ROUTE,
