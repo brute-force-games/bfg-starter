@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { TicTacToeGameActionSchema, TicTacToeGameStateSchema, TicTacToeGameStateProcessor } from "./tic-tac-toe-engine";
-import { AbfgSupportedGameTitle } from "./supported-games";
+// import { AbfgSupportedGameTitle } from "./supported-games";
 import { FlipACoinGameActionSchema, FlipACoinGameStateSchema, FlipACoinGameStateProcessor } from "./flip-a-coin-engine";
 import { DbGameTable, NewGameTable, GameTableSeat } from "../core/game-table/game-table";
 import { FlipACoinGameDefinition, GameDefinition, TicTacToeGameDefinition } from "../enums/game-shelf";
-import { BfgGameSpecificGameStateTypedJson } from "../core/branded-values/bfg-game-state-typed-json";
+import { BfgGameSpecificActionJsonString, BfgGameSpecificGameStateJsonString } from "../core/branded-values/bfg-game-state-typed-json";
 import { BfgGameSpecificTableAction, DbGameTableAction } from "../core/game-table/game-table-action";
 import { GameTableActionResult } from "../core/game-table/table-phase";
 
@@ -48,18 +48,18 @@ export type BfgGameEngineProcessor<
 
   createGameSpecificGameStateJson: (
     gameState: GS
-  ) => BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;  // Ensure this is inferred from Zod schema
+  ) => BfgGameSpecificGameStateJsonString;  // Ensure this is inferred from Zod schema
 
   parseGameSpecificGameStateJson: (
-    jsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>
+    jsonString: BfgGameSpecificGameStateJsonString
   ) => GS;  // Ensure this is inferred from Zod schema
 
   createGameSpecificActionJson: (
     gameAction: GA
-  ) => BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;  // Ensure this is inferred from Zod schema
+  ) => BfgGameSpecificActionJsonString;  // Ensure this is inferred from Zod schema
   
   parseGameSpecificActionJson: (
-    jsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>
+    jsonString: BfgGameSpecificActionJsonString
   ) => GA;  // Ensure this is inferred from Zod schema
 
   createGameStateRepresentationComponent: (
@@ -99,10 +99,10 @@ export type BfgGameEngineProcessor<
     gameAction: GA
   ) => GameTableActionResult<GS>;
 
-  gameStateBrandedJsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;
+  // gameStateBrandedJsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;
   gameStateJsonSchema: z.ZodSchema<GS>;
 
-  gameActionBrandedJsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;
+  // gameActionBrandedJsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;
   gameActionJsonSchema: z.ZodSchema<GA>;
 }
 

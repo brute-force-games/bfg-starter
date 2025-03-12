@@ -1,43 +1,110 @@
 import z from "zod";
-import { BfgGameDataJsonType } from "~/types/bfg-game-engines/supported-games";
+import { AbfgSupportedGameTitle, AbfgSupportedGameJsonType } from "~/types/bfg-game-engines/supported-games";
 
 
-export type BfgGameSpecificGameStateTypedJsonSchema<TheBfgGameTitle extends string> = z.ZodBranded<z.ZodString, TheBfgGameTitle>;
+// export type BfgGameSpecificGameStateTypedJsonSchema<T extends z.ZodTypeAny> = z.ZodBranded<z.ZodString, T>;
 
-export type BfgGameSpecificGameStateTypedJson<TheBfgGameTitle extends string> = z.infer<BfgGameSpecificGameStateTypedJsonSchema<TheBfgGameTitle>>;
+// export type BfgGameSpecificGameStateTypedJson<T extends z.ZodTypeAny> = z.infer<BfgGameSpecificGameStateTypedJsonSchema<T>>;
+
+// export type BfgGameTypedValue<T extends z.ZodTypeAny> = z.infer<T>;
 
 
-export interface IBfgGameTypedJson<T, TheBfgGameTitle extends string> {
-  bfgGameTitle: TheBfgGameTitle;
-  bfgGameDataJsonType: BfgGameDataJsonType;
+// // eslint-disable-next-line @typescript-eslint/no-unused-vars
+// export const createBrandedGameAndTypeJsonSchema = (gameTitle: AbfgSupportedGameTitle, gameJsonType: AbfgSupportedGameJsonType) => {
+//   return z.string().brand(gameTitle).brand(gameJsonType);
+// }
 
-  createJson: (obj: T) => BfgGameSpecificGameStateTypedJson<TheBfgGameTitle>;
-  parseJson: (json: BfgGameSpecificGameStateTypedJson<TheBfgGameTitle>) => T;
 
-  getBrandedSchema: () => BfgGameSpecificGameStateTypedJson<TheBfgGameTitle>;
+
+export const createGameSpecificGameStateJsonSchema = (gameTitle: AbfgSupportedGameTitle) => {
+  // return createBrandedGameAndTypeJsonSchema(gameTitle, 'game-state');
+  return z.string().brand(gameTitle).brand('game-state');
+}
+
+export const createGameSpecificActionJsonSchema = (gameTitle: AbfgSupportedGameTitle) => {
+  // return createBrandedGameAndTypeJsonSchema(gameTitle, 'game-action');
+  return z.string().brand(gameTitle).brand('game-action');
+}
+
+
+
+
+// export type BfgGameSpecificTypedJsonString = {
+//   bfgGameTitle: AbfgSupportedGameTitle;
+//   bfgGameDataJsonType: AbfgSupportedGameJsonType;
+//   // jsonString: z.infer<z.ZodBranded<z.ZodString, T>>;
+//   jsonString: z.infer<ReturnType<typeof createGameSpecificGameStateJsonSchema>>;
+// }
+
+export type BfgGameSpecificGameStateJsonString = {
+  bfgGameTitle: AbfgSupportedGameTitle;
+  bfgGameDataJsonType: 'game-state';
+  // jsonString: z.infer<z.ZodBranded<z.ZodString, T>>;
+  jsonString: z.infer<ReturnType<typeof createGameSpecificGameStateJsonSchema>>;
+}
+
+export type BfgGameSpecificActionJsonString = {
+  bfgGameTitle: AbfgSupportedGameTitle;
+  bfgGameDataJsonType: 'game-action';
+  // jsonString: z.infer<z.ZodBranded<z.ZodString, T>>;
+  jsonString: z.infer<ReturnType<typeof createGameSpecificActionJsonSchema>>;
+}
+
+
+export interface IBfgGameTypedJson<T extends z.ZodTypeAny> {
+  bfgGameTitle: AbfgSupportedGameTitle;
+  bfgGameDataJsonType: AbfgSupportedGameJsonType;
+
+  // const brandedJsonSchema = z.string().brand(gameTitle).brand(gameJsonType);
+
+  // type brandedJsonSchemaType = z.infer<typeof brandedJsonSchema>;
+
+
+  createGameAndTypeSpecificJsonString: (obj: z.infer<T>) => BfgGameSpecificGameStateJsonString | BfgGameSpecificActionJsonString;
+  parseGameAndTypeSpecificJsonString: (gameTypeJson: BfgGameSpecificGameStateJsonString | BfgGameSpecificActionJsonString) => z.infer<T>;
+
+  // getBrandedSchema: () => BfgGameTypedValue<T>;
   jsonSchema: z.ZodSchema<T>;
 }
 
 
-export const createBfgGameTypedJsonMetadata = <T, TheBfgGameTitle extends string>(
-  gameTitle: TheBfgGameTitle,
-  gameJsonType: BfgGameDataJsonType,
-  jsonSchema: z.ZodSchema,
-): IBfgGameTypedJson<T, TheBfgGameTitle> => {
+export const createBfgGameTypedJsonMetadata = <T extends z.ZodTypeAny>(
+  gameTitle: AbfgSupportedGameTitle,
+  gameJsonType: AbfgSupportedGameJsonType,
+  jsonSchema: z.ZodTypeAny,
+// ): IBfgGameTypedJson<T> => {
+) => {
+
+  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // const brandedJsonSchema = z.string().brand(gameTitle).brand(gameJsonType);
+  // const brandedJsonSchema = createBrandedGameAndTypeJsonSchema(gameTitle, gameJsonType);
+
+  // type brandedJsonSchemaType = z.infer<typeof brandedJsonSchema>;
+
   
-  const createBfgGameTypedJsonValue = (obj: T): BfgGameSpecificGameStateTypedJson<TheBfgGameTitle> => {
+  const createBfgGameTypedJsonString = (obj: T): BfgGameSpecificGameStateJsonString | BfgGameSpecificActionJsonString => {
     const json = JSON.stringify(obj);
-    return json as BfgGameSpecificGameStateTypedJson<TheBfgGameTitle>;
+    // return json as BfgGameSpecificJsonString<T>;
+    return {
+      bfgGameTitle: gameTitle,
+      bfgGameDataJsonType: gameJsonType,
+      jsonString: json,
+    } as BfgGameSpecificGameStateJsonString | BfgGameSpecificActionJsonString;
   }
 
-  const metadata: IBfgGameTypedJson<T, TheBfgGameTitle> = {
+  const metadata: IBfgGameTypedJson<T> = {
     bfgGameTitle: gameTitle,
     bfgGameDataJsonType: gameJsonType,
     
-    createJson: (obj: T) => createBfgGameTypedJsonValue(obj),
-    parseJson: (json: BfgGameSpecificGameStateTypedJson<TheBfgGameTitle>) => jsonSchema.parse(json) as T,
+    createGameAndTypeSpecificJsonString: (obj: z.infer<typeof jsonSchema>) => createBfgGameTypedJsonString(obj),
 
-    getBrandedSchema: () => createBfgGameTypedJsonValue({} as T),
+    parseGameAndTypeSpecificJsonString: (gameTypeJsonString: BfgGameSpecificGameStateJsonString | BfgGameSpecificActionJsonString) => {
+      const json = JSON.parse(gameTypeJsonString.jsonString);
+      const retValue = jsonSchema.parse(json) as z.infer<typeof jsonSchema>;
+      return retValue;
+    },
+
+    // getBrandedSchema: () => createBfgGameTypedValue({} as T),
     jsonSchema,
   } as const;
 

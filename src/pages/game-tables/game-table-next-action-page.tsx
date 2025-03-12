@@ -1,11 +1,10 @@
 import { z } from "zod";
 import { useParams } from "react-router-dom";
-import { useLiveGameTable, useLiveGameTableActions } from "~/data/bfg-db-game-tables";
+import { useLiveGameTable } from "~/data/bfg-db-game-tables";
 import { orderGameTableActions } from "~/data/dexie-data-ops/order-game-table-actions";
 import { useBfgWhoAmIContext } from "~/state/who-am-i/BfgWhoAmIContext";
 import { DbGameTableId } from "~/types/core/branded-values/branded-strings";
 import { AllBfgGameMetadata } from "~/types/bfg-game-engines/bfg-game-engines";
-import { BfgGameSpecificGameStateTypedJson } from "~/types/core/branded-values/bfg-game-state-typed-json";
 import { asPlayerMakeMove } from "~/data/dexie-data-ops/as-player-make-move";
 import { TicTacToeActionComponent } from "~/game-engine-components/tic-tac-toe/tic-tac-toe-action-component";
 import { matchPlayerToSeat } from "~/data/dexie-data-ops/player-seat-utils";
@@ -14,6 +13,7 @@ import { BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engine
 import { BfgGameSpecificActionSchema, BfgGameSpecificGameStateSchema } from "~/types/core/game-table/game-table-action";
 import { useLiveQuery } from "dexie-react-hooks";
 import { bfgDb } from "~/data/bfg-db";
+import { BfgGameSpecificActionJsonString, BfgGameSpecificGameStateJsonString } from "~/types/core/branded-values/bfg-game-state-typed-json";
 
 
 export const GameTableNextActionPage = () => {
@@ -139,11 +139,21 @@ export const GameTableNextActionPage = () => {
 
   console.log("latestAction.actionOutcomeGameStateJson", latestAction.actionOutcomeGameStateJson);
 
-  const gameSpecificState = gameEngine.parseGameSpecificGameStateJson(
-    latestAction.actionOutcomeGameStateJson as BfgGameSpecificGameStateTypedJson<typeof gameTable.gameTitle>);
+  const latestGameStateSpecificJson: BfgGameSpecificGameStateJsonString = {
+    bfgGameTitle: gameTable.gameTitle,
+    bfgGameDataJsonType: 'game-state',
+    jsonString: latestAction.actionOutcomeGameStateJson,
+  } as BfgGameSpecificGameStateJsonString;
 
-  const latestGameSpecificAction = gameEngine.parseGameSpecificActionJson(
-    latestAction.actionJson as BfgGameSpecificGameStateTypedJson<typeof gameTable.gameTitle>);
+  const latestGameActionSpecificJson: BfgGameSpecificActionJsonString = {
+    bfgGameTitle: gameTable.gameTitle,
+    bfgGameDataJsonType: 'game-action',
+    jsonString: latestAction.actionJson,
+  } as BfgGameSpecificActionJsonString;
+
+
+  const gameSpecificState = gameEngine.parseGameSpecificGameStateJson(latestGameStateSpecificJson);
+  const latestGameSpecificAction = gameEngine.parseGameSpecificActionJson(latestGameActionSpecificJson);
 
   console.log("parsed game state", gameSpecificState);
 

@@ -1,13 +1,14 @@
 import React from "react";
 import { z } from "zod";
 import { DbGameTable, NewGameTable } from "../core/game-table/game-table";
-import { BfgGameSpecificGameStateTypedJson, createBfgGameTypedJsonMetadata } from "../core/branded-values/bfg-game-state-typed-json";
+// import { BfgGameSpecificGameStateJsonString, BfgGameSpecificTypedJsonString } from "../core/branded-values/bfg-game-state-typed-json";
 import { GameTableSeat } from "../core/game-table/game-table";
 import { GameTableActionResult } from "../core/game-table/table-phase";
 import { AbfgSupportedGameTitle } from "./supported-games";
 import { DbGameTableAction } from "../core/game-table/game-table-action";
 import { BfgGameSpecificTableAction } from "../core/game-table/game-table-action";
 import { BfgGameEngineProcessor } from "./bfg-game-engines";
+import { BfgGameSpecificActionJsonString, BfgGameSpecificGameStateJsonString } from "../core/branded-values/bfg-game-state-typed-json";
 
 
 // export const BfgGameSpecificGameStateSchema = z.object({
@@ -154,15 +155,25 @@ export const createBfgGameEngineProcessor = <
   type TGameStateInferred = z.infer<GS>;
   type TGameActionInferred = z.infer<GA>;
 
-  const createBrandedGameStateJsonValue = (obj: TGameStateInferred): BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle> => {
+  const createBrandedGameStateJsonValue = (obj: TGameStateInferred): BfgGameSpecificGameStateJsonString => {
     const json = JSON.stringify(obj);
     console.log("createBrandedGameStateJsonValue", json);
-    return json as BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;
+    const retVal = {
+      bfgGameTitle: gameTitle,
+      bfgGameDataJsonType: 'game-state',
+      jsonString: json,
+    } as BfgGameSpecificGameStateJsonString;
+    return retVal;
   }
 
-  const createBrandedGameActionJsonValue = (obj: TGameActionInferred): BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle> => {
+  const createBrandedGameActionJsonValue = (obj: TGameActionInferred): BfgGameSpecificActionJsonString => {
     const json = JSON.stringify(obj);
-    return json as BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;
+    const retVal = {
+      bfgGameTitle: gameTitle,
+      bfgGameDataJsonType: 'game-action',
+      jsonString: json,
+    } as BfgGameSpecificActionJsonString;
+    return retVal;
   }
 
 
@@ -177,9 +188,9 @@ export const createBfgGameEngineProcessor = <
   //   ? createBfgGameTypedJsonMetadata(gameTitle, 'game-state', gameStateSchema)
   //   : createBfgGameTypedJsonMetadata(gameTitle, 'game-state', gameStateSchema); // Handle other cases if needed
 
-  const gameStateBrandedJsonString = createBfgGameTypedJsonMetadata(gameTitle, 'game-state', gameStateSchema);
+  // const gameStateBrandedJsonString = createBfgGameTypedJsonMetadata(gameTitle, 'game-state', gameStateSchema);
 
-  const gameActionBrandedJsonString = createBfgGameTypedJsonMetadata(gameTitle, 'game-action', gameActionSchema);
+  // const gameActionBrandedJsonString = createBfgGameTypedJsonMetadata(gameTitle, 'game-action', gameActionSchema);
 
   // const gameActionJsonBrandedSchema = z.infer<typeof gameActionBrandedJsonString>;
 
@@ -239,25 +250,25 @@ export const createBfgGameEngineProcessor = <
     createBfgGameSpecificInitialGameTableAction: processorImplementation.createInitialGameTableAction,
 
     createGameSpecificGameStateJson: (obj: TGameStateInferred) => createBrandedGameStateJsonValue(obj),
-    parseGameSpecificGameStateJson: (jsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>) => {
+    parseGameSpecificGameStateJson: (gameTypeJson: BfgGameSpecificGameStateJsonString) => {
 
-      console.log("parseGameSpecificGameStateJson", jsonString);
-      const json = JSON.parse(jsonString);
+      console.log("parseGameSpecificGameStateJson", gameTypeJson);
+      const json = JSON.parse(gameTypeJson.jsonString);
       return gameStateSchema.parse(json) as GS;
     },
 
     createGameSpecificActionJson: (obj: TGameActionInferred) => createBrandedGameActionJsonValue(obj),
-    parseGameSpecificActionJson: (jsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>) => {
-      const json = JSON.parse(jsonString);
+    parseGameSpecificActionJson: (gameTypeJson: BfgGameSpecificActionJsonString) => {
+      const json = JSON.parse(gameTypeJson.jsonString);
       return gameActionSchema.parse(json) as GA;
     },
 
     narrowGameActionsToValidGameActions,
 
-    gameStateBrandedJsonString: gameStateBrandedJsonString.getBrandedSchema(),
+    // gameStateBrandedJsonString: gameStateBrandedJsonString.getBrandedSchema(),
     gameStateJsonSchema: gameStateSchema,
 
-    gameActionBrandedJsonString: gameActionBrandedJsonString.getBrandedSchema(),
+    // gameActionBrandedJsonString: gameActionBrandedJsonString.getBrandedSchema(),
     gameActionJsonSchema: gameActionSchema,
   } as const;
 

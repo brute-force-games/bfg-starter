@@ -87,8 +87,8 @@ export const initializeGameTable = async (gameTable: NewGameTable) => {
         createdAt: new Date(),
         source: "game-table-action-source-host",
         actionType: "game-table-action-host-starts-lobby",
-        actionJson: actionJson,
-        actionOutcomeGameStateJson: initialGameStateJson,
+        actionJson: actionJson.jsonString,
+        actionOutcomeGameStateJson: initialGameStateJson.jsonString,
         // nextPlayersToAct,
       }
 

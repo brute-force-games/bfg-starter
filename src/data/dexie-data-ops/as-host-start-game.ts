@@ -73,8 +73,8 @@ export const asHostStartGame = async (tableId: DbGameTableId, hostPlayerId: DbPl
     source: "game-table-action-source-host",
     actionType: "game-table-action-host-starts-game",
     // nextPlayersToAct,
-    actionJson,
-    actionOutcomeGameStateJson: gameStateJson,
+    actionJson: actionJson.jsonString,
+    actionOutcomeGameStateJson: gameStateJson.jsonString,
 
     realmId: gameTable.realmId,
   }

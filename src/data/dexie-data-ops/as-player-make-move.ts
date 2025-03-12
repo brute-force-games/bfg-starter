@@ -7,8 +7,8 @@ import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
 import { DbGameTable } from "~/types/core/game-table/game-table";
 import { getLatestAction } from "./order-game-table-actions";
 import { getPlayerActionSource } from "./player-seat-utils";
-import { BfgGameSpecificGameStateTypedJson } from "~/types/core/branded-values/bfg-game-state-typed-json";
 import { BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engines";
+import { BfgGameSpecificGameStateJsonString } from "~/types/core/branded-values/bfg-game-state-typed-json";
 
 
 export const asPlayerMakeMove = async <GameSpecificAction extends z.ZodTypeAny>(
@@ -37,8 +37,20 @@ export const asPlayerMakeMove = async <GameSpecificAction extends z.ZodTypeAny>(
 
   const latestAction = await getLatestAction(tableId);
 
-  const initialGameState = selectedGameEngine.parseGameSpecificGameStateJson(
-    latestAction.actionOutcomeGameStateJson as BfgGameSpecificGameStateTypedJson<typeof gameTable.gameTitle>);
+  const latestGameStateSpecificJson: BfgGameSpecificGameStateJsonString = {
+    bfgGameTitle: gameTable.gameTitle,
+    bfgGameDataJsonType: 'game-state',
+    jsonString: latestAction.actionOutcomeGameStateJson,
+  } as BfgGameSpecificGameStateJsonString;
+
+  // const latestGameActionSpecificJson: BfgGameSpecificActionJsonString = {
+  //   bfgGameTitle: gameTable.gameTitle,
+  //   bfgGameDataJsonType: 'game-action',
+  //   jsonString: latestAction.actionJson,
+  // } as BfgGameSpecificActionJsonString;
+  
+
+  const initialGameState = selectedGameEngine.parseGameSpecificGameStateJson(latestGameStateSpecificJson);
 
   console.log("MAKE MOVE - INITIAL GAME STATE", initialGameState);
 
@@ -69,8 +81,8 @@ export const asPlayerMakeMove = async <GameSpecificAction extends z.ZodTypeAny>(
 
     source: playerActionSource,
     actionType: "game-table-action-player-move",
-    actionJson: playerActionJson,
-    actionOutcomeGameStateJson,
+    actionJson: playerActionJson.jsonString,
+    actionOutcomeGameStateJson: actionOutcomeGameStateJson.jsonString,
 
     realmId: gameTable.realmId,
   }

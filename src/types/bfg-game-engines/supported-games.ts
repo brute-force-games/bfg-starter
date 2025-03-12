@@ -23,6 +23,8 @@ export const BfgGameDataJsonTypesSchema = z.enum([
 
 export type BfgGameDataJsonType = z.infer<typeof BfgGameDataJsonTypesSchema>;
 
+export type AbfgSupportedGameJsonType = string & BfgGameDataJsonType;
+
 
 export const AvailableGameTitles = BfgSupportedGameTitlesSchema.options;
 
