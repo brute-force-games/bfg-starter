@@ -4,9 +4,6 @@ import { GameTableSeat } from "~/types/core/game-table/game-table";
 import { DbGameTable } from "~/types/core/game-table/game-table";
 import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
 import { DbPlayerProfileId } from "~/types/core/branded-values/branded-strings";
-import { AllBfgGameMetadata } from "~/types/bfg-game-engines/bfg-game-engines";
-import { TicTacToeGameAction } from "~/types/bfg-game-engines/tic-tac-toe-engine";
-import { BfgGameTypedJson } from "~/types/core/branded-values/bfg-game-typed-json";
 
 
 interface ITicTacToeActionComponentProps {
@@ -38,22 +35,25 @@ export const TicTacToeActionComponent = (props: ITicTacToeActionComponentProps) 
   }
 
   const actionPlayerSeat = getPlayerSeatForActionSource(action.source);
-  const gameEngineMetadata = AllBfgGameMetadata[gameTable.gameTitle];
+  // const gameEngineMetadata = AllBfgGameMetadata[gameTable.gameTitle];
 
   const actionPlayerLabel = actionPlayerSeat === 'p1' ? 'X' : 'O';
   
-  const actionMoveJson = action.actionJson as BfgGameTypedJson<typeof gameTable.gameTitle>;
-  const parsedMove = gameEngineMetadata.processor.parseGameSpecificActionJson(actionMoveJson);
+  // const actionMoveJson = action.actionJson as BfgGameTypedJson<typeof gameTable.gameTitle>;
+  // const parsedMove = gameEngineMetadata.processor.parseGameSpecificActionJson(actionMoveJson);
 
-  const getActionMoveText = (action: TicTacToeGameAction) => {
-    if (action.actionType === 'game-table-action-player-move') {
-      return action.moveCell;
-    }
-    return '';
-  }
-  const actionMoveText = parsedMove.actionType === 'game-table-action-player-move' 
-    ? getActionMoveText(parsedMove)
-    : '';
+  // const getActionMoveText = (action: TicTacToeGameAction) => {
+  //   if (action.actionType === 'game-table-action-player-move') {
+  //     return action.moveCell;
+  //   }
+  //   return '';
+  // }
+
+  // const actionMoveText = action.actionType === 'game-table-action-player-move' 
+  //   ? getActionMoveText(parsedMove.gameSpecificAction)
+  //   : '';
+  // const actionMoveText = getActionMoveText(parsedMove);
+  const actionMoveText = "blah";
 
   if (action.actionType === 'game-table-action-player-move') {
     const playerId = gameTable[myPlayerSeat] as DbPlayerProfileId;

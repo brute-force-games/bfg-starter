@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { TicTacToeGameAction, TicTacToeGameState, TicTacToeGameStateProcessor } from "./tic-tac-toe-engine";
+import { TicTacToeGameActionSchema, TicTacToeGameStateSchema, TicTacToeGameStateProcessor } from "./tic-tac-toe-engine";
 import { AbfgSupportedGameTitle } from "./supported-games";
 // import { FlipACoinGameActionSchema, FlipACoinGameStateSchema, FlipACoinGameStateProcessor } from "./flip-a-coin-engine";
 import { DbGameTable, NewGameTable, GameTableSeat } from "../core/game-table/game-table";
 import { GameDefinition, TicTacToeGameDefinition } from "../enums/game-shelf";
-import { BfgGameTypedJson } from "../core/branded-values/bfg-game-typed-json";
+import { BfgGameSpecificGameStateTypedJson } from "../core/branded-values/bfg-game-state-typed-json";
 import { BfgGameSpecificActionSchema, BfgGameSpecificGameStateSchema, BfgGameSpecificTableAction, DbGameTableAction } from "../core/game-table/game-table-action";
 import { GameTableActionResult } from "../core/game-table/table-phase";
 
@@ -37,30 +37,29 @@ export type BfgGameEngineProcessor<
   GS extends z.infer<typeof BfgGameSpecificGameStateSchema>, 
   GA extends z.infer<typeof BfgGameSpecificActionSchema>
 > = {
-
   
   createBfgGameSpecificInitialGameTableAction: (
     gameTable: NewGameTable
   ) => BfgGameSpecificTableAction<GA>;  // Ensure this is inferred from Zod schema
 
-  createBfgInitialGameState: (
+  createBfgInitialGameSpecificState: (
     initialGameTableAction: BfgGameSpecificTableAction<GA>
   ) => GS;  // Ensure this is inferred from Zod schema
 
-  createGameSpecificStateJson: (
+  createGameSpecificGameStateJson: (
     gameState: GS
-  ) => BfgGameTypedJson<AbfgSupportedGameTitle>;  // Ensure this is inferred from Zod schema
+  ) => BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;  // Ensure this is inferred from Zod schema
 
-  parseGameSpecificStateJson: (
-    jsonString: BfgGameTypedJson<AbfgSupportedGameTitle>
+  parseGameSpecificGameStateJson: (
+    jsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>
   ) => GS;  // Ensure this is inferred from Zod schema
 
   createGameSpecificActionJson: (
     gameAction: GA
-  ) => BfgGameTypedJson<AbfgSupportedGameTitle>;  // Ensure this is inferred from Zod schema
+  ) => BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;  // Ensure this is inferred from Zod schema
   
   parseGameSpecificActionJson: (
-    jsonString: BfgGameTypedJson<AbfgSupportedGameTitle>
+    jsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>
   ) => GA;  // Ensure this is inferred from Zod schema
 
   createGameStateRepresentationComponent: (
@@ -100,10 +99,10 @@ export type BfgGameEngineProcessor<
     gameAction: GA
   ) => GameTableActionResult<GS>;
 
-  gameStateBrandedJsonString: BfgGameTypedJson<AbfgSupportedGameTitle>;
+  gameStateBrandedJsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;
   gameStateJsonSchema: z.ZodSchema<GS>;
 
-  gameActionBrandedJsonString: BfgGameTypedJson<AbfgSupportedGameTitle>;
+  gameActionBrandedJsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;
   gameActionJsonSchema: z.ZodSchema<GA>;
 }
 
@@ -117,7 +116,10 @@ export type BfgGameEngineMetadata<
   processor: BfgGameEngineProcessor<GS, GA>;
 }
 
-export const TicTacToeGameMetadata: BfgGameEngineMetadata<TicTacToeGameState, TicTacToeGameAction> = {
+export const TicTacToeGameMetadata: BfgGameEngineMetadata<
+  typeof TicTacToeGameStateSchema,
+  typeof TicTacToeGameActionSchema
+> = {
   definition: TicTacToeGameDefinition,
   processor: TicTacToeGameStateProcessor,
 }

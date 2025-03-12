@@ -2,19 +2,19 @@ import z from "zod";
 import { BfgGameDataJsonType } from "~/types/bfg-game-engines/supported-games";
 
 
-export type BfgGameTypedJsonSchema<TheBfgGameTitle extends string> = z.ZodBranded<z.ZodString, TheBfgGameTitle>;
+export type BfgGameSpecificGameStateTypedJsonSchema<TheBfgGameTitle extends string> = z.ZodBranded<z.ZodString, TheBfgGameTitle>;
 
-export type BfgGameTypedJson<TheBfgGameTitle extends string> = z.infer<BfgGameTypedJsonSchema<TheBfgGameTitle>>;
+export type BfgGameSpecificGameStateTypedJson<TheBfgGameTitle extends string> = z.infer<BfgGameSpecificGameStateTypedJsonSchema<TheBfgGameTitle>>;
 
 
 export interface IBfgGameTypedJson<T, TheBfgGameTitle extends string> {
   bfgGameTitle: TheBfgGameTitle;
   bfgGameDataJsonType: BfgGameDataJsonType;
 
-  createJson: (obj: T) => BfgGameTypedJson<TheBfgGameTitle>;
-  parseJson: (json: BfgGameTypedJson<TheBfgGameTitle>) => T;
+  createJson: (obj: T) => BfgGameSpecificGameStateTypedJson<TheBfgGameTitle>;
+  parseJson: (json: BfgGameSpecificGameStateTypedJson<TheBfgGameTitle>) => T;
 
-  getBrandedSchema: () => BfgGameTypedJson<TheBfgGameTitle>;
+  getBrandedSchema: () => BfgGameSpecificGameStateTypedJson<TheBfgGameTitle>;
   jsonSchema: z.ZodSchema<T>;
 }
 
@@ -25,9 +25,9 @@ export const createBfgGameTypedJsonMetadata = <T, TheBfgGameTitle extends string
   jsonSchema: z.ZodSchema,
 ): IBfgGameTypedJson<T, TheBfgGameTitle> => {
   
-  const createBfgGameTypedJsonValue = (obj: T): BfgGameTypedJson<TheBfgGameTitle> => {
+  const createBfgGameTypedJsonValue = (obj: T): BfgGameSpecificGameStateTypedJson<TheBfgGameTitle> => {
     const json = JSON.stringify(obj);
-    return json as BfgGameTypedJson<TheBfgGameTitle>;
+    return json as BfgGameSpecificGameStateTypedJson<TheBfgGameTitle>;
   }
 
   const metadata: IBfgGameTypedJson<T, TheBfgGameTitle> = {
@@ -35,7 +35,7 @@ export const createBfgGameTypedJsonMetadata = <T, TheBfgGameTitle extends string
     bfgGameDataJsonType: gameJsonType,
     
     createJson: (obj: T) => createBfgGameTypedJsonValue(obj),
-    parseJson: (json: BfgGameTypedJson<TheBfgGameTitle>) => jsonSchema.parse(json) as T,
+    parseJson: (json: BfgGameSpecificGameStateTypedJson<TheBfgGameTitle>) => jsonSchema.parse(json) as T,
 
     getBrandedSchema: () => createBfgGameTypedJsonValue({} as T),
     jsonSchema,

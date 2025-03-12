@@ -5,7 +5,7 @@ import { orderGameTableActions } from "~/data/dexie-data-ops/order-game-table-ac
 import { useBfgWhoAmIContext } from "~/state/who-am-i/BfgWhoAmIContext";
 import { DbGameTableId } from "~/types/core/branded-values/branded-strings";
 import { AllBfgGameMetadata } from "~/types/bfg-game-engines/bfg-game-engines";
-import { BfgGameTypedJson } from "~/types/core/branded-values/bfg-game-typed-json";
+import { BfgGameSpecificGameStateTypedJson } from "~/types/core/branded-values/bfg-game-state-typed-json";
 import { asPlayerMakeMove } from "~/data/dexie-data-ops/as-player-make-move";
 import { TicTacToeActionComponent } from "~/game-engine-components/tic-tac-toe/tic-tac-toe-action-component";
 import { matchPlayerToSeat } from "~/data/dexie-data-ops/player-seat-utils";
@@ -116,11 +116,11 @@ export const GameTableNextActionPage = () => {
   
   // const gameState = gameEngine.parseGameStateJson(
   //   latestAction.actionOutcomeGameStateJson as BfgGameTypedJson<typeof gameTable.gameTitle>);
-  const gameSpecificState = gameEngine.parseGameSpecificStateJson(
-    latestAction.actionOutcomeGameStateJson as BfgGameTypedJson<typeof gameTable.gameTitle>);
+  const gameSpecificState = gameEngine.parseGameSpecificGameStateJson(
+    latestAction.actionOutcomeGameStateJson as BfgGameSpecificGameStateTypedJson<typeof gameTable.gameTitle>);
 
   const latestGameSpecificAction = gameEngine.parseGameSpecificActionJson(
-    latestAction.actionJson as BfgGameTypedJson<typeof gameTable.gameTitle>);
+    latestAction.actionJson as BfgGameSpecificGameStateTypedJson<typeof gameTable.gameTitle>);
 
   console.log("parsed game state", gameSpecificState);
 

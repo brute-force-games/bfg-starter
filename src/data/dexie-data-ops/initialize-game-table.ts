@@ -50,9 +50,9 @@ export const initializeGameTable = async (gameTable: NewGameTable) => {
 
 
   const initGameAction = selectedGameEngine.createBfgGameSpecificInitialGameTableAction(gameTable);
-  const initialGameState = selectedGameEngine.createBfgInitialGameState(initGameAction);
+  const initialGameState = selectedGameEngine.createBfgInitialGameSpecificState(initGameAction);
 
-  const initialGameStateJson = selectedGameEngine.createGameSpecificStateJson(initialGameState);
+  const initialGameStateJson = selectedGameEngine.createGameSpecificGameStateJson(initialGameState);
   const actionJson = selectedGameEngine.createGameSpecificActionJson(initGameAction.gameSpecificAction);
 
   

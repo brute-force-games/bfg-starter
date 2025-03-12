@@ -1,58 +1,62 @@
 import React from "react";
 import { z } from "zod";
 import { DbGameTable, NewGameTable } from "../core/game-table/game-table";
-import { BfgGameTypedJson, createBfgGameTypedJsonMetadata } from "../core/branded-values/bfg-game-typed-json";
+import { BfgGameSpecificGameStateTypedJson, createBfgGameTypedJsonMetadata } from "../core/branded-values/bfg-game-state-typed-json";
 import { GameTableSeat } from "../core/game-table/game-table";
 import { GameTableActionResult } from "../core/game-table/table-phase";
 import { AbfgSupportedGameTitle } from "./supported-games";
-import { BfgGameSpecificAction, BfgGameSpecificGameState, DbGameTableAction } from "../core/game-table/game-table-action";
+import { DbGameTableAction } from "../core/game-table/game-table-action";
 import { BfgGameSpecificTableAction } from "../core/game-table/game-table-action";
 import { BfgGameEngineProcessor } from "./bfg-game-engines";
 
 
 export interface IBfgGameEngineProcessor<
   // GS, GA
-  GS extends BfgGameSpecificGameState,
-  GA extends BfgGameSpecificAction,
+  // GS extends BfgGameSpecificGameState,
+  // GA extends BfgGameSpecificAction,
   // GS extends z.ZodType,
   // GA extends z.ZodType,
-  // GS extends z.infer<typeof BfgGameSpecificGameStateSchema>,
-  // GA extends z.infer<typeof BfgGameSpecificActionSchema>
+  GS extends z.ZodSchema,
+  GA extends z.ZodSchema
 > {
 
   gameTitle: AbfgSupportedGameTitle,
   // gameStateSchema: z.ZodObject<GS>,
   // gameActionSchema: z.ZodObject<GA>,
 
-  applyGameAction: (tableState: DbGameTable, gameState: GS, gameAction: GA) => GameTableActionResult<GS>,
+  // type GS = z.infer<typeof GSZ>,
+  // type GA = z.infer<typeof GAZ>,
 
-  createInitialGameSpecificState: (initialGameSpecificAction: GA) => GameTableActionResult<GS>,
-  createInitialGameTableAction: (gameTable: NewGameTable) => BfgGameSpecificTableAction<GA>,
+  applyGameAction: (tableState: DbGameTable, gameState: z.infer<GS>, gameAction: z.infer<GA>) => GameTableActionResult<z.infer<GS>>,
+
+  // createInitialGameSpecificState: (initialGameSpecificAction: z.infer<GA>) => GameTableActionResult<z.infer<GS>>,
+  createInitialGameSpecificState: (initialGameSpecificAction: z.infer<GA>) => z.infer<GS>,
+  createInitialGameTableAction: (gameTable: NewGameTable) => BfgGameSpecificTableAction<z.infer<GA>>,
 
   createGameStateRepresentationComponent: (
     myPlayerSeat: GameTableSeat,
-    gameState: GS,
-    mostRecentAction: GA
+    gameState: z.infer<GS>,
+    mostRecentAction: z.infer<GA>
   ) => React.ReactNode,
 
   createGameStateActionInputComponent: (
     myPlayerSeat: GameTableSeat,
-    gameState: GS, 
-    mostRecentAction: GA,
-    onGameAction: (gameState: GS, gameAction: GA) => void
+    gameState: z.infer<GS>, 
+    mostRecentAction: z.infer<GA>,
+    onGameAction: (gameState: z.infer<GS>, gameAction: z.infer<GA>) => void
   ) => React.ReactNode,
 
   createGameStateCombinationRepresentationAndInputComponent?: (
     myPlayerSeat: GameTableSeat,
-    gameState: GS, 
-    mostRecentAction: GA,
-    onGameAction: (gameState: GS, gameAction: GA) => void
+    gameState: z.infer<GS>, 
+    mostRecentAction: z.infer<GA>,
+    onGameAction: (gameState: z.infer<GS>, gameAction: z.infer<GA>) => void
   ) => React.ReactNode | undefined,
 
   createGameHistoryComponent?: (
     myPlayerSeat: GameTableSeat,
-    gameState: GS,
-    gameActions: BfgGameSpecificTableAction<GA>[]
+    gameState: z.infer<GS>,
+    gameActions: BfgGameSpecificTableAction<z.infer<GA>>[]
   ) => React.ReactNode,
 
   // narrowGameActionsToValidGameActions?: (gameActions: DbGameTableAction[]) => BfgGameSpecificTableAction<GA>[];
@@ -115,21 +119,37 @@ export interface IBfgGameEngineProcessor<
 //   return gameActionSchema.parse(gameActionJson) as GA;
 // }
 
-export const createBfgGameEngineProcessor = <GS extends z.ZodType, GA extends z.ZodType>(
+export const createBfgGameEngineProcessor = <
+  // GS extends z.infer<typeof BfgGameSpecificGameStateSchema>, 
+  // GA extends z.infer<typeof BfgGameSpecificActionSchema>
+  // GS extends z.ZodSchema<typeof BfgGameSpecificGameStateSchema>,
+  // GA extends z.ZodSchema<typeof BfgGameSpecificActionSchema>
+  GS extends z.ZodSchema,
+  GA extends z.ZodSchema
+>(
   gameTitle: AbfgSupportedGameTitle,
   gameStateSchema: GS,
   gameActionSchema: GA,
   processorImplementation: IBfgGameEngineProcessor<GS, GA>,
 
-): BfgGameEngineProcessor<z.infer<GS>, z.infer<GA>> => {
+): BfgGameEngineProcessor<GS, GA> => {
 
   // type TGameTitle = z.infer<typeof BfgSupportedGameTitlesSchema>;
-  type TGameStateInferred = z.infer<GS>;
-  type TGameActionInferred = z.infer<GA>;
+  // type TGameStateInferred = z.infer<GS>;
+  // type TGameActionInferred = z.infer<GA>;
 
-  const createBrandedJsonValue = (obj: TGameStateInferred): BfgGameTypedJson<AbfgSupportedGameTitle> => {
+  type TGameStateInferred = GS;
+  type TGameActionInferred = GA;
+
+  const createBrandedGameStateJsonValue = (obj: TGameStateInferred): BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle> => {
     const json = JSON.stringify(obj);
-    return json as BfgGameTypedJson<AbfgSupportedGameTitle>;
+    console.log("createBrandedGameStateJsonValue", json);
+    return json as BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;
+  }
+
+  const createBrandedGameActionJsonValue = (obj: TGameActionInferred): BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle> => {
+    const json = JSON.stringify(obj);
+    return json as BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;
   }
 
 
@@ -159,8 +179,18 @@ export const createBfgGameEngineProcessor = <GS extends z.ZodType, GA extends z.
 
 
   const createBfgInitialGameState = (initialGameTableAction: BfgGameSpecificTableAction<GA>): GameTableActionResult<GS> => {
-    const initialGameState = processorImplementation.createInitialGameSpecificState(initialGameTableAction.gameSpecificAction);
-    return initialGameState;
+    const initialGameSpecificState = processorImplementation.createInitialGameSpecificState(initialGameTableAction.gameSpecificAction);
+    
+    return initialGameSpecificState;
+
+
+    // const initialGameState: GameTableActionResult<GS> = {
+    //   gameSpecificState: initialGameSpecificState,
+    //   tablePhase: 'table-phase-game-in-progress',
+    //   gameSpecificStateSummary: `Game started with board: ${initialGameSpecificState.board}`,
+    // };
+    
+    // return initialGameState;
   }
 
 
@@ -171,8 +201,8 @@ export const createBfgGameEngineProcessor = <GS extends z.ZodType, GA extends z.
 
     for (const gameAction of gameActions) {
 
-      // const gameSpecificAction = gameAction.gameSpecificAction;
-      const parsedGameSpecificAction = gameActionSchema.parse(gameAction.actionJson);
+      const gameSpecificActionJson = JSON.parse(gameAction.actionJson);
+      const parsedGameSpecificAction = gameActionSchema.parse(gameSpecificActionJson);
 
       const bfgAction: BfgGameSpecificTableAction<GA> = {
         gameTableActionId: gameAction.id,
@@ -189,66 +219,25 @@ export const createBfgGameEngineProcessor = <GS extends z.ZodType, GA extends z.
 
 
   const processor: BfgGameEngineProcessor<z.infer<GS>, z.infer<GA>> = {
-    // createInitialGameState: processorImplementation.createInitialGameState,
-    // createInitialGameTableAction: processorImplementation.createInitialGameTableAction,
 
     ...processorImplementation,
 
-    createBfgInitialGameState,
+    createBfgInitialGameSpecificState: createBfgInitialGameState,
     createBfgGameSpecificInitialGameTableAction: processorImplementation.createInitialGameTableAction,
 
-
-
-    createGameSpecificStateJson: (obj: TGameStateInferred) => createBrandedJsonValue(obj),
-    parseGameSpecificStateJson: (jsonString: BfgGameTypedJson<AbfgSupportedGameTitle>) => {
+    createGameSpecificGameStateJson: (obj: TGameStateInferred) => createBrandedGameStateJsonValue(obj),
+    parseGameSpecificGameStateJson: (jsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>) => {
       const json = JSON.parse(jsonString);
       return gameStateSchema.parse(json) as GS;
     },
 
-    createGameSpecificActionJson: (obj: TGameActionInferred) => createBrandedJsonValue(obj),
-    parseGameSpecificActionJson: (jsonString: BfgGameTypedJson<AbfgSupportedGameTitle>) => {
+    createGameSpecificActionJson: (obj: TGameActionInferred) => createBrandedGameActionJsonValue(obj),
+    parseGameSpecificActionJson: (jsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>) => {
       const json = JSON.parse(jsonString);
       return gameActionSchema.parse(json) as GA;
     },
 
     narrowGameActionsToValidGameActions,
-
-    // narrowGameActionsToValidGameActions: (gameActions: DbGameTableAction[]): BfgGameSpecificTableAction<GameTableActionId, GA>[] => {
-
-    //   const parsedGameActions = gameActions.map(action => {
-    //     const json = JSON.parse(action.actionJson);
-    //     return {
-    //       gameTableAction: action,
-    //       gameSpecificAction: gameActionSchema.parse(json) as GA,
-    //     };
-    //   });
-
-    //   const retVal = parsedGameActions.map(parsedGameAction => {
-    //     return {
-    //       gameTableActionId: parsedGameAction.gameTableAction.id,
-    //       source: parsedGameAction.gameTableAction.source,
-    //       actionType: parsedGameAction.gameTableAction.actionType,
-    //       gameSpecificAction: parsedGameAction.gameSpecificAction,
-    //     };
-    //   });
-
-    //   return retVal;
-    // },
-
-    // createGameHistoryComponent: (
-    //   myPlayerSeat: GameTableSeat,
-    //   gameState: z.infer<GS>,
-    //   gameActions: BfgGameSpecificTableAction<typeof BfgGameTableActionId.idSchema, GA>[]
-    // ) => React.ReactNode,
-  
-  
-
-    // createGameStateRepresentationComponent,
-    // createGameStateActionInputComponent,
-    // createGameHistoryComponent,
-
-    // createGameStateCombinationRepresentationAndInputComponent,
-    // applyGameAction,
 
     gameStateBrandedJsonString: gameStateBrandedJsonString.getBrandedSchema(),
     gameStateJsonSchema: gameStateSchema,

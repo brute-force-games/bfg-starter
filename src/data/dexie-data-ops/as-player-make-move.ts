@@ -7,7 +7,7 @@ import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
 import { DbGameTable } from "~/types/core/game-table/game-table";
 import { getLatestAction } from "./order-game-table-actions";
 import { getPlayerActionSource } from "./player-seat-utils";
-import { BfgGameTypedJson } from "~/types/core/branded-values/bfg-game-typed-json";
+import { BfgGameSpecificGameStateTypedJson } from "~/types/core/branded-values/bfg-game-state-typed-json";
 import { BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engines";
 
 
@@ -22,6 +22,8 @@ export const asPlayerMakeMove = async <GameSpecificAction extends z.ZodType>(
     throw new Error("Table not found");
   }
 
+  console.log("INCOMING PLAYER ACTION", playerAction);
+
   const selectedGameMetadata = getBfgGameMetadata(gameTable);
   const selectedGameEngine = selectedGameMetadata.processor as BfgGameEngineProcessor<
     // typeof gameTable.gameTitle,
@@ -33,17 +35,21 @@ export const asPlayerMakeMove = async <GameSpecificAction extends z.ZodType>(
 
   const latestAction = await getLatestAction(tableId);
 
-  const initialGameState = selectedGameEngine.parseGameSpecificStateJson(
-    latestAction.actionOutcomeGameStateJson as BfgGameTypedJson<typeof gameTable.gameTitle>);
+  const initialGameState = selectedGameEngine.parseGameSpecificGameStateJson(
+    latestAction.actionOutcomeGameStateJson as BfgGameSpecificGameStateTypedJson<typeof gameTable.gameTitle>);
 
   const afterActionResult = selectedGameEngine.applyGameAction(gameTable, initialGameState, playerAction);
 
-  const gameSpecificAction = playerAction.gameSpecificAction;
+  // const gameSpecificAction = playerAction.gameSpecificAction;
+  console.log("MAKE MOVE - PLAYER ACTION", playerAction);
 
-  const playerActionJson = selectedGameEngine.createGameSpecificActionJson(gameSpecificAction);
+  const playerActionJson = selectedGameEngine.createGameSpecificActionJson(playerAction);
+
+  console.log("MAKE MOVE - playerActionJson", playerActionJson);
 
   const actionOutcomeGameState = afterActionResult.gameSpecificState;
-  const actionOutcomeGameStateJson = selectedGameEngine.createGameSpecificStateJson(actionOutcomeGameState);
+  const actionOutcomeGameStateJson = selectedGameEngine.createGameSpecificGameStateJson(actionOutcomeGameState);
+  console.log("MAKE MOVE - actionOutcomeGameStateJson", actionOutcomeGameStateJson);
 
   const mostRecentGameActionId = gameTable.latestActionId;
   const startActionId = BfgGameTableActionId.createId();
