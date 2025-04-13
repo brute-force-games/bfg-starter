@@ -1,0 +1,181 @@
+import { useLiveGameTables } from "~/data/bfg-db-game-tables";
+import { useBfgWhoAmIContext } from "~/state/who-am-i/BfgWhoAmIContext";
+import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { DataSorting, SortingColumnHeader } from "~/components/sorting-column-header/sorting-column-header";
+import { useState } from "react";
+import { GameTablePlayerOptionsComponent } from "~/components/game-table-details/game-table-player-options-component";
+
+
+export const ACTIVE_TABLES_ROUTE = "/active-tables";
+
+export type DataSortingColumn =
+  "lastModifiedTimestamp" | 
+  "createdAt" |
+  "name" |
+  "tablePhase" |
+  "gameHostPlayerProfileId" |
+  "status";
+
+
+export const ActiveTablesPage = () => {
+
+  const allMyTables = useLiveGameTables();
+  const { defaultPlayerProfileId } = useBfgWhoAmIContext();
+
+  const [sorting, setSorting] = useState<DataSorting>("desc");
+  const [activeSortingColumn, setActiveSortingColumn] = useState<DataSortingColumn>("createdAt");
+
+  if (!defaultPlayerProfileId) {
+    return <div>No player profile id</div>;
+  }
+
+  const allMyActiveTables = allMyTables?.filter((table) => 
+    table.tablePhase === "table-phase-game-in-progress" || 
+    table.tablePhase === "table-phase-lobby"
+  );
+
+  
+  const handleRequestSortByName = () => {
+    setActiveSortingColumn("name");
+    setSorting(sorting === "asc" ? "desc" : "asc");
+  }
+
+  const handleRequestSortByCreatedAt = () => {
+    setActiveSortingColumn("createdAt");
+    setSorting(sorting === "asc" ? "desc" : "asc");
+  }
+
+  const handleRequestSortByTablePhase = () => {
+    setActiveSortingColumn("tablePhase");
+    setSorting(sorting === "asc" ? "desc" : "asc");
+  }
+
+  const handleRequestSortByGameHostPlayerProfileId = () => {
+    setActiveSortingColumn("gameHostPlayerProfileId");
+    setSorting(sorting === "asc" ? "desc" : "asc");
+  }
+
+  const getSortedData = () => {
+    if (sorting === "none") {
+      return allMyActiveTables;
+    }
+    
+    if (activeSortingColumn === "name") {
+      return allMyActiveTables?.sort((a, b) => {
+        if (sorting === "asc") {
+          return a.gameTitle.localeCompare(b.gameTitle);
+        } else {
+          return b.gameTitle.localeCompare(a.gameTitle);
+        }
+      });
+    }
+
+    if (activeSortingColumn === "createdAt") {
+      return allMyActiveTables?.sort((a, b) => {
+        if (sorting === "asc") {
+          return a.createdAt.getTime() - b.createdAt.getTime();
+        } else {
+          return b.createdAt.getTime() - a.createdAt.getTime();
+        }
+      });
+    }
+
+    if (activeSortingColumn === "tablePhase") {
+      return allMyActiveTables?.sort((a, b) => {
+        if (sorting === "asc") {
+          return a.tablePhase.localeCompare(b.tablePhase);
+        } else {
+          return b.tablePhase.localeCompare(a.tablePhase);
+        }
+      });
+    }
+
+    if (activeSortingColumn === "gameHostPlayerProfileId") {
+      return allMyActiveTables?.sort((a, b) => {
+        if (sorting === "asc") {
+          return a.gameHostPlayerProfileId?.localeCompare(b.gameHostPlayerProfileId);
+        } else {
+          return b.gameHostPlayerProfileId?.localeCompare(a.gameHostPlayerProfileId);
+        }
+      });
+    }
+    
+    
+    return allMyActiveTables;
+  }
+
+  const sortedData = getSortedData();
+
+
+  return (
+    <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
+    <Table stickyHeader aria-label="collapsible table">
+      
+      <TableHead>
+        <TableRow>
+          <SortingColumnHeader
+            title="Name"
+            sorting={sorting}
+            thisSortingColumn={"name"}
+            activeSortingColumn={activeSortingColumn}
+            handleRequestSort={handleRequestSortByName}
+            titleAlign="left"
+          />
+          <SortingColumnHeader
+            title="Table Phase"
+            sorting={sorting}
+            thisSortingColumn={"tablePhase"}
+            activeSortingColumn={activeSortingColumn}
+            handleRequestSort={handleRequestSortByTablePhase}
+            titleAlign="left"
+          />
+          <TableCell>Status</TableCell>
+          <SortingColumnHeader
+            title="Created"
+            sorting={sorting}
+            thisSortingColumn={"createdAt"}
+            activeSortingColumn={activeSortingColumn}
+            handleRequestSort={handleRequestSortByCreatedAt}
+            titleAlign="left"
+          />
+          <SortingColumnHeader
+            title="Game Host"
+            sorting={sorting}
+            thisSortingColumn={"gameHostPlayerProfileId"}
+            activeSortingColumn={activeSortingColumn}
+            handleRequestSort={handleRequestSortByGameHostPlayerProfileId}
+            titleAlign="left"
+          />
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {
+          sortedData?.map((table) => (
+            <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+              <TableCell>
+                {table.gameTitle}
+              </TableCell>
+              <TableCell>
+                {table.tablePhase}
+                <GameTablePlayerOptionsComponent
+                  myPlayerProfileId={defaultPlayerProfileId}
+                  gameTable={table}
+                />
+              </TableCell>
+              <TableCell>
+                {table.currentStatusDescription}
+              </TableCell>
+              <TableCell>
+                {table.createdAt.toLocaleString()}
+              </TableCell>
+              <TableCell>
+                {table.gameHostPlayerProfileId}
+              </TableCell>
+            </TableRow>
+          ))
+        }
+      </TableBody>
+    </Table>
+  </TableContainer>
+  )
+};
