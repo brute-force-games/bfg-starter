@@ -1,5 +1,5 @@
 import { FlipACoinGameAction, FlipACoinGameState } from "~/types/bfg-game-engines/flip-a-coin-engine";
-import { GameTableSeat } from "~/types/core/game-table/game-table";
+import { GameTableSeat } from "~/models/game-table/game-table";
 import { FlipACoinRepresentation } from "./flip-a-coin-representation";
 import { FlipACoinInput } from "./flip-a-coin-input";
 

@@ -1,11 +1,11 @@
 import { z } from "zod";
 import { createBfgGameEngineProcessor, IBfgGameEngineProcessor } from "./bfg-game-engine-metadata";
-import { DbGameTable, PLAYER_SEATS } from "../core/game-table/game-table";
-import { GameTableActionResult } from "../core/game-table/table-phase";
+import { GameTable, PLAYER_SEATS } from "../../models/game-table/game-table";
+import { GameTableActionResult } from "../../models/game-table/table-phase";
 import { createFlipACoinInput, createFlipACoinRepresentation } from "~/game-engine-components/flip-a-coin/flip-a-coin-components";
 import { FlipACoinGameName } from "./supported-games";
-import { GameTableSeatSchema } from "../core/game-table/game-table";
-import { BfgGameSpecificTableAction } from "../core/game-table/game-table-action";
+import { GameTableSeatSchema } from "../../models/game-table/game-table";
+import { BfgGameSpecificTableAction } from "../../models/game-table/game-table-action";
 import { BfgGameTableActionId } from "../core/branded-values/bfg-branded-ids";
 
 
@@ -173,7 +173,7 @@ const createInitialFlipACoinGameTableAction = (
 
 
 const applyFlipACoinGameAction = (
-  _tableState: DbGameTable,
+  _tableState: GameTable,
   gameState: FlipACoinGameState,
   gameAction: FlipACoinGameAction,
 ): GameTableActionResult<FlipACoinGameState> => {

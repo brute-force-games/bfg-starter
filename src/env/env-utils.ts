@@ -41,10 +41,10 @@ const localEnvSettings: EnvSettings = {
   envType: 'local',
   backgroundColor: 'limegreen',
   pageTitlePrefix: '[local]',
-  cloudConfig: {
-    isCloudEnabled: true,
-    syncUrl: DEXIE_CLOUD_DATABASE_URL_LOCAL_DEV,
-  },
+  // cloudConfig: {
+  //   isCloudEnabled: true,
+  //   syncUrl: DEXIE_CLOUD_DATABASE_URL_LOCAL_DEV,
+  // },
   // projectExportFormat: ACTIVE_PROJECT_EXPORT_VERSION,
   // profileExportFormat: ACTIVE_PROFILE_EXPORT_VERSION,
 };
@@ -53,9 +53,9 @@ const devEnvSettings: EnvSettings = {
   envType: 'dev',
   backgroundColor: 'limegreen',
   pageTitlePrefix: '[dev]',
-  cloudConfig: {
-    isCloudEnabled: false,
-  },
+  // cloudConfig: {
+  //   isCloudEnabled: false,
+  // },
   // projectExportFormat: ACTIVE_PROJECT_EXPORT_VERSION,
   // profileExportFormat: ACTIVE_PROFILE_EXPORT_VERSION,
 };
@@ -64,10 +64,10 @@ const stagingEnvSettings: EnvSettings = {
   envType: 'staging',
   backgroundColor: 'orange',
   pageTitlePrefix: '[stg]',
-  cloudConfig: {
-    isCloudEnabled: true,
-    syncUrl: DEXIE_CLOUD_DATABASE_URL_STAGING,
-  },
+  // cloudConfig: {
+  //   isCloudEnabled: true,
+  //   syncUrl: DEXIE_CLOUD_DATABASE_URL_STAGING,
+  // },
   // projectExportFormat: ACTIVE_PROJECT_EXPORT_VERSION,
   // profileExportFormat: ACTIVE_PROFILE_EXPORT_VERSION,
 };
@@ -76,10 +76,10 @@ const productionEnvSettings: EnvSettings = {
   envType: 'production',
   backgroundColor: '#ffffff',
   pageTitlePrefix: '',
-  cloudConfig: {
-    isCloudEnabled: true,
-    syncUrl: DEXIE_CLOUD_DATABASE_URL_PRODUCTION,
-  },
+  // cloudConfig: {
+  //   isCloudEnabled: true,
+  //   syncUrl: DEXIE_CLOUD_DATABASE_URL_PRODUCTION,
+  // },
   // projectExportFormat: ACTIVE_PROJECT_EXPORT_VERSION,
   // profileExportFormat: ACTIVE_PROFILE_EXPORT_VERSION,
 };
@@ -88,9 +88,9 @@ const unknownEnvSettings: EnvSettings = {
   envType: 'unknown',
   backgroundColor: '#000000',
   pageTitlePrefix: '[unknown!]',
-  cloudConfig: {
-    isCloudEnabled: false,
-  },
+  // cloudConfig: {
+  //   isCloudEnabled: false,
+  // },
   // projectExportFormat: ACTIVE_PROJECT_EXPORT_VERSION,
   // profileExportFormat: ACTIVE_PROFILE_EXPORT_VERSION,
 };

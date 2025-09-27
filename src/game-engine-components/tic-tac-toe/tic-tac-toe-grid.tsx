@@ -1,6 +1,6 @@
 import { TicTacToeMove, TicTacToeGameState, TicTacToeMoveCell, getPlayerSeatSymbol, getCurrentPlayer } from "~/types/bfg-game-engines/tic-tac-toe-engine";
 import { Grid, Button, Typography, Box } from '@mui/material';
-import { GameTableSeat } from "~/types/core/game-table/game-table";
+import { GameTableSeat } from "~/models/game-table/game-table";
 
 
 interface TicTacToeGridProps {

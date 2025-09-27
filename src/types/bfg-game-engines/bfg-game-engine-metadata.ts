@@ -1,12 +1,11 @@
 import React from "react";
 import { z } from "zod";
-import { DbGameTable, NewGameTable } from "../core/game-table/game-table";
 import { BfgGameSpecificGameStateTypedJson, createBfgGameTypedJsonMetadata } from "../core/branded-values/bfg-game-state-typed-json";
-import { GameTableSeat } from "../core/game-table/game-table";
-import { GameTableActionResult } from "../core/game-table/table-phase";
+import { GameTableSeat } from "../../models/game-table/game-table";
+import { GameTableActionResult } from "../../models/game-table/table-phase";
 import { AbfgSupportedGameTitle } from "./supported-games";
-import { DbGameTableAction } from "../core/game-table/game-table-action";
-import { BfgGameSpecificTableAction } from "../core/game-table/game-table-action";
+import { DbGameTableAction } from "../../models/game-table/game-table-action";
+import { BfgGameSpecificTableAction } from "../../models/game-table/game-table-action";
 import { BfgGameEngineProcessor } from "./bfg-game-engines";
 
 

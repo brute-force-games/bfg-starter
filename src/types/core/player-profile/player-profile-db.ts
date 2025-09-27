@@ -1,18 +1,18 @@
-import { DbPlayerProfileId } from "../branded-values/branded-strings";
-import { NewPlayerProfileParameters } from "./player-profile";
+// import { DbPlayerProfileId } from "../branded-values/branded-strings";
+// import { NewPlayerProfileParameters } from "./player-profile";
 
 
 
-export type NewDbPlayerProfile = NewPlayerProfileParameters
+// export type NewDbPlayerProfile = NewPlayerProfileParameters
 
 
-export type DbPlayerProfile = NewDbPlayerProfile & {
-  id?: DbPlayerProfileId;
+// export type DbPlayerProfile = NewDbPlayerProfile & {
+//   id?: DbPlayerProfileId;
   
-  handle: string;
-  avatarImageUrl?: string;
-  isDefault: boolean;
+//   handle: string;
+//   avatarImageUrl?: string;
+//   isDefault: boolean;
 
-  createdAt: Date;
-  updatedAt: Date;
-}
+//   createdAt: Date;
+//   updatedAt: Date;
+// }

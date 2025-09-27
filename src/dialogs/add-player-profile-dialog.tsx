@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import {
   Dialog,
   DialogTitle,
@@ -8,36 +9,50 @@ import {
   Button,
   FormControl,
   Stack,
-  TextField} from '@mui/material';
+  TextField,
+  FormControlLabel,
+  Checkbox,
+  Alert,
+  CircularProgress} from '@mui/material';
 import { NewPlayerProfileParameters, NewPlayerProfileParametersSchema } from '~/types/core/player-profile/player-profile';
 import { Controller } from 'react-hook-form';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useBfgWhoAmIContext } from '~/state/who-am-i/BfgWhoAmIContext';
+import { PrivatePlayerProfile } from '~/models/private-player-profile';
 
 
 interface AddPlayerProfileDialogProps {
-  allDataItems: NewPlayerProfileParameters[];
-  onNewDataItemCreated: (playerProfileParameters: NewPlayerProfileParameters) => void;
+  allDataItems: PrivatePlayerProfile[];
+  onNewDataItemCreated: (playerProfile: PrivatePlayerProfile) => void;
   onClose: () => void;
 }
 
 export const AddPlayerProfileDialog = ({ allDataItems, onNewDataItemCreated, onClose }: AddPlayerProfileDialogProps) => {
+  const [isCreating, setIsCreating] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
 
-  const { dexieStatus } = useBfgWhoAmIContext();
+  const defaultNewHandleValue = "Player";
 
-  const defaultNewHandleValue = dexieStatus.dexieEmailValue ?
-    dexieStatus.dexieEmailValue.valueOf() :
-    "Player";
+  interface FormData {
+    handle: string;
+    avatarImageUrl?: string;
+    isDefault: boolean;
+  }
 
-  const defaultFormValues: NewPlayerProfileParameters = {
+  const defaultFormValues: FormData = {
     handle: defaultNewHandleValue,
+    avatarImageUrl: '',
+    isDefault: false,
   }
 
   const doesHandleAlreadyExist = (handle: string) => {
     return allDataItems?.some(playerProfile => playerProfile.handle === handle);
   }
 
-  const formSchema = NewPlayerProfileParametersSchema.refine(
+  const formSchema = NewPlayerProfileParametersSchema.extend({
+    avatarImageUrl: z.string().optional(),
+    isDefault: z.boolean(),
+  }).refine(
     (data) => !doesHandleAlreadyExist(data.handle),
     {
       message: "You already have a profile with this handle",
@@ -45,7 +60,7 @@ export const AddPlayerProfileDialog = ({ allDataItems, onNewDataItemCreated, onC
     }
   );
 
-  const { control, handleSubmit, formState, trigger } = useForm<NewPlayerProfileParameters>({
+  const { control, handleSubmit, formState, trigger } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultFormValues,
     mode: 'onChange',
@@ -59,12 +74,32 @@ export const AddPlayerProfileDialog = ({ allDataItems, onNewDataItemCreated, onC
 
   const { errors } = formState;
 
-  const onSubmit = async (formData: NewPlayerProfileParameters) => {
+  const onSubmit = async (formData: FormData) => {
+    setIsCreating(true);
+    setCreateError(null);
 
-    console.log("onSubmit form values:", formData);
-    onNewDataItemCreated(formData);
+    try {
+      console.log("Creating player profile with form data:", formData);
+      
+      // Import the client storage function
+      const { addPrivatePlayerProfile } = await import('~/data/client-player-profiles');
+      
+      // Create the profile with cryptographic keys
+      const newProfile = await addPrivatePlayerProfile(
+        formData.handle,
+        formData.avatarImageUrl || undefined,
+        formData.isDefault
+      );
 
-    onClose();
+      console.log("Created player profile:", newProfile);
+      onNewDataItemCreated(newProfile);
+      onClose();
+    } catch (error) {
+      console.error("Error creating player profile:", error);
+      setCreateError(error instanceof Error ? error.message : 'Failed to create player profile');
+    } finally {
+      setIsCreating(false);
+    }
   };
   
 
@@ -81,6 +116,12 @@ export const AddPlayerProfileDialog = ({ allDataItems, onNewDataItemCreated, onC
       <DialogContent>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={3} sx={{ mt: 2 }}>
+            {createError && (
+              <Alert severity="error">
+                {createError}
+              </Alert>
+            )}
+            
             <FormControl error={!!errors.handle}>
               <Controller
                 name="handle"
@@ -97,20 +138,72 @@ export const AddPlayerProfileDialog = ({ allDataItems, onNewDataItemCreated, onC
                       onChange(newValue);
                       await trigger('handle');
                     }}
-                    disabled={formState.isSubmitting}
+                    disabled={formState.isSubmitting || isCreating}
                   />
                 )}
               />
             </FormControl>
+
+            <FormControl error={!!errors.avatarImageUrl}>
+              <Controller
+                name="avatarImageUrl"
+                control={control}
+                render={({ field: { onChange, value, ...field } }) => (
+                  <TextField
+                    {...field}
+                    label="Avatar Image URL (optional)"
+                    error={!!errors.avatarImageUrl}
+                    helperText={errors.avatarImageUrl?.message}
+                    value={value || ''}
+                    onChange={(e) => onChange(e.target.value.trim())}
+                    disabled={formState.isSubmitting || isCreating}
+                  />
+                )}
+              />
+            </FormControl>
+
+            <FormControl>
+              <Controller
+                name="isDefault"
+                control={control}
+                render={({ field: { onChange, value, ...field } }) => (
+                  <FormControlLabel
+                    {...field}
+                    control={
+                      <Checkbox
+                        checked={value}
+                        onChange={(e) => onChange(e.target.checked)}
+                        disabled={formState.isSubmitting || isCreating}
+                      />
+                    }
+                    label="Set as default profile"
+                  />
+                )}
+              />
+            </FormControl>
+
+            <Alert severity="info">
+              This profile will be created with cryptographic keys for secure move signing. 
+              All data is stored locally on your device.
+            </Alert>
           </Stack>
           <DialogActions>
-            <Button type="button" onClick={onClose}>Cancel</Button>
+            <Button type="button" onClick={onClose} disabled={isCreating}>
+              Cancel
+            </Button>
             <Button 
               type="submit"
               variant="contained"
-              disabled={!formState.isValid || formState.isSubmitting}
+              disabled={!formState.isValid || formState.isSubmitting || isCreating}
             >
-              Add Player Profile
+              {isCreating ? (
+                <>
+                  <CircularProgress size={20} sx={{ mr: 1 }} />
+                  Creating Profile...
+                </>
+              ) : (
+                'Create Player Profile'
+              )}
             </Button>
           </DialogActions>
         </form>

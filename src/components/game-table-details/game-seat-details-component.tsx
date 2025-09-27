@@ -1,5 +1,5 @@
-import { DbGameTable, GameTableSeat } from "~/types/core/game-table/game-table"
-import { isGameOver } from "~/types/core/game-table/table-phase";
+import { DbGameTable, GameTableSeat } from "~/models/game-table/game-table"
+import { isGameOver } from "~/models/game-table/table-phase";
 
 
 interface IGameTableSeatDetailsComponentProps {

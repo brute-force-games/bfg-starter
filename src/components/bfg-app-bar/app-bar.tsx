@@ -1,56 +1,62 @@
 import { Box, Button, Typography } from "@mui/material";
 import { Toolbar } from "@mui/material";
 import { AppBar } from "@mui/material";
-import { Link } from 'react-router';
-import { UserProfileAccessComponent } from "./user-profile-access-component";
-import { useBfgWhoAmIContext } from "~/state/who-am-i/BfgWhoAmIContext";
+import { Link } from '@tanstack/react-router';
+import { useMyPlayerProfiles } from "~/hooks/stores/use-my-player-profiles-store";
 
 
 export const BruteForceGamesAppBar = () => {
 
-  const { dexieStatus, myNotifications } = useBfgWhoAmIContext();
-  // const bfgWhoAmIContext = useRiskyBfgWhoAmIContext();
+  // console.log("BruteForceGamesAppBar");
 
-  // const allInvites = useObservable(bfgDb.cloud.invites);
-
-  // const getNotifications = (): CloudNotification[] => {
-  //   if (!allInvites) {
-  //     return [];
-  //   }
-
-  //   const notifications = allInvites
-  //     .filter((i) => !i.accepted && !i.rejected)
-  //     .map((i) => ({
-  //       id: i.id,
-  //       message: `An invitation from ${i.invitedBy?.name}`,
-  //       from: i.invitedBy?.email ?? '',
-  //       to: i.email ?? '',
-  //       createdAt: i.invitedDate ?? new Date(),
-  //     }));
-
-  //   return notifications;
-  // }
-
-  // const notifications = getNotifications();
-  const notificationsCount = myNotifications.length;
-
-  const notificationLinkTitle = notificationsCount > 0 ? `Notifications (${notificationsCount})` : "Notifications";
+  // Use the "risky" context hook that returns null if context isn't available
+  // const contextData = useRiskyBfgWhoAmIContext();
+  const myPlayerProfiles = useMyPlayerProfiles();
 
   
   return (
-    <AppBar position="static">
-      <Toolbar>
+    <AppBar 
+      position="static" 
+      sx={{ 
+        width: '100%',
+        minWidth: '100vw'
+      }}
+    >
+      <Toolbar sx={{ width: '100%' }}>
         <Typography
           variant="h6"
           component="div"
           sx={{ flexGrow: 1, fontWeight: 'bold' }}
         >
-          <Link to="/" style={{ textDecoration: 'none' }}>
+          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
             Brute Force Games
           </Link>
         </Typography>
         <Box sx={{ display: 'flex', gap: 2 }}>
-          <Link to="/games-shelf" style={{ textDecoration: 'none' }}>
+          
+          <Link to="/start-new-game" style={{ textDecoration: 'none' }}>
+            <Button color="inherit">Start New Game</Button>
+          </Link>
+          <Link to="/new-lobby" style={{ textDecoration: 'none' }}>
+            <Button color="inherit">Set Up New Lobby</Button>
+          </Link>
+          <Link to="/my-hosted-games" style={{ textDecoration: 'none' }}>
+            <Button color="inherit">My Hosted Games</Button>
+          </Link>
+          <Link to="/hosted-games-demo" style={{ textDecoration: 'none' }}>
+            <Button color="inherit">Games Demo</Button>
+          </Link>
+          {/* Always show Player Profiles link, but disable if no profiles */}
+          {myPlayerProfiles && myPlayerProfiles.length > 0 ? (
+            <Link to="/my-player-profiles" style={{ textDecoration: 'none' }}>
+              <Button color="inherit">Player Profiles</Button>
+            </Link>
+          ) : (
+            <Button color="inherit" disabled>
+              Player Profiles
+            </Button>
+          )}
+          {/* <Link to="/games-shelf" style={{ textDecoration: 'none' }}>
             <Button color="inherit">Games Shelf</Button>
           </Link>
           <Link to="/active-tables" style={{ textDecoration: 'none' }}>
@@ -61,13 +67,11 @@ export const BruteForceGamesAppBar = () => {
           </Link>
           <Link to="/notifications" style={{ textDecoration: 'none' }}>
             <Button color="inherit">{notificationLinkTitle}</Button>
-          </Link>
+          </Link> */}
 
         </Box>
 
-        <UserProfileAccessComponent
-          dexieStatus={dexieStatus}
-        />
+        {/* User profile access removed - local-only mode */}
 
       </Toolbar>
     </AppBar>

@@ -1,5 +1,5 @@
 import { TicTacToeGameState } from "~/types/bfg-game-engines/tic-tac-toe-engine";
-import { GameTableSeat } from "~/types/core/game-table/game-table";
+import { GameTableSeat } from "~/models/game-table/game-table";
 
 
 interface TicTacToeRepresentationProps {

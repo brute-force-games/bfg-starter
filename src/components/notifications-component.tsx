@@ -1,6 +1,6 @@
 import { useObservable } from "dexie-react-hooks";
 import { bfgDb } from "~/data/bfg-db";
-import { DexieInvitation } from "~/pages/dexie-status/dexie-invitation";
+import { DexieInvitation } from "~/pages-old/dexie-status/dexie-invitation";
 
 
 export const NotificationsComponent = () => {

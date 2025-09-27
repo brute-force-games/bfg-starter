@@ -4,7 +4,7 @@ import { shareGameTableWithFriends } from "~/data/bfg-db-game-tables";
 import { ShareWithFriendsDialog } from "~/dialogs/share-with-friends-dialog";
 import { useBfgWhoAmIContext } from "~/state/who-am-i/BfgWhoAmIContext";
 import { DbGameFriendId, DbGameTableId } from "~/types/core/branded-values/branded-strings";
-import { DbGameTable } from "~/types/core/game-table/game-table";
+import { DbGameTable } from "~/models/game-table/game-table";
 import { GameTablePlayerOptionsComponent } from "./game-table-player-options-component";
 import { getBfgGameMetadata } from "~/types/bfg-game-engines/bfg-game-engines";
 import { GameTableSeatDetailsComponent } from "./game-seat-details-component";

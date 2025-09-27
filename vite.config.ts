@@ -1,12 +1,20 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-
+import tsConfigPaths from 'vite-tsconfig-paths'
+import viteReact from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    tsConfigPaths(),
+    // tanstackStart({
+    //   spa: { enabled: true }, // Run as SPA (client-side only)
+    // }),
+    viteReact({
+      jsxRuntime: 'automatic'
+    }),
+  ],
   server: {
-    port: 62776
+    port: 62777
   },
   resolve: {
     alias: {

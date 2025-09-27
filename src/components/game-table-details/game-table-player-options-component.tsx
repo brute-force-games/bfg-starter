@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import { isPlayerAtGameTable } from "~/data/dexie-data-ops/player-seat-utils";
+import { isPlayerAtGameTable } from "~/data/game-table-ops/player-seat-utils";
 import { PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids";
-import { DbGameTable } from "~/types/core/game-table/game-table";
+import { DbGameTable } from "~/models/game-table/game-table";
 
 
 export const GameTablePlayerOptionsComponent = (props: {

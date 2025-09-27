@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { createBfgGameEngineProcessor, IBfgGameEngineProcessor } from "./bfg-game-engine-metadata";
-import { DbGameTable, GameTableSeat, GameTableSeatSchema } from "../core/game-table/game-table";
+import { GameTable, GameTableSeat, GameTableSeatSchema } from "../../models/game-table/game-table";
 import { createTicTacToeRepresentation, createTicTacToeInput, createTicTacToeComboRepresentationAndInput, createTicTacToeHistory } from "~/game-engine-components/tic-tac-toe/tic-tac-toe-components";
-import { GameTableActionResult } from "../core/game-table/table-phase";
+import { GameTableActionResult } from "../../models/game-table/table-phase";
 import { TicTacToeGameName } from "./supported-games";
-import { BfgGameSpecificActionSchema, BfgGameSpecificGameStateSchema, BfgGameSpecificTableAction } from "../core/game-table/game-table-action";
+import { BfgGameSpecificActionSchema, BfgGameSpecificGameStateSchema, BfgGameSpecificTableAction } from "../../models/game-table/game-table-action";
 import { BfgGameTableActionId } from "../core/branded-values/bfg-branded-ids";
 
 
@@ -131,7 +131,7 @@ const createNextPlayersToAct = (gameAction: TicTacToeMove, _gameState: TicTacToe
 
 
 const applyTicTacToeGameAction = (
-  _tableState: DbGameTable,
+  _tableState: GameTable,
   gameState: TicTacToeGameState,
   gameAction: TicTacToeGameAction,
 ): GameTableActionResult<TicTacToeGameState> => {

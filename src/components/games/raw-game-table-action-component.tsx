@@ -1,4 +1,4 @@
-import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
+import { DbGameTableAction } from "~/models/game-table/game-table-action";
 
 
 interface IRawGameTableActionComponentProps {

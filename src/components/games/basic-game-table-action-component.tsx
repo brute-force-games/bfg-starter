@@ -1,5 +1,5 @@
-import { DbGameTable } from "~/types/core/game-table/game-table";
-import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
+import { DbGameTable } from "~/models/game-table/game-table";
+import { DbGameTableAction } from "~/models/game-table/game-table-action";
 
 
 interface IBasicGameTableActionComponentProps {

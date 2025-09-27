@@ -1,8 +1,8 @@
 import { BasicGameTableActionComponent } from "~/components/games/basic-game-table-action-component";
-import { getPlayerSeatForActionSource, isActionForMyPlayer } from "~/data/dexie-data-ops/player-seat-utils";
-import { GameTableSeat } from "~/types/core/game-table/game-table";
-import { DbGameTable } from "~/types/core/game-table/game-table";
-import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
+import { getPlayerSeatForActionSource, isActionForMyPlayer } from "~/data/game-table-ops/player-seat-utils";
+import { GameTableSeat } from "~/models/game-table/game-table";
+import { DbGameTable } from "~/models/game-table/game-table";
+import { DbGameTableAction } from "~/models/game-table/game-table-action";
 import { DbPlayerProfileId } from "~/types/core/branded-values/branded-strings";
 
 

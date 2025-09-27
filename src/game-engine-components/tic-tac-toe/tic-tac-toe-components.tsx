@@ -2,8 +2,8 @@ import { TicTacToeGameAction, TicTacToeGameState, TicTacToeMove } from "~/types/
 import { TicTacToeInput } from "./tic-tac-toe-input";
 import { TicTacToeGrid } from "./tic-tac-toe-grid";
 import { TicTacToeRepresentation } from "./tic-tac-toe-representation";
-import { GameTableSeat } from "~/types/core/game-table/game-table";
-import { BfgGameSpecificTableAction } from "~/types/core/game-table/game-table-action";
+import { GameTableSeat } from "~/models/game-table/game-table";
+import { BfgGameSpecificTableAction } from "~/models/game-table/game-table-action";
 
 
 export const createTicTacToeRepresentation = (

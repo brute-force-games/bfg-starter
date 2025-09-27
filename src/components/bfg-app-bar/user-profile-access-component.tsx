@@ -2,12 +2,10 @@ import { Box, Tooltip, IconButton, Avatar } from "@mui/material"
 import { DbkAppBarMenu, DbkAppBarMenuItem } from "./app-bar-menu"
 import { useState } from "react";
 // import { doneBlocksDb } from "~/data/dexie-db/doneblock-db";
-import md5 from 'md5';
+// import md5 from 'md5';
 // import { BfgUserCompositeIdentity } from "~/data/zod-types/schemas/shared/user/user-identity";
-import { BfgUserDexieStatus } from "~/types/core/user/user-dexie-status";
 // import { useEnvSettings } from "~/env/EnvSettingsContext";
-import { bfgDb } from "~/data/bfg-db";
-import { DEXIE_DATA_PAGE_ROUTE } from "~/pages/dexie-data/dexie-data-page";
+// import { bfgDb } from "~/data/bfg-db";
 // import { DEXIE_STATUS_PAGE_PATH } from "~/pages/dexie-status/dexie-status-page";
 // import { DbkUserDexieStatus } from "~/data/zod-types/schemas/shared/user/user-dexie-status";
 // import { MANAGE_SYNC_PAGE_PATH } from "~/pages/manage-sync/manage-sync";
@@ -20,8 +18,15 @@ import { DEXIE_DATA_PAGE_ROUTE } from "~/pages/dexie-data/dexie-data-page";
 
 
 interface UserProfileAccessComponentProps {
-  // dbkIdentity: DbkUserCompositeIdentity;
-  dexieStatus: BfgUserDexieStatus;
+  localStatus: {
+    hasLocalUser: boolean;
+    isLoggedIn: boolean;
+    localEmailValue: string | null;
+    emailVerified: boolean;
+    licenseType: string | null;
+    licenseStatus: string | null;
+    lastLogin: Date | null;
+  };
 }
 
 export const UserProfileAccessComponent = (props: UserProfileAccessComponentProps) => {
@@ -29,7 +34,7 @@ export const UserProfileAccessComponent = (props: UserProfileAccessComponentProp
   // const { envSettings } = useEnvSettings();
   // const { myProjects, exportSavedProject } = useAllMyProjectsDataContext();
 
-  const { dexieStatus } = props;
+  const { localStatus } = props;
 
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
@@ -44,23 +49,20 @@ export const UserProfileAccessComponent = (props: UserProfileAccessComponentProp
 
   
   // const userName = dbkIdentity.dbkUserHandle;
-  const emailToUse = dexieStatus?.dexieEmailValue;
-  const userName = emailToUse || '???';
+  const emailToUse = localStatus?.localEmailValue;
+  const userName = emailToUse || 'Local User';
   // const isCloudEnabled = envSettings.cloudConfig.isCloudEnabled;
 
-  const getCloudActionMenuItem = () => {
-    // if (isCloudEnabled) {
-      const logInOrOutMenuItem = dexieStatus.isLoggedIn ?
-        { type: 'menu-action' as const, title: 'Log Out', action: () => bfgDb.cloud.logout() } :
-        { type: 'menu-action' as const, title: 'Log In', action: () => bfgDb.cloud.login() };
+  // const getCloudActionMenuItem = () => {
+  //   // Local-only mode - no cloud functionality
+  //   const localOnlyMenuItem = { 
+  //     type: 'menu-action' as const, 
+  //     title: 'Local Mode', 
+  //     action: () => console.log('Running in local-only mode') 
+  //   };
 
-      return logInOrOutMenuItem;
-    // }
-    
-    // // return { type: 'menu-link' as const, title: 'Dexie Status', link: { to: DEXIE_STATUS_PAGE_PATH } };
-    // return { type: 'menu-link' as const, title: 'Dexie Status', link: { to: '/dexie-status' } };
-    
-  }
+  //   return localOnlyMenuItem;
+  // }
 
   // const doDownloadProfileBackup = async () => {
   //   const exportTime = new Date();
@@ -72,33 +74,34 @@ export const UserProfileAccessComponent = (props: UserProfileAccessComponentProp
   //   downloadExportData(exportContent, exportFilename);
   // }
 
-  const cloudActionMenuItem = getCloudActionMenuItem();
+  // const cloudActionMenuItem = getCloudActionMenuItem();
 
   const menuItems: DbkAppBarMenuItem[] = [
     { type: 'menu-label', title: userName },
     { type: 'menu-divider' },
-    { type: 'menu-link', title: 'Player Profile', link: { to: '/my-player-profiles' } },
-    { type: 'menu-link', title: 'Gaming Groups', link: { to: '/gaming-groups' } },
-    { type: 'menu-link', title: 'My Friends', link: { to: '/my-friends' } },
-    { type: 'menu-link', title: 'Dexie Data', link: { to: DEXIE_DATA_PAGE_ROUTE } },
-    { type: 'menu-link', title: 'Dexie Status', link: { to: '/dexie-status', } },
-    { type: 'menu-link', title: 'BFG Starter on Github', link: { to: 'https://github.com/brute-force-games/bfg-starter' } },
+    // { type: 'menu-link', title: 'Player Profile', link: { to: '/my-player-profiles' } },
+    // { type: 'menu-link', title: 'Gaming Groups', link: { to: '/gaming-groups' } },
+    // { type: 'menu-link', title: 'My Friends', link: { to: '/my-friends' } },
+    // { type: 'menu-link', title: 'Dexie Data', link: { to: DEXIE_DATA_PAGE_ROUTE } },
+    // { type: 'menu-link', title: 'Dexie Status', link: { to: '/dexie-status', } },
+    { type: 'menu-anchor', title: 'BFG Starter on Github', href: 'https://github.com/brute-force-games/bfg-starter' },
     // { type: 'menu-divider' },
     // { type: 'menu-action', title: 'Download Profile Backup', action: doDownloadProfileBackup },
     { type: 'menu-divider' },
-    cloudActionMenuItem,
+    // cloudActionMenuItem,
   ];
 
-  const getUserImageUrl = () => {
-    if (!emailToUse) {
-      return `https://ui-avatars.com/api/?name=${userName}`;
-    }
+  // const getUserImageUrl = () => {
+  //   if (!emailToUse) {
+  //     return `https://ui-avatars.com/api/?name=${userName}`;
+  //   }
 
-    const hash = md5(emailToUse.toLowerCase().trim());
-    return `https://www.gravatar.com/avatar/${hash}?d=identicon&s=200`;
-  };
+  //   const hash = md5(emailToUse.toLowerCase().trim());
+  //   return `https://www.gravatar.com/avatar/${hash}?d=identicon&s=200`;
+  // };
 
-  const avatarImageUrl = getUserImageUrl();
+  // const avatarImageUrl = getUserImageUrl();
+  const avatarImageUrl = '';
   
   return (
 

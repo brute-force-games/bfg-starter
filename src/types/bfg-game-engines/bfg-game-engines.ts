@@ -2,11 +2,11 @@ import { z } from "zod";
 import { TicTacToeGameActionSchema, TicTacToeGameStateSchema, TicTacToeGameStateProcessor } from "./tic-tac-toe-engine";
 import { AbfgSupportedGameTitle } from "./supported-games";
 import { FlipACoinGameActionSchema, FlipACoinGameStateSchema, FlipACoinGameStateProcessor } from "./flip-a-coin-engine";
-import { DbGameTable, NewGameTable, GameTableSeat } from "../core/game-table/game-table";
+import { GameTable, GameTableSeat } from "../../models/game-table/game-table";
 import { FlipACoinGameDefinition, GameDefinition, TicTacToeGameDefinition } from "../enums/game-shelf";
 import { BfgGameSpecificGameStateTypedJson } from "../core/branded-values/bfg-game-state-typed-json";
-import { BfgGameSpecificTableAction, DbGameTableAction } from "../core/game-table/game-table-action";
-import { GameTableActionResult } from "../core/game-table/table-phase";
+import { BfgGameSpecificTableAction, DbGameTableAction } from "../../models/game-table/game-table-action";
+import { GameTableActionResult } from "../../models/game-table/table-phase";
 
 
 
@@ -39,7 +39,7 @@ export type BfgGameEngineProcessor<
 > = {
   
   createBfgGameSpecificInitialGameTableAction: (
-    gameTable: NewGameTable
+    gameTable: GameTable
   ) => BfgGameSpecificTableAction<GA>;  // Ensure this is inferred from Zod schema
 
   createBfgInitialGameSpecificState: (
@@ -94,7 +94,7 @@ export type BfgGameEngineProcessor<
   ) => React.ReactNode;
 
   applyGameAction: (
-    tableState: DbGameTable,
+    tableState: GameTable,
     gameState: GS,
     gameAction: GA
   ) => GameTableActionResult<GS>;
@@ -148,7 +148,7 @@ export const AllBfgGameMetadata = {
 // } as const;
 
 
-export const getBfgGameMetadata = (gameTable: DbGameTable | NewGameTable) => {
+export const getBfgGameMetadata = (gameTable: GameTable) => {
 
   const gameTitle = gameTable.gameTitle as keyof typeof AllBfgGameMetadata;
   const gameMetadata = AllBfgGameMetadata[gameTitle];
@@ -170,13 +170,13 @@ export const getBfgGameMetadata = (gameTable: DbGameTable | NewGameTable) => {
 }
 
 
-export const getBfgGameEngine = (gameTable: DbGameTable | NewGameTable) => {
+export const getBfgGameEngine = (gameTable: GameTable) => {
   const gameMetadata = getBfgGameMetadata(gameTable);
   return gameMetadata.processor;
 }
 
 
-export const getBfgGameDefinition = (gameTable: DbGameTable | NewGameTable) => {
+export const getBfgGameDefinition = (gameTable: GameTable) => {
   const gameMetadata = getBfgGameMetadata(gameTable);
   return gameMetadata.definition;
 }

@@ -1,4 +1,4 @@
-import { DbGameTable } from "~/types/core/game-table/game-table";
+import { DbGameTable } from "~/models/game-table/game-table";
 import { GameTablePlayerOptionsComponent } from "../game-table-details/game-table-player-options-component";
 import { PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids";
 
