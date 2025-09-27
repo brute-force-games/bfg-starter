@@ -7,7 +7,7 @@ import { TrysteroConfig } from "~/p2p/trystero-config";
 import { GameLobbyId, PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids"
 
 
-interface IP2pLobby {
+export interface IP2pLobby {
   room: Room
   connectionStatus: string
 
@@ -15,6 +15,8 @@ interface IP2pLobby {
   playerProfiles: Map<PlayerProfileId, PublicPlayerProfile>
 
   lobbyDetails: HostP2pLobbyDetails | null
+
+  getPlayerProfile: (callback: (playerProfile: PublicPlayerProfile, peer: string) => void) => void
 
   sendPlayerMove: (move: PlayerP2pLobbyMove) => void
   getPlayerMove: (callback: (move: PlayerP2pLobbyMove, peer: string) => void) => void
@@ -71,6 +73,7 @@ export const useP2pLobby = (lobbyId: GameLobbyId, myPlayerProfile: PublicPlayerP
     connectionStatus: connectionStatus,
     peerProfiles,
     playerProfiles,
+    getPlayerProfile,
     sendPlayerMove,
     getPlayerMove,
   }

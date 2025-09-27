@@ -1,17 +1,16 @@
 import { useCallback, useEffect } from "react"
 import { PublicPlayerProfile } from "~/models/public-player-profile"
 import { GameLobbyId, PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids"
-import { P2P_LOBBY_DETAILS_ACTION_KEY, P2P_LOBBY_PLAYER_PROFILE_DATA_ACTION_KEY } from "./constants"
 import { PeerProfilesComponent } from "./peer-profiles-component"
 import { HostP2pLobbyDetails, PlayerP2pLobbyMove } from "~/models/p2p-details"
 import { LobbyHostOptionsComponent } from "../lobby/lobby-host-options-component"
 import { GameLobby, LobbyOptions } from "~/models/p2p-lobby"
-import { useP2pLobby } from "~/hooks/p2p/use-p2p-lobby"
 import { playerTakeSeat } from "~/data/game-lobby-ops/player-take-seat"
 import { playerSetGameChoice } from "~/data/game-lobby-ops/player-set-game-choice"
 import { LobbyStateComponent } from "../lobby/lobby-host-state-component"
 import { updateHostedLobbyPlayerPool } from "~/store/hosted-lobbies-store"
 import { playerLeaveSeat } from "~/data/game-lobby-ops/player-leave-seat"
+import { useHostedP2pLobby } from "~/hooks/p2p/use-hosted-p2p-lobby"
 
 
 interface IHostedP2pLobbyComponentProps {
@@ -37,16 +36,15 @@ export const HostedP2pLobbyComponent = ({
   setLobbyOptions,
 }: IHostedP2pLobbyComponentProps) => {
   
-  const p2pLobby = useP2pLobby(lobbyId, hostPlayerProfile);
-  const { room, connectionStatus, peerProfiles, playerProfiles, getPlayerMove } = p2pLobby;
 
-  // const hostedLobbyPeers = p2pLobby.playerProfiles;
-  // console.log('hostedLobbyPeers', hostedLobbyPeers);
+  const hostedP2pLobby = useHostedP2pLobby(lobbyId, hostPlayerProfile);
+  const { p2pLobby, connectionStatus, peerProfiles, sendLobbyData } = hostedP2pLobby;
+  const { room, getPlayerMove, playerProfiles } = p2pLobby;
 
-  const [sendLobbyData] = room.makeAction<HostP2pLobbyDetails>(P2P_LOBBY_DETAILS_ACTION_KEY)
-  const [sendPlayerProfile, getPlayerProfile] = room.makeAction<PublicPlayerProfile>(P2P_LOBBY_PLAYER_PROFILE_DATA_ACTION_KEY)
-  // const [sendPlayerMove, getPlayerMove] = room.makeAction<PlayerP2pLobbyMove>(P2P_LOBBY_PLAYER_MOVE_DATA_ACTION_KEY)
+  // const [sendLobbyData] = room.makeAction<HostP2pLobbyDetails>(P2P_LOBBY_DETAILS_ACTION_KEY)
+  // const [sendPlayerProfile, getPlayerProfile] = room.makeAction<PublicPlayerProfile>(P2P_LOBBY_PLAYER_PROFILE_DATA_ACTION_KEY)
 
+  
   const doSendLobbyData = useCallback(() => {
     if (lobbyState) {
       const lobbyData: HostP2pLobbyDetails = {
@@ -66,27 +64,11 @@ export const HostedP2pLobbyComponent = ({
   }, [doSendLobbyData])
 
   // Handle peer connections
-  room.onPeerJoin(peer => {
-    sendPlayerProfile(hostPlayerProfile, peer)
+  room.onPeerJoin(_peer => {
+    // sendPlayerProfile(hostPlayerProfile, peer)
     doSendLobbyData();
   })
 
-  // room.onPeerLeave(peer => {
-  //   console.log('Peer left hosted lobby:', peer)
-  //   setConnectionStatus(`Hosting lobby - ${Object.keys(peerProfiles).length - 1} players connected`)
-  //   // Remove the peer from our profiles
-  //   setPeerProfiles(prev => {
-  //     const updated = { ...prev }
-  //     delete updated[peer]
-  //     return updated
-  //   })
-  // })
-
-  // // Listen for player profiles from peers
-  // getPlayerProfile((playerProfile: PublicPlayerProfile, peer: string) => {
-  //   console.log('Received player profile from peer:', peer, playerProfile)
-  //   setPeerProfiles(prev => ({ ...prev, [peer]: playerProfile }))
-  // })
 
   getPlayerMove(async (move: PlayerP2pLobbyMove, peer: string) => {
     console.log('Received player move from peer:', peer, move);
@@ -126,17 +108,6 @@ export const HostedP2pLobbyComponent = ({
         break;
     }
   })
-
-  // const handleResendLobbyData = () => {
-  //   doSendLobbyData();
-  //   // if (lobbyDetails) {
-  //   //   sendLobbyData({
-  //   //     hostPlayerProfile: hostPlayerProfile,
-  //   //     lobbyOptions: lobbyOptions,
-  //   //     lobbyState: lobbyDetails,
-  //   //   })
-  //   // }
-  // }
 
   const onSetLobbyOptions = (lobbyOptions: LobbyOptions) => {
     setLobbyOptions(lobbyOptions);

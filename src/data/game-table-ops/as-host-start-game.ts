@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BfgGameTableActionId, GameTableId } from "~/types/core/branded-values/bfg-branded-ids";
+import { GameTableId } from "~/types/core/branded-values/bfg-branded-ids";
 import { DbGameTableAction } from "~/models/game-table/game-table-action";
 import { GameTable } from "~/models/game-table/game-table";
 import { AllBfgGameMetadata, BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engines";
@@ -92,13 +92,13 @@ export const asHostStartNewGame = async (lobbyState: GameLobby, newGameTableId: 
     throw new Error("Failed to add game table");
   }
 
-  const startActionId = BfgGameTableActionId.createId();
+  // const startActionId = BfgGameTableActionId.createId();
 
   const tableId = newGameTable.id;
   const now = Date.now();
 
   const hostStartsGameSetupAction: DbGameTableAction = {
-    id: startActionId,
+    // id: startActionId,
     gameTableId: tableId,
     // previousActionId: mostRecentGameActionId,
     createdAt: now,

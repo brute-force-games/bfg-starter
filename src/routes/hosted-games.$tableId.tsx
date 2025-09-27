@@ -1,13 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
+import { HostedP2pGameComponent } from '~/components/p2p/hosted-p2p-game-component'
 import { useGameActions } from '~/hooks/stores/use-game-actions-store'
-import { useHostedGame } from '~/hooks/stores/use-hosted-games-store'
 import { createJoinGameUrl } from '~/router-links'
 import { GameTableId } from '~/types/core/branded-values/bfg-branded-ids'
-import { useMyDefaultPlayerProfile } from '~/hooks/stores/use-my-player-profiles-store'
-import { matchPlayerToSeat } from '~/data/game-table-ops/player-seat-utils'
-import { HostedGameView } from '~/components/hosted-game-view/hosted-game-view'
-import { HostedP2pGameComponent } from '~/components/hosted-p2p-game-component'
 
 
 export const Route = createFileRoute('/hosted-games/$tableId')({
@@ -16,37 +12,16 @@ export const Route = createFileRoute('/hosted-games/$tableId')({
 
 
 function HostedGamePage() {
-  const { tableId } = Route.useParams()
-  const gameTableId = tableId as GameTableId
-  // const hostPlayerProfile = useMyDefaultPlayerProfile()
-  // const hostedGame = useHostedGame(gameTableId)
-  const gameActions = useGameActions(gameTableId)
-  const [copySuccess, setCopySuccess] = useState(false)
+  const { tableId } = Route.useParams();
+  const gameTableId = tableId as GameTableId;
 
-  // console.log("hostedGame", hostedGame);
-
-  // if (!hostPlayerProfile) {
-  //   return (
-  //     <div className="p-6">
-  //       <h1 className="text-3xl font-bold mb-6">Loading Profile...</h1>
-  //       <div className="text-gray-600">Loading profile details...</div>
-  //     </div>
-  //   )
-  // }
-
-  // if (!hostedGame) {
-  //   return (
-  //     <div className="p-6">
-  //       <h1 className="text-3xl font-bold mb-6">Loading Game...</h1>
-  //       <div className="text-gray-600">Loading game details...</div>
-  //     </div>
-  //   )
-  // }
+  const gameActions = useGameActions(gameTableId);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   const joinLink = createJoinGameUrl(gameTableId);
   const fullJoinUrl = `${window.location.origin}${joinLink}`;
 
-  const copyToClipboard = async () => {
+  const copyJoinUrlToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(fullJoinUrl);
       setCopySuccess(true);
@@ -56,47 +31,14 @@ function HostedGamePage() {
     }
   };
 
-  // const myPlayerSeat = matchPlayerToSeat(hostPlayerProfile.id, hostedGame);
-
-  // if (!myPlayerSeat) {
-  //   return <div>You are not at this game table</div>;
-  // }
-
-
-  // const hostedGameMetadata = AllBfgGameMetadata[hostedGame.gameTitle];
-  // const hostedGameEngine = hostedGameMetadata.processor;
-  // const hostedGameRepresentation = hostedGameEngine
-  //   .createGameStateRepresentationComponent(myPlayerSeat, hostedGame.gameState, hostedGame.gameActions[hostedGame.gameActions.length - 1]);
-
-
-  // if (!hostedGameMetadata) {
-  //   return (
-  //     <div className="p-6">
-  //       <h1 className="text-3xl font-bold mb-6">Loading Game Metadata...</h1>
-  //       <div className="text-gray-600">Loading game metadata...</div>
-  //     </div>
-  //   )
-  // }
 
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-6">Hosted Game</h1>
 
-      <HostedP2pGameComponent gameTableId={gameTableId} />
-      
-      {/* <HostedP2pGameComponent
-        hostPlayerProfile={hostPlayerProfile}
-        hostedGame={hostedGame}
-        gameActions={gameActions}
-      /> */}
-{/* 
-      <HostedGameView
-        myPlayerProfile={hostPlayerProfile}
-        onPlayerGameAction={() => {}}
-        myPlayerSeat={myPlayerSeat}
-        hostedGame={hostedGame}
-        gameActions={gameActions}
-      /> */}
+      <HostedP2pGameComponent
+        gameTableId={gameTableId}
+      />
 
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -129,8 +71,8 @@ function HostedGamePage() {
           <div>
             <h2 className="text-xl font-semibold mb-3">Game Actions</h2>
             <div className="space-y-3">
-              {gameActions.map((action) => (
-                <div key={action.id}>{action.actionType} [{action.source}] - {action.actionJson}</div>
+              {gameActions.map((action, index) => (
+                <div key={index}>{action.actionType} [{action.source}] - {action.actionJson}</div>
               ))}
             </div>
             <div className="space-y-3">
@@ -147,7 +89,7 @@ function HostedGamePage() {
                     className="flex-1 px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm font-mono"
                   />
                   <button
-                    onClick={copyToClipboard}
+                    onClick={copyJoinUrlToClipboard}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                       copySuccess
                         ? 'bg-green-500 text-white'

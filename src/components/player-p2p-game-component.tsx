@@ -1,32 +1,25 @@
 // import { z } from "zod"
-// import { HostedGameView } from "~/components/game-view/hosted-game-view"
 // import { matchPlayerToSeat } from "~/data/game-table-ops/player-seat-utils"
-// import { useHostedP2pGame } from "~/hooks/p2p/use-hosted-p2p-game"
-// import { useGameActions } from "~/hooks/stores/use-game-actions-store"
-// import { useHostedGame } from "~/hooks/stores/use-hosted-games-store"
-// import { useMyDefaultPlayerProfile } from "~/hooks/stores/use-my-player-profiles-store"
+// import { usePlayerP2pGame } from "~/hooks/p2p/use-player-p2p-game"
 // import { AllBfgGameMetadata, BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engines"
 // import { AbfgSupportedGameTitle } from "~/types/bfg-game-engines/supported-games"
 // import { GameTableId } from "~/types/core/branded-values/bfg-branded-ids"
 // import { BfgGameSpecificGameStateTypedJson } from "~/types/core/branded-values/bfg-game-state-typed-json"
+// import { PlayerGameView } from "./game-view/player-game-view"
+// import { PrivatePlayerProfile } from "~/models/private-player-profile"
 
 
-// interface HostedP2pGameComponentProps {
+// interface PlayerP2pGameComponentProps {
+//   playerProfile: PrivatePlayerProfile
 //   gameTableId: GameTableId
 // }
 
 
-// export const HostedP2pGameComponent = ({ gameTableId }: HostedP2pGameComponentProps) => {
+// export const PlayerP2pGameComponent = ({ gameTableId, playerProfile }: PlayerP2pGameComponentProps) => {
 
-//   const hostPlayerProfile = useMyDefaultPlayerProfile();
-  
-//   const hostedGame = useHostedGame(gameTableId);
-//   const gameActions = useGameActions(gameTableId);
+//   const p2pGame = usePlayerP2pGame(gameTableId, playerProfile);
 
-//   const p2pGame = useHostedP2pGame(hostedGame, hostPlayerProfile);
-//   const { peerProfiles, playerProfiles } = p2pGame;
-
-//   if (!hostPlayerProfile) {
+//   if (!playerProfile) {
 //     return (
 //       <div className="p-6">
 //         <h1 className="text-3xl font-bold mb-6">Loading Profile...</h1>
@@ -35,7 +28,9 @@
 //     )
 //   }
 
-//   if (!hostedGame) {
+//   const { gameTable, gameActions, getPlayerMove } = p2pGame;
+
+//   if (!gameTable || !gameActions) {
 //     return (
 //       <div className="p-6">
 //         <h1 className="text-3xl font-bold mb-6">Loading Game...</h1>
@@ -44,30 +39,27 @@
 //     )
 //   }
 
-//   const myPlayerSeat = matchPlayerToSeat(hostPlayerProfile.id, hostedGame);
+//   const myPlayerSeat = matchPlayerToSeat(playerProfile.id, gameTable);
 
 //   if (!myPlayerSeat) {
 //     console.log("You are not at this game table")
-//     console.log("hostedGame", hostedGame)
+//     console.log("gameTable", gameTable)
 //     console.log("myPlayerSeat", myPlayerSeat)
-//     console.log("hostPlayerProfile.id", hostPlayerProfile.id)
-//     console.log("hostedGame.gameHostPlayerProfileId", hostedGame.gameHostPlayerProfileId)
+//     console.log("playerProfile.id", playerProfile.id)
+//     console.log("gameTable.gameHostPlayerProfileId", gameTable.gameHostPlayerProfileId)
 //     return <div>You are not at this game table</div>;
 //   }
 
-//   const { getPlayerMove } = p2pGame;
+//   // const { getPlayerMove } = p2pGame;
 
-//   const gameTitle = hostedGame.gameTitle;
+
+//   const gameTitle = gameTable.gameTitle;
 //   const gameMetadata = AllBfgGameMetadata[gameTitle];
 //   const gameEngine = gameMetadata.processor as BfgGameEngineProcessor<
 //     z.infer<typeof gameMetadata.processor["gameStateJsonSchema"]>,
 //     z.infer<typeof gameMetadata.processor["gameActionJsonSchema"]>
 //   >;
 
-//   // const onPlayerGameAction = (playerAction: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>) => {
-//   //   console.log('p2pGame.sendPlayerMove', playerAction);
-//   //   p2pGame.sendPlayerMove(playerAction);
-//   // }
 
 //   const handlePlayerMove = async (move: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>) => {
 //     const actionJson = move as BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;
@@ -83,14 +75,12 @@
 
 //   return (
 
-//     <HostedGameView
+//     <PlayerGameView
 //       myPlayerProfile={hostPlayerProfile}
 //       onPlayerGameAction={handlePlayerMove}
 //       myPlayerSeat={myPlayerSeat}
-//       hostedGame={hostedGame}
+//       // hostedGame={hostedGame}
 //       gameActions={gameActions}
-//       peerProfiles={peerProfiles}
-//       playerProfiles={playerProfiles}
 //     />
 //   )
 // }

@@ -1,6 +1,6 @@
 import { createStore } from 'tinybase';
 import { createLocalPersister } from 'tinybase/persisters/persister-browser';
-import { BfgGameTableActionId, BfgGameTableId, GameTableId } from '~/types/core/branded-values/bfg-branded-ids';
+import { GameTableId } from '~/types/core/branded-values/bfg-branded-ids';
 import { DbGameTableAction, DbGameTableActionSchema } from '~/models/game-table/game-table-action';
 
 /**
@@ -104,7 +104,10 @@ export const addGameAction = async (
     // Add to store
     gameActionsStore.setRow(tableName, actionIndex.toString(), completeAction);
 
-    return { success: true, actionId: completeAction.id };
+    return { 
+      success: true, 
+      // actionId: completeAction.id,
+    };
   } catch (error) {
     console.error('Error adding game action:', error);
     return { success: false, error: 'Failed to add action' };

@@ -37,7 +37,7 @@ export type GameTableActionType = z.infer<typeof GameTableActionTypeSchema>;
 
 
 export const DbGameTableActionSchema = z.object({
-  id: BfgGameTableActionId.idSchema,
+  // id: BfgGameTableActionId.idSchema,
   // gameHostPlayerProfileId: BfgPlayerProfileId.idSchema,
   createdAt: z.number(),
 

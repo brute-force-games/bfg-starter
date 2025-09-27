@@ -3,9 +3,11 @@ import { GameTable, GameTableSeat } from "~/models/game-table/game-table";
 import { BfgGameSpecificGameStateTypedJson } from "~/types/core/branded-values/bfg-game-state-typed-json";
 import { DbGameTableAction } from "~/models/game-table/game-table-action";
 import { AllBfgGameMetadata, BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engines";
-import { asPlayerMakeMove } from "~/data/game-table-ops/as-player-make-move";
 import { PrivatePlayerProfile } from "~/models/private-player-profile";
-import { PlayerP2pGameMove } from "~/models/p2p-details";
+import { AbfgSupportedGameTitle } from "~/types/bfg-game-engines/supported-games";
+import { PeerProfilesComponent } from "../p2p/peer-profiles-component";
+import { PublicPlayerProfile } from "~/models/public-player-profile";
+import { PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids";
 
 
 interface HostedGameViewProps {
@@ -13,12 +15,15 @@ interface HostedGameViewProps {
   myPlayerProfile: PrivatePlayerProfile;
   hostedGame: GameTable;
   gameActions: DbGameTableAction[];
+
+  peerProfiles: Map<string, PublicPlayerProfile>;
+  playerProfiles: Map<PlayerProfileId, PublicPlayerProfile>;
   
-  onPlayerGameAction: (playerAction: PlayerP2pGameMove) => void
+  onPlayerGameAction: (playerAction: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>) => void
 }
 
 export const HostedGameView = (props: HostedGameViewProps) => {
-  const { myPlayerSeat, myPlayerProfile, hostedGame, gameActions, onPlayerGameAction } = props;
+  const { myPlayerSeat, hostedGame, gameActions, onPlayerGameAction, peerProfiles, playerProfiles } = props;
 
   const latestAction = gameActions[gameActions.length - 1];
   const gameTitle = hostedGame.gameTitle;
@@ -38,18 +43,20 @@ export const HostedGameView = (props: HostedGameViewProps) => {
   // const gameRepresentation = gameEngine
   //   .createGameStateRepresentationComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction);
 
-  const onGameAction = async (gameState: z.infer<typeof gameMetadata.processor["gameStateJsonSchema"]>, gameAction: z.infer<typeof gameMetadata.processor["gameActionJsonSchema"]>) => {
+  const onPlayerMoveAction = async (gameState: z.infer<typeof gameMetadata.processor["gameStateJsonSchema"]>, gameAction: z.infer<typeof gameMetadata.processor["gameActionJsonSchema"]>) => {
     console.log("onGameAction", gameState, gameAction);
 
     // onPlayerGameAction(gameAction);
-    await asPlayerMakeMove(hostedGame.id, myPlayerProfile.id, gameAction);
+    // await asPlayerMakeMove(hostedGame.id, myPlayerProfile.id, gameAction);
+    const playerMoveJson = gameEngine.createGameSpecificActionJson(gameAction);
+    onPlayerGameAction(playerMoveJson);
   }
 
   const gameRepresentation = gameEngine?.createGameStateCombinationRepresentationAndInputComponent ?
-    gameEngine.createGameStateCombinationRepresentationAndInputComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction, onGameAction) :
+    gameEngine.createGameStateCombinationRepresentationAndInputComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction, onPlayerMoveAction) :
     <>
       {gameEngine.createGameStateRepresentationComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction)}
-      {gameEngine.createGameStateActionInputComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction, onGameAction)}
+      {gameEngine.createGameStateActionInputComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction, onPlayerMoveAction)}
     </>
 
 
@@ -64,16 +71,12 @@ export const HostedGameView = (props: HostedGameViewProps) => {
 
   return (
     <div>
-      {/* <div>Hosted Game: {hostedGame.gameTitle}</div>
-      <div>Hosted Game ID: {hostedGame.id}</div>
-      <div>Hosted Game State: {JSON.stringify(gameSpecificState)}</div>
-      <div>Hosted Game Actions: {JSON.stringify(gameActions)}</div> */}
-      {/* <div>Hosted Game Representation: {gameRepresentation}</div> */}
       {gameRepresentation}
+      
+      <PeerProfilesComponent
+        peerProfiles={peerProfiles}
+        playerProfiles={playerProfiles}
+      />
     </div>
   );
-      // <div>Hosted Game: {hostedGame.gameTitle}</div>
-    // <div>Hosted Game ID: {hostedGame.id}</div>
-    // <div>Hosted Game State: {JSON.stringify(hostedGame.gameState)}</div>
-    // <div>Hosted Game Actions: {JSON.stringify(hostedGame.gameActions)}</div>
 }

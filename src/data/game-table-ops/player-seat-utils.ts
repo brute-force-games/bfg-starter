@@ -4,7 +4,7 @@ import { PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids";
 
 
 export const getPlayerActionSource = (
-  gameTable: DbGameTable,
+  gameTable: GameTable,
   playerId: PlayerProfileId
 ): GameTableActionSource => {
 
@@ -61,7 +61,7 @@ export const getPlayerSeatForActionSource = (actionSource: GameTableActionSource
 }
 
 
-export const isActionForMyPlayer = (actionSource: GameTableActionSource, playerId: PlayerProfileId, gameTable: DbGameTable): boolean => {
+export const isActionForMyPlayer = (actionSource: GameTableActionSource, playerId: PlayerProfileId, gameTable: GameTable): boolean => {
   switch (actionSource) {
     case `game-table-action-source-player-p1`:
       return playerId === gameTable.p1;
@@ -85,7 +85,7 @@ export const isActionForMyPlayer = (actionSource: GameTableActionSource, playerI
 }
 
 
-export const isPlayerSeatedAtGameTable = (playerId: PlayerProfileId, gameTable: DbGameTable): boolean => {
+export const isPlayerSeatedAtGameTable = (playerId: PlayerProfileId, gameTable: GameTable): boolean => {
   return gameTable.p1 === playerId ||
     gameTable.p2 === playerId ||
     gameTable.p3 === playerId ||
@@ -97,12 +97,16 @@ export const isPlayerSeatedAtGameTable = (playerId: PlayerProfileId, gameTable: 
 }
 
 
-export const isPlayerAtGameTable = (playerId: PlayerProfileId, gameTable: DbGameTable): boolean => {
+export const isPlayerAtGameTable = (playerId: PlayerProfileId, gameTable: GameTable | null): boolean => {
   return matchPlayerToSeat(playerId, gameTable) !== undefined;
 }
 
 
-export const matchPlayerToSeat = (playerId: PlayerProfileId, gameTable: DbGameTable): GameTableSeat | undefined => {
+export const matchPlayerToSeat = (playerId: PlayerProfileId, gameTable: GameTable | null): GameTableSeat | undefined => {
+  if (!gameTable) {
+    return undefined;
+  }
+
   if (gameTable.p1 === playerId) {
     return 'p1';
   }
@@ -127,6 +131,7 @@ export const matchPlayerToSeat = (playerId: PlayerProfileId, gameTable: DbGameTa
   if (gameTable.p8 === playerId) {
     return 'p8';
   }
+
   return undefined;
 }
 

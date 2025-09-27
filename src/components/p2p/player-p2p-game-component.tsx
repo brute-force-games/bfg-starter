@@ -1,39 +1,51 @@
-import { TrysteroConfig } from "~/p2p/trystero-config"
-import { joinRoom } from "trystero"
-import { IPlayerP2pPublicDetails } from "~/models/p2p-details"
-import { useEffect } from "react"
-import { PublicPlayerProfile } from "~/models/public-player-profile"
+import { usePlayerP2pGame } from "~/hooks/p2p/use-player-p2p-game"
+import { PrivatePlayerProfile } from "~/models/private-player-profile"
 import { GameTableId } from "~/types/core/branded-values/bfg-branded-ids"
+import { PlayerGameView } from "../game-view/player-game-view"
+import { BfgGameSpecificGameStateTypedJson } from "~/types/core/branded-values/bfg-game-state-typed-json"
+import { AbfgSupportedGameTitle } from "~/types/bfg-game-engines/supported-games"
+import { PeerProfilesComponent } from "./peer-profiles-component"
 
 
 interface IPlayerP2pGameComponentProps {
-  // hostedGame: GameTable
-  // gameActions: DbGameTableAction[]
   gameTableId: GameTableId
-  playerProfile: PublicPlayerProfile
+  playerProfile: PrivatePlayerProfile
 }
 
 export const PlayerP2pGameComponent = ({ gameTableId, playerProfile }: IPlayerP2pGameComponentProps) => {
-  // const gameTableId = hostedGame.id
 
+  const p2pGame = usePlayerP2pGame(gameTableId, playerProfile);
 
-  const room = joinRoom(TrysteroConfig, gameTableId);
-
-  const playerP2pDetails: IPlayerP2pPublicDetails = {
-    playerProfile: playerProfile,
+  if (!p2pGame) {
+    return <div>Loading P2P Game...</div>;
   }
 
-  const [sendPublicPlayerData, getPublicPlayerData] = room.makeAction<IPlayerP2pPublicDetails>('player-data')
+  const { gameTable, gameActions, myPlayerSeat, sendPlayerMove, peerProfiles, playerProfiles } = p2pGame;
 
+  if (!gameTable || !gameActions || !myPlayerSeat) {
+    console.log("gameTable", gameTable)
+    console.log("gameActions", gameActions)
+    console.log("myPlayerSeat", myPlayerSeat)
+    return <div>Loading game content...</div>;
+  }
 
-  useEffect(() => {
-    sendPublicPlayerData(playerP2pDetails)
-  }, [sendPublicPlayerData, playerP2pDetails])
-
+  const onPlayerGameAction = (move: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>) => {
+    sendPlayerMove(move);
+  }
 
   return (
-    <div>
-      Player P2p Game - {playerProfile.handle} - {gameTableId}
-    </div>
+    <>
+      <PlayerGameView
+        myPlayerProfile={playerProfile}
+        myPlayerSeat={myPlayerSeat}
+        gameTable={gameTable}
+        gameActions={gameActions}
+        onPlayerGameAction={onPlayerGameAction}
+      />
+      <PeerProfilesComponent
+        peerProfiles={peerProfiles}
+        playerProfiles={playerProfiles}
+      />
+    </>
   )
 }

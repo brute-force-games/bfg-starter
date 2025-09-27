@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { joinRoom, Room } from "trystero";
-import { P2P_GAME_DETAILS_ACTION_KEY, P2P_GAME_PLAYER_PROFILE_DATA_ACTION_KEY, P2P_GAME_PLAYER_MOVE_DATA_ACTION_KEY } from "~/components/p2p/constants";
-import { HostP2pLobbyDetails, PlayerP2pGameMove } from "~/models/p2p-details";  
+import { P2P_GAME_PLAYER_PROFILE_DATA_ACTION_KEY, P2P_GAME_PLAYER_MOVE_DATA_ACTION_KEY, P2P_GAME_TABLE_ACTION_KEY, P2P_GAME_ACTIONS_ACTION_KEY } from "~/components/p2p/constants";
+import { GameTable } from "~/models/game-table/game-table";
+import { DbGameTableAction } from "~/models/game-table/game-table-action";
 import { PublicPlayerProfile } from "~/models/public-player-profile";
 import { TrysteroConfig } from "~/p2p/trystero-config";
+import { AbfgSupportedGameTitle } from "~/types/bfg-game-engines/supported-games";
 import { GameTableId, PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids"
+import { BfgGameSpecificGameStateTypedJson } from "~/types/core/branded-values/bfg-game-state-typed-json";
 
 
 export interface IP2pGame {
@@ -14,10 +17,11 @@ export interface IP2pGame {
   peerProfiles: Map<string, PublicPlayerProfile>
   playerProfiles: Map<PlayerProfileId, PublicPlayerProfile>
 
-  lobbyDetails: HostP2pLobbyDetails | null
+  gameTable: GameTable | null;
+  gameActions: DbGameTableAction[];
 
-  sendPlayerMove: (move: PlayerP2pGameMove) => void
-  getPlayerMove: (callback: (move: PlayerP2pGameMove, peer: string) => void) => void
+  sendPlayerMove: (move: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>) => void
+  getPlayerMove: (callback: (move: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>, peer: string) => void) => void
 }
 
 
@@ -25,13 +29,15 @@ export const useP2pGame = (gameTableId: GameTableId, myPlayerProfile: PublicPlay
   
   const room = joinRoom(TrysteroConfig, gameTableId);
 
-  const [lobbyDetails, setLobbyDetails] = useState<HostP2pLobbyDetails | null>(null)
+  const [gameTable, setGameTable] = useState<GameTable | null>(null)
+  const [gameActions, setGameActions] = useState<DbGameTableAction[]>([])
   const [connectionStatus, setConnectionStatus] = useState<string>('Connecting...')
   const [peerProfiles, setPeerProfiles] = useState<Map<string, PublicPlayerProfile>>(new Map())
 
-  const [_, getPublicHostData] = room.makeAction<HostP2pLobbyDetails>(P2P_GAME_DETAILS_ACTION_KEY);
+  const [, getPublicGameTableData] = room.makeAction<GameTable>(P2P_GAME_TABLE_ACTION_KEY);
+  const [, getPublicGameActionsData] = room.makeAction<DbGameTableAction[]>(P2P_GAME_ACTIONS_ACTION_KEY);
   const [sendPlayerProfile, getPlayerProfile] = room.makeAction<PublicPlayerProfile>(P2P_GAME_PLAYER_PROFILE_DATA_ACTION_KEY)
-  const [sendPlayerMove, getPlayerMove] = room.makeAction<PlayerP2pGameMove>(P2P_GAME_PLAYER_MOVE_DATA_ACTION_KEY)
+  const [sendPlayerMove, getPlayerMove] = room.makeAction<BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>>(P2P_GAME_PLAYER_MOVE_DATA_ACTION_KEY)
 
   if (!myPlayerProfile) {
     throw new Error('My player profile is required');
@@ -54,8 +60,12 @@ export const useP2pGame = (gameTableId: GameTableId, myPlayerProfile: PublicPlay
     })
   })
 
-  getPublicHostData((publicHostData: HostP2pLobbyDetails, peer: string) => {
-    setLobbyDetails(publicHostData)
+  getPublicGameTableData((publicGameTableData: GameTable, _peer: string) => {
+    setGameTable(publicGameTableData)
+  })
+
+  getPublicGameActionsData((publicGameActionsData: DbGameTableAction[], _peer: string) => {
+    setGameActions(publicGameActionsData)
   })
 
   getPlayerProfile((playerProfile: PublicPlayerProfile, peer: string) => {
@@ -69,7 +79,8 @@ export const useP2pGame = (gameTableId: GameTableId, myPlayerProfile: PublicPlay
   
   return {
     room,
-    lobbyDetails,
+    gameTable,
+    gameActions,
     connectionStatus: connectionStatus,
     peerProfiles,
     playerProfiles,
