@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as StartNewGameRouteImport } from './routes/start-new-game'
 import { Route as NewTableRouteImport } from './routes/new-table'
 import { Route as NewLobbyRouteImport } from './routes/new-lobby'
 import { Route as MyPlayerProfilesRouteImport } from './routes/my-player-profiles'
@@ -19,11 +18,6 @@ import { Route as HostedLobbyLobbyIdRouteImport } from './routes/hosted-lobby.$l
 import { Route as HostedGamesTableIdRouteImport } from './routes/hosted-games.$tableId'
 import { Route as GamesTableIdRouteImport } from './routes/games.$tableId'
 
-const StartNewGameRoute = StartNewGameRouteImport.update({
-  id: '/start-new-game',
-  path: '/start-new-game',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const NewTableRoute = NewTableRouteImport.update({
   id: '/new-table',
   path: '/new-table',
@@ -70,7 +64,6 @@ export interface FileRoutesByFullPath {
   '/my-player-profiles': typeof MyPlayerProfilesRoute
   '/new-lobby': typeof NewLobbyRoute
   '/new-table': typeof NewTableRoute
-  '/start-new-game': typeof StartNewGameRoute
   '/games/$tableId': typeof GamesTableIdRoute
   '/hosted-games/$tableId': typeof HostedGamesTableIdRoute
   '/hosted-lobby/$lobbyId': typeof HostedLobbyLobbyIdRoute
@@ -81,7 +74,6 @@ export interface FileRoutesByTo {
   '/my-player-profiles': typeof MyPlayerProfilesRoute
   '/new-lobby': typeof NewLobbyRoute
   '/new-table': typeof NewTableRoute
-  '/start-new-game': typeof StartNewGameRoute
   '/games/$tableId': typeof GamesTableIdRoute
   '/hosted-games/$tableId': typeof HostedGamesTableIdRoute
   '/hosted-lobby/$lobbyId': typeof HostedLobbyLobbyIdRoute
@@ -93,7 +85,6 @@ export interface FileRoutesById {
   '/my-player-profiles': typeof MyPlayerProfilesRoute
   '/new-lobby': typeof NewLobbyRoute
   '/new-table': typeof NewTableRoute
-  '/start-new-game': typeof StartNewGameRoute
   '/games/$tableId': typeof GamesTableIdRoute
   '/hosted-games/$tableId': typeof HostedGamesTableIdRoute
   '/hosted-lobby/$lobbyId': typeof HostedLobbyLobbyIdRoute
@@ -106,7 +97,6 @@ export interface FileRouteTypes {
     | '/my-player-profiles'
     | '/new-lobby'
     | '/new-table'
-    | '/start-new-game'
     | '/games/$tableId'
     | '/hosted-games/$tableId'
     | '/hosted-lobby/$lobbyId'
@@ -117,7 +107,6 @@ export interface FileRouteTypes {
     | '/my-player-profiles'
     | '/new-lobby'
     | '/new-table'
-    | '/start-new-game'
     | '/games/$tableId'
     | '/hosted-games/$tableId'
     | '/hosted-lobby/$lobbyId'
@@ -128,7 +117,6 @@ export interface FileRouteTypes {
     | '/my-player-profiles'
     | '/new-lobby'
     | '/new-table'
-    | '/start-new-game'
     | '/games/$tableId'
     | '/hosted-games/$tableId'
     | '/hosted-lobby/$lobbyId'
@@ -140,7 +128,6 @@ export interface RootRouteChildren {
   MyPlayerProfilesRoute: typeof MyPlayerProfilesRoute
   NewLobbyRoute: typeof NewLobbyRoute
   NewTableRoute: typeof NewTableRoute
-  StartNewGameRoute: typeof StartNewGameRoute
   GamesTableIdRoute: typeof GamesTableIdRoute
   HostedGamesTableIdRoute: typeof HostedGamesTableIdRoute
   HostedLobbyLobbyIdRoute: typeof HostedLobbyLobbyIdRoute
@@ -149,13 +136,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/start-new-game': {
-      id: '/start-new-game'
-      path: '/start-new-game'
-      fullPath: '/start-new-game'
-      preLoaderRoute: typeof StartNewGameRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/new-table': {
       id: '/new-table'
       path: '/new-table'
@@ -220,7 +200,6 @@ const rootRouteChildren: RootRouteChildren = {
   MyPlayerProfilesRoute: MyPlayerProfilesRoute,
   NewLobbyRoute: NewLobbyRoute,
   NewTableRoute: NewTableRoute,
-  StartNewGameRoute: StartNewGameRoute,
   GamesTableIdRoute: GamesTableIdRoute,
   HostedGamesTableIdRoute: HostedGamesTableIdRoute,
   HostedLobbyLobbyIdRoute: HostedLobbyLobbyIdRoute,

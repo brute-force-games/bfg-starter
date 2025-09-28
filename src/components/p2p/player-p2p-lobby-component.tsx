@@ -5,6 +5,7 @@ import { PublicPlayerProfile } from "~/models/public-player-profile"
 import { PeerProfilesComponent } from "./peer-profiles-component"
 import { LobbyPlayerChoicesComponent } from "../lobby/lobby-player-choices-component"
 import { BfgSupportedGameTitles } from "~/types/bfg-game-engines/supported-games"
+import { LobbyPlayerJoinGameComponent } from "../lobby/lobby-player-join-game-component"
 
 
 interface IPlayerP2pLobbyComponentProps {
@@ -78,6 +79,21 @@ export const PlayerP2pLobbyComponent = ({
         No lobby state found. Please wait while we establish the connection.
       </div>
     )
+  }
+
+  const gameLink = lobbyState.gameLink;
+
+  if (gameLink) {
+    return (
+      <LobbyPlayerJoinGameComponent
+        // lobbyOptions={lobbyOptions}
+        lobbyState={lobbyState}
+        currentPlayerProfile={playerProfile}
+        // onSelectGameChoice={onSelectGameChoice}
+        // onTakeSeat={onTakeSeat}
+        // onLeaveSeat={onLeaveSeat}
+      />
+)
   }
 
   return (

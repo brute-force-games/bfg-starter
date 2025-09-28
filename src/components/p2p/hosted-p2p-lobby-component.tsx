@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { PublicPlayerProfile } from "~/models/public-player-profile"
 import { GameLobbyId, PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids"
 import { PeerProfilesComponent } from "./peer-profiles-component"
@@ -36,6 +36,7 @@ export const HostedP2pLobbyComponent = ({
   setLobbyOptions,
 }: IHostedP2pLobbyComponentProps) => {
   
+  const [copySuccess, setCopySuccess] = useState(false);
   const hostedP2pLobby = useHostedP2pLobby(lobbyId, hostPlayerProfile);
   const { p2pLobby, connectionStatus, peerProfiles, sendLobbyData } = hostedP2pLobby;
   const { room, getPlayerMove, playerProfiles } = p2pLobby;
@@ -110,6 +111,32 @@ export const HostedP2pLobbyComponent = ({
     doSendLobbyData();
   }
 
+  const joinLobbyLink = `${window.location.origin}/join-lobby/${lobbyId}`;
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(joinLobbyLink);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000); // Reset after 2 seconds
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = joinLobbyLink;
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        setCopySuccess(true);
+        setTimeout(() => setCopySuccess(false), 2000);
+      } catch (fallbackErr) {
+        console.error('Fallback copy failed: ', fallbackErr);
+      }
+      document.body.removeChild(textArea);
+    }
+  };
+
   return (
     <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
       <div style={{ marginBottom: '24px' }}>
@@ -119,19 +146,78 @@ export const HostedP2pLobbyComponent = ({
           color: '#333',
           fontWeight: '600'
         }}>
-          🎮 Hosted Lobby [{lobbyOptions.gameChoices.length} games
+          🎮 Hosted Lobby [{lobbyOptions.gameChoices.length} games]
         </h1>
         <div style={{ 
           fontSize: '16px', 
           color: '#666',
           marginBottom: '16px'
         }}>
-          Lobby ID: <code style={{ 
-            backgroundColor: '#f8f9fa', 
-            padding: '4px 8px', 
-            borderRadius: '4px',
-            fontFamily: 'monospace'
-          }}>{lobbyId}</code>
+          <div style={{ marginBottom: '8px' }}>Join Lobby Link:</div>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            flexWrap: 'wrap'
+          }}>
+            <a 
+              href={joinLobbyLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ 
+                backgroundColor: '#f8f9fa', 
+                padding: '8px 12px', 
+                borderRadius: '6px',
+                fontFamily: 'monospace',
+                fontSize: '14px',
+                color: '#007bff',
+                textDecoration: 'none',
+                border: '1px solid #e9ecef',
+                display: 'inline-block',
+                maxWidth: '400px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#e9ecef';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#f8f9fa';
+              }}
+            >
+              {joinLobbyLink}
+            </a>
+            <button
+              onClick={copyToClipboard}
+              style={{
+                padding: '8px 12px',
+                backgroundColor: copySuccess ? '#28a745' : '#6c757d',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: '500',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                transition: 'background-color 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                if (!copySuccess) {
+                  e.currentTarget.style.backgroundColor = '#5a6268';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!copySuccess) {
+                  e.currentTarget.style.backgroundColor = '#6c757d';
+                }
+              }}
+            >
+              {copySuccess ? '✅ Copied!' : '📋 Copy'}
+            </button>
+          </div>
         </div>
         <div style={{
           display: 'flex',

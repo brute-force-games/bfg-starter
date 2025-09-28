@@ -114,7 +114,7 @@ export const LobbyStateComponent = ({
         </button>
         <button 
           onClick={() => startGame()}
-          // disabled={isGameStarted || isStartingGame}
+          disabled={isGameStarted || isStartingGame || !lobbyState.isLobbyValid}
         >
           {isStartingGame ? "Starting Game..." : "Start Game"}
         </button>

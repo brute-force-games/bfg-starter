@@ -1,24 +1,27 @@
-import { GameTableId } from "./types/core/branded-values/bfg-branded-ids";
-import { DbGameFriendId, DbGameTableId } from "./types/core/branded-values/branded-strings";
+import { GameFriendId, GameTableId } from "./types/core/branded-values/bfg-branded-ids";
 
 
 // export const createLobbyUrl = (lobbyId: DbGameLobbyId) => {
 //   return `/lobbies/${lobbyId}`;
 // }
 
+const getWindowOrigin = () => {
+  return window.location.origin;
+}
+
 export const createJoinGameUrl = (gameTableId: GameTableId) => {
-  return `/games/${gameTableId}`;
+  return `${getWindowOrigin()}/games/${gameTableId}`;
 }
 
-export const createFriendUrl = (friendId: DbGameFriendId) => {
+export const createFriendUrl = (friendId: GameFriendId) => {
   console.log("createFriendUrl", friendId);
-  return `/friends/${friendId}`;
+  return `${getWindowOrigin()}/friends/${friendId}`;
 }
 
-export const createHostedGameUrl = (gameTableId: DbGameTableId) => {
-  return `/hosted-games/${gameTableId}`;
+export const createHostedGameUrl = (gameTableId: GameTableId) => {
+  return `${getWindowOrigin()}/hosted-games/${gameTableId}`;
 }
 
-export const createPlayerGameUrl = (gameTableId: DbGameTableId) => {
-  return `/games/${gameTableId}`;
+export const createPlayerGameUrl = (gameTableId: GameTableId) => {
+  return `${getWindowOrigin()}/games/${gameTableId}`;
 }

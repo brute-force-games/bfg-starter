@@ -33,19 +33,19 @@ export const BruteForceGamesAppBar = () => {
           </Link>
         </Typography>
         <Box sx={{ display: 'flex', gap: 2 }}>
-          
+{/*           
           <Link to="/start-new-game" style={{ textDecoration: 'none' }}>
             <Button color="inherit">Start New Game</Button>
-          </Link>
+          </Link> */}
           <Link to="/new-lobby" style={{ textDecoration: 'none' }}>
             <Button color="inherit">Set Up New Lobby</Button>
           </Link>
           <Link to="/my-hosted-games" style={{ textDecoration: 'none' }}>
             <Button color="inherit">My Hosted Games</Button>
           </Link>
-          <Link to="/hosted-games-demo" style={{ textDecoration: 'none' }}>
+          {/* <Link to="/hosted-games-demo" style={{ textDecoration: 'none' }}>
             <Button color="inherit">Games Demo</Button>
-          </Link>
+          </Link> */}
           {/* Always show Player Profiles link, but disable if no profiles */}
           {myPlayerProfiles && myPlayerProfiles.length > 0 ? (
             <Link to="/my-player-profiles" style={{ textDecoration: 'none' }}>

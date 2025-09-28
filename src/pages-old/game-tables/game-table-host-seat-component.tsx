@@ -1,88 +1,88 @@
-import { asHostStartGame } from "~/data/game-table-ops/as-host-start-game";
-import { DbPlayerProfileId } from "~/types/core/branded-values/branded-strings";
-import { DbGameTable } from "~/models/game-table/game-table";
-import { Button } from "@mui/material";
+// import { asHostStartGame } from "~/data/game-table-ops/as-host-start-game";
+// import { DbPlayerProfileId } from "~/types/core/branded-values/branded-strings";
+// import { DbGameTable } from "~/models/game-table/game-table";
+// import { Button } from "@mui/material";
 
 
-export type IGameTableHostSeatComponentProps = {
-  myPlayerId: DbPlayerProfileId;
-  gameTable: DbGameTable;
-}
-
-
-// const NotReadyToStartGameComponent = () => {
-//   return <div>Not ready to start game</div>;
+// export type IGameTableHostSeatComponentProps = {
+//   myPlayerId: DbPlayerProfileId;
+//   gameTable: DbGameTable;
 // }
 
-// const ReadyToStartGameComponent = () => {
-//   return <div>Ready to start game</div>;
-// }
 
-// const GameInProgressComponent = () => {
-//   return <div>Game is already in progress</div>;
-// }
+// // const NotReadyToStartGameComponent = () => {
+// //   return <div>Not ready to start game</div>;
+// // }
 
-export const GameTableHostSeatComponent = (props: IGameTableHostSeatComponentProps) => {
+// // const ReadyToStartGameComponent = () => {
+// //   return <div>Ready to start game</div>;
+// // }
 
-  const { myPlayerId, gameTable } = props;
+// // const GameInProgressComponent = () => {
+// //   return <div>Game is already in progress</div>;
+// // }
 
-  if (myPlayerId !== gameTable.gameHostPlayerProfileId) {
-    return <div>I am not the host</div>;
-  }
+// export const GameTableHostSeatComponent = (props: IGameTableHostSeatComponentProps) => {
 
+//   const { myPlayerId, gameTable } = props;
 
-  const NotReadyToStartGameComponent = () => {
-    return <div>Not ready to start game</div>;
-  }
-
-  const ReadyToStartGameComponent = () => {
-    return (
-      <Button onClick={async () => {
-        console.log("ReadyToStartGameComponent:", gameTable);
-        await asHostStartGame(gameTable.id, myPlayerId);
-      }}>
-        Start Game
-      </Button>
-    )
-  }
-
-  const GameInProgressComponent = () => {
-    return <div>Game is in progress</div>;
-  }
-
-  const getHostActionComponent = () => {
-    if (gameTable.tablePhase === "table-phase-lobby") {
-      if (gameTable.p1 && gameTable.p2) {
-        return <ReadyToStartGameComponent />;
-      }
-      return <NotReadyToStartGameComponent />;
-    }
-
-    return <GameInProgressComponent />;
-  }
-
-  const hostActionComponent = getHostActionComponent();
-
-  // if (gameTable.tablePhase === "table-phase-lobby") {
-  //   if (gameTable.p1 && gameTable.p2) {
-  //     return <ReadyToStartGameComponent />;
-  //   }
-  //   return <NotReadyToStartGameComponent />;
-  // }
-
-  // return <GameInProgressComponent />;
+//   if (myPlayerId !== gameTable.gameHostPlayerProfileId) {
+//     return <div>I am not the host</div>;
+//   }
 
 
-  return (
-    <div>
-      <p>I am host</p>
-      {hostActionComponent}
-      {/* <Button onClick={async () => {
-        console.log("GameTableHostSeatPage: gameTable", gameTable);
-        await asHostStartGame(gameTable.id, myPlayerId);
-      }}>
-        Start Game
-      </Button> */}
-    </div>
-  )
-};
+//   const NotReadyToStartGameComponent = () => {
+//     return <div>Not ready to start game</div>;
+//   }
+
+//   const ReadyToStartGameComponent = () => {
+//     return (
+//       <Button onClick={async () => {
+//         console.log("ReadyToStartGameComponent:", gameTable);
+//         await asHostStartGame(gameTable.id, myPlayerId);
+//       }}>
+//         Start Game
+//       </Button>
+//     )
+//   }
+
+//   const GameInProgressComponent = () => {
+//     return <div>Game is in progress</div>;
+//   }
+
+//   const getHostActionComponent = () => {
+//     if (gameTable.tablePhase === "table-phase-lobby") {
+//       if (gameTable.p1 && gameTable.p2) {
+//         return <ReadyToStartGameComponent />;
+//       }
+//       return <NotReadyToStartGameComponent />;
+//     }
+
+//     return <GameInProgressComponent />;
+//   }
+
+//   const hostActionComponent = getHostActionComponent();
+
+//   // if (gameTable.tablePhase === "table-phase-lobby") {
+//   //   if (gameTable.p1 && gameTable.p2) {
+//   //     return <ReadyToStartGameComponent />;
+//   //   }
+//   //   return <NotReadyToStartGameComponent />;
+//   // }
+
+//   // return <GameInProgressComponent />;
+
+
+//   return (
+//     <div>
+//       <p>I am host</p>
+//       {hostActionComponent}
+//       {/* <Button onClick={async () => {
+//         console.log("GameTableHostSeatPage: gameTable", gameTable);
+//         await asHostStartGame(gameTable.id, myPlayerId);
+//       }}>
+//         Start Game
+//       </Button> */}
+//     </div>
+//   )
+// };
