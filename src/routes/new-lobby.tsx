@@ -127,6 +127,8 @@ function NewLobbyPage() {
         gameHostPlayerProfile: publicHostPlayerProfile,
         playerPool: [],
         maxNumPlayers: parseInt(formData.maxPlayers),
+        minNumPlayers: 1,
+        isLobbyValid: false,
         updatedAt: now,
       };
 
@@ -283,7 +285,7 @@ function NewLobbyPage() {
                 )}
               />
               
-              <form.Field
+              {/* <form.Field
                 name="maxPlayers"
                 validators={{
                   onChange: ({ value }) => {
@@ -319,7 +321,7 @@ function NewLobbyPage() {
                     )}
                   </div>
                 )}
-              />
+              /> */}
               
               <div className="flex gap-4 pt-4">
                 <button 

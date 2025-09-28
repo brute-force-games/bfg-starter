@@ -101,8 +101,6 @@ export const HostedP2pGameComponent = ({ gameTableId }: HostedP2pGameComponentPr
     if (moveResult) {
       const updatedGameTable = moveResult.gameTable;
       const updatedGameAction = moveResult.gameAction;
-      // sendGameTableData(updatedGameTable);
-      // sendGameActionsData(updatedGameAction);
       updateHostedGame(hostedGame.id, updatedGameTable);
       addGameAction(hostedGame.id, updatedGameAction);
     }

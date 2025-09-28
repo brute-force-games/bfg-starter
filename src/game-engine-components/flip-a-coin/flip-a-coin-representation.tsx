@@ -12,7 +12,6 @@ interface FlipACoinRepresentationProps {
 export const FlipACoinRepresentation = (props: FlipACoinRepresentationProps) => {
   const { myPlayerSeat, gameState } = props;
 
-  // if (isGameOver(gameState.tablePhase)) {
   if (gameState.isGameOver) {
     return (
       <div>

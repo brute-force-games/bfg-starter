@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { HostedP2pGameComponent } from '~/components/p2p/hosted-p2p-game-component'
 import { useGameActions } from '~/hooks/stores/use-game-actions-store'
+import { useHostedGame } from '~/hooks/stores/use-hosted-games-store'
 import { createJoinGameUrl } from '~/router-links'
 import { GameTableId } from '~/types/core/branded-values/bfg-branded-ids'
 
@@ -15,6 +16,7 @@ function HostedGamePage() {
   const { tableId } = Route.useParams();
   const gameTableId = tableId as GameTableId;
 
+  const hostedGame = useHostedGame(gameTableId);
   const gameActions = useGameActions(gameTableId);
   const [copySuccess, setCopySuccess] = useState(false);
 
@@ -45,26 +47,26 @@ function HostedGamePage() {
           <div>
             <h2 className="text-xl font-semibold mb-3">Game Details</h2>
             <div className="space-y-2">
-              {/* <div>
+              <div>
                 <span className="font-medium">Game Title:</span>
-                <span className="ml-2">{hostedGame.gameTitle}</span>
+                <span className="ml-2">{hostedGame?.gameTitle}</span>
               </div>
               <div>
                 <span className="font-medium">Game ID:</span>
-                <span className="ml-2 font-mono text-sm">{hostedGame.id}</span>
+                <span className="ml-2 font-mono text-sm">{hostedGame?.id}</span>
               </div>
               <div>
                 <span className="font-medium">Status:</span>
-                <span className="ml-2">{hostedGame.currentStatusDescription}</span>
+                <span className="ml-2">{hostedGame?.currentStatusDescription}</span>
               </div>
               <div>
                 <span className="font-medium">Phase:</span>
-                <span className="ml-2">{hostedGame.tablePhase}</span>
+                <span className="ml-2">{hostedGame?.tablePhase}</span>
               </div>
               <div>
                 <span className="font-medium">Created:</span>
-                <span className="ml-2">{new Date(hostedGame.createdAt).toLocaleString()}</span>
-              </div> */}
+                <span className="ml-2">{ hostedGame ? new Date(hostedGame.createdAt).toLocaleString() : ''}</span>
+              </div>
             </div>
           </div>
           

@@ -40,7 +40,6 @@ export const LobbyStateComponent = ({
       
       console.log("starting game", lobbyState);
       const gameTable = await asHostStartNewGame(lobbyState, newGameTableId);
-      // const gameTableId = gameTable.id;
       console.log("NEW GAME TABLE", gameTable);
 
       const gameLink = createPlayerGameUrl(newGameTableId);
@@ -55,9 +54,6 @@ export const LobbyStateComponent = ({
   const playerPoolHandles = lobbyState.playerPool.map(playerId => {
     const playerProfile = playerProfiles.get(playerId);
     if (!playerProfile) {
-      // console.error('Player profile not found for player ID:', playerId);
-      // console.error('playerProfiles', playerProfiles);
-
       return (
         <div key={playerId}>
           {playerId} (name not available)
@@ -72,15 +68,26 @@ export const LobbyStateComponent = ({
   })
 
   const isGameStarted = lobbyState.gameLink !== undefined;
-  const hostingLink = `${window.location.origin}/hosted-games/${lobbyState.gameTableId}`;
+  
+  const hostingLink = lobbyState.gameTableId ? 
+    `${window.location.origin}/hosted-games/${lobbyState.gameTableId}` :
+    '';
+
+  const lobbyValidLabel = lobbyState.isLobbyValid ? 
+    '[Valid]' :
+    '[Invalid]';
+
+  const playerCountLabel = lobbyState.gameTitle === undefined ? 
+    '' :
+    `[${lobbyState.minNumPlayers} - ${lobbyState.maxNumPlayers} players]`;
 
   return (
     <>
       <div>
-        Lobby State {lobbyState.lobbyName}
+        Lobby State {lobbyState.lobbyName} {lobbyValidLabel} - {lobbyState.playerPool.length}
       </div>
       <div> 
-        Game Title - {lobbyState.gameTitle}
+        Game Title - {lobbyState.gameTitle} {playerCountLabel}
       </div>
       <div>
         Game Link - {lobbyState.gameLink}
@@ -89,7 +96,7 @@ export const LobbyStateComponent = ({
         Hosting Link - <a href={hostingLink} target="_blank" rel="noopener noreferrer">{hostingLink}</a>
       </div>
       <div>
-        Player Pool - 
+        Player Pool [{lobbyState.playerPool.length}/{lobbyState.maxNumPlayers}]
         <>{playerPoolHandles}</>
       </div>
       <div>

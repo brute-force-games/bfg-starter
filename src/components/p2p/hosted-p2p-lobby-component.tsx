@@ -36,15 +36,10 @@ export const HostedP2pLobbyComponent = ({
   setLobbyOptions,
 }: IHostedP2pLobbyComponentProps) => {
   
-
   const hostedP2pLobby = useHostedP2pLobby(lobbyId, hostPlayerProfile);
   const { p2pLobby, connectionStatus, peerProfiles, sendLobbyData } = hostedP2pLobby;
   const { room, getPlayerMove, playerProfiles } = p2pLobby;
 
-  // const [sendLobbyData] = room.makeAction<HostP2pLobbyDetails>(P2P_LOBBY_DETAILS_ACTION_KEY)
-  // const [sendPlayerProfile, getPlayerProfile] = room.makeAction<PublicPlayerProfile>(P2P_LOBBY_PLAYER_PROFILE_DATA_ACTION_KEY)
-
-  
   const doSendLobbyData = useCallback(() => {
     if (lobbyState) {
       const lobbyData: HostP2pLobbyDetails = {
@@ -65,7 +60,6 @@ export const HostedP2pLobbyComponent = ({
 
   // Handle peer connections
   room.onPeerJoin(_peer => {
-    // sendPlayerProfile(hostPlayerProfile, peer)
     doSendLobbyData();
   })
 
@@ -92,6 +86,7 @@ export const HostedP2pLobbyComponent = ({
         console.log('updatedLobbyForSeat', updatedLobbyForSeat);
         if (updatedLobbyForSeat) {
           updateHostedLobbyPlayerPool(lobbyId, updatedLobbyForSeat.playerPool as PlayerProfileId[]);
+          updateLobbyState(updatedLobbyForSeat);
         }
         break;
 
@@ -100,6 +95,7 @@ export const HostedP2pLobbyComponent = ({
         console.log('updatedLobbyForLeaveSeat', updatedLobbyForLeaveSeat);
         if (updatedLobbyForLeaveSeat) {
           updateHostedLobbyPlayerPool(lobbyId, updatedLobbyForLeaveSeat.playerPool as PlayerProfileId[]);
+          updateLobbyState(updatedLobbyForLeaveSeat);
         }
         break;
       
@@ -123,7 +119,7 @@ export const HostedP2pLobbyComponent = ({
           color: '#333',
           fontWeight: '600'
         }}>
-          🎮 Hosted Lobby [{lobbyOptions.gameChoices.length} games, {lobbyOptions.maxPlayers} players]
+          🎮 Hosted Lobby [{lobbyOptions.gameChoices.length} games
         </h1>
         <div style={{ 
           fontSize: '16px', 

@@ -85,7 +85,7 @@ export type ChessGameDefinition = z.infer<typeof ChessGameDefinitionSchema>;
 
 export const FlipACoinGameDefinitionSchema = GameDefinitionSchema.extend({
   title: z.literal(FlipACoinGameName),
-  minNumPlayersForGame: z.literal(2),
+  minNumPlayersForGame: z.literal(1),
   maxNumPlayersForGame: z.literal(6),
 });
 
@@ -93,7 +93,7 @@ export type FlipACoinGameDefinition = z.infer<typeof FlipACoinGameDefinitionSche
 
 export const FlipACoinGameDefinition: FlipACoinGameDefinition = {
   title: FlipACoinGameName,
-  minNumPlayersForGame: 2,
+  minNumPlayersForGame: 1,
   maxNumPlayersForGame: 6
 };
 
