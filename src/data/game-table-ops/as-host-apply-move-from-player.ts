@@ -6,9 +6,11 @@ import { getPlayerActionSource } from "./player-seat-utils";
 import { BfgGameSpecificGameStateTypedJson } from "~/types/core/branded-values/bfg-game-state-typed-json";
 import { BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engines";
 import { GameTable } from "~/models/game-table/game-table";
+import { TablePhase } from "~/models/game-table/table-phase";
 
 
 export type HostApplyMoveFromPlayerResult = {
+  resultTablePhase: TablePhase;
   gameTable: GameTable;
   gameAction: DbGameTableAction;
 }
@@ -74,6 +76,7 @@ export const asHostApplyMoveFromPlayer = async <GameSpecificAction extends z.Zod
   }
 
   const retVal: HostApplyMoveFromPlayerResult = {
+    resultTablePhase: tablePhase,
     gameTable: nextGameTable,
     gameAction: playerMoveAction,
   } satisfies HostApplyMoveFromPlayerResult;

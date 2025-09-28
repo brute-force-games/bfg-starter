@@ -40,14 +40,8 @@ export const HostedGameView = (props: HostedGameViewProps) => {
   const latestGameSpecificAction = gameEngine.parseGameSpecificActionJson(
     latestAction.actionJson as BfgGameSpecificGameStateTypedJson<typeof gameTitle>);
 
-  // const gameRepresentation = gameEngine
-  //   .createGameStateRepresentationComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction);
-
   const onPlayerMoveAction = async (gameState: z.infer<typeof gameMetadata.processor["gameStateJsonSchema"]>, gameAction: z.infer<typeof gameMetadata.processor["gameActionJsonSchema"]>) => {
     console.log("onGameAction", gameState, gameAction);
-
-    // onPlayerGameAction(gameAction);
-    // await asPlayerMakeMove(hostedGame.id, myPlayerProfile.id, gameAction);
     const playerMoveJson = gameEngine.createGameSpecificActionJson(gameAction);
     onPlayerGameAction(playerMoveJson);
   }
@@ -71,6 +65,7 @@ export const HostedGameView = (props: HostedGameViewProps) => {
 
   return (
     <div>
+      <div>BFG Table Phase: {hostedGame.tablePhase}</div>
       {gameRepresentation}
       
       <PeerProfilesComponent

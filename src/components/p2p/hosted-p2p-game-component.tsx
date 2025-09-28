@@ -67,11 +67,6 @@ export const HostedP2pGameComponent = ({ gameTableId }: HostedP2pGameComponentPr
     z.infer<typeof gameMetadata.processor["gameActionJsonSchema"]>
   >;
 
-  // const onPlayerGameAction = (playerAction: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>) => {
-  //   console.log('p2pGame.sendPlayerMove', playerAction);
-  //   p2pGame.sendPlayerMove(playerAction);
-  // }
-
   const doSendGameData = useCallback(() => {
     if (hostedGame && gameActions) {
       const gameData: GameTable = {
