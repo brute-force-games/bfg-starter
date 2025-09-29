@@ -2,27 +2,31 @@ import { Box, Button, Typography } from "@mui/material";
 import { Toolbar } from "@mui/material";
 import { AppBar } from "@mui/material";
 import { Link } from '@tanstack/react-router';
-import { useMyPlayerProfiles } from "~/hooks/stores/use-my-player-profiles-store";
+import { useMyDefaultPlayerProfile, useMyPlayerProfiles } from "~/hooks/stores/use-my-player-profiles-store";
+import { UserProfileAccessComponent } from "./user-profile-access-component";
 
 
 export const BruteForceGamesAppBar = () => {
-
-  // console.log("BruteForceGamesAppBar");
-
-  // Use the "risky" context hook that returns null if context isn't available
-  // const contextData = useRiskyBfgWhoAmIContext();
+  
   const myPlayerProfiles = useMyPlayerProfiles();
-
+  const myDefaultPlayerProfile = useMyDefaultPlayerProfile();
   
   return (
     <AppBar 
       position="static" 
       sx={{ 
         width: '100%',
-        minWidth: '100vw'
+        minWidth: '100vw',
+        overflow: 'visible'
       }}
     >
-      <Toolbar sx={{ width: '100%' }}>
+      <Toolbar sx={{ 
+        width: '100%',
+        maxWidth: 'none',
+        px: { xs: 2, sm: 3, md: 4 },
+        overflow: 'visible',
+        minHeight: '64px'
+      }}>
         <Typography
           variant="h6"
           component="div"
@@ -32,30 +36,31 @@ export const BruteForceGamesAppBar = () => {
             Brute Force Games
           </Link>
         </Typography>
-        <Box sx={{ display: 'flex', gap: 2 }}>
-{/*           
-          <Link to="/start-new-game" style={{ textDecoration: 'none' }}>
-            <Button color="inherit">Start New Game</Button>
-          </Link> */}
+        <Box sx={{ 
+          display: 'flex', 
+          gap: 2,
+          flexShrink: 1,
+          minWidth: 0
+        }}>
           <Link to="/new-lobby" style={{ textDecoration: 'none' }}>
-            <Button color="inherit">Set Up New Lobby</Button>
+            <Button color="inherit">Play Now</Button>
           </Link>
+          {/* <Link to="/games-list" style={{ textDecoration: 'none' }}>
+            <Button color="inherit">Games List</Button>
+          </Link> */}
           <Link to="/my-hosted-games" style={{ textDecoration: 'none' }}>
             <Button color="inherit">My Hosted Games</Button>
           </Link>
-          {/* <Link to="/hosted-games-demo" style={{ textDecoration: 'none' }}>
-            <Button color="inherit">Games Demo</Button>
-          </Link> */}
           {/* Always show Player Profiles link, but disable if no profiles */}
-          {myPlayerProfiles && myPlayerProfiles.length > 0 ? (
-            <Link to="/my-player-profiles" style={{ textDecoration: 'none' }}>
-              <Button color="inherit">Player Profiles</Button>
-            </Link>
-          ) : (
-            <Button color="inherit" disabled>
-              Player Profiles
-            </Button>
-          )}
+            {myPlayerProfiles && myPlayerProfiles.length > 0 ? (
+              <Link to="/my-player-profiles" style={{ textDecoration: 'none' }}>
+                <Button color="inherit">Player Profiles</Button>
+              </Link>
+            ) : (
+              <Button color="inherit" disabled>
+                Player Profiles
+              </Button>
+            )}
           {/* <Link to="/games-shelf" style={{ textDecoration: 'none' }}>
             <Button color="inherit">Games Shelf</Button>
           </Link>
@@ -70,6 +75,10 @@ export const BruteForceGamesAppBar = () => {
           </Link> */}
 
         </Box>
+        <UserProfileAccessComponent
+          myPlayerProfiles={myPlayerProfiles}
+          myDefaultPlayerProfile={myDefaultPlayerProfile}
+        />
 
         {/* User profile access removed - local-only mode */}
 

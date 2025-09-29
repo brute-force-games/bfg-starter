@@ -76,7 +76,8 @@ export const PlayerP2pLobbyComponent = ({
   if (!lobbyState) {
     return (
       <div>
-        No lobby state found. Please wait while we establish the connection.
+        Connecting to lobby... 
+        Make sure the host has started the lobby. Please wait while we establish the connection.
       </div>
     )
   }

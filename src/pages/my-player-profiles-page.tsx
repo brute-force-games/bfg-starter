@@ -432,7 +432,7 @@ export const MyPlayerProfilesPage = () => {
         </div>
       )}
 
-      {hasDefaultProfile && (
+      {/* {hasDefaultProfile && (
         <div style={{
           backgroundColor: '#d4edda',
           color: '#155724',
@@ -443,7 +443,7 @@ export const MyPlayerProfilesPage = () => {
         }}>
           Default profile: <strong>{defaultProfile.handle}</strong>
         </div>
-      )}
+      )} */}
 
       <div style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
         <button
