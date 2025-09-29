@@ -1,4 +1,27 @@
 import { useCallback, useEffect, useState } from "react"
+import { 
+  Box, 
+  Card, 
+  CardContent, 
+  Typography, 
+  Chip, 
+  Button, 
+  Avatar, 
+  Container,
+  Paper,
+  TextField,
+  InputAdornment,
+  IconButton,
+  Alert,
+  Stack
+} from "@mui/material"
+import { 
+  ContentCopy, 
+  Refresh, 
+  AdminPanelSettings, 
+  Link as LinkIcon,
+  CheckCircle
+} from "@mui/icons-material"
 import { PublicPlayerProfile } from "~/models/public-player-profile"
 import { GameLobbyId, PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids"
 import { PeerProfilesComponent } from "./peer-profiles-component"
@@ -138,203 +161,171 @@ export const HostedP2pLobbyComponent = ({
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-      <div style={{ marginBottom: '24px' }}>
-        <h1 style={{ 
-          fontSize: '28px', 
-          margin: '0 0 8px 0', 
-          color: '#333',
-          fontWeight: '600'
-        }}>
-          🎮 Hosted Lobby [{lobbyOptions.gameChoices.length} games]
-        </h1>
-        <div style={{ 
-          fontSize: '16px', 
-          color: '#666',
-          marginBottom: '16px'
-        }}>
-          <div style={{ marginBottom: '8px' }}>Join Lobby Link:</div>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            flexWrap: 'wrap'
-          }}>
-            <a 
-              href={joinLobbyLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ 
-                backgroundColor: '#f8f9fa', 
-                padding: '8px 12px', 
-                borderRadius: '6px',
-                fontFamily: 'monospace',
-                fontSize: '14px',
-                color: '#007bff',
-                textDecoration: 'none',
-                border: '1px solid #e9ecef',
-                display: 'inline-block',
-                maxWidth: '400px',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#e9ecef';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#f8f9fa';
-              }}
-            >
-              {joinLobbyLink}
-            </a>
-            <button
-              onClick={copyToClipboard}
-              style={{
-                padding: '8px 12px',
-                backgroundColor: copySuccess ? '#28a745' : '#6c757d',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: '14px',
-                fontWeight: '500',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                transition: 'background-color 0.2s ease'
-              }}
-              onMouseEnter={(e) => {
-                if (!copySuccess) {
-                  e.currentTarget.style.backgroundColor = '#5a6268';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!copySuccess) {
-                  e.currentTarget.style.backgroundColor = '#6c757d';
-                }
-              }}
-            >
-              {copySuccess ? '✅ Copied!' : '📋 Copy'}
-            </button>
-          </div>
-        </div>
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          marginBottom: '20px'
-        }}>
-          <div style={{
-            padding: '8px 16px',
-            backgroundColor: '#e8f5e8',
-            color: '#155724',
-            borderRadius: '20px',
-            fontSize: '14px',
-            fontWeight: '500',
-            border: '1px solid #c3e6cb'
-          }}>
-            🟢 {connectionStatus}
-          </div>
-          <button 
-            onClick={doSendLobbyData}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: '#007bff',
+    <Container maxWidth="lg" sx={{ py: 3 }}>
+      {/* Header Section */}
+      <Paper elevation={2} sx={{ p: 3, mb: 3, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}>
+        <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
+          <AdminPanelSettings sx={{ fontSize: 32 }} />
+          <Box>
+            <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+              Hosted Lobby
+            </Typography>
+            <Typography variant="subtitle1" sx={{ opacity: 0.9 }}>
+              {lobbyOptions.gameChoices.length} games available
+            </Typography>
+          </Box>
+        </Stack>
+
+        {/* Connection Status */}
+        <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 3 }}>
+          <Chip 
+            icon={<CheckCircle />}
+            label={connectionStatus}
+            color="success"
+            variant="outlined"
+            sx={{ 
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              borderColor: 'rgba(255, 255, 255, 0.3)',
               color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: '500'
+              '& .MuiChip-icon': { color: 'white' }
+            }}
+          />
+          <Button
+            variant="outlined"
+            startIcon={<Refresh />}
+            onClick={doSendLobbyData}
+            sx={{ 
+              borderColor: 'rgba(255, 255, 255, 0.5)',
+              color: 'white',
+              '&:hover': { 
+                borderColor: 'white',
+                backgroundColor: 'rgba(255, 255, 255, 0.1)'
+              }
             }}
           >
-            🔄 Resend Lobby Data
-          </button>
-        </div>
-      </div>
+            Resend Lobby Data
+          </Button>
+        </Stack>
 
-      <LobbyStateComponent
-        lobbyState={lobbyState}
-        updateLobbyState={updateLobbyState}
-        setLobbyPlayerPool={setLobbyPlayerPool}
-        playerProfiles={playerProfiles}
-      />
+        {/* Share Link Section */}
+        <Box>
+          <Typography variant="subtitle2" sx={{ mb: 1, opacity: 0.9 }}>
+            Share this lobby link:
+          </Typography>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <TextField
+              value={joinLobbyLink}
+              size="small"
+              fullWidth
+              variant="outlined"
+              InputProps={{
+                readOnly: true,
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LinkIcon sx={{ color: 'rgba(255, 255, 255, 0.7)' }} />
+                  </InputAdornment>
+                ),
+                sx: {
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'rgba(255, 255, 255, 0.3)',
+                  },
+                  '& .MuiInputBase-input': {
+                    color: 'white',
+                    fontFamily: 'monospace',
+                  }
+                }
+              }}
+            />
+            <IconButton
+              onClick={copyToClipboard}
+              sx={{
+                backgroundColor: copySuccess ? 'success.main' : 'rgba(255, 255, 255, 0.1)',
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: copySuccess ? 'success.dark' : 'rgba(255, 255, 255, 0.2)',
+                }
+              }}
+            >
+              {copySuccess ? <CheckCircle /> : <ContentCopy />}
+            </IconButton>
+          </Stack>
+          {copySuccess && (
+            <Alert severity="success" sx={{ mt: 1, backgroundColor: 'rgba(76, 175, 80, 0.2)' }}>
+              Link copied to clipboard!
+            </Alert>
+          )}
+        </Box>
+      </Paper>
 
-      <LobbyHostOptionsComponent
-        lobbyOptions={lobbyOptions}
-        setLobbyOptions={onSetLobbyOptions}
-      />
+      {/* Main Content Grid */}
+      <Box sx={{ display: 'grid', gap: 3 }}>
+        {/* Lobby State Component */}
+        <Card elevation={1}>
+          <CardContent>
+            <LobbyStateComponent
+              lobbyState={lobbyState}
+              updateLobbyState={updateLobbyState}
+              setLobbyPlayerPool={setLobbyPlayerPool}
+              playerProfiles={playerProfiles}
+            />
+          </CardContent>
+        </Card>
 
-      {/* Host Profile Section */}
-      <div style={{ 
-        marginBottom: '32px',
-        padding: '20px',
-        backgroundColor: '#f8f9fa',
-        borderRadius: '12px',
-        border: '1px solid #e9ecef'
-      }}>
-        <h2 style={{ 
-          margin: '0 0 16px 0', 
-          fontSize: '20px', 
-          color: '#333',
-          fontWeight: '600'
-        }}>
-          👑 Host Profile
-        </h2>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: '50%',
-            backgroundColor: '#ffc107',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            marginRight: '16px',
-            fontSize: '20px',
-            fontWeight: 'bold'
-          }}>
-            {hostPlayerProfile.avatarImageUrl ? (
-              <img 
-                src={hostPlayerProfile.avatarImageUrl} 
-                alt={`${hostPlayerProfile.handle} avatar`}
-                style={{ 
-                  width: '100%', 
-                  height: '100%', 
-                  borderRadius: '50%', 
-                  objectFit: 'cover' 
+        {/* Host Options Component */}
+        <Card elevation={1}>
+          <CardContent>
+            <LobbyHostOptionsComponent
+              lobbyOptions={lobbyOptions}
+              setLobbyOptions={onSetLobbyOptions}
+            />
+          </CardContent>
+        </Card>
+
+        {/* Host Profile Section */}
+        <Card elevation={1} sx={{ background: 'linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%)' }}>
+          <CardContent>
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <Avatar
+                src={hostPlayerProfile.avatarImageUrl}
+                sx={{ 
+                  width: 64, 
+                  height: 64, 
+                  bgcolor: 'primary.main',
+                  fontSize: '1.5rem',
+                  fontWeight: 'bold'
                 }}
-              />
-            ) : (
-              hostPlayerProfile.handle.substring(0, 2).toUpperCase()
-            )}
-          </div>
-          <div>
-            <h3 style={{ 
-              margin: 0, 
-              fontSize: '18px', 
-              fontWeight: '600',
-              color: '#333'
-            }}>
-              {hostPlayerProfile.handle}
-            </h3>
-            <div style={{
-              fontSize: '14px',
-              color: '#666'
-            }}>
-              Lobby Host
-            </div>
-          </div>
-        </div>
-      </div>
+              >
+                {!hostPlayerProfile.avatarImageUrl && 
+                  hostPlayerProfile.handle.substring(0, 2).toUpperCase()
+                }
+              </Avatar>
+              <Box>
+                <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                  {hostPlayerProfile.handle}
+                </Typography>
+                <Chip 
+                  icon={<AdminPanelSettings />}
+                  label="Lobby Host"
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                />
+              </Box>
+            </Stack>
+          </CardContent>
+        </Card>
 
-      {/* Peer Profiles Section */}
-      <PeerProfilesComponent
-        peerProfiles={peerProfiles}
-        playerProfiles={playerProfiles}
-      />
-    </div>
+        {/* Peer Profiles Section */}
+        <Card elevation={1}>
+          <CardContent>
+            <PeerProfilesComponent
+              peerProfiles={peerProfiles}
+              playerProfiles={playerProfiles}
+            />
+          </CardContent>
+        </Card>
+      </Box>
+    </Container>
   )
 }
