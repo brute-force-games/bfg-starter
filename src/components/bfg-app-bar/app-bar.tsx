@@ -16,31 +16,39 @@ export const BruteForceGamesAppBar = () => {
       position="static" 
       sx={{ 
         width: '100%',
-        minWidth: '100vw',
+        maxWidth: '100vw',
         overflow: 'visible'
       }}
     >
       <Toolbar sx={{ 
         width: '100%',
-        maxWidth: 'none',
+        maxWidth: '100%',
         px: { xs: 2, sm: 3, md: 4 },
         overflow: 'visible',
-        minHeight: '64px'
+        minHeight: '64px',
+        boxSizing: 'border-box',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
       }}>
         <Typography
           variant="h6"
           component="div"
-          sx={{ flexGrow: 1, fontWeight: 'bold' }}
+          sx={{ fontWeight: 'bold', flexShrink: 0 }}
         >
           <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
             Brute Force Games
           </Link>
         </Typography>
+        
         <Box sx={{ 
           display: 'flex', 
           gap: 2,
           flexShrink: 1,
-          minWidth: 0
+          minWidth: 0,
+          alignItems: 'center',
+          flexGrow: 1,
+          justifyContent: 'center'
         }}>
           <Link to="/new-lobby" style={{ textDecoration: 'none' }}>
             <Button color="inherit">Play Now</Button>
@@ -75,6 +83,7 @@ export const BruteForceGamesAppBar = () => {
           </Link> */}
 
         </Box>
+        
         <UserProfileAccessComponent
           myPlayerProfiles={myPlayerProfiles}
           myDefaultPlayerProfile={myDefaultPlayerProfile}

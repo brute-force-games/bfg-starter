@@ -199,7 +199,7 @@ export const NewLobbyPage = () => {
                   variant="contained"
                   color="primary"
                 >
-                  Go to My Lobby
+                  Go to Hosted Lobby
                 </Button>
               </Link>
               <Link

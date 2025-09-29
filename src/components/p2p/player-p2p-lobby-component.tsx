@@ -9,18 +9,25 @@ import {
   Paper,
   Stack,
   CircularProgress,
-  Alert
+  Alert,
+  TextField,
+  InputAdornment,
+  IconButton
 } from "@mui/material"
 import { 
   Person, 
   CheckCircle, 
-  Home
+  Home,
+  ContentCopy,
+  Link as LinkIcon
 } from "@mui/icons-material"
+import { useState } from "react"
+import { LobbyTabsComponent } from "../lobby/lobby-tabs-component"
 import { GameLobbyId } from "~/types/core/branded-values/bfg-branded-ids"
 import { useP2pLobby } from "~/hooks/p2p/use-p2p-lobby"
 import { PrivatePlayerProfile } from "~/models/private-player-profile"
 import { PublicPlayerProfile } from "~/models/public-player-profile"
-import { PeerProfilesComponent } from "./peer-profiles-component"
+import { P2pConnectionComponent } from "./p2p-connection-component"
 import { LobbyPlayerChoicesComponent } from "../lobby/lobby-player-choices-component"
 import { BfgSupportedGameTitles } from "~/types/bfg-game-engines/supported-games"
 import { LobbyPlayerJoinGameComponent } from "../lobby/lobby-player-join-game-component"
@@ -36,6 +43,7 @@ export const PlayerP2pLobbyComponent = ({
   playerProfile,
 }: IPlayerP2pLobbyComponentProps) => {
 
+  const [copySuccess, setCopySuccess] = useState(false);
   const lobby = useP2pLobby(lobbyId as GameLobbyId, playerProfile);
 
   const { lobbyDetails, sendPlayerMove } = lobby;
@@ -74,6 +82,32 @@ export const PlayerP2pLobbyComponent = ({
   const onLeaveSeat = () => {
     sendPlayerMove({ move: 'leave-seat' });
   }
+
+  const joinLobbyLink = `${window.location.origin}/join-lobby/${lobbyId}`;
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(joinLobbyLink);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000); // Reset after 2 seconds
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = joinLobbyLink;
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        setCopySuccess(true);
+        setTimeout(() => setCopySuccess(false), 2000);
+      } catch (fallbackErr) {
+        console.error('Fallback copy failed: ', fallbackErr);
+      }
+      document.body.removeChild(textArea);
+    }
+  };
 
   if (!lobbyState) {
     return (
@@ -119,127 +153,163 @@ export const PlayerP2pLobbyComponent = ({
             <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', mb: 0.5 }}>
               Joined Lobby
             </Typography>
-            <Typography variant="subtitle1" sx={{ opacity: 0.9 }}>
-              Lobby ID: {lobbyId}
-            </Typography>
+            {/* <Typography variant="subtitle1" sx={{ opacity: 0.9 }}>
+              Lobby ID: {lobbyId} • {lobbyOptions.gameChoices.length} games available
+            </Typography> */}
           </Box>
         </Stack>
 
-        {/* Connection Status */}
-        <Stack direction="row" alignItems="center" spacing={2}>
-          <Chip 
-            icon={<CheckCircle />}
-            label={lobby.connectionStatus}
-            color="success"
-            variant="outlined"
-            sx={{ 
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
-              borderColor: 'rgba(255, 255, 255, 0.3)',
-              color: 'white',
-              '& .MuiChip-icon': { color: 'white' }
-            }}
-          />
-        </Stack>
+        {/* Share Link Section */}
+        <Box>
+          {/* <Typography variant="subtitle2" sx={{ mb: 1, opacity: 0.9 }}>
+            Share this lobby link:
+          </Typography> */}
+          <Stack direction="row" spacing={1} alignItems="center">
+          <IconButton
+              onClick={copyToClipboard}
+              sx={{
+                backgroundColor: copySuccess ? 'success.main' : 'rgba(255, 255, 255, 0.1)',
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: copySuccess ? 'success.dark' : 'rgba(255, 255, 255, 0.2)',
+                }
+              }}
+            >
+              {copySuccess ? <CheckCircle /> : <ContentCopy />}
+            </IconButton>
+            <TextField
+              value={joinLobbyLink}
+              size="small"
+              fullWidth
+              variant="outlined"
+              InputProps={{
+                readOnly: true,
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <LinkIcon sx={{ color: 'rgba(255, 255, 255, 0.7)' }} />
+                  </InputAdornment>
+                ),
+                sx: {
+                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'rgba(255, 255, 255, 0.3)',
+                  },
+                  '& .MuiInputBase-input': {
+                    color: 'white',
+                    fontFamily: 'monospace',
+                  }
+                }
+              }}
+            />
+          </Stack>
+          {copySuccess && (
+            <Alert severity="success" sx={{ mt: 1, backgroundColor: 'rgba(76, 175, 80, 0.2)' }}>
+              Link copied to clipboard!
+            </Alert>
+          )}
+        </Box>
       </Paper>
 
-      {/* Main Content Grid */}
-      <Box sx={{ display: 'grid', gap: 3 }}>
-        {/* Player Choices Component */}
-        <Card elevation={1}>
-          <CardContent>
-            <LobbyPlayerChoicesComponent 
-              lobbyOptions={lobbyOptions}
-              lobbyState={lobbyState}
-              currentPlayerProfile={playerProfile}
-              onSelectGameChoice={onSelectGameChoice}
-              onTakeSeat={onTakeSeat}
-              onLeaveSeat={onLeaveSeat}
-            />
-          </CardContent>
-        </Card>
-
-        {/* Player Profile Section */}
-        <Card elevation={1} sx={{ background: 'linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%)' }}>
-          <CardContent>
-            <Stack direction="row" alignItems="center" spacing={2}>
-              <Avatar
-                src={playerProfile.avatarImageUrl}
-                sx={{ 
-                  width: 64, 
-                  height: 64, 
-                  bgcolor: 'primary.main',
-                  fontSize: '1.5rem',
-                  fontWeight: 'bold'
-                }}
-              >
-                {!playerProfile.avatarImageUrl && 
-                  playerProfile.handle.substring(0, 2).toUpperCase()
-                }
-              </Avatar>
-              <Box>
-                <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold', mb: 0.5 }}>
-                  {playerProfile.handle}
-                </Typography>
-                <Chip 
-                  icon={<Person />}
-                  label="Player"
-                  size="small"
-                  color="primary"
-                  variant="outlined"
+      {/* Tabbed Content */}
+      <LobbyTabsComponent
+        lobbyType="player"
+        lobbyInfoContent={
+          <Box sx={{ display: 'grid', gap: 3 }}>
+            {/* Player Choices Component */}
+            <Card elevation={1}>
+              <CardContent>
+                <LobbyPlayerChoicesComponent 
+                  lobbyOptions={lobbyOptions}
+                  lobbyState={lobbyState}
+                  currentPlayerProfile={playerProfile}
+                  onSelectGameChoice={onSelectGameChoice}
+                  onTakeSeat={onTakeSeat}
+                  onLeaveSeat={onLeaveSeat}
                 />
-              </Box>
-            </Stack>
-          </CardContent>
-        </Card>
+              </CardContent>
+            </Card>
 
-        {/* Lobby Information Section */}
-        {lobby.lobbyDetails && (() => {
-          try {
-            return (
-              <Card elevation={1}>
-                <CardContent>
-                  <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
-                    <Home sx={{ fontSize: 24, color: 'primary.main' }} />
-                    <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold' }}>
-                      Lobby Information
+            {/* Player Profile Section */}
+            <Card elevation={1} sx={{ background: 'linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%)' }}>
+              <CardContent>
+                <Stack direction="row" alignItems="center" spacing={2}>
+                  <Avatar
+                    src={playerProfile.avatarImageUrl}
+                    sx={{ 
+                      width: 64, 
+                      height: 64, 
+                      bgcolor: 'primary.main',
+                      fontSize: '1.5rem',
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    {!playerProfile.avatarImageUrl && 
+                      playerProfile.handle.substring(0, 2).toUpperCase()
+                    }
+                  </Avatar>
+                  <Box>
+                    <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                      {playerProfile.handle}
                     </Typography>
-                  </Stack>
-                  <Box sx={{ pl: 4 }}>
-                    <Typography variant="body1" sx={{ mb: 1 }}>
-                      <strong>Host:</strong> {hostProfile.handle}
-                    </Typography>
-                    <Paper 
-                      variant="outlined" 
-                      sx={{ 
-                        p: 2, 
-                        backgroundColor: 'grey.50',
-                        fontFamily: 'monospace'
-                      }}
-                    >
-                      <Typography variant="caption" color="text.secondary">
-                        Host ID: {hostProfile.id}
-                      </Typography>
-                    </Paper>
+                    <Chip 
+                      icon={<Person />}
+                      label="Player"
+                      size="small"
+                      color="primary"
+                      variant="outlined"
+                    />
                   </Box>
-                </CardContent>
-              </Card>
-            );
-          } catch (error) {
-            console.error('Failed to parse host profile:', error);
-            return null;
-          }
-        })()}
+                </Stack>
+              </CardContent>
+            </Card>
 
-        {/* Peer Profiles Section */}
-        <Card elevation={1}>
-          <CardContent>
-            <PeerProfilesComponent
-              peerProfiles={lobby.peerProfiles}
-              playerProfiles={lobby.playerProfiles}
-            />
-          </CardContent>
-        </Card>
-      </Box>
+            {/* Lobby Information Section */}
+            {lobby.lobbyDetails && (() => {
+              try {
+                return (
+                  <Card elevation={1}>
+                    <CardContent>
+                      <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
+                        <Home sx={{ fontSize: 24, color: 'primary.main' }} />
+                        <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold' }}>
+                          Lobby Information
+                        </Typography>
+                      </Stack>
+                      <Box sx={{ pl: 4 }}>
+                        <Typography variant="body1" sx={{ mb: 1 }}>
+                          <strong>Host:</strong> {hostProfile.handle}
+                        </Typography>
+                        <Paper 
+                          variant="outlined" 
+                          sx={{ 
+                            p: 2, 
+                            backgroundColor: 'grey.50',
+                            fontFamily: 'monospace'
+                          }}
+                        >
+                          <Typography variant="caption" color="text.secondary">
+                            Host ID: {hostProfile.id}
+                          </Typography>
+                        </Paper>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                );
+              } catch (error) {
+                console.error('Failed to parse host profile:', error);
+                return null;
+              }
+            })()}
+          </Box>
+        }
+        p2pConnectionContent={
+          <P2pConnectionComponent
+            connectionStatus={lobby.connectionStatus}
+            peerProfiles={lobby.peerProfiles}
+            playerProfiles={lobby.playerProfiles}
+          />
+        }
+      />
     </Container>
   )
 }

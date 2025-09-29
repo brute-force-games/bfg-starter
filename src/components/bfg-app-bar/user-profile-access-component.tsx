@@ -12,6 +12,13 @@ interface UserProfileAccessComponentProps {
 export const UserProfileAccessComponent = (props: UserProfileAccessComponentProps) => {
 
   const { myPlayerProfiles, myDefaultPlayerProfile } = props;
+  
+  // Debug logging
+  console.log('UserProfileAccessComponent rendered with:', {
+    myPlayerProfiles,
+    myDefaultPlayerProfile,
+    profilesCount: myPlayerProfiles?.length || 0
+  });
 
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
@@ -24,7 +31,7 @@ export const UserProfileAccessComponent = (props: UserProfileAccessComponentProp
     setAnchorElUser(null);
   };
 
-  const userName = myDefaultPlayerProfile?.handle || myPlayerProfiles[0]?.handle || 'Local User';
+  const userName = myDefaultPlayerProfile?.handle || myPlayerProfiles[0]?.handle || 'User';
 
   const menuItems: DbkAppBarMenuItem[] = [
     { type: 'menu-label', title: userName },
@@ -40,13 +47,29 @@ export const UserProfileAccessComponent = (props: UserProfileAccessComponentProp
   
   return (
     <Box sx={{ 
-      flexGrow: 0,
       flexShrink: 0,
-      minWidth: 'fit-content'
+      minWidth: 'fit-content',
+      // Temporary debug styling
+      border: '2px solid red',
+      backgroundColor: 'rgba(255, 0, 0, 0.1)',
+      padding: '4px'
     }}>
       <Tooltip title="Open settings">
         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          <Avatar src={avatarImageUrl} alt={"username"} />
+          <Avatar 
+            src={avatarImageUrl} 
+            alt={userName}
+            sx={{ 
+              width: 40, 
+              height: 40,
+              bgcolor: 'primary.main',
+              color: 'white',
+              fontSize: '1.2rem',
+              fontWeight: 'bold'
+            }}
+          >
+            {userName.charAt(0).toUpperCase()}
+          </Avatar>
         </IconButton>
       </Tooltip>
       <DbkAppBarMenu
