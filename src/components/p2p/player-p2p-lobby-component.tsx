@@ -19,10 +19,12 @@ import {
   CheckCircle, 
   Home,
   ContentCopy,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Groups,
+  Wifi
 } from "@mui/icons-material"
 import { useState } from "react"
-import { LobbyTabsComponent } from "../lobby/lobby-tabs-component"
+import { TabsContainerPanel } from "../lobby/tabs-container-panel"
 import { GameLobbyId } from "~/types/core/branded-values/bfg-branded-ids"
 import { useP2pLobby } from "~/hooks/p2p/use-p2p-lobby"
 import { PrivatePlayerProfile } from "~/models/private-player-profile"
@@ -211,104 +213,115 @@ export const PlayerP2pLobbyComponent = ({
       </Paper>
 
       {/* Tabbed Content */}
-      <LobbyTabsComponent
-        lobbyType="player"
-        lobbyInfoContent={
-          <Box sx={{ display: 'grid', gap: 3 }}>
-            {/* Player Choices Component */}
-            <Card elevation={1}>
-              <CardContent>
-                <LobbyPlayerChoicesComponent 
-                  lobbyOptions={lobbyOptions}
-                  lobbyState={lobbyState}
-                  currentPlayerProfile={playerProfile}
-                  onSelectGameChoice={onSelectGameChoice}
-                  onTakeSeat={onTakeSeat}
-                  onLeaveSeat={onLeaveSeat}
-                />
-              </CardContent>
-            </Card>
-
-            {/* Player Profile Section */}
-            <Card elevation={1} sx={{ background: 'linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%)' }}>
-              <CardContent>
-                <Stack direction="row" alignItems="center" spacing={2}>
-                  <Avatar
-                    src={playerProfile.avatarImageUrl}
-                    sx={{ 
-                      width: 64, 
-                      height: 64, 
-                      bgcolor: 'primary.main',
-                      fontSize: '1.5rem',
-                      fontWeight: 'bold'
-                    }}
-                  >
-                    {!playerProfile.avatarImageUrl && 
-                      playerProfile.handle.substring(0, 2).toUpperCase()
-                    }
-                  </Avatar>
-                  <Box>
-                    <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold', mb: 0.5 }}>
-                      {playerProfile.handle}
-                    </Typography>
-                    <Chip 
-                      icon={<Person />}
-                      label="Player"
-                      size="small"
-                      color="primary"
-                      variant="outlined"
+      <TabsContainerPanel
+        tabs={[
+          {
+            title: "Lobby & Game Info",
+            icon: <Groups />,
+            content: (
+              <Box sx={{ display: 'grid', gap: 3 }}>
+                {/* Player Choices Component */}
+                <Card elevation={1}>
+                  <CardContent>
+                    <LobbyPlayerChoicesComponent 
+                      lobbyOptions={lobbyOptions}
+                      lobbyState={lobbyState}
+                      currentPlayerProfile={playerProfile}
+                      onSelectGameChoice={onSelectGameChoice}
+                      onTakeSeat={onTakeSeat}
+                      onLeaveSeat={onLeaveSeat}
                     />
-                  </Box>
-                </Stack>
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
 
-            {/* Lobby Information Section */}
-            {lobby.lobbyDetails && (() => {
-              try {
-                return (
-                  <Card elevation={1}>
-                    <CardContent>
-                      <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
-                        <Home sx={{ fontSize: 24, color: 'primary.main' }} />
-                        <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold' }}>
-                          Lobby Information
+                {/* Player Profile Section */}
+                <Card elevation={1} sx={{ background: 'linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%)' }}>
+                  <CardContent>
+                    <Stack direction="row" alignItems="center" spacing={2}>
+                      <Avatar
+                        src={playerProfile.avatarImageUrl}
+                        sx={{ 
+                          width: 64, 
+                          height: 64, 
+                          bgcolor: 'primary.main',
+                          fontSize: '1.5rem',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        {!playerProfile.avatarImageUrl && 
+                          playerProfile.handle.substring(0, 2).toUpperCase()
+                        }
+                      </Avatar>
+                      <Box>
+                        <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold', mb: 0.5 }}>
+                          {playerProfile.handle}
                         </Typography>
-                      </Stack>
-                      <Box sx={{ pl: 4 }}>
-                        <Typography variant="body1" sx={{ mb: 1 }}>
-                          <strong>Host:</strong> {hostProfile.handle}
-                        </Typography>
-                        <Paper 
-                          variant="outlined" 
-                          sx={{ 
-                            p: 2, 
-                            backgroundColor: 'grey.50',
-                            fontFamily: 'monospace'
-                          }}
-                        >
-                          <Typography variant="caption" color="text.secondary">
-                            Host ID: {hostProfile.id}
-                          </Typography>
-                        </Paper>
+                        <Chip 
+                          icon={<Person />}
+                          label="Player"
+                          size="small"
+                          color="primary"
+                          variant="outlined"
+                        />
                       </Box>
-                    </CardContent>
-                  </Card>
-                );
-              } catch (error) {
-                console.error('Failed to parse host profile:', error);
-                return null;
-              }
-            })()}
-          </Box>
-        }
-        p2pConnectionContent={
-          <P2pConnectionComponent
-            connectionStatus={lobby.connectionStatus}
-            peerProfiles={lobby.peerProfiles}
-            playerProfiles={lobby.playerProfiles}
-          />
-        }
+                    </Stack>
+                  </CardContent>
+                </Card>
+
+                {/* Lobby Information Section */}
+                {lobby.lobbyDetails && (() => {
+                  try {
+                    return (
+                      <Card elevation={1}>
+                        <CardContent>
+                          <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
+                            <Home sx={{ fontSize: 24, color: 'primary.main' }} />
+                            <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold' }}>
+                              Lobby Information
+                            </Typography>
+                          </Stack>
+                          <Box sx={{ pl: 4 }}>
+                            <Typography variant="body1" sx={{ mb: 1 }}>
+                              <strong>Host:</strong> {hostProfile.handle}
+                            </Typography>
+                            <Paper 
+                              variant="outlined" 
+                              sx={{ 
+                                p: 2, 
+                                backgroundColor: 'grey.50',
+                                fontFamily: 'monospace'
+                              }}
+                            >
+                              <Typography variant="caption" color="text.secondary">
+                                Host ID: {hostProfile.id}
+                              </Typography>
+                            </Paper>
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    );
+                  } catch (error) {
+                    console.error('Failed to parse host profile:', error);
+                    return null;
+                  }
+                })()}
+              </Box>
+            )
+          },
+          {
+            title: "P2P Connection",
+            icon: <Wifi />,
+            content: (
+              <P2pConnectionComponent
+                connectionStatus={lobby.connectionStatus}
+                peerProfiles={lobby.peerProfiles}
+                playerProfiles={lobby.playerProfiles}
+              />
+            )
+          }
+        ]}
+        tabColor="linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)"
+        ariaLabel="player lobby tabs"
       />
     </Container>
   )

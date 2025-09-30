@@ -4,21 +4,43 @@ import { BfgGameTableId, PlayerProfileId } from "~/types/core/branded-values/bfg
 import { PublicPlayerProfile } from "~/models/public-player-profile"
 import { asHostStartNewGame } from "~/data/game-table-ops/as-host-start-game"
 import { useState } from "react"
+import { BfgShareableLinkComponent } from "../p2p/lobby-join-link-component"
+import { 
+  Box, 
+  Paper, 
+  Typography, 
+  Button, 
+  Stack, 
+  Chip, 
+  Link,
+  Alert,
+  CircularProgress
+} from "@mui/material"
+import { 
+  PlayArrow, 
+  Clear, 
+  PersonRemove, 
+  Link as LinkIcon,
+  Gamepad,
+  Settings
+} from "@mui/icons-material"
 
 
-interface ILobbyStateComponentProps {
+interface ILobbyHostStateComponentProps {
   playerProfiles: Map<PlayerProfileId, PublicPlayerProfile>
   lobbyState: GameLobby
   updateLobbyState: (lobbyState: GameLobby) => void
   setLobbyPlayerPool: (playerPool: PlayerProfileId[]) => void
+  onOpenLobbyOptionsDialog?: () => void
 }
 
-export const LobbyStateComponent = ({
+export const LobbyHostStateComponent = ({
   playerProfiles,
   lobbyState,
   updateLobbyState,
   setLobbyPlayerPool,
-}: ILobbyStateComponentProps) => {
+  onOpenLobbyOptionsDialog,
+}: ILobbyHostStateComponentProps) => {
   const [isStartingGame, setIsStartingGame] = useState(false);
 
   const startGame = async () => {
@@ -55,15 +77,23 @@ export const LobbyStateComponent = ({
     const playerProfile = playerProfiles.get(playerId);
     if (!playerProfile) {
       return (
-        <div key={playerId}>
-          {playerId} (name not available)
-        </div>
+        <Chip 
+          key={playerId}
+          label={`${playerId} (name not available)`}
+          variant="outlined"
+          color="error"
+          size="small"
+        />
       );
     }
     return (
-      <div key={playerId}>
-        {playerProfile.handle}
-      </div>
+      <Chip 
+        key={playerId}
+        label={playerProfile.handle}
+        variant="filled"
+        color="primary"
+        size="small"
+      />
     )
   })
 
@@ -81,44 +111,291 @@ export const LobbyStateComponent = ({
     '' :
     `[${lobbyState.minNumPlayers} - ${lobbyState.maxNumPlayers} players]`;
 
+  const joinLobbyLink = `${window.location.origin}/join-lobby/${lobbyState.id}`;
+
+  if (isGameStarted) {
+    return (
+      <Paper elevation={2} sx={{ p: 3 }}>
+        <Stack spacing={2}>
+          <Typography variant="h6" component="h2" gutterBottom>
+            <i>{lobbyState.gameTitle}</i> has been started! Players can join using the game link.
+          </Typography>
+          {/* Game Links */}
+          {(lobbyState.gameLink || hostingLink) && (
+            <Box>
+              {/* <Typography variant="h6" component="h2" gutterBottom>
+                Game Links
+              </Typography> */}
+              <Stack spacing={1}>
+                {lobbyState.gameLink && (
+                  <BfgShareableLinkComponent
+                    variant="standard"
+                    linkLabel="Player Game Link"
+                    linkUrl={lobbyState.gameLink}
+                  />
+                
+                  // <Box>
+                  //   <Typography variant="subtitle2" color="text.secondary">
+                  //     Player Game Link:
+                  //   </Typography>
+                  //   <Link 
+                  //     href={lobbyState.gameLink} 
+                  //     target="_blank" 
+                  //     rel="noopener noreferrer"
+                  //     sx={{ 
+                  //       display: 'inline-flex', 
+                  //       alignItems: 'center', 
+                  //       gap: 0.5,
+                  //       wordBreak: 'break-all'
+                  //     }}
+                  //   >
+                  //     <LinkIcon fontSize="small" />
+                  //     {lobbyState.gameLink}
+                  //   </Link>
+                  // </Box>
+                )}
+                {hostingLink && (
+                  <BfgShareableLinkComponent
+                    variant="standard"
+                    linkLabel="Hosting Link"
+                    linkUrl={hostingLink}
+                  />
+                
+                  // <Box>
+                  //   <Typography variant="subtitle2" color="text.secondary">
+                  //     Hosting Link:
+                  //   </Typography>
+                  //   <Link 
+                  //     href={hostingLink} 
+                  //     target="_blank" 
+                  //     rel="noopener noreferrer"
+                  //     sx={{ 
+                  //       display: 'inline-flex', 
+                  //       alignItems: 'center', 
+                  //       gap: 0.5,
+                  //       wordBreak: 'break-all'
+                  //     }}
+                  //   >
+                  //     <LinkIcon fontSize="small" />
+                  //     {hostingLink}
+                  //   </Link>
+                  // </Box>
+                )}
+              </Stack>
+              <Box>
+                <Typography variant="h6" component="h2" gutterBottom>
+                  Player Pool
+                </Typography>
+                <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
+                  <Typography variant="body2" color="text.secondary">
+                    [{lobbyState.playerPool.length}/{lobbyState.maxNumPlayers}]
+                  </Typography>
+                </Stack>
+                <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                  {playerPoolHandles.length > 0 ? playerPoolHandles : (
+                    <Typography variant="body2" color="text.secondary" fontStyle="italic">
+                      No players in pool
+                    </Typography>
+                  )}
+                </Stack>
+              </Box>
+            </Box>
+          )}
+        </Stack>
+      </Paper>
+    )
+  }
+
+
   return (
-    <>
-      <div>
-        Lobby State {lobbyState.lobbyName} {lobbyValidLabel} - {lobbyState.playerPool.length}
-      </div>
-      <div> 
-        Game Title - {lobbyState.gameTitle} {playerCountLabel}
-      </div>
-      <div>
-        Game Link - {lobbyState.gameLink}
-      </div>
-      <div>
-        Hosting Link - <a href={hostingLink} target="_blank" rel="noopener noreferrer">{hostingLink}</a>
-      </div>
-      <div>
-        Player Pool [{lobbyState.playerPool.length}/{lobbyState.maxNumPlayers}]
-        <>{playerPoolHandles}</>
-      </div>
-      <div>
-        <button 
-          onClick={() => updateLobbyState({ ...lobbyState, gameTitle: undefined })}
-          disabled={isGameStarted}
-        >
-          Clear Game
-        </button>
-        <button
-          onClick={() => setLobbyPlayerPool([])}
-          disabled={isGameStarted}
-        >
-          Clear Seats
-        </button>
-        <button 
-          onClick={() => startGame()}
-          disabled={isGameStarted || isStartingGame || !lobbyState.isLobbyValid}
-        >
-          {isStartingGame ? "Starting Game..." : "Start Game"}
-        </button>
-      </div>
-    </>
+    <Paper elevation={2} sx={{ p: 3 }}>
+      <Stack spacing={2}>
+
+        {/* Lobby Status */}
+        <Box>
+            <Typography variant="h6" component="h2" gutterBottom>
+              Lobby Status
+            </Typography>
+            <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+              <Typography variant="body1">
+                {lobbyState.lobbyName}
+              </Typography>
+              <Chip 
+                label={lobbyValidLabel} 
+                color={lobbyState.isLobbyValid ? "success" : "error"}
+                size="small"
+              />
+              <Chip 
+                label={`${lobbyState.playerPool.length} players`}
+                variant="outlined"
+                size="small"
+              />
+            </Stack>
+          </Box>
+
+          {/* Game Title */}
+          <Box>
+            <Typography variant="h6" component="h2" gutterBottom>
+              Game Selection
+            </Typography>
+            <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+              <Gamepad sx={{ color: 'primary.main' }} />
+              <Typography variant="body1">
+                {lobbyState.gameTitle || "No game selected"}
+              </Typography>
+              {playerCountLabel && (
+                <Chip 
+                  label={playerCountLabel} 
+                  variant="outlined"
+                  size="small"
+                />
+              )}
+              {onOpenLobbyOptionsDialog && (
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<Settings />}
+                  onClick={onOpenLobbyOptionsDialog}
+                  disabled={isGameStarted}
+                  sx={{ ml: 'auto' }}
+                >
+                  Configure Game Selection
+                </Button>
+              )}
+            </Stack>
+          </Box>
+
+          {/* Game Links
+          {(lobbyState.gameLink || hostingLink) && (
+            <Box>
+              <Typography variant="h6" component="h2" gutterBottom>
+                Game Links
+              </Typography>
+              <Stack spacing={1}>
+                {lobbyState.gameLink && (
+                  <Box>
+                    <Typography variant="subtitle2" color="text.secondary">
+                      Player Game Link:
+                    </Typography>
+                    <Link 
+                      href={lobbyState.gameLink} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      sx={{ 
+                        display: 'inline-flex', 
+                        alignItems: 'center', 
+                        gap: 0.5,
+                        wordBreak: 'break-all'
+                      }}
+                    >
+                      <LinkIcon fontSize="small" />
+                      {lobbyState.gameLink}
+                    </Link>
+                  </Box>
+                )}
+                {hostingLink && (
+                  <Box>
+                    <Typography variant="subtitle2" color="text.secondary">
+                      Hosting Link:
+                    </Typography>
+                    <Link 
+                      href={hostingLink} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      sx={{ 
+                        display: 'inline-flex', 
+                        alignItems: 'center', 
+                        gap: 0.5,
+                        wordBreak: 'break-all'
+                      }}
+                    >
+                      <LinkIcon fontSize="small" />
+                      {hostingLink}
+                    </Link>
+                  </Box>
+                )}
+              </Stack>
+            </Box>
+          )} */}
+
+          {/* Player Pool */}
+          <Box>
+            <Typography variant="h6" component="h2" gutterBottom>
+              Player Pool
+            </Typography>
+            <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
+              <Typography variant="body2" color="text.secondary">
+                [{lobbyState.playerPool.length}/{lobbyState.maxNumPlayers}]
+              </Typography>
+            </Stack>
+            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+              {playerPoolHandles.length > 0 ? playerPoolHandles : (
+                <Typography variant="body2" color="text.secondary" fontStyle="italic">
+                  No players in pool
+                </Typography>
+              )}
+            </Stack>
+          </Box>
+
+          <BfgShareableLinkComponent
+            variant="standard"
+            linkLabel="Join Lobby Link"
+            linkUrl={joinLobbyLink}
+          />
+
+          {/* Action Buttons */}
+          <Box>
+            <Typography variant="h6" component="h2" gutterBottom>
+              Actions
+            </Typography>
+            <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+              <Button
+                variant="outlined"
+                startIcon={<Clear />}
+                onClick={() => updateLobbyState({ 
+                  ...lobbyState, 
+                  gameTitle: undefined,
+                  isLobbyValid: false,
+                })}
+                disabled={isGameStarted}
+                color="warning"
+              >
+                Clear Game
+              </Button>
+              <Button
+                variant="outlined"
+                startIcon={<PersonRemove />}
+                onClick={() => setLobbyPlayerPool([])}
+                disabled={isGameStarted}
+                color="warning"
+              >
+                Clear Seats
+              </Button>
+              <Button
+                variant="contained"
+                startIcon={isStartingGame ? <CircularProgress size={16} /> : <PlayArrow />}
+                onClick={() => startGame()}
+                disabled={isGameStarted || isStartingGame || !lobbyState.isLobbyValid}
+                color="primary"
+                size="large"
+              >
+                {isStartingGame ? "Starting Game..." : "Start Game"}
+              </Button>
+            </Stack>
+          </Box>
+
+          {/* Status Messages */}
+          {!lobbyState.isLobbyValid && (
+            <Alert severity="warning">
+              Lobby configuration is invalid. Please check your settings.
+            </Alert>
+          )}
+          {isGameStarted && (
+            <Alert severity="success">
+              Game has been started! Players can now join using the game link.
+            </Alert>
+          )}
+        </Stack>
+      </Paper>
   )
 }

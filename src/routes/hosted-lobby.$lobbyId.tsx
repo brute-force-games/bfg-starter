@@ -30,6 +30,11 @@ export const HostedLobbyPage = () => {
   const setLobbyPlayerPool = (playerPool: PlayerProfileId[]) => {
     console.log('setting lobby player pool', playerPool);
     lobbyActions.updateLobbyPlayerPool(lobbyId, playerPool);
+    if (playerPool.length === 0) {
+      lobbyActions.updateLobby(lobbyId, {
+        isLobbyValid: false,
+      });
+    }
   }
 
   if (!lobby) {

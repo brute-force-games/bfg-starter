@@ -4,14 +4,8 @@ import {
   Tabs, 
   Tab, 
   Card, 
-  CardContent, 
-  Typography,
   Paper
 } from "@mui/material"
-import { 
-  Groups, 
-  Wifi 
-} from "@mui/icons-material"
 
 interface TabPanelProps {
   children?: ReactNode
@@ -26,8 +20,8 @@ function TabPanel(props: TabPanelProps) {
     <div
       role="tabpanel"
       hidden={value !== index}
-      id={`lobby-tabpanel-${index}`}
-      aria-labelledby={`lobby-tab-${index}`}
+      id={`tabpanel-${index}`}
+      aria-labelledby={`tab-${index}`}
       {...other}
     >
       {value === index && (
@@ -39,27 +33,27 @@ function TabPanel(props: TabPanelProps) {
   )
 }
 
-interface LobbyTabsComponentProps {
-  lobbyInfoContent: ReactNode
-  p2pConnectionContent: ReactNode
-  lobbyType: 'hosted' | 'player'
+export interface TabInfo {
+  title: string
+  icon: React.ReactElement
+  content: ReactNode
 }
 
-export const LobbyTabsComponent = ({
-  lobbyInfoContent,
-  p2pConnectionContent,
-  lobbyType
-}: LobbyTabsComponentProps) => {
+interface TabsContainerPanelProps {
+  tabs: TabInfo[]
+  tabColor?: string
+  ariaLabel?: string
+}
+
+export const TabsContainerPanel = ({
+  tabs,
+  tabColor = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+  ariaLabel = "tabs"
+}: TabsContainerPanelProps) => {
   const [tabValue, setTabValue] = useState(0)
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue)
-  }
-
-  const getTabColor = () => {
-    return lobbyType === 'hosted' 
-      ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-      : 'linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)'
   }
 
   return (
@@ -67,7 +61,7 @@ export const LobbyTabsComponent = ({
       <Paper 
         elevation={1} 
         sx={{ 
-          background: getTabColor(),
+          background: tabColor,
           color: 'white',
           borderRadius: '4px 4px 0 0'
         }}
@@ -75,7 +69,7 @@ export const LobbyTabsComponent = ({
         <Tabs
           value={tabValue}
           onChange={handleTabChange}
-          aria-label="lobby tabs"
+          aria-label={ariaLabel}
           sx={{
             '& .MuiTab-root': {
               color: 'rgba(255, 255, 255, 0.7)',
@@ -93,28 +87,23 @@ export const LobbyTabsComponent = ({
             },
           }}
         >
-          <Tab
-            icon={<Groups />}
-            label="Lobby & Game Info"
-            id="lobby-tab-0"
-            aria-controls="lobby-tabpanel-0"
-          />
-          <Tab
-            icon={<Wifi />}
-            label="P2P Connection"
-            id="lobby-tab-1"
-            aria-controls="lobby-tabpanel-1"
-          />
+          {tabs.map((tab, index) => (
+            <Tab
+              key={index}
+              icon={tab.icon}
+              label={tab.title}
+              id={`tab-${index}`}
+              aria-controls={`tabpanel-${index}`}
+            />
+          ))}
         </Tabs>
       </Paper>
 
-      <TabPanel value={tabValue} index={0}>
-        {lobbyInfoContent}
-      </TabPanel>
-
-      <TabPanel value={tabValue} index={1}>
-        {p2pConnectionContent}
-      </TabPanel>
+      {tabs.map((tab, index) => (
+        <TabPanel key={index} value={tabValue} index={index}>
+          {tab.content}
+        </TabPanel>
+      ))}
     </Card>
   )
 }

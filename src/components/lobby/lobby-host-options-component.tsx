@@ -34,7 +34,7 @@ export const LobbyHostOptionsComponent = ({
   return (
     <div>
       <div>
-        <h2>Game Choices ({lobbyOptions.gameChoices.length} selected)</h2>
+        <h2>Game Choices</h2>
         <div>
           {allGameChoices.map(choice => {
             const isSelected = lobbyOptions.gameChoices.includes(choice);
