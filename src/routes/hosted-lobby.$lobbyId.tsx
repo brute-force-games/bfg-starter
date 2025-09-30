@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
 import { HostedP2pLobbyComponent } from "~/components/p2p/hosted-p2p-lobby-component"
 import { useHostedLobby, useHostedLobbyActions } from "~/hooks/stores/use-hosted-lobbies-store"
+import { useMyDefaultHostPlayerProfile } from "~/hooks/stores/use-my-player-profiles-store"
 import { GameLobby, LobbyOptions } from "~/models/p2p-lobby"
 import { BfgSupportedGameTitlesSchema } from "~/types/bfg-game-engines/supported-games"
 import { GameLobbyId, PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids"
@@ -13,6 +14,7 @@ export const HostedLobbyPage = () => {
 
   const lobby = useHostedLobby(lobbyId);
   const lobbyActions = useHostedLobbyActions();
+  const myHostPlayerProfile = useMyDefaultHostPlayerProfile();
 
   const [lobbyOptions, setLobbyOptions] = useState<LobbyOptions>(() => {
     const gameChoices = BfgSupportedGameTitlesSchema.options;
@@ -28,7 +30,6 @@ export const HostedLobbyPage = () => {
   }
 
   const setLobbyPlayerPool = (playerPool: PlayerProfileId[]) => {
-    console.log('setting lobby player pool', playerPool);
     lobbyActions.updateLobbyPlayerPool(lobbyId, playerPool);
     if (playerPool.length === 0) {
       lobbyActions.updateLobby(lobbyId, {
@@ -45,10 +46,14 @@ export const HostedLobbyPage = () => {
     )
   }
 
+  if (myHostPlayerProfile?.id !== lobby.gameHostPlayerProfile.id) {
+    throw new Error('You are not the host of this lobby');
+  }
+
   return (
     <HostedP2pLobbyComponent
       lobbyId={lobbyId}
-      hostPlayerProfile={lobby.gameHostPlayerProfile}
+      hostPlayerProfile={myHostPlayerProfile}
       lobbyOptions={lobbyOptions}
       lobbyState={lobby}
       updateLobbyState={setLobbyState}

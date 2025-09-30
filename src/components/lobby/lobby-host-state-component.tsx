@@ -7,12 +7,10 @@ import { useState } from "react"
 import { BfgShareableLinkComponent } from "../p2p/lobby-join-link-component"
 import { 
   Box, 
-  Paper, 
   Typography, 
   Button, 
   Stack, 
   Chip, 
-  Link,
   Alert,
   CircularProgress
 } from "@mui/material"
@@ -20,7 +18,6 @@ import {
   PlayArrow, 
   Clear, 
   PersonRemove, 
-  Link as LinkIcon,
   Gamepad,
   Settings
 } from "@mui/icons-material"
@@ -115,10 +112,10 @@ export const LobbyHostStateComponent = ({
 
   if (isGameStarted) {
     return (
-      <Paper elevation={2} sx={{ p: 3 }}>
+      // <Paper elevation={2} sx={{ p: 3 }}>
         <Stack spacing={2}>
           <Typography variant="h6" component="h2" gutterBottom>
-            <i>{lobbyState.gameTitle}</i> has been started! Players can join using the game link.
+            <i>{lobbyState.gameTitle}</i> will start once you open the Hosting Link! Players should join using the player link.
           </Typography>
           {/* Game Links */}
           {(lobbyState.gameLink || hostingLink) && (
@@ -202,22 +199,23 @@ export const LobbyHostStateComponent = ({
             </Box>
           )}
         </Stack>
-      </Paper>
+      // </Paper>
     )
   }
 
 
   return (
-    <Paper elevation={2} sx={{ p: 3 }}>
+    // <Paper elevation={2} sx={{ p: 3 }}>
+    <>
       <Stack spacing={2}>
 
         {/* Lobby Status */}
         <Box>
-            <Typography variant="h6" component="h2" gutterBottom>
-              Lobby Status
-            </Typography>
+            {/* <Typography variant="h6" component="h2" gutterBottom>
+              Lobby hosted by {lobbyState.gameHostPlayerProfile.handle}
+            </Typography> */}
             <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
-              <Typography variant="body1">
+              <Typography variant="h6" component="h2" gutterBottom>
                 {lobbyState.lobbyName}
               </Typography>
               <Chip 
@@ -231,39 +229,41 @@ export const LobbyHostStateComponent = ({
                 size="small"
               />
             </Stack>
+             <Typography variant="body2" color="text.secondary" gutterBottom sx={{ fontStyle: 'italic' }}>
+               hosted by {lobbyState.gameHostPlayerProfile.handle}
+             </Typography>
+            {!lobbyState.isLobbyValid && (
+              <Alert severity="warning" sx={{ mt: 1 }}>
+                Lobby configuration is invalid. Please check your settings.
+              </Alert>
+            )}
           </Box>
 
-          {/* Game Title */}
+          {/* Action Buttons */}
           <Box>
-            <Typography variant="h6" component="h2" gutterBottom>
-              Game Selection
-            </Typography>
-            <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
-              <Gamepad sx={{ color: 'primary.main' }} />
-              <Typography variant="body1">
-                {lobbyState.gameTitle || "No game selected"}
-              </Typography>
-              {playerCountLabel && (
-                <Chip 
-                  label={playerCountLabel} 
-                  variant="outlined"
-                  size="small"
-                />
-              )}
-              {onOpenLobbyOptionsDialog && (
-                <Button
-                  variant="outlined"
-                  size="small"
-                  startIcon={<Settings />}
-                  onClick={onOpenLobbyOptionsDialog}
-                  disabled={isGameStarted}
-                  sx={{ ml: 'auto' }}
-                >
-                  Configure Game Selection
-                </Button>
-              )}
+            {/* <Typography variant="h6" component="h2" gutterBottom>
+              Actions
+            </Typography> */}
+            <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+              <Button
+                variant="contained"
+                startIcon={isStartingGame ? <CircularProgress size={16} /> : <PlayArrow />}
+                onClick={() => startGame()}
+                disabled={isGameStarted || isStartingGame || !lobbyState.isLobbyValid}
+                color="primary"
+                size="large"
+              >
+                {isStartingGame ? "Starting Game..." : "Start Game"}
+              </Button>
             </Stack>
           </Box>
+
+          <BfgShareableLinkComponent
+            variant="standard"
+            linkLabel="Join Lobby Link"
+            linkUrl={joinLobbyLink}
+          />
+
 
           {/* Game Links
           {(lobbyState.gameLink || hostingLink) && (
@@ -320,9 +320,22 @@ export const LobbyHostStateComponent = ({
 
           {/* Player Pool */}
           <Box>
-            <Typography variant="h6" component="h2" gutterBottom>
-              Player Pool
-            </Typography>
+            <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" sx={{ mb: 1 }}>
+              <Typography variant="h6" component="h2">
+                Player Pool
+              </Typography>
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={<PersonRemove />}
+                onClick={() => setLobbyPlayerPool([])}
+                disabled={isGameStarted || lobbyState.playerPool.length === 0}
+                color="warning"
+                sx={{ minWidth: 'auto', px: 1 }}
+              >
+                Clear Seats
+              </Button>
+            </Stack>
             <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 1 }}>
               <Typography variant="body2" color="text.secondary">
                 [{lobbyState.playerPool.length}/{lobbyState.maxNumPlayers}]
@@ -337,65 +350,64 @@ export const LobbyHostStateComponent = ({
             </Stack>
           </Box>
 
-          <BfgShareableLinkComponent
-            variant="standard"
-            linkLabel="Join Lobby Link"
-            linkUrl={joinLobbyLink}
-          />
-
-          {/* Action Buttons */}
+          {/* Game Title */}
           <Box>
-            <Typography variant="h6" component="h2" gutterBottom>
-              Actions
-            </Typography>
-            <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+            <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap" sx={{ mb: 1 }}>
+              <Typography variant="h6" component="h2">
+                Game Selection
+              </Typography>
               <Button
                 variant="outlined"
+                size="small"
                 startIcon={<Clear />}
                 onClick={() => updateLobbyState({ 
                   ...lobbyState, 
                   gameTitle: undefined,
                   isLobbyValid: false,
                 })}
-                disabled={isGameStarted}
+                disabled={isGameStarted || !lobbyState.gameTitle}
                 color="warning"
+                sx={{ minWidth: 'auto', px: 1 }}
               >
                 Clear Game
               </Button>
-              <Button
-                variant="outlined"
-                startIcon={<PersonRemove />}
-                onClick={() => setLobbyPlayerPool([])}
-                disabled={isGameStarted}
-                color="warning"
-              >
-                Clear Seats
-              </Button>
-              <Button
-                variant="contained"
-                startIcon={isStartingGame ? <CircularProgress size={16} /> : <PlayArrow />}
-                onClick={() => startGame()}
-                disabled={isGameStarted || isStartingGame || !lobbyState.isLobbyValid}
-                color="primary"
-                size="large"
-              >
-                {isStartingGame ? "Starting Game..." : "Start Game"}
-              </Button>
+              {onOpenLobbyOptionsDialog && (
+                <Button
+                  variant="outlined"
+                  size="small"
+                  startIcon={<Settings />}
+                  onClick={onOpenLobbyOptionsDialog}
+                  disabled={isGameStarted}
+                  sx={{ minWidth: 'auto', px: 1 }}
+                >
+                  Configure
+                </Button>
+              )}
+            </Stack>
+            <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+              <Gamepad sx={{ color: 'primary.main' }} />
+              <Typography variant="body1">
+                {lobbyState.gameTitle || "No game selected"}
+              </Typography>
+              {playerCountLabel && (
+                <Chip 
+                  label={playerCountLabel} 
+                  variant="outlined"
+                  size="small"
+                />
+              )}
             </Stack>
           </Box>
 
           {/* Status Messages */}
-          {!lobbyState.isLobbyValid && (
-            <Alert severity="warning">
-              Lobby configuration is invalid. Please check your settings.
-            </Alert>
-          )}
           {isGameStarted && (
             <Alert severity="success">
               Game has been started! Players can now join using the game link.
             </Alert>
           )}
         </Stack>
-      </Paper>
+      {/* </Paper> */}
+      
+    </>
   )
 }

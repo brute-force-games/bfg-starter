@@ -73,6 +73,11 @@ export const useMyDefaultPlayerProfile = () => {
 };
 
 
+export const useMyDefaultHostPlayerProfile = () => {
+  return useMyDefaultPlayerProfile();
+}
+
+
 export const useMyDefaultPublicPlayerProfile = (): PublicPlayerProfile | null => {
   const defaultProfile = useMyDefaultPlayerProfile();
   if (!defaultProfile) {

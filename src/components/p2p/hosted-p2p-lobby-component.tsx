@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react"
 import { 
-  Box, 
   Container} from "@mui/material"
 import { 
   Groups,
@@ -17,13 +16,15 @@ import { LobbyHostStateComponent } from "../lobby/lobby-host-state-component"
 import { updateHostedLobbyPlayerPool } from "~/store/hosted-lobbies-store"
 import { playerLeaveSeat } from "~/data/game-lobby-ops/player-leave-seat"
 import { useHostedP2pLobby } from "~/hooks/p2p/use-hosted-p2p-lobby"
-import { PublicPlayerProfile } from "~/models/public-player-profile"
 import { LobbyHostOptionsDialog } from "~/dialogs/lobby-host-options-dialog"
+import { LobbyPlayerStateComponent } from "../lobby/lobby-player-state-component"
+import { BfgSupportedGameTitles } from "~/types/bfg-game-engines/supported-games"
+import { PrivatePlayerProfile } from "~/models/private-player-profile"
 
 
 interface IHostedP2pLobbyComponentProps {
   lobbyId: GameLobbyId
-  hostPlayerProfile: PublicPlayerProfile
+  hostPlayerProfile: PrivatePlayerProfile
 
   lobbyOptions: LobbyOptions
   lobbyState: GameLobby
@@ -47,7 +48,7 @@ export const HostedP2pLobbyComponent = ({
   
   const hostedP2pLobby = useHostedP2pLobby(lobbyId, hostPlayerProfile);
   const { p2pLobby, connectionStatus, peerProfiles, sendLobbyData } = hostedP2pLobby;
-  const { room, getPlayerMove, playerProfiles } = p2pLobby;
+  const { room, getPlayerMove, playerProfiles, sendPlayerMove } = p2pLobby;
 
   const doSendLobbyData = useCallback(() => {
     if (lobbyState) {
@@ -72,15 +73,15 @@ export const HostedP2pLobbyComponent = ({
     doSendLobbyData();
   })
 
+  const applyPlayerMove = async (move: PlayerP2pLobbyMove, playerId: PlayerProfileId) => {
+    console.log('applyPlayerMove', move, playerId);
+    console.log('Received player move from peer:', playerId, move);
 
-  getPlayerMove(async (move: PlayerP2pLobbyMove, peer: string) => {
-    console.log('Received player move from peer:', peer, move);
-
-    const playerId = peerProfiles.get(peer)?.id;
-    if (!playerId) {
-      console.error('Player ID not found for peer:', peer);
-      return;
-    }
+    // const playerId = peerProfiles.get(peer)?.id;
+    // if (!playerId) {
+    //   console.error('Player ID not found for peer:', peer);
+    //   return;
+    // }
 
     switch (move.move) {
       case 'set-game-choice':
@@ -112,6 +113,16 @@ export const HostedP2pLobbyComponent = ({
         console.error('Unknown player move:', move);
         break;
     }
+  }
+
+
+  getPlayerMove(async (move: PlayerP2pLobbyMove, peer: string) => {
+    const playerId = peerProfiles.get(peer)?.id;
+    if (!playerId) {
+      console.error('Player ID not found for peer:', peer);
+      return;
+    }
+    await applyPlayerMove(move, playerId);
   })
 
   const onSetLobbyOptions = (lobbyOptions: LobbyOptions) => {
@@ -131,6 +142,19 @@ export const HostedP2pLobbyComponent = ({
     onSetLobbyOptions(updatedLobbyOptions);
   };
 
+  const onSelectGameChoice = async (gameChoice: BfgSupportedGameTitles) => {
+    await applyPlayerMove({ move: 'set-game-choice', gameChoice: gameChoice }, hostPlayerProfile.id);
+    // sendPlayerMove({ move: 'set-game-choice', gameChoice: gameChoice });
+  }
+  const onTakeSeat = async () => {
+    await applyPlayerMove({ move: 'take-seat' }, hostPlayerProfile.id);
+    // sendPlayerMove({ move: 'take-seat' });
+  }
+  const onLeaveSeat = async () => {
+    await applyPlayerMove({ move: 'leave-seat' }, hostPlayerProfile.id);
+    // sendPlayerMove({ move: 'leave-seat' });
+  }
+
 
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
@@ -140,23 +164,17 @@ export const HostedP2pLobbyComponent = ({
             title: "Lobby Admin",
             icon: <Groups />,
             content: (
-              <Box sx={{ display: 'grid', gap: 3 }}>
-                {/* <LobbyHostOptionsComponent
-                  lobbyOptions={lobbyOptions}
-                  setLobbyOptions={onSetLobbyOptions}
-                /> */}
-                <LobbyHostStateComponent
-                  playerProfiles={playerProfiles}
-                  lobbyState={lobbyState}
-                  updateLobbyState={updateLobbyState}
-                  setLobbyPlayerPool={setLobbyPlayerPool}
-                  onOpenLobbyOptionsDialog={handleOpenLobbyOptionsDialog}
-                />
-              </Box>
+              <LobbyHostStateComponent
+                playerProfiles={playerProfiles}
+                lobbyState={lobbyState}
+                updateLobbyState={updateLobbyState}
+                setLobbyPlayerPool={setLobbyPlayerPool}
+                onOpenLobbyOptionsDialog={handleOpenLobbyOptionsDialog}
+              />
             )
           },
           // {
-          //   title: "Lobby",
+          //   title: "Player Lobby",
           //   icon: <Groups />,
           //   content: (
           //     <LobbyPlayerTabPanelComponent 
@@ -166,7 +184,22 @@ export const HostedP2pLobbyComponent = ({
           //   )
           // },
           {
-            title: "P2P Connection",
+            title: "Player Lobby",
+            icon: <Groups />,
+            content: (
+              <LobbyPlayerStateComponent
+                playerProfiles={playerProfiles}
+                lobbyState={lobbyState}
+                currentPlayerProfile={hostPlayerProfile}
+                lobbyOptions={lobbyOptions}
+                onSelectGameChoice={onSelectGameChoice}
+                onTakeSeat={onTakeSeat}
+                onLeaveSeat={onLeaveSeat}
+              />
+            )
+          },
+          {
+            title: "P2P",
             icon: <Wifi />,
             content: (
               <P2pConnectionComponent

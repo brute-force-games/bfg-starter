@@ -120,18 +120,18 @@ export const updateHostedLobby = (
     if (!existingLobby) {
       return false;
     }
-    
+
     const updatedLobby = {
       ...existingLobby,
       ...updates,
     };
     
-    // Validate the updated data
-    const validationResult = LobbySchema.safeParse(updatedLobby);
-    if (!validationResult.success) {
-      console.error('Error validating updated lobby data:', validationResult.error);
-      return false;
-    }
+    // Ignore validation for now until Tinybase can handle more complex objects
+    // const validationResult = LobbySchema.safeParse(updatedLobby);
+    // if (!validationResult.success) {
+    //   console.error('Error validating updated lobby data:', validationResult.error);
+    //   return false;
+    // }
     
     hostedLobbiesStore.setRow(TB_HOSTED_LOBBIES_TABLE_KEY, lobbyId, updatedLobby);
     return true;

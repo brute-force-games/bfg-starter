@@ -7,12 +7,20 @@ import { HostP2pLobbyDetails } from "~/models/p2p-details";
 interface IPlayerP2pLobbyData {
   lobbyDetails: HostP2pLobbyDetails | null
   connectionStatus: string
-  peerProfiles: Record<string, PublicPlayerProfile>
+  peerProfiles: Map<string, PublicPlayerProfile>
 }
 
 
 export const usePlayerP2pLobby = (lobbyId: GameLobbyId, playerProfile: PublicPlayerProfile): IPlayerP2pLobbyData => {
 
-  const lobby = useP2pLobby(lobbyId, playerProfile)
-  return lobby;
+  const lobby = useP2pLobby(lobbyId, playerProfile);
+  const { lobbyDetails, connectionStatus, peerProfiles } = lobby;
+  
+  const retVal: IPlayerP2pLobbyData = {
+    lobbyDetails,
+    connectionStatus,
+    peerProfiles,
+  };
+  
+  return retVal;
 }

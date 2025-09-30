@@ -28,7 +28,6 @@ export const useP2pLobby = (lobbyId: GameLobbyId, myPlayerProfile: PublicPlayerP
   const room = joinRoom(TrysteroConfig, lobbyId);
 
   const [lobbyDetails, setLobbyDetails] = useState<HostP2pLobbyDetails | null>(null)
-  // const [connectionStatus, setConnectionStatus] = useState<string>('Connectied to 0 peers')
   const [peerProfiles, setPeerProfiles] = useState<Map<string, PublicPlayerProfile>>(new Map())
 
   const [_, getPublicHostData] = room.makeAction<HostP2pLobbyDetails>(P2P_LOBBY_DETAILS_ACTION_KEY);
@@ -40,14 +39,12 @@ export const useP2pLobby = (lobbyId: GameLobbyId, myPlayerProfile: PublicPlayerP
 
   room.onPeerJoin(peer => {
     console.log('Peer joined:', peer)
-    // setConnectionStatus(`Connected to ${peerProfiles.size + 1} peers`);
     sendPlayerProfile(myPlayerProfile, peer);
     setPeerProfiles(prev => new Map(prev).set(peer, myPlayerProfile))
   })
 
   room.onPeerLeave(peer => {
     console.log('Peer left:', peer)
-    // setConnectionStatus(`Connected to ${peerProfiles.size - 1} peers`)
     setPeerProfiles(prev => {
       const updated = new Map(prev)
       updated.delete(peer)
