@@ -5,7 +5,7 @@ import { FlipACoinGameActionSchema, FlipACoinGameStateSchema, FlipACoinGameState
 import { GameTable, GameTableSeat } from "../../models/game-table/game-table";
 import { FlipACoinGameDefinition, GameDefinition, TicTacToeGameDefinition } from "../enums/game-shelf";
 import { BfgGameSpecificGameStateTypedJson } from "../core/branded-values/bfg-game-state-typed-json";
-import { BfgGameSpecificTableAction, DbGameTableAction } from "../../models/game-table/game-table-action";
+import { BfgGameSpecificTableAction } from "../../models/game-table/game-table-action";
 import { GameTableActionResult } from "../../models/game-table/table-phase";
 
 
@@ -59,9 +59,9 @@ export type BfgGameEngineProcessor<
   ) => React.ReactNode | undefined,
   
   // // narrowGameActionsToValidGameActions: (gameActions: DbGameTableAction[]) => GA[];
-  narrowGameActionsToValidGameActions: (
-    gameActions: DbGameTableAction[]
-  ) => BfgGameSpecificTableAction<GA>[];
+  // narrowGameActionsToValidGameActions: (
+  //   gameActions: DbGameTableAction[]
+  // ) => BfgGameSpecificTableAction<GA>[];
 
   createGameHistoryComponent?: (
     playerSeat: GameTableSeat,

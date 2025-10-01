@@ -4,7 +4,6 @@ import { BfgGameSpecificGameStateTypedJson, createBfgGameTypedJsonMetadata } fro
 import { GameTable, GameTableSeat } from "../../models/game-table/game-table";
 import { GameTableActionResult } from "../../models/game-table/table-phase";
 import { AbfgSupportedGameTitle } from "./supported-games";
-import { DbGameTableAction } from "../../models/game-table/game-table-action";
 import { BfgGameSpecificTableAction } from "../../models/game-table/game-table-action";
 import { BfgGameEngineProcessor } from "./bfg-game-engines";
 
@@ -87,27 +86,27 @@ export const createBfgGameEngineProcessor = <
   }
 
 
-  const narrowGameActionsToValidGameActions = (gameActions: DbGameTableAction[]): BfgGameSpecificTableAction<GA>[] => {
+  // const narrowGameActionsToValidGameActions = (gameActions: DbGameTableAction[]): BfgGameSpecificTableAction<GA>[] => {
 
-    const retVal: BfgGameSpecificTableAction<GA>[] = [];
+  //   const retVal: BfgGameSpecificTableAction<GA>[] = [];
 
-    for (const gameAction of gameActions) {
+  //   for (const gameAction of gameActions) {
 
-      const gameSpecificActionJson = JSON.parse(gameAction.actionJson);
-      const parsedGameSpecificAction = gameActionSchema.parse(gameSpecificActionJson);
+  //     const gameSpecificActionJson = JSON.parse(gameAction.actionJson);
+  //     const parsedGameSpecificAction = gameActionSchema.parse(gameSpecificActionJson);
 
-      const bfgAction: BfgGameSpecificTableAction<GA> = {
-        gameTableActionId: gameAction.id,
-        source: gameAction.source,
-        actionType: gameAction.actionType,
-        gameSpecificAction: parsedGameSpecificAction,
-      };
+  //     const bfgAction: BfgGameSpecificTableAction<GA> = {
+  //       gameTableActionId: gameAction.id,
+  //       source: gameAction.source,
+  //       actionType: gameAction.actionType,
+  //       gameSpecificAction: parsedGameSpecificAction,
+  //     };
 
-      retVal.push(bfgAction);
-    }
+  //     retVal.push(bfgAction);
+  //   }
 
-    return retVal;
-  }
+  //   return retVal;
+  // }
 
 
   const processor: BfgGameEngineProcessor<z.infer<GS>, z.infer<GA>> = {
@@ -131,7 +130,7 @@ export const createBfgGameEngineProcessor = <
       return gameActionSchema.parse(json) as GA;
     },
 
-    narrowGameActionsToValidGameActions,
+    // narrowGameActionsToValidGameActions,
 
     gameStateBrandedJsonString: gameStateBrandedJsonString.getBrandedSchema(),
     gameStateJsonSchema: gameStateSchema,
