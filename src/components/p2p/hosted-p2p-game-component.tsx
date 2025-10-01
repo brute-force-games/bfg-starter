@@ -35,7 +35,7 @@ export const HostedP2pGameComponent = ({ gameTableId }: HostedP2pGameComponentPr
   const gameActions = useGameActions(gameTableId);
 
   const hostedP2pGame = useHostedP2pGame(hostedGame, hostPlayerProfile);
-  const { peerProfiles, playerProfiles, room, getPlayerMove, sendGameTableData, sendGameActionsData } = hostedP2pGame;
+  const { peerProfiles, playerProfiles, room, getPlayerMove, sendGameTableData, sendGameActionsData, connectionEvents, refreshConnection } = hostedP2pGame;
 
   if (!hostPlayerProfile) {
     return (
@@ -79,8 +79,12 @@ export const HostedP2pGameComponent = ({ gameTableId }: HostedP2pGameComponentPr
         ...hostedGame,
       }
 
+      console.log('🎮 Host sending game data:', gameData)
+      console.log('🎮 Host sending game actions:', gameActions)
       sendGameTableData(gameData);
       sendGameActionsData(gameActions);
+    } else {
+      console.log('🎮 Host cannot send game data - missing:', { hostedGame: !!hostedGame, gameActions: !!gameActions })
     }
   }, [hostedGame, gameActions, sendGameTableData, sendGameActionsData])
 
@@ -175,8 +179,11 @@ export const HostedP2pGameComponent = ({ gameTableId }: HostedP2pGameComponentPr
             content: (
               <P2pConnectionComponent
                 connectionStatus={hostedP2pGame.connectionStatus}
+                connectionEvents={connectionEvents}
                 peerProfiles={hostedP2pGame.peerProfiles}
                 playerProfiles={hostedP2pGame.playerProfiles}
+                onResendLobbyData={doSendGameData}
+                onRefreshConnection={refreshConnection}
               />
             )
           },

@@ -47,8 +47,8 @@ export const HostedP2pLobbyComponent = ({
   const [isLobbyOptionsDialogOpen, setIsLobbyOptionsDialogOpen] = useState(false);
   
   const hostedP2pLobby = useHostedP2pLobby(lobbyId, hostPlayerProfile);
-  const { p2pLobby, connectionStatus, peerProfiles, sendLobbyData } = hostedP2pLobby;
-  const { room, getPlayerMove, playerProfiles, sendPlayerMove } = p2pLobby;
+  const { p2pLobby, connectionStatus, connectionEvents, peerProfiles, sendLobbyData, refreshConnection } = hostedP2pLobby;
+  const { room, getPlayerMove, playerProfiles } = p2pLobby;
 
   const doSendLobbyData = useCallback(() => {
     if (lobbyState) {
@@ -204,9 +204,11 @@ export const HostedP2pLobbyComponent = ({
             content: (
               <P2pConnectionComponent
                 connectionStatus={connectionStatus}
+                connectionEvents={connectionEvents}
                 peerProfiles={peerProfiles}
                 playerProfiles={playerProfiles}
                 onResendLobbyData={doSendLobbyData}
+                onRefreshConnection={refreshConnection}
               />
             )
           }

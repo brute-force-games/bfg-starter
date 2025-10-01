@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { joinRoom, Room } from "trystero";
 import { P2P_GAME_PLAYER_PROFILE_DATA_ACTION_KEY, P2P_GAME_PLAYER_MOVE_DATA_ACTION_KEY, P2P_GAME_TABLE_ACTION_KEY, P2P_GAME_ACTIONS_ACTION_KEY } from "~/components/p2p/constants";
 import { GameTable } from "~/models/game-table/game-table";
@@ -8,11 +8,16 @@ import { TrysteroConfig } from "~/p2p/trystero-config";
 import { AbfgSupportedGameTitle } from "~/types/bfg-game-engines/supported-games";
 import { GameTableId, PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids"
 import { BfgGameSpecificGameStateTypedJson } from "~/types/core/branded-values/bfg-game-state-typed-json";
+import { ConnectionEvent } from "./use-p2p-lobby";
+
+// Re-export for convenience
+export type { ConnectionEvent };
 
 
 export interface IP2pGame {
   room: Room
   connectionStatus: string
+  connectionEvents: ConnectionEvent[]
 
   peerProfiles: Map<string, PublicPlayerProfile>
   playerProfiles: Map<PlayerProfileId, PublicPlayerProfile>
@@ -22,17 +27,31 @@ export interface IP2pGame {
 
   sendPlayerMove: (move: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>) => void
   getPlayerMove: (callback: (move: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>, peer: string) => void) => void
+  
+  refreshConnection: () => void
 }
 
 
 export const useP2pGame = (gameTableId: GameTableId, myPlayerProfile: PublicPlayerProfile | null): IP2pGame => {
   
+  // Create room - gets recreated on every render
   const room = joinRoom(TrysteroConfig, gameTableId);
 
   const [gameTable, setGameTable] = useState<GameTable | null>(null)
   const [gameActions, setGameActions] = useState<DbGameTableAction[]>([])
-  const [connectionStatus, setConnectionStatus] = useState<string>('Connecting...')
   const [peerProfiles, setPeerProfiles] = useState<Map<string, PublicPlayerProfile>>(new Map())
+  const [connectionEvents, setConnectionEvents] = useState<ConnectionEvent[]>([]);
+
+  const addConnectionEvent = (type: ConnectionEvent['type'], message: string, peerCount: number) => {
+    const event: ConnectionEvent = {
+      type,
+      timestamp: new Date(),
+      peerCount,
+      message
+    };
+    console.log(`📡 [${event.timestamp.toLocaleTimeString()}] ${event.message}`);
+    setConnectionEvents(prev => [...prev, event]);
+  };
 
   const [, getPublicGameTableData] = room.makeAction<GameTable>(P2P_GAME_TABLE_ACTION_KEY);
   const [, getPublicGameActionsData] = room.makeAction<DbGameTableAction[]>(P2P_GAME_ACTIONS_ACTION_KEY);
@@ -43,28 +62,50 @@ export const useP2pGame = (gameTableId: GameTableId, myPlayerProfile: PublicPlay
     throw new Error('My player profile is required');
   }
 
+  const connectionStatus = `Connected to ${peerProfiles.size} peers`;
+
+  // Initialize connection event on mount
+  useEffect(() => {
+    addConnectionEvent('initialized', 'P2P game connection initialized', 0);
+  }, []);
+
+  // // Cleanup on unmount
+  // useEffect(() => {
+  //   return () => {
+  //     console.log('🔌 Cleaning up P2P game connection');
+  //     room.leave();
+  //   };
+  // }, []); // No dependencies - cleanup only on unmount
+
   room.onPeerJoin(peer => {
     console.log('Peer joined:', peer)
-    setConnectionStatus(`Connected to ${peerProfiles.size + 1} peers`);
     sendPlayerProfile(myPlayerProfile, peer);
-    setPeerProfiles(prev => new Map(prev).set(peer, myPlayerProfile))
+    setPeerProfiles(prev => {
+      const updated = new Map(prev).set(peer, myPlayerProfile);
+      const newCount = updated.size;
+      addConnectionEvent('peer-joined', `Peer joined (total: ${newCount})`, newCount);
+      return updated;
+    });
   })
 
   room.onPeerLeave(peer => {
     console.log('Peer left:', peer)
-    setConnectionStatus(`Connected to ${peerProfiles.size - 1} peers`)
     setPeerProfiles(prev => {
       const updated = new Map(prev)
       updated.delete(peer)
-      return updated
+      const newCount = updated.size;
+      addConnectionEvent('peer-left', `Peer left (total: ${newCount})`, newCount);
+      return updated;
     })
   })
 
-  getPublicGameTableData((publicGameTableData: GameTable, _peer: string) => {
+  getPublicGameTableData((publicGameTableData: GameTable, peer: string) => {
+    console.log('🎮 Received game table data from peer:', peer, publicGameTableData)
     setGameTable(publicGameTableData)
   })
 
-  getPublicGameActionsData((publicGameActionsData: DbGameTableAction[], _peer: string) => {
+  getPublicGameActionsData((publicGameActionsData: DbGameTableAction[], peer: string) => {
+    console.log('🎮 Received game actions data from peer:', peer, publicGameActionsData)
     setGameActions(publicGameActionsData)
   })
 
@@ -76,15 +117,25 @@ export const useP2pGame = (gameTableId: GameTableId, myPlayerProfile: PublicPlay
     Array.from(peerProfiles.values()).map(profile => [profile.id, profile])
   );
 
+  const refreshConnection = () => {
+    addConnectionEvent('auto-refresh', 'Connection refreshed manually', peerProfiles.size);
+    setPeerProfiles(new Map());
+    setGameTable(null);
+    setGameActions([]);
+    // Room will be recreated on next render automatically
+  };
+
   
   return {
     room,
     gameTable,
     gameActions,
     connectionStatus: connectionStatus,
+    connectionEvents,
     peerProfiles,
     playerProfiles,
     sendPlayerMove,
     getPlayerMove,
+    refreshConnection,
   }
 }

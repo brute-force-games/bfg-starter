@@ -116,8 +116,10 @@ export const PlayerP2pLobbyComponent = ({
             content: (
               <P2pConnectionComponent
                 connectionStatus={lobby.connectionStatus}
+                connectionEvents={lobby.connectionEvents}
                 peerProfiles={lobby.peerProfiles}
                 playerProfiles={lobby.playerProfiles}
+                onRefreshConnection={lobby.refreshConnection}
               />
             )
           }

@@ -1,6 +1,6 @@
 import { PrivatePlayerProfile } from "~/models/private-player-profile";
 import { GameTableId, PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids";
-import { useP2pGame } from "./use-p2p-game";
+import { useP2pGame, ConnectionEvent } from "./use-p2p-game";
 import { BfgGameSpecificGameStateTypedJson } from "~/types/core/branded-values/bfg-game-state-typed-json";
 import { AbfgSupportedGameTitle } from "~/types/bfg-game-engines/supported-games";
 import { DbGameTableAction } from "~/models/game-table/game-table-action";
@@ -11,6 +11,7 @@ import { PublicPlayerProfile } from "~/models/public-player-profile";
 
 interface IPlayerP2pGame {
   connectionStatus: string;
+  connectionEvents: ConnectionEvent[];
   
   gameTable: GameTable | null;
   gameActions: DbGameTableAction[];
@@ -22,6 +23,8 @@ interface IPlayerP2pGame {
 
   sendPlayerMove: (move: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>) => void
   getPlayerMove: (callback: (move: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>, peer: string) => void) => void
+  
+  refreshConnection: () => void
 }
 
 

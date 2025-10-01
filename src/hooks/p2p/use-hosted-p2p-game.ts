@@ -1,6 +1,6 @@
 import { PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids";
 import { PublicPlayerProfile } from "~/models/public-player-profile";
-import { useP2pGame } from "./use-p2p-game";
+import { useP2pGame, ConnectionEvent } from "./use-p2p-game";
 import { GameTable } from "~/models/game-table/game-table";
 import { BfgGameSpecificGameStateTypedJson } from "~/types/core/branded-values/bfg-game-state-typed-json";
 import { AbfgSupportedGameTitle } from "~/types/bfg-game-engines/supported-games";
@@ -12,6 +12,7 @@ import { DbGameTableAction } from "~/models/game-table/game-table-action";
 interface IHostedP2pGameData {
   room: Room
   connectionStatus: string
+  connectionEvents: ConnectionEvent[]
   peerProfiles: Map<string, PublicPlayerProfile>
   playerProfiles: Map<PlayerProfileId, PublicPlayerProfile>
 
@@ -19,6 +20,8 @@ interface IHostedP2pGameData {
   sendGameActionsData: (gameActions: DbGameTableAction[]) => void
 
   getPlayerMove: (callback: (move: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>, peer: string) => void) => void
+  
+  refreshConnection: () => void
 }
 
 export const useHostedP2pGame = (

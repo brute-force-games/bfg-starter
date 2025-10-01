@@ -1,3 +1,18 @@
+import { useState } from "react";
+import { 
+  Typography, 
+  Box, 
+  Collapse, 
+  IconButton, 
+  Chip,
+  Stack,
+  Avatar
+} from "@mui/material";
+import { 
+  ExpandMore, 
+  ExpandLess,
+  People
+} from "@mui/icons-material";
 import { PublicPlayerProfile } from "~/models/public-player-profile"
 import { PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids";
 
@@ -9,6 +24,8 @@ interface IPeerProfilesComponentProps {
 
 
 const PeerProfileCard = ({ peerProfile }: { peerProfile: PublicPlayerProfile }) => {
+  const [expanded, setExpanded] = useState(false);
+  
   const formatDate = (timestamp: number) => {
     return new Date(timestamp).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -24,212 +41,167 @@ const PeerProfileCard = ({ peerProfile }: { peerProfile: PublicPlayerProfile }) 
   };
 
   return (
-    <div style={{
-      border: '1px solid #e0e0e0',
-      borderRadius: '12px',
-      padding: '20px',
-      backgroundColor: '#fff',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-      minWidth: '280px',
-      maxWidth: '320px',
-      transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-      cursor: 'default'
-    }}
-    onMouseEnter={(e) => {
-      e.currentTarget.style.transform = 'translateY(-2px)';
-      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-    }}
-    onMouseLeave={(e) => {
-      e.currentTarget.style.transform = 'translateY(0)';
-      e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+    <Box sx={{
+      border: '1px solid',
+      borderColor: 'divider',
+      borderRadius: 2,
+      backgroundColor: 'background.paper',
+      transition: 'all 0.2s ease',
+      '&:hover': {
+        boxShadow: 2,
+        transform: 'translateY(-1px)'
+      }
     }}>
-      {/* Header with avatar and handle */}
-      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '16px' }}>
-        <div style={{
-          width: '48px',
-          height: '48px',
-          borderRadius: '50%',
-          backgroundColor: '#007bff',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          color: 'white',
-          marginRight: '16px',
-          fontSize: '18px',
-          fontWeight: 'bold',
-          flexShrink: 0
-        }}>
-          {peerProfile.avatarImageUrl ? (
-            <img 
-              src={peerProfile.avatarImageUrl} 
-              alt={`${peerProfile.handle} avatar`}
-              style={{ 
-                width: '100%', 
-                height: '100%', 
-                borderRadius: '50%', 
-                objectFit: 'cover' 
+      {/* Compact header - always visible */}
+      <Stack 
+        direction="row" 
+        alignItems="center" 
+        justifyContent="space-between"
+        sx={{ p: 2 }}
+      >
+        <Stack direction="row" alignItems="center" spacing={1}>
+          <Avatar 
+            src={peerProfile.avatarImageUrl}
+            sx={{ width: 32, height: 32, fontSize: '0.875rem' }}
+          >
+            {!peerProfile.avatarImageUrl && getInitials(peerProfile.handle)}
+          </Avatar>
+          <Box>
+            <Typography variant="subtitle2" sx={{ fontWeight: 'bold', lineHeight: 1.2 }}>
+              {peerProfile.handle}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              Peer Profile
+            </Typography>
+          </Box>
+        </Stack>
+        <Stack direction="row" alignItems="center" spacing={1}>
+          <Chip 
+            label="Connected" 
+            size="small" 
+            color="success" 
+            variant="outlined"
+            sx={{ height: 20, fontSize: '0.75rem' }}
+          />
+          <IconButton
+            onClick={() => setExpanded(!expanded)}
+            size="small"
+            sx={{ 
+              transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+              transition: 'transform 0.2s ease'
+            }}
+          >
+            <ExpandMore />
+          </IconButton>
+        </Stack>
+      </Stack>
+
+      {/* Expandable details */}
+      <Collapse in={expanded}>
+        <Box sx={{ px: 2, pb: 2 }}>
+          <Stack spacing={1} sx={{ mb: 2 }}>
+            <Box>
+              <Typography variant="caption" color="text.secondary">
+                Created
+              </Typography>
+              <Typography variant="body2">
+                {formatDate(peerProfile.createdAt)}
+              </Typography>
+            </Box>
+            <Box>
+              <Typography variant="caption" color="text.secondary">
+                Updated
+              </Typography>
+              <Typography variant="body2">
+                {formatDate(peerProfile.updatedAt)}
+              </Typography>
+            </Box>
+          </Stack>
+          
+          <Box sx={{
+            backgroundColor: 'grey.50',
+            border: '1px solid',
+            borderColor: 'grey.200',
+            borderRadius: 1,
+            p: 1
+          }}>
+            <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 0.5 }}>
+              Profile ID
+            </Typography>
+            <Typography 
+              variant="caption" 
+              sx={{ 
+                fontFamily: 'monospace',
+                wordBreak: 'break-all',
+                fontSize: '0.75rem'
               }}
-            />
-          ) : (
-            getInitials(peerProfile.handle)
-          )}
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <h3 style={{ 
-            margin: 0, 
-            fontSize: '18px', 
-            fontWeight: '600',
-            color: '#333',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap'
-          }}>
-            {peerProfile.handle}
-          </h3>
-          <div style={{
-            fontSize: '12px',
-            color: '#666',
-            marginTop: '2px'
-          }}>
-            Peer Profile
-          </div>
-        </div>
-      </div>
-      
-      {/* Profile details */}
-      <div style={{ 
-        fontSize: '14px', 
-        color: '#666', 
-        marginBottom: '16px',
-        lineHeight: '1.4'
-      }}>
-        <div style={{ marginBottom: '8px' }}>
-          <strong style={{ color: '#333' }}>Created:</strong> {formatDate(peerProfile.createdAt)}
-        </div>
-        <div style={{ marginBottom: '8px' }}>
-          <strong style={{ color: '#333' }}>Updated:</strong> {formatDate(peerProfile.updatedAt)}
-        </div>
-        <div style={{ 
-          fontSize: '12px',
-          color: '#888',
-          wordBreak: 'break-all',
-          fontFamily: 'monospace',
-          backgroundColor: '#f8f9fa',
-          padding: '8px',
-          borderRadius: '4px',
-          marginTop: '8px'
-        }}>
-          <strong>ID:</strong> {peerProfile.id}
-        </div>
-      </div>
-      
-      {/* Status indicator */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '8px 12px',
-        backgroundColor: '#e8f5e8',
-        borderRadius: '6px',
-        border: '1px solid #c3e6cb'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div style={{
-            width: '8px',
-            height: '8px',
-            borderRadius: '50%',
-            backgroundColor: '#28a745',
-            marginRight: '8px'
-          }}></div>
-          <span style={{ fontSize: '12px', color: '#155724', fontWeight: '500' }}>
-            Connected
-          </span>
-        </div>
-        <div style={{ fontSize: '12px', color: '#155724' }}>
-          🔐 Verified
-        </div>
-      </div>
-    </div>
+            >
+              {peerProfile.id}
+            </Typography>
+          </Box>
+        </Box>
+      </Collapse>
+    </Box>
   );
 };
 
 export const PeerProfilesComponent = ({ peerProfiles }: IPeerProfilesComponentProps) => {
+  const [expanded, setExpanded] = useState(false);
   const peerProfileEntries = Array.from(peerProfiles.entries());
   const hasPeers = peerProfileEntries.length > 0;
 
+  const getInitials = (handle: string) => {
+    return handle.substring(0, 2).toUpperCase();
+  };
+
   if (!hasPeers) {
     return (
-      <div style={{ 
-        padding: '40px 20px',
+      <Box sx={{ 
+        padding: 3,
         textAlign: 'center',
-        color: '#666'
+        color: 'text.secondary'
       }}>
-        <div style={{
-          fontSize: '48px',
-          marginBottom: '16px',
-          opacity: 0.5
-        }}>
-          👥
-        </div>
-        <h3 style={{ 
-          margin: '0 0 8px 0', 
-          fontSize: '18px',
-          color: '#333'
-        }}>
+        <People sx={{ fontSize: 48, mb: 2, opacity: 0.5 }} />
+        <Typography variant="h6" sx={{ mb: 1, color: 'text.primary' }}>
           No peers connected
-        </h3>
-        <p style={{ 
-          margin: 0, 
-          fontSize: '14px',
-          color: '#666'
-        }}>
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
           Waiting for other players to join...
-        </p>
-      </div>
+        </Typography>
+      </Box>
     );
   }
 
   return (
-    <div style={{ padding: '20px' }}>
-      <div style={{ 
-        marginBottom: '20px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between'
-      }}>
-        <h2 style={{ 
-          margin: 0, 
-          fontSize: '24px', 
-          fontWeight: '600',
-          color: '#333'
-        }}>
-          Connected Peers ({peerProfileEntries.length})
-        </h2>
-        <div style={{
-          fontSize: '14px',
-          color: '#666',
-          backgroundColor: '#f8f9fa',
-          padding: '6px 12px',
-          borderRadius: '16px',
-          border: '1px solid #e9ecef'
-        }}>
-          P2P Network
-        </div>
-      </div>
-      
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-        gap: '20px',
-        alignItems: 'start'
-      }}>
+    <Box>
+      {/* Header */}
+      <Stack 
+        direction="row" 
+        alignItems="center" 
+        spacing={1}
+        sx={{ mb: 2 }}
+      >
+        <People sx={{ fontSize: 20, color: 'primary.main' }} />
+        <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+          Connected Peers
+        </Typography>
+        <Chip 
+          label={peerProfileEntries.length} 
+          size="small" 
+          color="primary" 
+          variant="outlined"
+        />
+      </Stack>
+
+      {/* Peer cards - each with its own expand/collapse */}
+      <Stack spacing={1}>
         {peerProfileEntries.map(([peerId, peerProfile]) => (
           <PeerProfileCard 
             key={peerId} 
             peerProfile={peerProfile} 
           />
         ))}
-      </div>
-    </div>
+      </Stack>
+    </Box>
   );
 };

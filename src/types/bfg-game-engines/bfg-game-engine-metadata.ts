@@ -120,7 +120,7 @@ export const createBfgGameEngineProcessor = <
     createGameSpecificGameStateJson: (obj: TGameStateInferred) => createBrandedGameStateJsonValue(obj),
     parseGameSpecificGameStateJson: (jsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>) => {
 
-      console.log("parseGameSpecificGameStateJson", jsonString);
+      // console.log("parseGameSpecificGameStateJson", jsonString);
       const json = JSON.parse(jsonString);
       return gameStateSchema.parse(json) as GS;
     },
