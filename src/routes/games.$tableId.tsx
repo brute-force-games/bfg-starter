@@ -25,12 +25,9 @@ function PlayerGamePage() {
   
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">Player Game</h1>
-      <PlayerP2pGameComponent
-        gameTableId={gameTableId}
-        playerProfile={myPlayerProfile}
-      />
-    </div>
+    <PlayerP2pGameComponent
+      gameTableId={gameTableId}
+      playerProfile={myPlayerProfile}
+    />
   )
 }

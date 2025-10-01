@@ -7,7 +7,7 @@ import {
 import { 
   Groups,
   Wifi} from "@mui/icons-material"
-import { TabsContainerPanel } from "../lobby/tabs-container-panel"
+import { TabsContainerPanel } from "../tabs-container-panel"
 import { GameLobbyId } from "~/types/core/branded-values/bfg-branded-ids"
 import { useP2pLobby } from "~/hooks/p2p/use-p2p-lobby"
 import { PrivatePlayerProfile } from "~/models/private-player-profile"
@@ -20,7 +20,6 @@ import { LobbyPlayerStateComponent } from "../lobby/lobby-player-state-component
 interface IPlayerP2pLobbyComponentProps {
   lobbyId: GameLobbyId
   playerProfile: PrivatePlayerProfile
-  // p2pPlayerLobbyData: IPlayerP2pLobbyData
 }
 
 export const PlayerP2pLobbyComponent = ({
@@ -85,38 +84,15 @@ export const PlayerP2pLobbyComponent = ({
   if (gameLink) {
     return (
       <LobbyPlayerJoinGameComponent
-        // lobbyOptions={lobbyOptions}
         lobbyState={lobbyState}
         currentPlayerProfile={playerProfile}
-        // onSelectGameChoice={onSelectGameChoice}
-        // onTakeSeat={onTakeSeat}
-        // onLeaveSeat={onLeaveSeat}
       />
     )
   }
 
-  // const playerRangeLabel = lobbyState.minNumPlayers === lobbyState.maxNumPlayers ? 
-  //   `${lobbyState.minNumPlayers} players` :
-  //   `${lobbyState.minNumPlayers} - ${lobbyState.maxNumPlayers} players`;
-
-
 
   return (
     <Container maxWidth="lg" sx={{ py: 3 }}>
-      {/* Header Section */}
-      {/* <Paper elevation={2} sx={{ p: 3, mb: 3, background: 'linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)', color: 'white' }}>
-        <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 2 }}>
-          <Person sx={{ fontSize: 32 }} />
-          <Box>
-            <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', mb: 0.5 }}>
-              Joined Lobby
-            </Typography>
-          </Box>
-        </Stack>
-
-      </Paper> */}
-
-      {/* Tabbed Content */}
       <TabsContainerPanel
         tabs={[
           {

@@ -10,6 +10,8 @@ import { PublicPlayerProfile } from "~/models/public-player-profile";
 
 
 interface IPlayerP2pGame {
+  connectionStatus: string;
+  
   gameTable: GameTable | null;
   gameActions: DbGameTableAction[];
 

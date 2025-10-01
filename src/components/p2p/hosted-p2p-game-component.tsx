@@ -1,3 +1,5 @@
+import { Groups, Wifi } from "@mui/icons-material"
+import { Container } from "@mui/material"
 import { useCallback, useEffect } from "react"
 import { z } from "zod"
 import { HostedGameView } from "~/components/game-view/hosted-game-view"
@@ -14,6 +16,10 @@ import { AllBfgGameMetadata, BfgGameEngineProcessor } from "~/types/bfg-game-eng
 import { AbfgSupportedGameTitle } from "~/types/bfg-game-engines/supported-games"
 import { GameTableId } from "~/types/core/branded-values/bfg-branded-ids"
 import { BfgGameSpecificGameStateTypedJson } from "~/types/core/branded-values/bfg-game-state-typed-json"
+import { PlayerGameView } from "../game-view/player-game-view"
+import { TabsContainerPanel } from "../tabs-container-panel"
+import { P2pConnectionComponent } from "./p2p-connection-component"
+import { HostedGameDetailsComponent } from "../p2p-game/host-game-details-component"
 
 
 interface HostedP2pGameComponentProps {
@@ -108,15 +114,76 @@ export const HostedP2pGameComponent = ({ gameTableId }: HostedP2pGameComponentPr
   })
 
 
+  // return (
+  //   <HostedGameView
+  //     myPlayerProfile={hostPlayerProfile}
+  //     onPlayerGameAction={handlePlayerMove}
+  //     myPlayerSeat={myPlayerSeat}
+  //     hostedGame={hostedGame}
+  //     gameActions={gameActions}
+  //     peerProfiles={peerProfiles}
+  //     playerProfiles={playerProfiles}
+  //   />
+  // )
+
   return (
-    <HostedGameView
-      myPlayerProfile={hostPlayerProfile}
-      onPlayerGameAction={handlePlayerMove}
-      myPlayerSeat={myPlayerSeat}
-      hostedGame={hostedGame}
-      gameActions={gameActions}
-      peerProfiles={peerProfiles}
-      playerProfiles={playerProfiles}
-    />
+    <Container maxWidth="lg" sx={{ py: 3 }}>
+      <TabsContainerPanel
+        tabs={[
+          {
+            title: "Hosted Game",
+            icon: <Groups />,
+            content: (
+              <HostedGameView
+                myPlayerProfile={hostPlayerProfile}
+                onPlayerGameAction={handlePlayerMove}
+                myPlayerSeat={myPlayerSeat}
+                hostedGame={hostedGame}
+                gameActions={gameActions}
+                peerProfiles={peerProfiles}
+                playerProfiles={playerProfiles}
+              />
+            )
+          },
+          {
+            title: "Player Game",
+            icon: <Groups />,
+            content: (
+              <PlayerGameView
+                myPlayerProfile={hostPlayerProfile}
+                myPlayerSeat={myPlayerSeat}
+                gameTable={hostedGame}
+                gameActions={gameActions}
+                onPlayerGameAction={handlePlayerMove}
+              />
+
+            )
+          },
+          {
+            title: "Host Details",
+            icon: <Groups />,
+            content: (
+              <HostedGameDetailsComponent
+                hostedGame={hostedGame}
+                gameActions={gameActions}
+              />
+            )
+          },
+          {
+            title: "P2P",
+            icon: <Wifi />,
+            content: (
+              <P2pConnectionComponent
+                connectionStatus={hostedP2pGame.connectionStatus}
+                peerProfiles={hostedP2pGame.peerProfiles}
+                playerProfiles={hostedP2pGame.playerProfiles}
+              />
+            )
+          },
+        ]}
+        tabColor="linear-gradient(135deg, #74b9ff 0%, #0984e3 100%)"
+        ariaLabel="player lobby tabs"
+      />
+    </Container>
   )
 }

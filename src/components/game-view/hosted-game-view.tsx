@@ -68,10 +68,10 @@ export const HostedGameView = (props: HostedGameViewProps) => {
       <div>BFG Table Phase: {hostedGame.tablePhase}</div>
       {gameRepresentation}
       
-      <PeerProfilesComponent
+      {/* <PeerProfilesComponent
         peerProfiles={peerProfiles}
         playerProfiles={playerProfiles}
-      />
+      /> */}
     </div>
   );
 }

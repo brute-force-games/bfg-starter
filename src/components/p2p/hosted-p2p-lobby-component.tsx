@@ -5,7 +5,7 @@ import {
   Groups,
   Wifi
 } from "@mui/icons-material"
-import { TabsContainerPanel } from "../lobby/tabs-container-panel"
+import { TabsContainerPanel } from "../tabs-container-panel"
 import { GameLobbyId, PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids"
 import { P2pConnectionComponent } from "./p2p-connection-component"
 import { HostP2pLobbyDetails, PlayerP2pLobbyMove } from "~/models/p2p-details"

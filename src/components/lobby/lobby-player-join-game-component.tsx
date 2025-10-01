@@ -3,22 +3,13 @@ import { PrivatePlayerProfile } from "~/models/private-player-profile"
 
 
 interface ILobbyPlayerJoinGameComponentProps {
-  // lobbyOptions: LobbyOptions
   lobbyState: GameLobby
   currentPlayerProfile?: PrivatePlayerProfile
-
-  // onSelectGameChoice: (gameChoice: BfgSupportedGameTitles) => void
-  // onTakeSeat: () => void
-  // onLeaveSeat: () => void
 }
 
 export const LobbyPlayerJoinGameComponent = ({ 
-  // lobbyOptions,
   lobbyState,
   currentPlayerProfile,
-  // onSelectGameChoice,
-  // onTakeSeat,
-  // onLeaveSeat,
 }: ILobbyPlayerJoinGameComponentProps) => {
 
   // const handleGameChoice = (gameChoice: BfgSupportedGameTitles) => {
