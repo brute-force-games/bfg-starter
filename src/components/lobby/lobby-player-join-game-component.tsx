@@ -1,5 +1,17 @@
 import { GameLobby } from "~/models/p2p-lobby"
 import { PrivatePlayerProfile } from "~/models/private-player-profile"
+import { 
+  Box, 
+  Typography, 
+  Button, 
+  Paper,
+  Avatar,
+  Link
+} from '@mui/material'
+import { 
+  CheckCircle as CheckCircleIcon,
+  OpenInNew as OpenInNewIcon
+} from '@mui/icons-material'
 
 
 interface ILobbyPlayerJoinGameComponentProps {
@@ -31,44 +43,86 @@ export const LobbyPlayerJoinGameComponent = ({
   //   : false;
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <div className="text-center">
+    <Paper 
+      elevation={3} 
+      sx={{ 
+        p: 3, 
+        borderRadius: 2,
+        textAlign: 'center'
+      }}
+    >
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         {/* Success Icon */}
-        <div className="mx-auto flex items-center justify-center h-10 w-10 rounded-full bg-green-100 mb-4">
-          <svg className="h-5 w-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
-        </div>
+        <Avatar 
+          sx={{ 
+            bgcolor: 'success.light', 
+            mb: 2,
+            width: 40,
+            height: 40
+          }}
+        >
+          <CheckCircleIcon sx={{ color: 'success.main', fontSize: 24 }} />
+        </Avatar>
         
         {/* Main Message */}
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">
-          🎮 Game Has Started!
-        </h2>
+        <Typography 
+          variant="h4" 
+          component="h2" 
+          sx={{ 
+            fontWeight: 'bold', 
+            color: 'text.primary',
+            mb: 1
+          }}
+        >
+          Game Has Started!
+        </Typography>
         
-        <p className="text-lg text-gray-600 mb-6">
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            color: 'text.secondary',
+            mb: 3
+          }}
+        >
           The game is now live and ready to play. Click the link below to join the action!
-        </p>
+        </Typography>
         
         {/* Game Link Button */}
-        <div className="space-y-4">
-          <a 
-            href={lobbyState.gameLink} 
-            target="_blank" 
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Button
+            component={Link}
+            href={lobbyState.gameLink}
+            target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+            variant="contained"
+            size="large"
+            startIcon={<OpenInNewIcon />}
+            sx={{
+              px: 4,
+              py: 1.5,
+              fontSize: '1.1rem',
+              fontWeight: 'medium',
+              textTransform: 'none',
+              boxShadow: 3,
+              '&:hover': {
+                boxShadow: 6,
+                transform: 'translateY(-2px)',
+              },
+              transition: 'all 0.2s ease-in-out'
+            }}
           >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-            </svg>
             Join Game Now
-          </a>
+          </Button>
           
           {/* Additional Info */}
-          <div className="text-sm text-gray-500">
+          <Typography 
+            variant="body2" 
+            sx={{ color: 'text.disabled' }}
+          >
             This link will open in a new tab
-          </div>
-        </div>
-      </div>
-    </div>
+          </Typography>
+        </Box>
+      </Box>
+    </Paper>
   )
 }

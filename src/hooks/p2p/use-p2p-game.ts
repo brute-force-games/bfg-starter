@@ -34,13 +34,22 @@ export interface IP2pGame {
 
 export const useP2pGame = (gameTableId: GameTableId, myPlayerProfile: PublicPlayerProfile | null): IP2pGame => {
   
-  // Create room - gets recreated on every render
-  const room = joinRoom(TrysteroConfig, gameTableId);
-
   const [gameTable, setGameTable] = useState<GameTable | null>(null)
   const [gameActions, setGameActions] = useState<DbGameTableAction[]>([])
   const [peerProfiles, setPeerProfiles] = useState<Map<string, PublicPlayerProfile>>(new Map())
   const [connectionEvents, setConnectionEvents] = useState<ConnectionEvent[]>([]);
+
+  // Create room - gets recreated on every render
+  const room = joinRoom(TrysteroConfig, gameTableId, (error: {
+    error: string;
+    appId: string;
+    roomId: string;
+    peerId: string;
+  }) => {
+    console.error('Join error:', error)
+    addConnectionEvent('join-error', `Join error: ${error.error}`, 0);
+  });
+  console.log('room', room)
 
   const addConnectionEvent = (type: ConnectionEvent['type'], message: string, peerCount: number) => {
     const event: ConnectionEvent = {
@@ -57,7 +66,6 @@ export const useP2pGame = (gameTableId: GameTableId, myPlayerProfile: PublicPlay
   const [, getPublicGameActionsData] = room.makeAction<DbGameTableAction[]>(P2P_GAME_ACTIONS_ACTION_KEY);
   const [sendPlayerProfile, getPlayerProfile] = room.makeAction<PublicPlayerProfile>(P2P_GAME_PLAYER_PROFILE_DATA_ACTION_KEY)
   const [sendPlayerMove, getPlayerMove] = room.makeAction<BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>>(P2P_GAME_PLAYER_MOVE_DATA_ACTION_KEY)
-  
 
   if (!myPlayerProfile) {
     throw new Error('My player profile is required');

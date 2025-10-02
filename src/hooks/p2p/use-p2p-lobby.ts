@@ -7,7 +7,7 @@ import { TrysteroConfig } from "~/p2p/trystero-config";
 import { GameLobbyId, PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids"
 
 export interface ConnectionEvent {
-  type: 'initialized' | 'peer-joined' | 'peer-left' | 'auto-refresh'
+  type: 'initialized' | 'peer-joined' | 'peer-left' | 'auto-refresh' | 'join-error'
   timestamp: Date
   peerCount: number
   message: string
@@ -34,12 +34,21 @@ export interface IP2pLobby {
 
 export const useP2pLobby = (lobbyId: GameLobbyId, myPlayerProfile: PublicPlayerProfile): IP2pLobby => {
   
-  // Create room - gets recreated on every render
-  const room = joinRoom(TrysteroConfig, lobbyId);
-
   const [lobbyDetails, setLobbyDetails] = useState<HostP2pLobbyDetails | null>(null)
   const [peerProfiles, setPeerProfiles] = useState<Map<string, PublicPlayerProfile>>(new Map())
   const [connectionEvents, setConnectionEvents] = useState<ConnectionEvent[]>([]);
+
+  // Create room - gets recreated on every render
+  const room = joinRoom(TrysteroConfig, lobbyId, (error: {
+    error: string;
+    appId: string;
+    roomId: string;
+    peerId: string;
+  }) => {
+    console.error('Join error:', error)
+    addConnectionEvent('join-error', `Join error: ${error.error}`, 0);
+  });
+  console.log('room', room)
 
   const addConnectionEvent = (type: ConnectionEvent['type'], message: string, peerCount: number) => {
     const event: ConnectionEvent = {

@@ -1,0 +1,361 @@
+# HostaVibe Project Coding Standards
+
+## Project Overview
+This is a React Native/Expo TypeScript project using Clerk for authentication, Supabase for backend, and Expo Router for navigation. The project follows a component-based architecture with strict TypeScript typing.
+
+## File Organization & Structure
+
+<!-- ### Directory Structure
+- `app/` - Expo Router pages and navigation
+- `src/` - Main source code
+  - `components/` - Reusable React components
+  - `hooks/` - Custom React hooks
+  - `api/` - Backend integration and API calls
+  - `types/` - TypeScript type definitions
+  - `utils/` - Utility functions
+  - `zod-types/` - Zod schema definitions
+  - `meta-org/` - Post type metadata and organization
+  - `contexts/` - React context providers
+  - `constants/` - Application constants
+- `assets/` - Static assets (images, fonts, sounds)
+- `utils/` - App-specific utilities -->
+
+### File Naming Conventions
+- Use kebab-case for file names: `my-component.tsx`
+- Use PascalCase for component names: `MyComponent`
+- Use camelCase for utility files: `myUtility.ts`
+- Use UPPER_SNAKE_CASE for constants: `API_ENDPOINTS.ts`
+
+## TypeScript & Type Safety
+
+### Type Definitions
+- Always define interfaces for component props
+- Use branded types for IDs and special strings
+- Prefer `interface` over `type` for object shapes
+- Use union types for discriminated unions
+- Export types from dedicated type files
+
+```typescript
+interface ComponentProps {
+  title: string;
+  onPress: () => void;
+  isActive?: boolean;
+}
+
+export type SortMethod = 'name' | 'lastUpdated';
+```
+
+### Zod Schemas
+- Use Zod for runtime validation
+- Create branded types from Zod schemas
+- Export schemas from dedicated files
+
+```typescript
+export const HvbColorSchema = z.string().brand('HvbColor');
+export type HvbColor = z.infer<typeof HvbColorSchema>;
+```
+
+## React Component Patterns
+
+### Component Structure
+- Use function components with hooks
+- Export components as named exports
+- Use default export for page components
+- Place styles at the bottom of the file
+
+```typescript
+export const MyComponent = ({ title, onPress }: MyComponentProps) => {
+  const [state, setState] = useState(false);
+  
+  useEffect(() => {
+    // Side effects
+  }, []);
+  
+  return (
+    <View style={styles.container}>
+      <Text>{title}</Text>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+});
+```
+
+### Page Components
+- Use default export for page components
+- Keep page components thin, delegate to view components
+- Handle data fetching and state management at page level
+
+```typescript
+export default function MyPage() {
+  const [data, setData] = useState([]);
+  
+  return (
+    <MyPageView data={data} />
+  );
+}
+```
+
+## State Management
+
+### useState Patterns
+- Use functional initialization for complex state
+- Group related state in objects when appropriate
+- Use proper TypeScript typing for state
+
+```typescript
+const [postDetails, setPostDetails] = useState<HvbUserPost>(() => {
+  const defaultPostMeta = getDefaultPostMetaForNewPost();
+  return defaultPostMeta.createDefaultPost(userId);
+});
+```
+
+### useEffect Patterns
+- Use dependency arrays properly
+- Clean up subscriptions and timers
+- Handle async operations with proper error handling
+
+```typescript
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const result = await api.getData();
+      setData(result);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  
+  fetchData();
+  
+  return () => {
+    // Cleanup
+  };
+}, [dependencies]);
+```
+
+## Styling
+
+### StyleSheet Patterns
+- Use StyleSheet.create for all styles
+- Group related styles together
+- Use semantic naming for style properties
+- Prefer flexbox for layouts
+
+```typescript
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#fff',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+});
+```
+
+### Responsive Design
+- Use device-specific hooks for responsive layouts
+- Create responsive style utilities
+- Consider platform differences (iOS/Android/Web)
+
+## API & Backend Integration
+
+### Backend Patterns
+- Use interface definitions for backend contracts
+- Implement proper error handling
+- Use typed API responses
+- Handle authentication tokens properly
+
+```typescript
+export interface IHvbBackend {
+  getAllPosts: () => Promise<HvbUserPostForId[]>;
+  addNewPost: (post: HvbUserPost) => Promise<AddNewPostResult>;
+}
+```
+
+### Data Fetching
+- Use custom hooks for data fetching
+- Implement loading and error states
+- Handle data validation before setting state
+- Use proper cleanup for subscriptions
+
+## Error Handling
+
+### Error Boundaries
+- Implement error boundaries for component trees
+- Log errors appropriately
+- Provide fallback UI for errors
+
+### Validation
+- Use Zod for runtime validation
+- Validate data before setting state
+- Provide meaningful error messages
+
+## Performance
+
+### Optimization
+- Use React.memo for expensive components
+- Implement proper dependency arrays in hooks
+- Avoid unnecessary re-renders
+- Use useCallback and useMemo appropriately
+
+### Memory Management
+- Clean up subscriptions and timers
+- Dispose of resources in useEffect cleanup
+- Handle component unmounting properly
+
+## Code Quality
+
+### Naming Conventions
+- Use descriptive variable and function names
+- Prefix boolean variables with is/has/should
+- Use consistent naming patterns across the codebase
+
+### Comments & Documentation
+- Comment complex business logic
+- Document custom hooks with JSDoc
+- Explain non-obvious code decisions
+
+### Import/Export Patterns
+- Use named imports for components and utilities
+- Use default exports for pages and main components
+- Group imports by type (React, third-party, internal)
+- Use absolute imports with @/ alias
+
+```typescript
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { useAuth } from '@clerk/clerk-expo';
+
+import { MyComponent } from '@/src/components/MyComponent';
+import { useMyHook } from '@/src/hooks/useMyHook';
+import { MyType } from '@/src/types/MyType';
+```
+
+## Testing
+
+### Test Structure
+- Write tests for custom hooks
+- Test component rendering and interactions
+- Mock external dependencies
+- Use descriptive test names
+
+## Accessibility
+
+### Accessibility Patterns
+- Use proper semantic elements
+- Implement proper focus management
+- Provide alternative text for images
+- Test with screen readers
+
+## Security
+
+### Authentication
+- Handle authentication tokens securely
+- Implement proper token refresh
+- Validate user permissions
+- Sanitize user inputs
+
+### Data Protection
+- Validate all user inputs
+- Use proper data encryption
+- Implement proper session management
+- Follow security best practices
+
+## Platform Considerations
+
+### Cross-Platform Development
+- Use platform-specific code when necessary
+- Test on all target platforms
+- Handle platform differences gracefully
+- Use responsive design patterns
+
+### Web vs Native
+- Consider web-specific features
+- Handle platform-specific APIs
+- Use appropriate navigation patterns
+- Test on all platforms
+
+## Git & Version Control
+
+### Commit Messages
+- Use conventional commit format
+- Write descriptive commit messages
+- Reference issues when applicable
+- Keep commits focused and atomic
+
+### Branch Strategy
+- Use feature branches for development
+- Keep main branch stable
+- Use pull requests for code review
+- Follow semantic versioning
+
+## Dependencies
+
+### Package Management
+- Keep dependencies up to date
+- Use exact versions for critical packages
+- Document dependency purposes
+- Minimize bundle size
+
+### Third-Party Libraries
+- Prefer well-maintained libraries
+- Document library usage patterns
+- Implement proper error handling
+- Consider security implications
+
+## Build & Deployment
+
+### Build Configuration
+- Use proper environment variables
+- Configure build scripts appropriately
+- Handle platform-specific builds
+- Optimize for production
+
+### Environment Management
+- Use environment-specific configurations
+- Handle secrets securely
+- Document environment setup
+- Use proper environment validation
+
+## Monitoring & Debugging
+
+### Logging
+- Use appropriate log levels
+- Log meaningful information
+- Avoid logging sensitive data
+- Implement proper error tracking
+
+### Performance Monitoring
+- Monitor app performance
+- Track user interactions
+- Implement crash reporting
+- Use analytics appropriately
+
+## Documentation
+
+### Code Documentation
+- Document complex functions
+- Explain business logic
+- Provide usage examples
+- Keep documentation up to date
+
+### Project Documentation
+- Maintain README files
+- Document setup procedures
+- Explain architecture decisions
+- Provide troubleshooting guides

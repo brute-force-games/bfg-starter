@@ -11,6 +11,7 @@ import {
 import { Gamepad} from "@mui/icons-material"
 import { PrivatePlayerProfile } from "~/models/private-player-profile"
 import { BfgSupportedGameTitles } from "~/types/bfg-game-engines/supported-games"
+import { LobbyPlayerJoinGameComponent } from "./lobby-player-join-game-component"
 
 
 interface ILobbyPlayerStateComponentProps {
@@ -54,6 +55,17 @@ export const LobbyPlayerStateComponent = ({
     }
 
     return playerProfile;
+  }
+
+  const gameLink = lobbyState.gameLink;
+
+  if (gameLink) {
+    return (
+      <LobbyPlayerJoinGameComponent
+        lobbyState={lobbyState}
+        currentPlayerProfile={currentPlayerProfile}
+      />
+    )
   }
   
   return (
