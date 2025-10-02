@@ -23,6 +23,12 @@ const PlayerProfileCard = ({
   onDelete,
   onTestCrypto
 }: PlayerProfileCardProps) => {
+  const [showSeedWords, setShowSeedWords] = useState(false);
+  
+  const toggleSeedWords = () => {
+    setShowSeedWords(!showSeedWords);
+  };
+  
   return (
     <div style={{
       border: '1px solid #ddd',
@@ -86,6 +92,54 @@ const PlayerProfileCard = ({
       <div style={{ fontSize: '14px', color: '#666', marginBottom: '12px' }}>
         <div>Created: {new Date(profile.createdAt).toLocaleDateString()}</div>
         <div>Updated: {new Date(profile.updatedAt).toLocaleDateString()}</div>
+      </div>
+      
+      {/* Seed Words Section */}
+      <div style={{ marginBottom: '12px' }}>
+        <button
+          onClick={toggleSeedWords}
+          style={{
+            padding: '6px 12px',
+            backgroundColor: showSeedWords ? '#dc3545' : '#6c757d',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer',
+            fontSize: '12px',
+            marginBottom: '8px'
+          }}
+        >
+          {showSeedWords ? '🔒 Hide Seed Words' : '🔑 Show Seed Words'}
+        </button>
+        
+        {showSeedWords && (
+          <div style={{
+            backgroundColor: '#fff3cd',
+            color: '#856404',
+            padding: '12px',
+            borderRadius: '4px',
+            border: '1px solid #ffeaa7',
+            marginBottom: '8px'
+          }}>
+            <div style={{ fontWeight: 'bold', marginBottom: '8px', fontSize: '12px' }}>
+              ⚠️ SECURITY WARNING
+            </div>
+            <div style={{ fontSize: '11px', marginBottom: '8px' }}>
+              Never share these seed words with anyone. Anyone with these words can access your profile and funds.
+            </div>
+            <div style={{
+              backgroundColor: '#f8f9fa',
+              padding: '8px',
+              borderRadius: '4px',
+              fontFamily: 'monospace',
+              fontSize: '12px',
+              wordBreak: 'break-all',
+              border: '1px solid #dee2e6'
+            }}>
+              {profile.walletMnemonic}
+            </div>
+          </div>
+        )}
       </div>
       
       <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>

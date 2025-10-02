@@ -69,7 +69,7 @@ export const addPrivatePlayerProfile = async (
   }
   
   // Create new profile
-  const profileData = await createPrivatePlayerProfile(handle, avatarImageUrl, isDefault);
+  const profileData = await createPrivatePlayerProfile(handle, avatarImageUrl);
   const newProfile: PrivatePlayerProfile = {
     id: uuidv4(),
     ...profileData,

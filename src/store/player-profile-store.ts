@@ -2,7 +2,7 @@ import { createStore } from 'tinybase';
 import { createLocalPersister } from 'tinybase/persisters/persister-browser';
 import { PrivatePlayerProfile, PrivatePlayerProfileSchema } from '~/models/private-player-profile';
 import { PublicPlayerProfile } from '~/models/public-player-profile';
-import { generateKeyPair } from '~/crypto/crypto-utils';
+import { createPrivatePlayerProfile } from '~/models/private-player-profile';
 import { createPlayerProfileId, PlayerProfileId } from '~/types/core/branded-values/bfg-branded-ids';
 
 
@@ -61,25 +61,22 @@ export const addPlayerProfile = async (
   avatarImageUrl?: string
 ): Promise<PlayerProfileId> => {
   try {
-    // Generate cryptographic keys
-    const keyPair = await generateKeyPair();
+    // Create profile data using mnemonic-based wallet system
+    const profileData = await createPrivatePlayerProfile(handle, avatarImageUrl);
     
-    // Create profile data
+    // Add required fields
     const now = Date.now();
     const profileId = createPlayerProfileId();
     
-    const profileData: PrivatePlayerProfile = {
+    const completeProfileData: PrivatePlayerProfile = {
       id: profileId,
-      handle,
-      avatarImageUrl: avatarImageUrl || '',
-      publicKey: keyPair.publicKey,
-      privateKey: keyPair.privateKey,
+      ...profileData,
       createdAt: now,
       updatedAt: now,
     };
     
     // Add to store - store the entire profile object
-    playerProfileStore.setRow(TB_PLAYER_PROFILES_TABLE_KEY, profileId, profileData);
+    playerProfileStore.setRow(TB_PLAYER_PROFILES_TABLE_KEY, profileId, completeProfileData);
     
     return profileId;
   } catch (error) {
@@ -229,7 +226,10 @@ export const getPublicProfile = (profileId: PlayerProfileId): PublicPlayerProfil
     id: privateProfile.id,
     handle: privateProfile.handle,
     avatarImageUrl: privateProfile.avatarImageUrl,
-    publicKey: privateProfile.publicKey,
+    publicKey: privateProfile.publicKey, // Legacy RSA public key
+    walletAddress: privateProfile.walletAddress,
+    walletPublicKey: privateProfile.walletPublicKey,
+    identityType: privateProfile.identityType,
     createdAt: privateProfile.createdAt,
     updatedAt: privateProfile.updatedAt,
   };
@@ -243,7 +243,10 @@ export const getAllPublicProfiles = (): PublicPlayerProfile[] => {
     id: privateProfile.id,
     handle: privateProfile.handle,
     avatarImageUrl: privateProfile.avatarImageUrl,
-    publicKey: privateProfile.publicKey,
+    publicKey: privateProfile.publicKey, // Legacy RSA public key
+    walletAddress: privateProfile.walletAddress,
+    walletPublicKey: privateProfile.walletPublicKey,
+    identityType: privateProfile.identityType,
     createdAt: privateProfile.createdAt,
     updatedAt: privateProfile.updatedAt,
   }));

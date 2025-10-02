@@ -29,6 +29,10 @@ export const UserProfileAccessComponent = (props: UserProfileAccessComponentProp
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+    // Remove focus from the button to prevent it from staying highlighted
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
   };
 
   const userName = myDefaultPlayerProfile?.handle || myPlayerProfiles[0]?.handle || 'User';

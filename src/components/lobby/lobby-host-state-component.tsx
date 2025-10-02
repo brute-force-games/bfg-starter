@@ -199,7 +199,7 @@ export const LobbyHostStateComponent = ({
               color="primary"
               size="large"
             >
-              {isStartingGame ? "Starting Game..." : "Start Game"}
+              {isStartingGame ? `Starting ${lobbyState.gameTitle}...` : `Start ${lobbyState.gameTitle || 'Game'}`}
             </Button>
           </Stack>
         </Box>

@@ -57,6 +57,7 @@ export const useP2pGame = (gameTableId: GameTableId, myPlayerProfile: PublicPlay
   const [, getPublicGameActionsData] = room.makeAction<DbGameTableAction[]>(P2P_GAME_ACTIONS_ACTION_KEY);
   const [sendPlayerProfile, getPlayerProfile] = room.makeAction<PublicPlayerProfile>(P2P_GAME_PLAYER_PROFILE_DATA_ACTION_KEY)
   const [sendPlayerMove, getPlayerMove] = room.makeAction<BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>>(P2P_GAME_PLAYER_MOVE_DATA_ACTION_KEY)
+  
 
   if (!myPlayerProfile) {
     throw new Error('My player profile is required');

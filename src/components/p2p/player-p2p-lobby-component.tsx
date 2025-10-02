@@ -60,6 +60,9 @@ export const PlayerP2pLobbyComponent = ({
     sendPlayerMove({ move: 'leave-seat' });
   }
 
+  console.log('PlayerP2pLobbyComponent: lobbyState', lobbyState);
+  console.log('PlayerP2pLobbyComponent: lobbyOptions', lobbyOptions);
+
   if (!lobbyState || !lobbyOptions) {
     return (
       <Container maxWidth="sm" sx={{ py: 8 }}>

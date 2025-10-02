@@ -121,7 +121,7 @@ export const DbkAppBarMenu = ({ anchorElUser, userMenuItems, handleCloseUserMenu
                 key={`link-${menuItem.title}-${index}`}
                 to={menuItem.link.to as string}
               >
-                <MenuItem>
+                <MenuItem onClick={handleMenuClose}>
                   <Typography sx={{ textAlign: 'center' }}>{menuItem.title}</Typography>
                 </MenuItem>
               </Link>
@@ -134,6 +134,7 @@ export const DbkAppBarMenu = ({ anchorElUser, userMenuItems, handleCloseUserMenu
                 href={menuItem.href}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={handleMenuClose}
               >
                 <Typography sx={{ textAlign: 'center' }}>{menuItem.title}</Typography>
               </MenuItem>

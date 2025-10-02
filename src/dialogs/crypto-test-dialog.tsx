@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { PrivatePlayerProfile } from '~/models/private-player-profile';
-import { signMove, verifyMove } from '~/crypto/crypto-utils';
+
 
 interface CryptoTestDialogProps {
   open: boolean;
@@ -35,7 +35,13 @@ export const CryptoTestDialog = ({ open, onClose, profile }: CryptoTestDialogPro
         timestamp: new Date().toISOString(),
       };
 
-      const sig = await signMove(messageData, profile.privateKey);
+      // Use wallet-based signing instead of RSA
+      const { getActiveSigningKey } = await import('~/models/private-player-profile');
+      const { createWalletSignedMove } = await import('~/crypto/crypto-utils');
+      
+      const signingKey = await getActiveSigningKey(profile);
+      const signedMove = await createWalletSignedMove(messageData, signingKey.walletKey);
+      const sig = signedMove.signature;
       setSignature(sig);
       setSignedMessageData(messageData); // Store the exact data that was signed
     } catch (err) {
@@ -55,8 +61,12 @@ export const CryptoTestDialog = ({ open, onClose, profile }: CryptoTestDialogPro
     setError(null);
 
     try {
-      // Use the exact same data that was signed
-      const isValid = await verifyMove(signedMessageData, signature, profile.publicKey);
+      // Use wallet-based verification instead of RSA verification
+      const { verifyWalletSignedMove } = await import('~/crypto/crypto-utils');
+      const { getActiveSigningKey } = await import('~/models/private-player-profile');
+      
+      const signingKey = await getActiveSigningKey(profile);
+      const isValid = await verifyWalletSignedMove(signedMessageData, signature, signingKey.walletKey.address);
       setVerificationResult(isValid);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to verify signature');

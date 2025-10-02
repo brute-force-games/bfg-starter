@@ -91,23 +91,12 @@ export const TinyBaseAddPlayerProfileDialog = ({ allDataItems, onNewDataItemCrea
       );
 
       // Get the created profile from the store
-      const { playerProfileStore } = await import('~/store/player-profile-store');
-      const profileData = playerProfileStore.getRow('playerProfiles', profileId);
+      const { getPlayerProfile } = await import('~/store/player-profile-store');
+      const newProfile = getPlayerProfile(profileId);
       
-      if (!profileData) {
+      if (!newProfile) {
         throw new Error('Failed to retrieve created profile');
       }
-
-      const newProfile: PrivatePlayerProfile = {
-        id: profileId,
-        handle: profileData.handle,
-        avatarImageUrl: profileData.avatarImageUrl || undefined,
-        publicKey: profileData.publicKey,
-        privateKey: profileData.privateKey,
-        isDefault: profileData.isDefault,
-        createdAt: new Date(profileData.createdAt),
-        updatedAt: new Date(profileData.updatedAt),
-      };
 
       console.log("Created player profile:", newProfile);
       onNewDataItemCreated(newProfile);

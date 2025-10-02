@@ -79,7 +79,7 @@ export const asPlayerMakeSignedMove = async <GameSpecificAction extends z.ZodTyp
   // Create signed version of the action
   const signedGameAction = await createSignedGameAction(
     baseGameAction,
-    playerProfile.privateKey,
+    playerProfile,
     playerProfile.id
   );
 

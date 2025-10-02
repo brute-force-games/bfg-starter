@@ -42,14 +42,19 @@ export type SignedGameTableAction = z.infer<typeof SignedGameTableActionSchema>;
  */
 export const createSignedGameAction = async (
   gameAction: any,
-  privateKey?: string,
+  playerProfile?: any, // Updated to accept player profile instead of privateKey
   playerId?: string
 ): Promise<SignedGameTableAction> => {
   let signature = undefined;
   
   // Only sign player moves, not host actions
-  if (privateKey && playerId && gameAction.source?.includes('player')) {
-    const { createSignedMove } = await import('~/crypto/crypto-utils');
+  if (playerProfile && playerId && gameAction.source?.includes('player')) {
+    // Use wallet-based signing
+    const { getActiveSigningKey } = await import('~/models/private-player-profile');
+    const { createWalletSignedMove } = await import('~/crypto/crypto-utils');
+    
+    // Get the current signing key for the player
+    const signingKey = await getActiveSigningKey(playerProfile);
     
     // Create signature for the action
     const moveData = {
@@ -61,7 +66,8 @@ export const createSignedGameAction = async (
       timestamp: gameAction.createdAt,
     };
     
-    signature = await createSignedMove(moveData, privateKey, '');
+    const signedMove = await createWalletSignedMove(moveData, signingKey.walletKey);
+    signature = signedMove;
   }
   
   return {
