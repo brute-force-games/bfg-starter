@@ -1,7 +1,7 @@
 import { usePlayerP2pGame } from "~/hooks/p2p/use-player-p2p-game"
 import { PrivatePlayerProfile } from "~/models/private-player-profile"
 import { GameTableId } from "~/types/core/branded-values/bfg-branded-ids"
-import { PlayerGameView } from "../game-view/player-game-view"
+import { PlayerGameView } from "../game-views/player-game-view"
 import { BfgGameSpecificGameStateTypedJson } from "~/types/core/branded-values/bfg-game-state-typed-json"
 import { AbfgSupportedGameTitle } from "~/types/bfg-game-engines/supported-games"
 import { Groups, Wifi } from "@mui/icons-material"

@@ -27,7 +27,7 @@ export type BfgGameEngineRendererFactory<
     onGameAction: (gameState: z.infer<GS>, gameAction: z.infer<GA>) => void
   ) => React.ReactNode;
 
-  createGameStateCombinationRepresentationAndInputComponent?: (
+  createGameStateCombinationRepresentationAndInputComponent: (
     playerSeat: GameTableSeat,
     gameState: z.infer<GS>,
     mostRecentAction: z.infer<GA>,
@@ -70,20 +70,20 @@ export type BfgGameEngineProcessor<
     initialGameTableAction: BfgGameSpecificTableAction<z.infer<GA>>
   ) => z.infer<GS>;  // Ensure this is inferred from Zod schema
 
-  createGameSpecificGameStateJson: (
+  createGameSpecificGameStateJson: <T extends AbfgSupportedGameTitle>(
     gameState: z.infer<GS>
-  ) => BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;  // Ensure this is inferred from Zod schema
+  ) => BfgGameSpecificGameStateTypedJson<T>;  // Ensure this is inferred from Zod schema
 
-  parseGameSpecificGameStateJson: (
-    jsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>
+  parseGameSpecificGameStateJson: <T extends AbfgSupportedGameTitle>(
+    jsonString: BfgGameSpecificGameStateTypedJson<T>
   ) => z.infer<GS>;  // Ensure this is inferred from Zod schema
 
-  createGameSpecificActionJson: (
+  createGameSpecificActionJson: <T extends AbfgSupportedGameTitle>(
     gameAction: z.infer<GA>
-  ) => BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;  // Ensure this is inferred from Zod schema
+  ) => BfgGameSpecificGameStateTypedJson<T>;  // Ensure this is inferred from Zod schema
   
-  parseGameSpecificActionJson: (
-    jsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>
+  parseGameSpecificActionJson: <T extends AbfgSupportedGameTitle>(
+    jsonString: BfgGameSpecificGameStateTypedJson<T>
   ) => z.infer<GA>;  // Ensure this is inferred from Zod schema
 
   // createGameStateRepresentationComponent: (

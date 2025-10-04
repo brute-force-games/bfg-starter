@@ -1,7 +1,8 @@
+import { z } from "zod";
 import { GameTable, GameTableSeat } from "~/models/game-table/game-table";
 import { BfgGameSpecificGameStateTypedJson } from "~/types/core/branded-values/bfg-game-state-typed-json";
 import { DbGameTableAction } from "~/models/game-table/game-table-action";
-import { AllBfgGameMetadata } from "~/types/bfg-game-engines/bfg-game-engines";
+import { getTypedBfgGameMetadata, BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engines";
 import { PrivatePlayerProfile } from "~/models/private-player-profile";
 import { AbfgSupportedGameTitle } from "~/types/bfg-game-engines/supported-games";
 import { PublicPlayerProfile } from "~/models/public-player-profile";
@@ -25,18 +26,12 @@ export const HostedGameView = (props: HostedGameViewProps) => {
 
   const latestAction = gameActions[gameActions.length - 1];
   const gameTitle = hostedGame.gameTitle;
-  const gameMetadata = AllBfgGameMetadata[gameTitle];
-
-  if (!gameMetadata) {
-    return (
-      <div className="p-6">
-        <h1 className="text-3xl font-bold mb-6">Loading Game Metadata...</h1>
-        <div className="text-gray-600">Loading game metadata...</div>
-      </div>
-    )
-  }
-
-  const gameEngine = gameMetadata.processor;
+  
+  const gameMetadata = getTypedBfgGameMetadata(gameTitle);
+  const gameEngine = gameMetadata.processor as BfgGameEngineProcessor<
+    z.infer<typeof gameMetadata.processor["gameStateJsonSchema"]>,
+    z.infer<typeof gameMetadata.processor["gameActionJsonSchema"]>
+  >;
   const gameRendererFactory = gameEngine.rendererFactory;
 
   const gameSpecificState = gameEngine.parseGameSpecificGameStateJson(
@@ -48,20 +43,22 @@ export const HostedGameView = (props: HostedGameViewProps) => {
   // Type-safe callback function that works with the specific game engine
   const onPlayerMoveAction = async (gameState: typeof gameSpecificState, gameAction: typeof latestGameSpecificAction) => {
     console.log("onGameAction", gameState, gameAction);
-    const playerMoveJson = (gameEngine as {
-      createGameSpecificActionJson: (gameAction: typeof latestGameSpecificAction) => BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;
-    }).createGameSpecificActionJson(gameAction);
+    const playerMoveJson = gameEngine.createGameSpecificActionJson(gameAction);
     onPlayerGameAction(playerMoveJson);
   }
 
-  const hostRepresentation = (gameRendererFactory as {
-    createGameStateHostComponent: (
-      gameTable: GameTable,
-      gameState: typeof gameSpecificState,
-      mostRecentAction: typeof latestGameSpecificAction,
-      onGameAction: (gameState: typeof gameSpecificState, gameAction: typeof latestGameSpecificAction) => void
-    ) => React.ReactNode;
-  }).createGameStateHostComponent(hostedGame, gameSpecificState, latestGameSpecificAction, onPlayerMoveAction);
+  const createHostRepresentation = gameRendererFactory.createGameStateHostComponent;
+  const hostRepresentation = createHostRepresentation(hostedGame, gameSpecificState, latestGameSpecificAction, onPlayerMoveAction);
+  
+  
+  // const hostRepresentation = (gameRendererFactory as {
+  //   createGameStateHostComponent: (
+  //     gameTable: GameTable,
+  //     gameState: GameStateType,
+  //     mostRecentAction: GameActionType,
+  //     onGameAction: (gameState: GameStateType, gameAction: GameActionType) => void
+  //   ) => React.ReactNode;
+  // }).createGameStateHostComponent(hostedGame, gameSpecificState, latestGameSpecificAction, onPlayerMoveAction);
 
   return (
     <div>

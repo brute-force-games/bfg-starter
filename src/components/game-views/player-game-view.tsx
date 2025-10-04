@@ -2,7 +2,7 @@ import { z } from "zod";
 import { GameTable, GameTableSeat } from "~/models/game-table/game-table";
 import { BfgGameSpecificGameStateTypedJson } from "~/types/core/branded-values/bfg-game-state-typed-json";
 import { DbGameTableAction } from "~/models/game-table/game-table-action";
-import { AllBfgGameMetadata, BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engines";
+import { getTypedBfgGameMetadata, BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engines";
 import { PrivatePlayerProfile } from "~/models/private-player-profile";
 import { AbfgSupportedGameTitle } from "~/types/bfg-game-engines/supported-games";
 
@@ -22,11 +22,12 @@ export const PlayerGameView = (props: PlayerGameViewProps) => {
   const latestAction = gameActions[gameActions.length - 1];
   const gameTitle = gameTable.gameTitle;
 
-  const gameMetadata = AllBfgGameMetadata[gameTitle];
+  const gameMetadata = getTypedBfgGameMetadata(gameTitle);
   const gameEngine = gameMetadata.processor as BfgGameEngineProcessor<
     z.infer<typeof gameMetadata.processor["gameStateJsonSchema"]>,
     z.infer<typeof gameMetadata.processor["gameActionJsonSchema"]>
   >;
+  const gameRendererFactory = gameEngine.rendererFactory;
   
   const gameSpecificState = gameEngine.parseGameSpecificGameStateJson(
     latestAction.actionOutcomeGameStateJson as BfgGameSpecificGameStateTypedJson<typeof gameTitle>);
@@ -34,19 +35,14 @@ export const PlayerGameView = (props: PlayerGameViewProps) => {
   const latestGameSpecificAction = gameEngine.parseGameSpecificActionJson(
     latestAction.actionJson as BfgGameSpecificGameStateTypedJson<typeof gameTitle>);
 
-  const onPlayerMoveAction = async (gameState: z.infer<typeof gameMetadata.processor["gameStateJsonSchema"]>, gameAction: z.infer<typeof gameMetadata.processor["gameActionJsonSchema"]>) => {
+  const onPlayerMoveAction = async (gameState: typeof gameSpecificState, gameAction: typeof latestGameSpecificAction) => {
     console.log("onGameAction", gameState, gameAction);
 
     const playerMoveJson = gameEngine.createGameSpecificActionJson(gameAction);
     onPlayerGameAction(playerMoveJson);
   }
 
-  const gameRepresentation = gameEngine?.createGameStateCombinationRepresentationAndInputComponent ?
-    gameEngine.createGameStateCombinationRepresentationAndInputComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction, onPlayerMoveAction) :
-    <>
-      {gameEngine.createGameStateRepresentationComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction)}
-      {gameEngine.createGameStateActionInputComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction, onPlayerMoveAction)}
-    </>
+  const gameRepresentation = gameRendererFactory.createGameStateCombinationRepresentationAndInputComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction, onPlayerMoveAction);
 
 
   if (!gameMetadata) {
