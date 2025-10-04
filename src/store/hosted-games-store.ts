@@ -3,6 +3,8 @@ import { createStore } from 'tinybase';
 import { createLocalPersister } from 'tinybase/persisters/persister-browser';
 import { GameTableId } from '~/types/core/branded-values/bfg-branded-ids';
 import { GameTable, GameTableSchema } from '~/models/game-table/game-table';
+import { clearAllGameActions } from './hosted-game-actions-store';
+import { clearAllHostedLobbies } from './hosted-lobbies-store';
 
 /**
  * TinyBase store for hosted game data
@@ -40,11 +42,12 @@ export type GameTableUpdateFields = Partial<Omit<TbStoreGameTable, 'id' | 'creat
 /**
  * Safely parse hosted game data from TinyBase store
  */
-const parseRawHostedGameData = (gameId: string, rawData: any): GameTable | null => {
+export const parseRawHostedGameData = (gameId: string, rawData: any): GameTable | null => {
   const result = GameTableSchema.safeParse(rawData);
   
   if (!result.success) {
-    console.error(`Error validating hosted game data for ${gameId}:`, result.error);
+    console.error(`Error parsing hosted game data for ${gameId}:`, result.error);
+    console.log("rawData", rawData);
     return null;
   }
   
@@ -223,6 +226,22 @@ export const getHostedGamesByPhase = (tablePhase: string): GameTable[] => {
  */
 export const clearAllHostedGames = (): void => {
   hostedGamesStore.delTable(TB_HOSTED_GAMES_TABLE_KEY);
+  
+  // Also clear all game actions to prevent cross-contamination
+  clearAllGameActions();
+};
+
+/**
+ * Clear all stores (games, lobbies, and actions) - comprehensive cleanup
+ */
+export const clearAllStores = (): void => {
+  // Clear hosted games and their actions
+  clearAllHostedGames();
+  
+  // Clear hosted lobbies
+  clearAllHostedLobbies();
+  
+  console.log('All stores cleared successfully');
 };
 
 /**

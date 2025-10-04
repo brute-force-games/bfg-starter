@@ -3,11 +3,13 @@ import { z } from "zod";
 
 export const TicTacToeGameName = 'Tic Tac Toe' as const;
 export const FlipACoinGameName = 'Flip a Coin' as const;
+export const HangmanGameName = 'Hangman' as const;
 
 
 export const BfgSupportedGameTitlesSchema = z.enum([
   TicTacToeGameName,
   FlipACoinGameName,
+  HangmanGameName,
 ] as const);
 
 // export type AbfgSupportedGameTitle = z.infer<typeof BfgSupportedGameTitlesSchema>;

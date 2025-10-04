@@ -2,11 +2,12 @@ import { z } from "zod";
 import { createBfgGameEngineProcessor, IBfgGameEngineProcessor } from "./bfg-game-engine-metadata";
 import { GameTable, PLAYER_SEATS } from "../../models/game-table/game-table";
 import { GameTableActionResult } from "../../models/game-table/table-phase";
-import { createFlipACoinInput, createFlipACoinRepresentation } from "~/game-engine-components/flip-a-coin/flip-a-coin-components";
+import { createFlipACoinHostRepresentation, createFlipACoinInput, createFlipACoinRepresentation } from "~/game-engine-components/flip-a-coin/flip-a-coin-components";
 import { FlipACoinGameName } from "./supported-games";
 import { GameTableSeatSchema } from "../../models/game-table/game-table";
 import { BfgGameSpecificTableAction } from "../../models/game-table/game-table-action";
 import { BfgGameTableActionId } from "../core/branded-values/bfg-branded-ids";
+import { BfgGameEngineRendererFactory } from "./bfg-game-engines";
 
 
 export const FlipACoinResolutionSchema = z.enum([
@@ -127,8 +128,6 @@ export const FlipACoinGameStateSchema = z.object({
 }).describe('Flip A Coin');
 
 export type FlipACoinGameState = z.infer<typeof FlipACoinGameStateSchema>;
-
-// export const FlipACoinGameName = 'Flip A Coin' as const;
 
 
 const createInitialGameState = (
@@ -299,6 +298,17 @@ const applyFlipACoinGameAction = (
 }
 
 
+const flipACoinRendererFactory: BfgGameEngineRendererFactory<
+  typeof FlipACoinGameStateSchema,
+  typeof FlipACoinGameActionSchema
+> = {
+  createGameStateHostComponent: createFlipACoinHostRepresentation,
+  createGameStateRepresentationComponent: createFlipACoinRepresentation,
+  createGameStateActionInputComponent: createFlipACoinInput,
+  createGameStateCombinationRepresentationAndInputComponent: undefined,
+}
+
+
 const flipACoinProcessorImplementation: IBfgGameEngineProcessor<
   typeof FlipACoinGameStateSchema,
   typeof FlipACoinGameActionSchema
@@ -314,6 +324,7 @@ const flipACoinProcessorImplementation: IBfgGameEngineProcessor<
 
   createGameStateRepresentationComponent: createFlipACoinRepresentation,
   createGameStateActionInputComponent: createFlipACoinInput,
+  createGameStateHostComponent: createFlipACoinHostRepresentation,
 
   createGameStateCombinationRepresentationAndInputComponent: undefined,
 }
@@ -326,4 +337,5 @@ export const FlipACoinGameStateProcessor = createBfgGameEngineProcessor(
   FlipACoinGameActionSchema,
 
   flipACoinProcessorImplementation,
+  flipACoinRendererFactory,
 );

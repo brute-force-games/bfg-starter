@@ -69,16 +69,17 @@ export const useP2pLobby = (lobbyId: GameLobbyId, myPlayerProfile: PublicPlayerP
 
   // Initialize connection event on mount
   useEffect(() => {
+    console.log('🚀 P2P lobby connection initialized');
     addConnectionEvent('initialized', 'P2P lobby connection initialized', 0);
   }, []);
 
   // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      console.log('🔌 Cleaning up P2P lobby connection');
-      room.leave();
-    };
-  }, []); // No dependencies - cleanup only on unmount
+  // useEffect(() => {
+  //   return () => {
+  //     console.log('🔌 Cleaning up P2P lobby connection');
+  //     room.leave();
+  //   };
+  // }, []); // No dependencies - cleanup only on unmount
 
   room.onPeerJoin(peer => {
     console.log('Peer joined:', peer)

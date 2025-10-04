@@ -1,11 +1,12 @@
 import { z } from "zod";
 import { createBfgGameEngineProcessor, IBfgGameEngineProcessor } from "./bfg-game-engine-metadata";
 import { GameTable, GameTableSeat, GameTableSeatSchema } from "../../models/game-table/game-table";
-import { createTicTacToeRepresentation, createTicTacToeInput, createTicTacToeComboRepresentationAndInput, createTicTacToeHistory } from "~/game-engine-components/tic-tac-toe/tic-tac-toe-components";
+import { createTicTacToeRepresentation, createTicTacToeInput, createTicTacToeComboRepresentationAndInput, createTicTacToeHistory, createTicTacToeHostRepresentation } from "~/game-engine-components/tic-tac-toe/tic-tac-toe-components";
 import { GameTableActionResult } from "../../models/game-table/table-phase";
 import { TicTacToeGameName } from "./supported-games";
 import { BfgGameSpecificActionSchema, BfgGameSpecificGameStateSchema, BfgGameSpecificTableAction } from "../../models/game-table/game-table-action";
 import { BfgGameTableActionId } from "../core/branded-values/bfg-branded-ids";
+import { BfgGameEngineRendererFactory } from "./bfg-game-engines";
 
 
 export const TicTacToeResolutionSchema = z.enum([
@@ -226,11 +227,25 @@ const ticTacToeProcessorImplementation: IBfgGameEngineProcessor<
   createInitialGameSpecificState: createTicTacToeInitialGameState,
   createInitialGameTableAction: createTicTacToeInitialGameTableAction,
 
+  createGameStateHostComponent: createTicTacToeHostRepresentation,
   createGameStateRepresentationComponent: createTicTacToeRepresentation,
   createGameStateActionInputComponent: createTicTacToeInput,
   createGameStateCombinationRepresentationAndInputComponent: createTicTacToeComboRepresentationAndInput,
   createGameHistoryComponent: createTicTacToeHistory,
 };
+
+
+const ticTacToeRendererFactory: BfgGameEngineRendererFactory<
+  typeof TicTacToeGameStateSchema,
+  typeof TicTacToeGameActionSchema
+> = {
+  createGameStateHostComponent: createTicTacToeHostRepresentation,
+  createGameStateRepresentationComponent: createTicTacToeRepresentation,
+  createGameStateActionInputComponent: createTicTacToeInput,
+  createGameStateCombinationRepresentationAndInputComponent: createTicTacToeComboRepresentationAndInput,
+  createGameHistoryComponent: createTicTacToeHistory,
+}
+
 
 export const TicTacToeGameStateProcessor = createBfgGameEngineProcessor(
   TicTacToeGameName,
@@ -238,18 +253,8 @@ export const TicTacToeGameStateProcessor = createBfgGameEngineProcessor(
   TicTacToeGameActionSchema,
 
   ticTacToeProcessorImplementation,
-
-  // Use a double type assertion to safely bridge the incompatible types
-  // ticTacToeProcessorImplementation as unknown as IBfgGameEngineProcessor<
-  //   typeof TicTacToeGameStateSchema,
-  //   typeof TicTacToeGameActionSchema
-  // >,
-
+  ticTacToeRendererFactory,
 );
-// ) as unknown as BfgGameEngineProcessor<
-//   TicTacToeGameState,
-//   TicTacToeGameAction
-// >;
 
 
 export const getCurrentPlayer = (gameState: TicTacToeGameState): GameTableSeat => {

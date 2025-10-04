@@ -2,6 +2,7 @@ import { Box, Tooltip, IconButton, Avatar } from "@mui/material"
 import { DbkAppBarMenu, DbkAppBarMenuItem } from "./app-bar-menu"
 import { useState } from "react";
 import { PrivatePlayerProfile } from "~/models/private-player-profile";
+import { useHostedGameActions } from "~/hooks/stores/use-hosted-games-store";
 
 
 interface UserProfileAccessComponentProps {
@@ -12,6 +13,7 @@ interface UserProfileAccessComponentProps {
 export const UserProfileAccessComponent = (props: UserProfileAccessComponentProps) => {
 
   const { myPlayerProfiles, myDefaultPlayerProfile } = props;
+  const { clearAllStores } = useHostedGameActions();
   
   // Debug logging
   console.log('UserProfileAccessComponent rendered with:', {
@@ -35,6 +37,13 @@ export const UserProfileAccessComponent = (props: UserProfileAccessComponentProp
     }
   };
 
+  const handleClearAllStores = async () => {
+    if (window.confirm('Are you sure you want to clear ALL stores (games, lobbies, and actions)? This action cannot be undone.')) {
+      clearAllStores();
+      console.log('All stores cleared successfully');
+    }
+  };
+
   const userName = myDefaultPlayerProfile?.handle || myPlayerProfiles[0]?.handle || 'User';
 
   const menuItems: DbkAppBarMenuItem[] = [
@@ -43,6 +52,8 @@ export const UserProfileAccessComponent = (props: UserProfileAccessComponentProp
     { type: 'menu-link', title: 'Player Profile', link: { to: '/my-player-profiles' } },
     // { type: 'menu-link', title: 'Gaming Groups', link: { to: '/gaming-groups' } },
     // { type: 'menu-link', title: 'My Friends', link: { to: '/my-friends' } },
+    { type: 'menu-divider' },
+    { type: 'menu-action', title: 'Clear All Stores', action: handleClearAllStores },
     { type: 'menu-anchor', title: 'BFG Starter on Github', href: 'https://github.com/brute-force-games/bfg-starter' },
     // { type: 'menu-action', title: 'Download Profile Backup', action: doDownloadProfileBackup },
   ];

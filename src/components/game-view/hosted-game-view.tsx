@@ -1,11 +1,9 @@
-import { z } from "zod";
 import { GameTable, GameTableSeat } from "~/models/game-table/game-table";
 import { BfgGameSpecificGameStateTypedJson } from "~/types/core/branded-values/bfg-game-state-typed-json";
 import { DbGameTableAction } from "~/models/game-table/game-table-action";
-import { AllBfgGameMetadata, BfgGameEngineProcessor } from "~/types/bfg-game-engines/bfg-game-engines";
+import { AllBfgGameMetadata } from "~/types/bfg-game-engines/bfg-game-engines";
 import { PrivatePlayerProfile } from "~/models/private-player-profile";
 import { AbfgSupportedGameTitle } from "~/types/bfg-game-engines/supported-games";
-import { PeerProfilesComponent } from "../p2p/peer-profiles-component";
 import { PublicPlayerProfile } from "~/models/public-player-profile";
 import { PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids";
 
@@ -23,36 +21,11 @@ interface HostedGameViewProps {
 }
 
 export const HostedGameView = (props: HostedGameViewProps) => {
-  const { myPlayerSeat, hostedGame, gameActions, onPlayerGameAction, peerProfiles, playerProfiles } = props;
+  const { hostedGame, gameActions, onPlayerGameAction } = props;
 
   const latestAction = gameActions[gameActions.length - 1];
   const gameTitle = hostedGame.gameTitle;
-
   const gameMetadata = AllBfgGameMetadata[gameTitle];
-  const gameEngine = gameMetadata.processor as BfgGameEngineProcessor<
-    z.infer<typeof gameMetadata.processor["gameStateJsonSchema"]>,
-    z.infer<typeof gameMetadata.processor["gameActionJsonSchema"]>
-  >;
-  
-  const gameSpecificState = gameEngine.parseGameSpecificGameStateJson(
-    latestAction.actionOutcomeGameStateJson as BfgGameSpecificGameStateTypedJson<typeof gameTitle>);
-
-  const latestGameSpecificAction = gameEngine.parseGameSpecificActionJson(
-    latestAction.actionJson as BfgGameSpecificGameStateTypedJson<typeof gameTitle>);
-
-  const onPlayerMoveAction = async (gameState: z.infer<typeof gameMetadata.processor["gameStateJsonSchema"]>, gameAction: z.infer<typeof gameMetadata.processor["gameActionJsonSchema"]>) => {
-    console.log("onGameAction", gameState, gameAction);
-    const playerMoveJson = gameEngine.createGameSpecificActionJson(gameAction);
-    onPlayerGameAction(playerMoveJson);
-  }
-
-  const gameRepresentation = gameEngine?.createGameStateCombinationRepresentationAndInputComponent ?
-    gameEngine.createGameStateCombinationRepresentationAndInputComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction, onPlayerMoveAction) :
-    <>
-      {gameEngine.createGameStateRepresentationComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction)}
-      {gameEngine.createGameStateActionInputComponent(myPlayerSeat, gameSpecificState, latestGameSpecificAction, onPlayerMoveAction)}
-    </>
-
 
   if (!gameMetadata) {
     return (
@@ -63,10 +36,37 @@ export const HostedGameView = (props: HostedGameViewProps) => {
     )
   }
 
+  const gameEngine = gameMetadata.processor;
+  const gameRendererFactory = gameEngine.rendererFactory;
+
+  const gameSpecificState = gameEngine.parseGameSpecificGameStateJson(
+    latestAction.actionOutcomeGameStateJson as BfgGameSpecificGameStateTypedJson<typeof gameTitle>);
+
+  const latestGameSpecificAction = gameEngine.parseGameSpecificActionJson(
+    latestAction.actionJson as BfgGameSpecificGameStateTypedJson<typeof gameTitle>);
+
+  // Type-safe callback function that works with the specific game engine
+  const onPlayerMoveAction = async (gameState: typeof gameSpecificState, gameAction: typeof latestGameSpecificAction) => {
+    console.log("onGameAction", gameState, gameAction);
+    const playerMoveJson = (gameEngine as {
+      createGameSpecificActionJson: (gameAction: typeof latestGameSpecificAction) => BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>;
+    }).createGameSpecificActionJson(gameAction);
+    onPlayerGameAction(playerMoveJson);
+  }
+
+  const hostRepresentation = (gameRendererFactory as {
+    createGameStateHostComponent: (
+      gameTable: GameTable,
+      gameState: typeof gameSpecificState,
+      mostRecentAction: typeof latestGameSpecificAction,
+      onGameAction: (gameState: typeof gameSpecificState, gameAction: typeof latestGameSpecificAction) => void
+    ) => React.ReactNode;
+  }).createGameStateHostComponent(hostedGame, gameSpecificState, latestGameSpecificAction, onPlayerMoveAction);
+
   return (
     <div>
       <div>BFG Table Phase: {hostedGame.tablePhase}</div>
-      {gameRepresentation}
+      {hostRepresentation}
       
       {/* <PeerProfilesComponent
         peerProfiles={peerProfiles}

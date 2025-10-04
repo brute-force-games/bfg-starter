@@ -21,7 +21,7 @@ interface ILobbyPlayerJoinGameComponentProps {
 
 export const LobbyPlayerJoinGameComponent = ({ 
   lobbyState,
-  currentPlayerProfile,
+  // currentPlayerProfile,
 }: ILobbyPlayerJoinGameComponentProps) => {
 
   // const handleGameChoice = (gameChoice: BfgSupportedGameTitles) => {

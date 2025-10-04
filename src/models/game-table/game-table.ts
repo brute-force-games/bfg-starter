@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BfgGameTableId, BfgPlayerProfileId } from "../../types/core/branded-values/bfg-branded-ids";
+import { BfgGameTableActionId, BfgGameTableId, BfgPlayerProfileId } from "../../types/core/branded-values/bfg-branded-ids";
 import { TablePhaseEnumSchema } from "./table-phase";
 import { BfgSupportedGameTitlesSchema } from "~/types/bfg-game-engines/supported-games";
 
@@ -23,7 +23,7 @@ export type GameTableSeat = z.infer<typeof GameTableSeatSchema>;
 
 export const GameTableSchema = z.object({
   id: BfgGameTableId.idSchema,
-  // latestActionId: BfgGameTableActionId.idSchema,
+  latestActionId: BfgGameTableActionId.idSchema,
 
   gameTitle: BfgSupportedGameTitlesSchema,
   gameHostPlayerProfileId: BfgPlayerProfileId.idSchema,
@@ -41,6 +41,7 @@ export const GameTableSchema = z.object({
   p8: BfgPlayerProfileId.idSchema.optional(),
 
   createdAt: z.number(),
+  lastUpdatedAt: z.number(),
 });
 
 export type GameTable = z.infer<typeof GameTableSchema>;

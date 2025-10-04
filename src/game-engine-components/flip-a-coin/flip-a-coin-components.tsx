@@ -1,7 +1,8 @@
 import { FlipACoinGameAction, FlipACoinGameState } from "~/types/bfg-game-engines/flip-a-coin-engine";
-import { GameTableSeat } from "~/models/game-table/game-table";
+import { GameTable, GameTableSeat } from "~/models/game-table/game-table";
 import { FlipACoinRepresentation } from "./flip-a-coin-representation";
 import { FlipACoinInput } from "./flip-a-coin-input";
+import { getActivePlayerSeatsForGameTable } from "~/data/game-table-ops/player-seat-utils";
 
 
 export const createFlipACoinRepresentation = (
@@ -35,21 +36,24 @@ export const createFlipACoinInput = (
   );
 }
 
+export const createFlipACoinHostRepresentation = (
+  gameTable: GameTable,
+  gameState: FlipACoinGameState,
+  mostRecentAction: FlipACoinGameAction,
+  _onGameAction: (gameState: FlipACoinGameState, gameAction: FlipACoinGameAction) => void
+) => {
 
-// export const createTicTacToeComboRepresentationAndInput = (
-//   myPlayerSeat: GameTableSeat,
-//   gameState: TicTacToeGameState,
-//   onGameAction: (gameState: TicTacToeGameState, gameAction: TicTacToeMove) => void
-// ) => {
-//   // return;
+  const activePlayerSeats = getActivePlayerSeatsForGameTable(gameTable);
 
-//   return (
-//     <>
-//       <TicTacToeGrid
-//         myPlayerSeat={myPlayerSeat}
-//         gameState={gameState}
-//         onGameAction={onGameAction}
-//       />
-//     </>
-//   )
-// }
+  return (
+    <>
+      {activePlayerSeats.map(playerSeat => (
+        <FlipACoinRepresentation 
+          myPlayerSeat={playerSeat} 
+          gameState={gameState} 
+          mostRecentAction={mostRecentAction}
+        />
+      ))}
+    </>
+  )
+}

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { AbfgSupportedGameTitle, BfgSupportedGameTitlesSchema, FlipACoinGameName, TicTacToeGameName } from "../bfg-game-engines/supported-games";
+import { AbfgSupportedGameTitle, BfgSupportedGameTitlesSchema, FlipACoinGameName, HangmanGameName, TicTacToeGameName } from "../bfg-game-engines/supported-games";
 
 
 // export const TIC_TAC_TOE_GAME_TITLE = "Tic Tac Toe" as const;
@@ -56,13 +56,21 @@ export const TicTacToeGameDefinition: TicTacToeGameDefinition = {
 };
 
 
+
 export const HangmanGameDefinitionSchema = GameDefinitionSchema.extend({
   title: z.literal("Hangman"),
-  minNumPlayersForGame: z.literal(2),
+  minNumPlayersForGame: z.literal(1),
   maxNumPlayersForGame: z.literal(6),
 });
 
 export type HangmanGameDefinition = z.infer<typeof HangmanGameDefinitionSchema>;
+
+export const HangmanGameDefinition: HangmanGameDefinition = {
+  title: HangmanGameName,
+  minNumPlayersForGame: 1,
+  maxNumPlayersForGame: 6
+};
+
 
 
 export const BackgammonGameDefinitionSchema = GameDefinitionSchema.extend({
@@ -96,52 +104,3 @@ export const FlipACoinGameDefinition: FlipACoinGameDefinition = {
   minNumPlayersForGame: 1,
   maxNumPlayersForGame: 6
 };
-
-
-
-
-
-// export const GameOnShelf = {
-//   TIC_TAC_TOE: "Tic Tac Toe",
-//   HANGMAN: "Hangman",
-//   BACKGAMMON: "Backgammon",
-//   CHESS: "Chess",
-// } as const;
-
-// const AllGamesOnShelf = [
-//   TicTacToeGameDefinition,
-//   HangmanGameDefinition,
-//   BackgammonGameDefinition,
-//   ChessGameDefinition,
-// ] as const;
-
-
-// export const AllGamesOnShelfSchema = z.discriminatedUnion("title", AllGamesOnShelf);
-
-// export const AllGameTitles = AllGamesOnShelfSchema.options.map(x => x.shape.title._def.value);
-
-// export type AllGameTitles = typeof AllGameTitles;
-
-
-// console.log(AllGameTitles);
-
-// export const AllGamesOnShelfArray = [
-//   TicTacToeGameDefinition.parse({ title: "Tic Tac Toe", minNumPlayersForGame: 2, maxNumPlayersForGame: 2 }),
-//   HangmanGameDefinition.parse({ title: "Hangman", minNumPlayersForGame: 2, maxNumPlayersForGame: 6 }),
-//   BackgammonGameDefinition.parse({ title: "Backgammon", minNumPlayersForGame: 2, maxNumPlayersForGame: 2 }),
-//   ChessGameDefinition.parse({ title: "Chess", minNumPlayersForGame: 2, maxNumPlayersForGame: 2 }),
-// ] as const;
-
-// export type AllGamesOnShelf = z.infer<typeof AllGamesOnShelfSchema>;
-
-// export type AllGamesOnShelfOptions = z.infer<typeof AllGamesOnShelfSchema>;
-
-
-// export const GameTitles = AllGamesOnShelf.map(game => 
-//   game.shape.title._def.value) as [GameTitle, ...GameTitle[]];
-
-// export const GameOnShelfSchema = z.enum(GameTitles);
-
-
-
-// export type GameOnShelf = z.infer<typeof GameOnShelfSchema>;

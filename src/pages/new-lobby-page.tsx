@@ -127,7 +127,7 @@ export const NewLobbyPage = () => {
       const newLobby: GameLobby = {
         id: newLobbyId,
         createdAt: now,
-        currentStatusDescription: `Created by ${formData.lobbyName}`,
+        currentStatusDescription: `Launched from ${formData.lobbyName}`,
         lobbyName: formData.lobbyName,
         gameHostPlayerProfile: publicHostPlayerProfile,
         gameTitle: formData.gameTitle,

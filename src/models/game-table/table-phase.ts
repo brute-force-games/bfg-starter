@@ -7,6 +7,7 @@ export const TablePhaseEnumSchema = z.enum([
   "table-phase-game-in-progress",
   "table-phase-game-complete-with-winners",
   "table-phase-game-complete-with-draw",
+  "table-phase-game-complete-no-winners",
   "table-phase-game-abandoned",
   "table-phase-error",
 ]);

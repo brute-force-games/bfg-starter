@@ -28,6 +28,7 @@ export const PlayerP2pLobbyComponent = ({
 }: IPlayerP2pLobbyComponentProps) => {
 
   const lobby = useP2pLobby(lobbyId as GameLobbyId, playerProfile);
+  console.log('PlayerP2pLobbyComponent: lobby', lobby);
 
   const { sendPlayerMove } = lobby;
 

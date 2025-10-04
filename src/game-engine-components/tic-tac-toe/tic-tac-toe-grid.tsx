@@ -1,5 +1,5 @@
 import { TicTacToeMove, TicTacToeGameState, TicTacToeMoveCell, getPlayerSeatSymbol, getCurrentPlayer } from "~/types/bfg-game-engines/tic-tac-toe-engine";
-import { Grid, Button, Typography, Box } from '@mui/material';
+import { Button, Typography, Box } from '@mui/material';
 import { GameTableSeat } from "~/models/game-table/game-table";
 
 
@@ -41,32 +41,38 @@ export const TicTacToeGrid = (props: TicTacToeGridProps) => {
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
-      <Grid container spacing={1} sx={{ width: 'fit-content' }}>
+      <Box 
+        sx={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(3, 1fr)', 
+          gap: 1, 
+          width: 'fit-content' 
+        }}
+      >
         {gameState.board.split('').map((cell, index) => (
-          <Grid item xs={4} key={index}>
-            <Button
-              variant="outlined"
-              onClick={() => {
-                console.log("onClick", index);
-                handleCellClick(index);
-              }}
-              disabled={cell !== '-' || gameState.resolution !== 'game-in-progress' || !isMyTurn}
-              sx={{
-                width: 64,
-                height: 64,
-                fontSize: '2rem',
-                fontWeight: 'bold',
+          <Button
+            key={index}
+            variant="outlined"
+            onClick={() => {
+              console.log("onClick", index);
+              handleCellClick(index);
+            }}
+            disabled={cell !== '-' || gameState.resolution !== 'game-in-progress' || !isMyTurn}
+            sx={{
+              width: 64,
+              height: 64,
+              fontSize: '2rem',
+              fontWeight: 'bold',
+              borderWidth: 2,
+              '&:hover': {
                 borderWidth: 2,
-                '&:hover': {
-                  borderWidth: 2,
-                },
-              }}
-            >
-              {cell === '-' ? '' : cell}
-            </Button>
-          </Grid>
+              },
+            }}
+          >
+            {cell === '-' ? '' : cell}
+          </Button>
         ))}
-      </Grid>
+      </Box>
       <Typography variant="h6" fontWeight="semibold">
         {gameState.resolution === 'game-in-progress' 
           ? `Current player: ${currentPlayerSymbol} [I am ${myPlayerSeatSymbol}]`

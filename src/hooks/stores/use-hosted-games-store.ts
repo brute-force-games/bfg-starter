@@ -6,29 +6,31 @@ import {
   updateHostedGame,
   deleteHostedGame,
   clearAllHostedGames,
+  clearAllStores,
+  parseRawHostedGameData,
 } from '~/store/hosted-games-store';
 import { GameTableId } from '~/types/core/branded-values/bfg-branded-ids';
-import { GameTable, GameTableSchema } from '~/models/game-table/game-table';
+import { GameTable } from '~/models/game-table/game-table';
 
 /**
  * React hooks for hosted game management with TinyBase
  */
 
-/**
- * Safely parse hosted game data from TinyBase reactive hooks
- */
-const parseRawHostedGameData = (gameId: string, rawData: any): GameTable | null => {
-  const result = GameTableSchema.safeParse(rawData);
+// /**
+//  * Safely parse hosted game data from TinyBase reactive hooks
+//  */
+// const parseRawHostedGameData = (gameId: string, rawData: any): GameTable | null => {
+//   const result = GameTableSchema.safeParse(rawData);
 
-  console.log("result", result);
+//   console.log("result", result);
   
-  if (!result.success) {
-    console.error(`Error validating hosted game data for ${gameId}:`, result.error);
-    return null;
-  }
+//   if (!result.success) {
+//     console.error(`Error validating hosted game data for ${gameId}:`, result.error);
+//     return null;
+//   }
   
-  return result.data;
-};
+//   return result.data;
+// };
 
 /**
  * Hook to get all hosted games with reactive updates
@@ -113,11 +115,16 @@ export const useHostedGameActions = () => {
     clearAllHostedGames();
   }, []);
 
+  const clearAllStoresComprehensive = useCallback((): void => {
+    clearAllStores();
+  }, []);
+
   return {
     // addGame,
     updateGame,
     removeGame,
     clearAll,
+    clearAllStores: clearAllStoresComprehensive,
   };
 };
 
