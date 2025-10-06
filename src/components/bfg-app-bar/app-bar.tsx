@@ -1,56 +1,75 @@
 import { Box, Button, Typography } from "@mui/material";
 import { Toolbar } from "@mui/material";
 import { AppBar } from "@mui/material";
-import { Link } from 'react-router';
+import { Link } from '@tanstack/react-router';
+import { useMyDefaultPlayerProfile, useMyPlayerProfiles } from "~/hooks/stores/use-my-player-profiles-store";
 import { UserProfileAccessComponent } from "./user-profile-access-component";
-import { useBfgWhoAmIContext } from "~/state/who-am-i/BfgWhoAmIContext";
 
 
 export const BruteForceGamesAppBar = () => {
-
-  const { dexieStatus, myNotifications } = useBfgWhoAmIContext();
-  // const bfgWhoAmIContext = useRiskyBfgWhoAmIContext();
-
-  // const allInvites = useObservable(bfgDb.cloud.invites);
-
-  // const getNotifications = (): CloudNotification[] => {
-  //   if (!allInvites) {
-  //     return [];
-  //   }
-
-  //   const notifications = allInvites
-  //     .filter((i) => !i.accepted && !i.rejected)
-  //     .map((i) => ({
-  //       id: i.id,
-  //       message: `An invitation from ${i.invitedBy?.name}`,
-  //       from: i.invitedBy?.email ?? '',
-  //       to: i.email ?? '',
-  //       createdAt: i.invitedDate ?? new Date(),
-  //     }));
-
-  //   return notifications;
-  // }
-
-  // const notifications = getNotifications();
-  const notificationsCount = myNotifications.length;
-
-  const notificationLinkTitle = notificationsCount > 0 ? `Notifications (${notificationsCount})` : "Notifications";
-
+  
+  const myPlayerProfiles = useMyPlayerProfiles();
+  const myDefaultPlayerProfile = useMyDefaultPlayerProfile();
   
   return (
-    <AppBar position="static">
-      <Toolbar>
+    <AppBar 
+      position="static" 
+      sx={{ 
+        width: '100%',
+        maxWidth: '100vw',
+        overflow: 'visible'
+      }}
+    >
+      <Toolbar sx={{ 
+        width: '100%',
+        maxWidth: '100%',
+        px: { xs: 2, sm: 3, md: 4 },
+        overflow: 'visible',
+        minHeight: '64px',
+        boxSizing: 'border-box',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}>
         <Typography
           variant="h6"
           component="div"
-          sx={{ flexGrow: 1, fontWeight: 'bold' }}
+          sx={{ fontWeight: 'bold', flexShrink: 0 }}
         >
-          <Link to="/" style={{ textDecoration: 'none' }}>
+          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
             Brute Force Games
           </Link>
         </Typography>
-        <Box sx={{ display: 'flex', gap: 2 }}>
-          <Link to="/games-shelf" style={{ textDecoration: 'none' }}>
+        
+        <Box sx={{ 
+          display: 'flex', 
+          gap: 2,
+          flexShrink: 1,
+          minWidth: 0,
+          alignItems: 'center',
+          flexGrow: 1,
+          justifyContent: 'center'
+        }}>
+          <Link to="/new-lobby" style={{ textDecoration: 'none' }}>
+            <Button color="inherit">Play Now</Button>
+          </Link>
+          {/* <Link to="/games-list" style={{ textDecoration: 'none' }}>
+            <Button color="inherit">Games List</Button>
+          </Link> */}
+          <Link to="/my-hosted-games" style={{ textDecoration: 'none' }}>
+            <Button color="inherit">My Hosted Games</Button>
+          </Link>
+          {/* Always show Player Profiles link, but disable if no profiles */}
+            {myPlayerProfiles && myPlayerProfiles.length > 0 ? (
+              <Link to="/my-player-profiles" style={{ textDecoration: 'none' }}>
+                <Button color="inherit">Player Profiles</Button>
+              </Link>
+            ) : (
+              <Button color="inherit" disabled>
+                Player Profiles
+              </Button>
+            )}
+          {/* <Link to="/games-shelf" style={{ textDecoration: 'none' }}>
             <Button color="inherit">Games Shelf</Button>
           </Link>
           <Link to="/active-tables" style={{ textDecoration: 'none' }}>
@@ -61,13 +80,16 @@ export const BruteForceGamesAppBar = () => {
           </Link>
           <Link to="/notifications" style={{ textDecoration: 'none' }}>
             <Button color="inherit">{notificationLinkTitle}</Button>
-          </Link>
+          </Link> */}
 
         </Box>
-
+        
         <UserProfileAccessComponent
-          dexieStatus={dexieStatus}
+          myPlayerProfiles={myPlayerProfiles}
+          myDefaultPlayerProfile={myDefaultPlayerProfile}
         />
+
+        {/* User profile access removed - local-only mode */}
 
       </Toolbar>
     </AppBar>

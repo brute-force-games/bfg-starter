@@ -1,12 +1,12 @@
 
 export type Environment = 'local' | 'dev' | 'staging' | 'production' | 'unknown';
 
-export type CloudConfig = {
-  isCloudEnabled: true;
-  syncUrl: string;
-} | {
-  isCloudEnabled: false;
-}
+// export type CloudConfig = {
+//   isCloudEnabled: true;
+//   syncUrl: string;
+// } | {
+//   isCloudEnabled: false;
+// }
 
 
 export interface EnvSettings {
@@ -14,7 +14,7 @@ export interface EnvSettings {
   backgroundColor: string;
   pageTitlePrefix: string;
 
-  cloudConfig: CloudConfig;
+  // cloudConfig: CloudConfig;
 
   // projectExportFormat: string;
   // profileExportFormat: string;

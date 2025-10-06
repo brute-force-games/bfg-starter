@@ -1,35 +1,26 @@
 import { Box, Tooltip, IconButton, Avatar } from "@mui/material"
 import { DbkAppBarMenu, DbkAppBarMenuItem } from "./app-bar-menu"
 import { useState } from "react";
-// import { doneBlocksDb } from "~/data/dexie-db/doneblock-db";
-import md5 from 'md5';
-// import { BfgUserCompositeIdentity } from "~/data/zod-types/schemas/shared/user/user-identity";
-import { BfgUserDexieStatus } from "~/types/core/user/user-dexie-status";
-// import { useEnvSettings } from "~/env/EnvSettingsContext";
-import { bfgDb } from "~/data/bfg-db";
-import { DEXIE_DATA_PAGE_ROUTE } from "~/pages/dexie-data/dexie-data-page";
-// import { DEXIE_STATUS_PAGE_PATH } from "~/pages/dexie-status/dexie-status-page";
-// import { DbkUserDexieStatus } from "~/data/zod-types/schemas/shared/user/user-dexie-status";
-// import { MANAGE_SYNC_PAGE_PATH } from "~/pages/manage-sync/manage-sync";
-// import { useEnvSettings } from "~/data/providers/env/EnvSettingsProvider";
-// import { createProfileExportFilename } from "~/data/export/export-filenames";
-// import { useAllMyProjectsDataContext } from "~/data/data-types";
-// import { ACTIVE_PROFILE_EXPORT_VERSION } from "~/data/zod-types/schemas/import-export/versions";
-// import { createProfileExportData } from "~/pages/my-profile/my-profile-utils";
-// import { downloadExportData } from "~/data/export/download-export-data";
+import { PrivatePlayerProfile } from "~/models/private-player-profile";
+import { useHostedGameActions } from "~/hooks/stores/use-hosted-games-store";
 
 
 interface UserProfileAccessComponentProps {
-  // dbkIdentity: DbkUserCompositeIdentity;
-  dexieStatus: BfgUserDexieStatus;
+  myPlayerProfiles: PrivatePlayerProfile[];
+  myDefaultPlayerProfile: PrivatePlayerProfile | null;
 }
 
 export const UserProfileAccessComponent = (props: UserProfileAccessComponentProps) => {
 
-  // const { envSettings } = useEnvSettings();
-  // const { myProjects, exportSavedProject } = useAllMyProjectsDataContext();
-
-  const { dexieStatus } = props;
+  const { myPlayerProfiles, myDefaultPlayerProfile } = props;
+  const { clearAllStores } = useHostedGameActions();
+  
+  // Debug logging
+  console.log('UserProfileAccessComponent rendered with:', {
+    myPlayerProfiles,
+    myDefaultPlayerProfile,
+    profilesCount: myPlayerProfiles?.length || 0
+  });
 
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
@@ -40,72 +31,60 @@ export const UserProfileAccessComponent = (props: UserProfileAccessComponentProp
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+    // Remove focus from the button to prevent it from staying highlighted
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
   };
 
-  
-  // const userName = dbkIdentity.dbkUserHandle;
-  const emailToUse = dexieStatus?.dexieEmailValue;
-  const userName = emailToUse || '???';
-  // const isCloudEnabled = envSettings.cloudConfig.isCloudEnabled;
+  const handleClearAllStores = async () => {
+    if (window.confirm('Are you sure you want to clear ALL stores (games, lobbies, and actions)? This action cannot be undone.')) {
+      clearAllStores();
+      console.log('All stores cleared successfully');
+    }
+  };
 
-  const getCloudActionMenuItem = () => {
-    // if (isCloudEnabled) {
-      const logInOrOutMenuItem = dexieStatus.isLoggedIn ?
-        { type: 'menu-action' as const, title: 'Log Out', action: () => bfgDb.cloud.logout() } :
-        { type: 'menu-action' as const, title: 'Log In', action: () => bfgDb.cloud.login() };
-
-      return logInOrOutMenuItem;
-    // }
-    
-    // // return { type: 'menu-link' as const, title: 'Dexie Status', link: { to: DEXIE_STATUS_PAGE_PATH } };
-    // return { type: 'menu-link' as const, title: 'Dexie Status', link: { to: '/dexie-status' } };
-    
-  }
-
-  // const doDownloadProfileBackup = async () => {
-  //   const exportTime = new Date();
-  //   const exportFilename = createProfileExportFilename(exportTime, dbkIdentity, ACTIVE_PROFILE_EXPORT_VERSION);
-  
-  //   const dataToExport = await createProfileExportData(exportTime, dbkIdentity, myProjects, exportSavedProject);
-  //   const exportContent = JSON.stringify(dataToExport, null, 2);
-
-  //   downloadExportData(exportContent, exportFilename);
-  // }
-
-  const cloudActionMenuItem = getCloudActionMenuItem();
+  const userName = myDefaultPlayerProfile?.handle || myPlayerProfiles[0]?.handle || 'User';
 
   const menuItems: DbkAppBarMenuItem[] = [
     { type: 'menu-label', title: userName },
     { type: 'menu-divider' },
     { type: 'menu-link', title: 'Player Profile', link: { to: '/my-player-profiles' } },
-    { type: 'menu-link', title: 'Gaming Groups', link: { to: '/gaming-groups' } },
-    { type: 'menu-link', title: 'My Friends', link: { to: '/my-friends' } },
-    { type: 'menu-link', title: 'Dexie Data', link: { to: DEXIE_DATA_PAGE_ROUTE } },
-    { type: 'menu-link', title: 'Dexie Status', link: { to: '/dexie-status', } },
-    { type: 'menu-link', title: 'BFG Starter on Github', link: { to: 'https://github.com/brute-force-games/bfg-starter' } },
-    // { type: 'menu-divider' },
-    // { type: 'menu-action', title: 'Download Profile Backup', action: doDownloadProfileBackup },
+    // { type: 'menu-link', title: 'Gaming Groups', link: { to: '/gaming-groups' } },
+    // { type: 'menu-link', title: 'My Friends', link: { to: '/my-friends' } },
     { type: 'menu-divider' },
-    cloudActionMenuItem,
+    { type: 'menu-action', title: 'Clear All Stores', action: handleClearAllStores },
+    { type: 'menu-anchor', title: 'BFG Starter on Github', href: 'https://github.com/brute-force-games/bfg-starter' },
+    // { type: 'menu-action', title: 'Download Profile Backup', action: doDownloadProfileBackup },
   ];
-
-  const getUserImageUrl = () => {
-    if (!emailToUse) {
-      return `https://ui-avatars.com/api/?name=${userName}`;
-    }
-
-    const hash = md5(emailToUse.toLowerCase().trim());
-    return `https://www.gravatar.com/avatar/${hash}?d=identicon&s=200`;
-  };
-
-  const avatarImageUrl = getUserImageUrl();
+  
+  const avatarImageUrl = '';
   
   return (
-
-    <Box sx={{ flexGrow: 0 }}>
+    <Box sx={{ 
+      flexShrink: 0,
+      minWidth: 'fit-content',
+      // Temporary debug styling
+      border: '2px solid red',
+      backgroundColor: 'rgba(255, 0, 0, 0.1)',
+      padding: '4px'
+    }}>
       <Tooltip title="Open settings">
         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          <Avatar src={avatarImageUrl} alt={"username"} />
+          <Avatar 
+            src={avatarImageUrl} 
+            alt={userName}
+            sx={{ 
+              width: 40, 
+              height: 40,
+              bgcolor: 'primary.main',
+              color: 'white',
+              fontSize: '1.2rem',
+              fontWeight: 'bold'
+            }}
+          >
+            {userName.charAt(0).toUpperCase()}
+          </Avatar>
         </IconButton>
       </Tooltip>
       <DbkAppBarMenu

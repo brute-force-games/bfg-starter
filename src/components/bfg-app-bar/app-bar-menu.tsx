@@ -1,7 +1,7 @@
 import { Divider, Menu, MenuItem, Typography } from '@mui/material';
 import { useState } from 'react';
 import { DbkAppBarSubMenu } from './app-bar-sub-menu';
-import { Link, LinkProps } from 'react-router';
+import { Link, LinkProps } from '@tanstack/react-router';
 
 
 export type SubMenuAction = {
@@ -36,6 +36,12 @@ export type MenuLink = {
   link: LinkProps;
 }
 
+export type MenuAnchor = {
+  type: 'menu-anchor';
+  title: string;
+  href: string;
+}
+
 export type MenuDivider = { 
   type: 'menu-divider';
 }
@@ -45,7 +51,7 @@ export type MenuLabel = {
   title: string;
 }
 
-export type DbkAppBarMenuItem = MenuAction | MenuLink | SubMenu | MenuDivider | MenuLabel;
+export type DbkAppBarMenuItem = MenuAction | MenuLink | MenuAnchor | SubMenu | MenuDivider | MenuLabel;
 
 interface IDbkAppBarMenuProps {
   anchorElUser: null | HTMLElement;
@@ -115,10 +121,23 @@ export const DbkAppBarMenu = ({ anchorElUser, userMenuItems, handleCloseUserMenu
                 key={`link-${menuItem.title}-${index}`}
                 to={menuItem.link.to as string}
               >
-                <MenuItem>
+                <MenuItem onClick={handleMenuClose}>
                   <Typography sx={{ textAlign: 'center' }}>{menuItem.title}</Typography>
                 </MenuItem>
               </Link>
+            )
+          } else if (menuItem.type === 'menu-anchor') {
+            return (
+              <MenuItem
+                key={`anchor-${menuItem.title}-${index}`}
+                component="a"
+                href={menuItem.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={handleMenuClose}
+              >
+                <Typography sx={{ textAlign: 'center' }}>{menuItem.title}</Typography>
+              </MenuItem>
             )
           } else if (menuItem.type === 'menu-divider') {
             return (

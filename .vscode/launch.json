@@ -8,7 +8,7 @@
       "type": "chrome",
       "request": "launch",
       "name": "Launch Chrome against localhost",
-      "url": "http://localhost:62776/dexie-status",
+      "url": "http://localhost:62777",
       "webRoot": "${workspaceFolder}"
     }
   ]

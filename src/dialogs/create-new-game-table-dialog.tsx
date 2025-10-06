@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { AvailableGameTitleChoice } from '~/types/enums/game-shelf';
 import { useBfgWhoAmIContext } from '~/state/who-am-i/BfgWhoAmIContext';
-import { NewGameTable, DbGameTable, NewGameTableSchema } from '~/types/core/game-table/game-table';
+import { NewGameTable, DbGameTable, NewGameTableSchema } from '~/models/game-table/game-table';
 import { AvailableGameTitles } from '~/types/bfg-game-engines/supported-games';
 
 

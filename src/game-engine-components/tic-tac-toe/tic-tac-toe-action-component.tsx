@@ -1,14 +1,13 @@
 import { BasicGameTableActionComponent } from "~/components/games/basic-game-table-action-component";
-import { getPlayerSeatForActionSource, isActionForMyPlayer } from "~/data/dexie-data-ops/player-seat-utils";
-import { GameTableSeat } from "~/types/core/game-table/game-table";
-import { DbGameTable } from "~/types/core/game-table/game-table";
-import { DbGameTableAction } from "~/types/core/game-table/game-table-action";
-import { DbPlayerProfileId } from "~/types/core/branded-values/branded-strings";
+import { getPlayerSeatForActionSource, isActionForMyPlayer } from "~/data/game-table-ops/player-seat-utils";
+import { GameTable, GameTableSeat } from "~/models/game-table/game-table";
+import { DbGameTableAction } from "~/models/game-table/game-table-action";
+import { PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids";
 
 
 interface ITicTacToeActionComponentProps {
   myPlayerSeat: GameTableSeat;
-  gameTable: DbGameTable;
+  gameTable: GameTable;
   action: DbGameTableAction;
 }
 
@@ -22,9 +21,9 @@ export const TicTacToeActionComponent = (props: ITicTacToeActionComponentProps) 
     )
   }
 
-  if (action.actionType === 'game-table-action-host-starts-lobby') {
+  if (action.actionType === 'game-table-action-host-starts-setup') {
     return (
-      <div>Host Starts Lobby</div>
+      <div>Host Starts Setup</div>
     )
   }
 
@@ -56,7 +55,7 @@ export const TicTacToeActionComponent = (props: ITicTacToeActionComponentProps) 
   const actionMoveText = "blah";
 
   if (action.actionType === 'game-table-action-player-move') {
-    const playerId = gameTable[myPlayerSeat] as DbPlayerProfileId;
+    const playerId = gameTable[myPlayerSeat] as PlayerProfileId;
     const isMyMove = isActionForMyPlayer(action.source, playerId, gameTable);
 
     if (isMyMove) {
