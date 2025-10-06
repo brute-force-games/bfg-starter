@@ -82,37 +82,4 @@ export const asHostApplyMoveFromPlayer = async <GameSpecificAction extends z.Zod
   } satisfies HostApplyMoveFromPlayerResult;
 
   return retVal;
-
-  // return actionOutcomeGameState;
-
-  // const playerMoveAction: DbGameTableAction = {
-  //   gameTableId: gameTable.id,
-  //   createdAt: now,
-
-  //   source: playerActionSource,
-  //   actionType: "game-table-action-player-move",
-  //   actionJson: playerActionJson,
-  //   actionOutcomeGameStateJson,
-  // }
-
-  // const tablePhase = afterActionResult.tablePhase;
-
-  // await bfgDb.transaction(
-  //   'rw',
-  //   [bfgDb.gameTables, bfgDb.gameTableActions],
-  //   async () => {
-  //     const updatedGameTable: DbGameTable = {
-  //       ...gameTable,
-  //       tablePhase,
-  //       latestActionId: startActionId,
-  //       currentStatusDescription: gameStateSummary,
-  //     }
-
-  //     await bfgDb
-  //       .gameTables
-  //       .update(gameTable, updatedGameTable);
-
-  //     await bfgDb.gameTableActions.add(playerMoveAction);
-  //   }
-  // );
 }

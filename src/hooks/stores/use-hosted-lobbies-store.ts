@@ -68,34 +68,6 @@ export const useHostedLobbiesByStatus = (statusDescription: string) => {
   return allLobbies.filter(lobby => lobby.currentStatusDescription === statusDescription);
 };
 
-// /**
-//  * Hook to get lobbies with available seats with reactive updates
-//  */
-// export const useLobbiesWithAvailableSeats = () => {
-//   const allLobbies = useHostedLobbies();
-//   return allLobbies.filter(lobby => {
-//     const occupiedSeats = [lobby.p1, lobby.p2, lobby.p3, lobby.p4, lobby.p5, lobby.p6, lobby.p7, lobby.p8]
-//       .filter(seat => seat !== undefined).length;
-//     return occupiedSeats < 8; // Assuming max 8 players
-//   });
-// };
-
-// /**
-//  * Hook to get lobbies where a specific player is seated with reactive updates
-//  */
-// export const useLobbiesByPlayer = (playerId: string) => {
-//   const allLobbies = useHostedLobbies();
-//   return allLobbies.filter(lobby => 
-//     lobby.p1 === playerId ||
-//     lobby.p2 === playerId ||
-//     lobby.p3 === playerId ||
-//     lobby.p4 === playerId ||
-//     lobby.p5 === playerId ||
-//     lobby.p6 === playerId ||
-//     lobby.p7 === playerId ||
-//     lobby.p8 === playerId
-//   );
-// };
 
 /**
  * Hook to get hosted lobbies count with reactive updates

@@ -21,7 +21,6 @@ const createNewGameTableFromLobbyState = (lobbyState: GameLobby, newGameTableId:
 
   const now = Date.now();
   const latestActionId = BfgGameTableActionId.createId();
-  // const id = BfgGameTableId.createId();
 
   // Fill out p1-p8 from the lobby player pool array
   const retVal: GameTable = {
@@ -102,23 +101,4 @@ export const asHostStartNewGame = async (lobbyState: GameLobby, newGameTableId: 
   await addGameAction(tableId, hostStartsGameSetupAction);
 
   return newGameTable;
-
-  // await bfgDb.transaction(
-  //   'rw',
-  //   [bfgDb.gameTables, bfgDb.gameTableActions],
-  //   async () => {
-
-  //     const updatedGameTable: DbGameTable = {
-  //       ...newGameTable,
-  //       tablePhase: "table-phase-game-in-progress",
-  //       latestActionId: startActionId,
-  //     }
-
-  //     await bfgDb
-  //       .gameTables
-  //       .update(newGameTable, updatedGameTable);
-
-  //     await bfgDb.gameTableActions.add(hostStartsGameAction);
-  //   }
-  // );
 }

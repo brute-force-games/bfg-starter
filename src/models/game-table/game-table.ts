@@ -45,21 +45,3 @@ export const GameTableSchema = z.object({
 });
 
 export type GameTable = z.infer<typeof GameTableSchema>;
-
-
-// export const NewGameTableSchema = GameTableSchema.omit({
-//   id: true,
-//   latestActionId: true,
-//   createdAt: true,
-// });
-
-// export type NewGameTable = z.infer<typeof NewGameTableSchema>;
-
-
-// export const DbGameTableSchema = GameTableSchema.extend({
-//   id: BfgGameTableId.idSchema,
-//   latestActionId: BfgGameTableActionId.idSchema,
-//   // realmId: z.string().optional(),
-// });
-
-// export type DbGameTable = z.infer<typeof DbGameTableSchema>;

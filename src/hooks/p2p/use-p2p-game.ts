@@ -78,13 +78,6 @@ export const useP2pGame = (gameTableId: GameTableId, myPlayerProfile: PublicPlay
     addConnectionEvent('initialized', 'P2P game connection initialized', 0);
   }, []);
 
-  // // Cleanup on unmount
-  // useEffect(() => {
-  //   return () => {
-  //     console.log('🔌 Cleaning up P2P game connection');
-  //     room.leave();
-  //   };
-  // }, []); // No dependencies - cleanup only on unmount
 
   room.onPeerJoin(peer => {
     console.log('Peer joined:', peer)

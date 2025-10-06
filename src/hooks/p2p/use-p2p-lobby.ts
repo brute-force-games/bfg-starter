@@ -73,14 +73,7 @@ export const useP2pLobby = (lobbyId: GameLobbyId, myPlayerProfile: PublicPlayerP
     addConnectionEvent('initialized', 'P2P lobby connection initialized', 0);
   }, []);
 
-  // Cleanup on unmount
-  // useEffect(() => {
-  //   return () => {
-  //     console.log('🔌 Cleaning up P2P lobby connection');
-  //     room.leave();
-  //   };
-  // }, []); // No dependencies - cleanup only on unmount
-
+  
   room.onPeerJoin(peer => {
     console.log('Peer joined:', peer)
     sendPlayerProfile(myPlayerProfile, peer);

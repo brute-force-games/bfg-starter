@@ -37,8 +37,6 @@ export type GameTableActionType = z.infer<typeof GameTableActionTypeSchema>;
 
 
 export const DbGameTableActionSchema = z.object({
-  // id: BfgGameTableActionId.idSchema,
-  // gameHostPlayerProfileId: BfgPlayerProfileId.idSchema,
   createdAt: z.number(),
 
   source: GameTableActionSourceSchema,
@@ -48,25 +46,9 @@ export const DbGameTableActionSchema = z.object({
   actionOutcomeGameStateJson: z.string(),
   
   gameTableId: BfgGameTableId.idSchema,
-  // previousActionId: BfgGameTableActionId.idSchema.nullable(),
 });
 
-export type DbGameTableAction = z.infer<typeof DbGameTableActionSchema>;  
-
-
-// export const NewGameTableActionSchema = DbGameTableActionSchema.omit({
-//   id: true,
-//   gameTableId: true,
-//   // previousActionId: true,
-// });
-
-// export type NewGameTableAction = z.infer<typeof NewGameTableActionSchema>;
-
-
-// const BfgGameTableActionTypeSchema = z.object({
-//   gameActionType: GameActionTypeSchema,
-// });
-
+export type DbGameTableAction = z.infer<typeof DbGameTableActionSchema>;
 
 
 export type BfgGameSpecificTableAction<TA> = {
@@ -76,43 +58,6 @@ export type BfgGameSpecificTableAction<TA> = {
 
   gameSpecificAction: TA;
 }
-
-
-// export const createBfgGameSpecificTableActionSchema = <T extends z.ZodType>(
-//   // gameActionTypeId: z.ZodBranded<z.ZodTypeAny, 'game-action-type-id'>,
-
-  
-//   gameActionTypeSchema: z.ZodSchema,
-// ): BfgGameSpecificTableAction<z.infer<typeof gameActionTypeSchema>> => {
-
-//   // GameTableActionTypeSchema
-
-//   // source: GameTableActionSourceSchema,
-//   // actionType: GameTableActionTypeSchema,
-  
-//   // actionJson: z.string(),
-//   // actionOutcomeGameStateJson: z.string(),
-
-//   // // nextPlayersToAct: z.array(GameTableSeatSchema),
-
-//   // createdAt: z.date(),
-
-
-//   const retVal = z.object({
-//     // id: BfgGameTableActionId.idSchema,
-//     // source: GameTableActionSourceSchema,
-//     // actionType: GameTableActionTypeSchema,
-//     actionId: z.infer<T>,
-//     source: GameTableActionSourceSchema,
-//     actionType: GameTableActionTypeSchema,
-  
-//     gameActionType: gameActionTypeSchema,
-//     // actionJson: z.string(),
-//     // actionOutcomeGameStateJson: z.string(),
-//   });
-
-//   return retVal;
-// }
 
 
 export const BfgGameSpecificGameStateSchema = z.object({

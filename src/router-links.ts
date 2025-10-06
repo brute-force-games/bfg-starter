@@ -1,10 +1,6 @@
 import { GameFriendId, GameTableId } from "./types/core/branded-values/bfg-branded-ids";
 
 
-// export const createLobbyUrl = (lobbyId: DbGameLobbyId) => {
-//   return `/lobbies/${lobbyId}`;
-// }
-
 const getWindowOrigin = () => {
   return window.location.origin;
 }

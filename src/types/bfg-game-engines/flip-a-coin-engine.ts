@@ -314,11 +314,9 @@ const flipACoinProcessorImplementation: IBfgGameEngineProcessor<
   typeof FlipACoinGameActionSchema
 > = {
   gameTitle: FlipACoinGameName,
-  // gameStateSchema: FlipACoinGameStateSchema,
-  // gameActionSchema: FlipACoinGameActionSchema,
 
   applyGameAction: applyFlipACoinGameAction,
-  // createInitialGameState,
+
   createInitialGameSpecificState: createInitialGameState,
   createInitialGameTableAction: createInitialFlipACoinGameTableAction,
 

@@ -13,17 +13,6 @@ import {
 import { PrivatePlayerProfile, PrivatePlayerProfileSchema, privateToPublicProfile } from '~/models/private-player-profile';
 import { PlayerProfileId } from '~/types/core/branded-values/bfg-branded-ids';
 import { PublicPlayerProfile } from '~/models/public-player-profile';
-// import { PlayerProfileId } from '~/types/branded-values/player-profile-id';
-
-/**
- * React hooks for player profile management with TinyBase
- */
-// export const MY_FRIENDS_TABLE = 'myFriends';
-// export const MY_GAMING_GROUPS_TABLE = 'myGamingGroups';
-
-// export const GAME_TABLES_DATA_TABLE = 'gameTables';
-// export const GAME_ACTIONS_DATA_TABLE = 'gameActions';
-
 
 
 /**

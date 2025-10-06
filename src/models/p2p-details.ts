@@ -35,22 +35,5 @@ export const PlayerP2pLobbyMoveSchema = z.discriminatedUnion('move', [
 export type PlayerP2pLobbyMove = z.infer<typeof PlayerP2pLobbyMoveSchema>;
 
 
-// export const PlayerP2pGameMoveSchema = z.discriminatedUnion('move', [
-//   PlayerP2pGameSetGameChoiceMoveSchema,
-// ])
 export const PlayerP2pGameMoveSchema = z.string().brand<"PlayerP2pGameMove">();
 export type PlayerP2pGameMove = z.infer<typeof PlayerP2pGameMoveSchema>;
-
-
-
-// export type GameSpecificAction = z.infer<typeof GameSpecificActionSchema>;
-
-// export interface IHostedP2pPublicDetails {
-//   hostPlayerProfile: PublicPlayerProfileJsonStr
-//   hostedGame: GameTable
-//   gameActions: DbGameTableAction[]
-// }
-
-// export interface IPlayerP2pPublicDetails {
-//   playerProfile: PublicPlayerProfileJsonStr
-// }

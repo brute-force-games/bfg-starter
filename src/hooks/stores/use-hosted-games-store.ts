@@ -16,22 +16,6 @@ import { GameTable } from '~/models/game-table/game-table';
  * React hooks for hosted game management with TinyBase
  */
 
-// /**
-//  * Safely parse hosted game data from TinyBase reactive hooks
-//  */
-// const parseRawHostedGameData = (gameId: string, rawData: any): GameTable | null => {
-//   const result = GameTableSchema.safeParse(rawData);
-
-//   console.log("result", result);
-  
-//   if (!result.success) {
-//     console.error(`Error validating hosted game data for ${gameId}:`, result.error);
-//     return null;
-//   }
-  
-//   return result.data;
-// };
-
 /**
  * Hook to get all hosted games with reactive updates
  */
@@ -51,7 +35,7 @@ export const useHostedGame = (gameId: GameTableId): GameTable | null => {
   const rawGames = useHostedGames();
   const rawGameData = rawGames.find(game => game.id === gameId);
 
-  console.log("rawGameData", rawGameData);
+  // console.log("rawGameData", rawGameData);
   
   if (!rawGameData) {
     return null;

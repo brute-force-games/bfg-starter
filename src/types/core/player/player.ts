@@ -1,7 +1,5 @@
 import { z } from "zod";
 import { BfgPlayerProfileId } from "../branded-values/bfg-branded-ids";
-// import { BfgPlayerIdSchema } from "../branded-values/bs-player-id";
-
 
 
 export const PlayerInGameStatusSchema = z.enum([
@@ -20,26 +18,3 @@ export const PlayerInLobbySchema = z.object({
 });
 
 export type PlayerInLobby = z.infer<typeof PlayerInLobbySchema>;
-
-
-// export const PlayerInGameSchema = PlayerInLobbySchema.extend({
-//   // gamePlayerId: GamePlayerIdSchema,
-//   playerData: CompletePlayerDataSchema,
-//   status: PlayerInGameStatusSchema,
-// });
-
-// export type PlayerInGame = z.infer<typeof PlayerInGameSchema>;
-
-
-// // Player state
-// export const PlayerStateSchema = z.object({
-//   id: z.string(),
-//   name: z.string(),
-//   illuminati: IlluminatiCardSchema,
-//   powerStructure: PowerStructureSchema,
-//   specialCards: z.array(z.string()), // IDs of special cards
-//   treasury: z.number(),
-//   isConnected: z.boolean(),
-//   actionsRemaining: z.number(),
-//   hasUsedIlluminatiPower: z.boolean()
-// });

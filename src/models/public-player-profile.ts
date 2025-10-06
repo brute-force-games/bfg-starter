@@ -28,8 +28,6 @@ export const PublicPlayerProfileSchema = z.object({
 });
 
 export type PublicPlayerProfile = z.infer<typeof PublicPlayerProfileSchema>;
-// export type SerializedPublicPlayerProfile = z.infer<typeof PublicPlayerProfileSchema>;
-// export const PublicPlayerProfileJson = createBrandedJsonSchema(PublicPlayerProfileSchema);
 
 
 // First create a branded schema from the object schema
