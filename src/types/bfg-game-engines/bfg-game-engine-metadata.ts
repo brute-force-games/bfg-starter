@@ -130,14 +130,13 @@ export const createBfgGameEngineProcessor = <
     createBfgGameSpecificInitialGameTableAction: processorImplementation.createInitialGameTableAction,
 
     createGameSpecificGameStateJson: (obj: TGameStateInferred) => createBrandedGameStateJsonValue(obj),
-    parseGameSpecificGameStateJson: (jsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>) => {
-
+    parseGameSpecificGameStateJson: <T extends AbfgSupportedGameTitle>(jsonString: BfgGameSpecificGameStateTypedJson<T>) => {
       const json = JSON.parse(jsonString);
       return gameStateSchema.parse(json) as z.infer<GS>;
     },
 
     createGameSpecificActionJson: (obj: TGameActionInferred) => createBrandedGameActionJsonValue(obj),
-    parseGameSpecificActionJson: (jsonString: BfgGameSpecificGameStateTypedJson<AbfgSupportedGameTitle>) => {
+    parseGameSpecificActionJson: <T extends AbfgSupportedGameTitle>(jsonString: BfgGameSpecificGameStateTypedJson<T>) => {
       const json = JSON.parse(jsonString);
       return gameActionSchema.parse(json) as z.infer<GA>;
     },
