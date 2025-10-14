@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { NewLobbyPage } from '~/pages/new-lobby-page';
+import { NewLobbyPage } from '~/site-pages/new-lobby-page';
 
 
 export const Route = createFileRoute('/new-lobby')({
