@@ -11,19 +11,23 @@ const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(file
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
-  plugins: [tsConfigPaths(),
-  // tanstackStart({
-  //   spa: { enabled: true }, // Run as SPA (client-side only)
-  // }),
-  viteReact({
-    jsxRuntime: 'automatic'
-  })],
+  plugins: [
+    tsConfigPaths(),
+    // tanstackStart({
+    //   spa: { enabled: true }, // Run as SPA (client-side only)
+    // }),
+    viteReact({
+      jsxRuntime: 'automatic'
+    })
+  ],
   server: {
     port: 62776
   },
   resolve: {
     alias: {
-      '~': '/src'
+      '~': path.resolve(dirname, './src'),
+      '@bfg-engine': path.resolve(dirname, './modules/bfg-engine/src'),
+      '@bfg-games': path.resolve(dirname, './modules/bfg-gdp-basic-games/src')
     }
   },
   define: {

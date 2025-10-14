@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { z } from 'zod'
-import { HostedP2pGameComponent } from '~/components/p2p/hosted-p2p-game-component'
-import { BfgGameTableId } from '~/types/core/branded-values/bfg-branded-ids'
+import { BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-ids'
+import { HostedP2pGameComponent } from '@bfg-engine/ui/components/hosted-p2p-game-component'
 
 const paramsSchema = z.object({
   tableId: BfgGameTableId.idSchema,

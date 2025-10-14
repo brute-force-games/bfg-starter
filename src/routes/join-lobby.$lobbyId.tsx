@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { z } from 'zod'
-import { PlayerP2pLobbyComponent } from '~/components/p2p/player-p2p-lobby-component'
-import { useMyDefaultPlayerProfile } from '~/hooks/stores/use-my-player-profiles-store'
-import { BfgGameLobbyId } from '~/types/core/branded-values/bfg-branded-ids'
+import { PlayerP2pLobbyComponent } from '@bfg-engine/ui/components/player-p2p-lobby-component'
+import { useMyDefaultPlayerProfile } from '@bfg-engine/hooks/stores/use-my-player-profiles-store'
+import { BfgGameLobbyId } from '@bfg-engine/models/types/bfg-branded-ids'
 
 const paramsSchema = z.object({
   lobbyId: BfgGameLobbyId.idSchema,

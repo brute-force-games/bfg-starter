@@ -1,12 +1,20 @@
-import type { ReactNode } from 'react'
-import {
-  Outlet,
-  createRootRoute,
-  Scripts,
-} from '@tanstack/react-router'
-import { ProfileGuard } from '~/components/profile-guard'
-import { BruteForceGamesAppBar } from '~/components/bfg-app-bar/app-bar'
-// import { BfgWhoAmIProvider } from '~/state/who-am-i/BfgWhoAmIProvider'
+import { Outlet, createRootRoute, Scripts, } from '@tanstack/react-router'
+import { ProfileGuard } from '@bfg-engine/ui/components/profile-guard'
+import { BruteForceGamesAppBar } from '@bfg-engine/ui/components/bfg-app-bar/app-bar'
+
+
+export const RootComponent = () => {
+  return (
+    <>
+      <BruteForceGamesAppBar />
+      <ProfileGuard>
+        <Outlet />
+      </ProfileGuard>
+      <Scripts />
+    </>
+  )
+}
+
 
 export const Route = createRootRoute({
   head: () => ({
@@ -25,23 +33,3 @@ export const Route = createRootRoute({
   }),
   component: RootComponent,
 })
-
-function RootComponent() {
-  return (
-    <RootDocument>
-      <BruteForceGamesAppBar />
-      <ProfileGuard>
-        <Outlet />
-      </ProfileGuard>
-    </RootDocument>
-  )
-}
-
-function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
-  return (
-    <>
-      {children}
-      <Scripts />
-    </>
-  )
-}

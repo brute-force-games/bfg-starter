@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WalletDemoRouteImport } from './routes/wallet-demo'
 import { Route as NewLobbyRouteImport } from './routes/new-lobby'
 import { Route as MyPlayerProfilesRouteImport } from './routes/my-player-profiles'
 import { Route as IndexRouteImport } from './routes/index'
@@ -18,11 +17,6 @@ import { Route as HostedLobbyLobbyIdRouteImport } from './routes/hosted-lobby.$l
 import { Route as HostedGamesTableIdRouteImport } from './routes/hosted-games.$tableId'
 import { Route as GamesTableIdRouteImport } from './routes/games.$tableId'
 
-const WalletDemoRoute = WalletDemoRouteImport.update({
-  id: '/wallet-demo',
-  path: '/wallet-demo',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const NewLobbyRoute = NewLobbyRouteImport.update({
   id: '/new-lobby',
   path: '/new-lobby',
@@ -63,7 +57,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/my-player-profiles': typeof MyPlayerProfilesRoute
   '/new-lobby': typeof NewLobbyRoute
-  '/wallet-demo': typeof WalletDemoRoute
   '/games/$tableId': typeof GamesTableIdRoute
   '/hosted-games/$tableId': typeof HostedGamesTableIdRoute
   '/hosted-lobby/$lobbyId': typeof HostedLobbyLobbyIdRoute
@@ -73,7 +66,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/my-player-profiles': typeof MyPlayerProfilesRoute
   '/new-lobby': typeof NewLobbyRoute
-  '/wallet-demo': typeof WalletDemoRoute
   '/games/$tableId': typeof GamesTableIdRoute
   '/hosted-games/$tableId': typeof HostedGamesTableIdRoute
   '/hosted-lobby/$lobbyId': typeof HostedLobbyLobbyIdRoute
@@ -84,7 +76,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/my-player-profiles': typeof MyPlayerProfilesRoute
   '/new-lobby': typeof NewLobbyRoute
-  '/wallet-demo': typeof WalletDemoRoute
   '/games/$tableId': typeof GamesTableIdRoute
   '/hosted-games/$tableId': typeof HostedGamesTableIdRoute
   '/hosted-lobby/$lobbyId': typeof HostedLobbyLobbyIdRoute
@@ -96,7 +87,6 @@ export interface FileRouteTypes {
     | '/'
     | '/my-player-profiles'
     | '/new-lobby'
-    | '/wallet-demo'
     | '/games/$tableId'
     | '/hosted-games/$tableId'
     | '/hosted-lobby/$lobbyId'
@@ -106,7 +96,6 @@ export interface FileRouteTypes {
     | '/'
     | '/my-player-profiles'
     | '/new-lobby'
-    | '/wallet-demo'
     | '/games/$tableId'
     | '/hosted-games/$tableId'
     | '/hosted-lobby/$lobbyId'
@@ -116,7 +105,6 @@ export interface FileRouteTypes {
     | '/'
     | '/my-player-profiles'
     | '/new-lobby'
-    | '/wallet-demo'
     | '/games/$tableId'
     | '/hosted-games/$tableId'
     | '/hosted-lobby/$lobbyId'
@@ -127,7 +115,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MyPlayerProfilesRoute: typeof MyPlayerProfilesRoute
   NewLobbyRoute: typeof NewLobbyRoute
-  WalletDemoRoute: typeof WalletDemoRoute
   GamesTableIdRoute: typeof GamesTableIdRoute
   HostedGamesTableIdRoute: typeof HostedGamesTableIdRoute
   HostedLobbyLobbyIdRoute: typeof HostedLobbyLobbyIdRoute
@@ -136,13 +123,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/wallet-demo': {
-      id: '/wallet-demo'
-      path: '/wallet-demo'
-      fullPath: '/wallet-demo'
-      preLoaderRoute: typeof WalletDemoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/new-lobby': {
       id: '/new-lobby'
       path: '/new-lobby'
@@ -199,7 +179,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MyPlayerProfilesRoute: MyPlayerProfilesRoute,
   NewLobbyRoute: NewLobbyRoute,
-  WalletDemoRoute: WalletDemoRoute,
   GamesTableIdRoute: GamesTableIdRoute,
   HostedGamesTableIdRoute: HostedGamesTableIdRoute,
   HostedLobbyLobbyIdRoute: HostedLobbyLobbyIdRoute,

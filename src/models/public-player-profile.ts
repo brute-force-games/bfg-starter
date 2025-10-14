@@ -12,15 +12,19 @@ export const PublicPlayerProfileSchema = z.object({
   handle: z.string().min(4, "Handle must be at least 4 characters long"),
   avatarImageUrl: z.string().optional(),
   
-  // Public key for verifying signatures (RSA PEM format)
+  // Public key for verifying signatures (RSA PEM format) - DEPRECATED
   publicKey: z.string().optional(),
   
-  // Wallet-based identity (BCH address and public key)
+  // Wallet-based identity (BCH address and public key) - DEPRECATED
   walletAddress: z.string().optional(),
   walletPublicKey: z.string().optional(),
   
+  // Web Crypto API public keys (JWK format)
+  signingPublicKey: z.string().optional(), // ECDSA P-384 public key for verifying signatures
+  encryptionPublicKey: z.string().optional(), // RSA-OAEP public key for encrypting messages
+  
   // Identity type to determine which authentication method to use
-  identityType: z.enum(['rsa', 'wallet']).default('rsa'),
+  // identityType: z.enum(['rsa', 'wallet']).default('rsa'),
   
   // Metadata - using numbers (milliseconds since epoch)
   createdAt: z.number(),

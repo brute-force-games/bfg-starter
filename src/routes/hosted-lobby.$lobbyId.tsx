@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
 import { z } from "zod"
-import { HostedP2pLobbyComponent } from "~/components/p2p/hosted-p2p-lobby-component"
-import { useHostedLobby, useHostedLobbyActions } from "~/hooks/stores/use-hosted-lobbies-store"
-import { useMyDefaultHostPlayerProfile } from "~/hooks/stores/use-my-player-profiles-store"
-import { GameLobby, LobbyOptions } from "~/models/p2p-lobby"
-import { BfgSupportedGameTitlesSchema } from "~/types/bfg-game-engines/supported-games"
+import { HostedP2pLobbyComponent } from "@bfg-engine/ui/components/hosted-p2p-lobby-component"
+import { useHostedLobby, useHostedLobbyActions } from "@bfg-engine/hooks/stores/use-hosted-lobbies-store"
+import { useMyDefaultHostPlayerProfile } from "@bfg-engine/hooks/stores/use-my-player-profiles-store"
+import { GameLobby, LobbyOptions } from "@bfg-engine/models/p2p-lobby"
 import { BfgGameLobbyId, PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids"
+import { useGameRegistry } from "@bfg-engine/hooks/games-registry/games-registry"
 
 const paramsSchema = z.object({
   lobbyId: BfgGameLobbyId.idSchema,
@@ -28,11 +28,12 @@ export const HostedLobbyPage = () => {
   const lobbyActions = useHostedLobbyActions();
   const myHostPlayerProfile = useMyDefaultHostPlayerProfile();
 
+  const registry = useGameRegistry();
+  const gameChoices = registry.getAvailableGameTitles();
+
   const [lobbyOptions, setLobbyOptions] = useState<LobbyOptions>(() => {
-    const gameChoices = BfgSupportedGameTitlesSchema.options;
     return {
-      gameChoices,  
-      maxPlayers: 8,
+      gameChoices,
     }
   });
 
