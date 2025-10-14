@@ -3,10 +3,10 @@ import {
   useMyPlayerProfiles, 
   useMyDefaultPlayerProfile, 
   usePlayerProfileActions 
-} from '~/hooks/stores/use-my-player-profiles-store';
-import { PrivatePlayerProfile } from '~/models/private-player-profile';
-import { PlayerProfileId } from '~/types/core/branded-values/bfg-branded-ids';
-import { CryptoTestDialog } from '~/dialogs/crypto-test-dialog';
+} from '@bfg-engine/hooks/stores/use-my-player-profiles-store';
+import { PrivatePlayerProfile } from '@bfg-engine/models/player-profile/private-player-profile';
+import { PlayerProfileId } from '@bfg-engine/models/types/bfg-branded-ids';
+import { CryptoTestDialog } from '@bfg-engine/ui/components/dialogs/crypto-test-dialog';
 
 interface PlayerProfileCardProps {
   profile: PrivatePlayerProfile;

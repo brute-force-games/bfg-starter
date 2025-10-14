@@ -2,13 +2,15 @@ import { GameLobby, LobbyOptions } from "~/models/p2p-lobby"
 import { PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids"
 import { PublicPlayerProfile } from "~/models/public-player-profile"
 import { BfgShareableLinkComponent } from "../bfg-shareable-link-component"
-import { 
-  Box, 
-  Typography, 
-  Button, 
-  Stack, 
-  Chip} from "@mui/material"
-import { Gamepad} from "@mui/icons-material"
+// Commented out - imports not currently used
+// import { 
+//   Box, 
+//   Typography, 
+//   Button, 
+//   Stack, 
+//   Chip,
+//   Gamepad
+// } from "@bfg-engine"
 import { PrivatePlayerProfile } from "~/models/private-player-profile"
 import { BfgSupportedGameTitles } from "~/types/bfg-game-engines/supported-games"
 

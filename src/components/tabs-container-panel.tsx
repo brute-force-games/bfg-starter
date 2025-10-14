@@ -1,11 +1,11 @@
 import { ReactNode, useState } from "react"
 import { 
   Box, 
-  Tabs, 
-  Tab, 
   Card, 
-  Paper
-} from "@mui/material"
+  Paper,
+  Tab,
+  Tabs
+} from "@bfg-engine"
 
 interface TabPanelProps {
   children?: ReactNode
@@ -25,7 +25,7 @@ function TabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && (
-        <Box sx={{ p: 3 }}>
+        <Box style={{ padding: '24px' }}>
           {children}
         </Box>
       )}
@@ -60,7 +60,7 @@ export const TabsContainerPanel = ({
     <Card elevation={2}>
       <Paper 
         elevation={1} 
-        sx={{ 
+        style={{ 
           background: tabColor,
           color: 'white',
           borderRadius: '4px 4px 0 0'
@@ -70,22 +70,6 @@ export const TabsContainerPanel = ({
           value={tabValue}
           onChange={handleTabChange}
           aria-label={ariaLabel}
-          sx={{
-            '& .MuiTab-root': {
-              color: 'rgba(255, 255, 255, 0.7)',
-              fontWeight: 'bold',
-              textTransform: 'none',
-              fontSize: '1rem',
-              minHeight: 48,
-            },
-            '& .Mui-selected': {
-              color: 'white !important',
-            },
-            '& .MuiTabs-indicator': {
-              backgroundColor: 'white',
-              height: 3,
-            },
-          }}
         >
           {tabs.map((tab, index) => (
             <Tab

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import {
+  Alert,
   Box,
   Button,
-  Typography,
-  Alert,
+  Divider,
   Paper,
   Stack,
-  Divider,
-} from '@mui/material';
+  Typography,
+} from '@bfg-engine';
 import { generateKeyPair, signMove, verifyMove } from '~/crypto/crypto-utils';
 
 /**
@@ -88,12 +88,12 @@ export const CryptoDemoComponent = () => {
   };
 
   return (
-    <Paper sx={{ p: 3, m: 2 }}>
+    <Paper style={{ padding: '24px', margin: '16px' }}>
       <Typography variant="h5" gutterBottom>
         Cryptographic Player Profile Demo
       </Typography>
       
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+      <Typography variant="body2" style={{ marginBottom: '24px', color: '#666' }}>
         This demo shows how player moves are cryptographically signed and verified.
         All operations happen client-side using the Web Crypto API.
       </Typography>
@@ -113,7 +113,7 @@ export const CryptoDemoComponent = () => {
           </Button>
           
           {keyPair && (
-            <Alert severity="success" sx={{ mt: 2 }}>
+            <Alert severity="success" style={{ marginTop: '16px' }}>
               Key pair generated successfully! Private key is kept secret, public key can be shared.
             </Alert>
           )}
@@ -135,7 +135,7 @@ export const CryptoDemoComponent = () => {
           </Button>
           
           {signedMove && (
-            <Alert severity="success" sx={{ mt: 2 }}>
+            <Alert severity="success" style={{ marginTop: '16px' }}>
               Move signed successfully! The signature proves this move came from the private key holder.
             </Alert>
           )}
@@ -159,7 +159,7 @@ export const CryptoDemoComponent = () => {
           {verificationResult !== null && (
             <Alert 
               severity={verificationResult ? "success" : "error"} 
-              sx={{ mt: 2 }}
+              style={{ marginTop: '16px' }}
             >
               {verificationResult 
                 ? "✅ Signature is valid! Move is authentic and untampered."

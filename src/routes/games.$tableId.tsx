@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { z } from 'zod'
-import { useMyDefaultPlayerProfile } from '~/hooks/stores/use-my-player-profiles-store'
-import { BfgGameTableId } from '~/types/core/branded-values/bfg-branded-ids'
-import { PlayerP2pGameComponent } from '~/components/p2p/player-p2p-game-component'
+import { useMyDefaultPlayerProfile } from '@bfg-engine/hooks/stores/use-my-player-profiles-store'
+import { BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-ids'
+import { PlayerP2pGameComponent } from '@bfg-engine/ui/components/player-p2p-game-component'
 
 // Define params schema using the existing BfgGameTableId schema
 const paramsSchema = z.object({

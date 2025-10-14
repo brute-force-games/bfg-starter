@@ -3,29 +3,28 @@ import { useState } from 'react';
 import { Link } from '@tanstack/react-router'
 import { useForm } from '@tanstack/react-form';
 import { 
-  Container, 
-  Paper, 
-  Typography, 
-  TextField, 
-  Select, 
-  MenuItem, 
-  FormControl, 
-  InputLabel, 
-  Button, 
-  Alert, 
-  Box, 
-  Stack, 
-  CircularProgress,
-  Chip
-} from '@mui/material';
-import { useMyDefaultPlayerProfile } from '~/hooks/stores/use-my-player-profiles-store';
-import { GameLobby } from '~/models/p2p-lobby';
-import { convertPrivateToPublicProfile } from '~/types/utils';
-import { useHostedLobbyActions } from '~/hooks/stores/use-hosted-lobbies-store';
-import { BfgGameLobbyId } from '~/types/core/branded-values/bfg-branded-ids';
-import { BfgSupportedGameTitles, BfgSupportedGameTitlesSchema } from '~/types/bfg-game-engines/supported-games';
-import { getAvailableGameTitles } from '~/games-registry/games-registry';
-import { AllBfgGameMetadata } from '~/types/bfg-game-engines/bfg-game-engines';
+  Alert,
+  Box,
+  Button,
+  Chip,
+  Container,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  Stack,
+  TextField,
+  Typography,
+  useGameRegistry
+} from '@bfg-engine';
+import { useMyDefaultPlayerProfile } from '@bfg-engine/hooks/stores/use-my-player-profiles-store';
+import { GameLobby } from '@bfg-engine/models/p2p-lobby';
+import { convertPrivateToPublicProfile } from '@bfg-engine/models/player-profile/utils';
+import { useHostedLobbyActions } from '@bfg-engine/hooks/stores/use-hosted-lobbies-store';
+import { BfgGameLobbyId } from '@bfg-engine/models/types/bfg-branded-ids';
+import { BfgSupportedGameTitle, BfgSupportedGameTitleSchema } from '@bfg-engine/models/game-box-definition';
+
 
 // Form validation schema with enhanced Zod validation
 const createLobbyFormSchema = z.object({
@@ -34,7 +33,7 @@ const createLobbyFormSchema = z.object({
     .max(50, 'Lobby name must be less than 50 characters')
     .regex(/^[a-zA-Z0-9\s\-_']+$/, 'Lobby name can only contain letters, numbers, spaces, hyphens, underscores, and apostrophes')
     .transform((val) => val.trim()),
-  gameTitle: BfgSupportedGameTitlesSchema
+  gameTitle: BfgSupportedGameTitleSchema
     .optional(),
 });
 
@@ -52,6 +51,7 @@ export const NewLobbyPage = () => {
   const [copySuccess, setCopySuccess] = useState<string>('');
 
   const hostedLobbyActions = useHostedLobbyActions();
+  const registry = useGameRegistry();
 
   // Calculate default lobby name (safe even if profile is null)
   const defaultLobbyName = defaultPlayerProfile ? `${defaultPlayerProfile.handle}'s Lobby` : '';
@@ -103,7 +103,7 @@ export const NewLobbyPage = () => {
         return;
       }
 
-      const getMinAndMaxNumPlayers = (gameTitle: BfgSupportedGameTitles | undefined) => {
+      const getMinAndMaxNumPlayers = (gameTitle: BfgSupportedGameTitle | undefined) => {
         if (!gameTitle) {
           return {
             minNumPlayers: 1,
@@ -111,7 +111,7 @@ export const NewLobbyPage = () => {
           };
         }
 
-        const selectedGameMetadata = AllBfgGameMetadata[gameTitle];
+        const selectedGameMetadata = registry.getGameMetadata(gameTitle);
         return {
           minNumPlayers: selectedGameMetadata.definition.minNumPlayersForGame,
           maxNumPlayers: selectedGameMetadata.definition.maxNumPlayersForGame,
