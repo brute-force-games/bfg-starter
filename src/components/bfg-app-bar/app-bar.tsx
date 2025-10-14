@@ -37,7 +37,7 @@ export const BruteForceGamesAppBar = () => {
           sx={{ fontWeight: 'bold', flexShrink: 0 }}
         >
           <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-            Brute Force Games
+            Brute Force Games Starter
           </Link>
         </Typography>
         
