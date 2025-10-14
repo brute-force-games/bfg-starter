@@ -1,5 +1,5 @@
 import { BrandedId, createBfgBrandedIdMetadata } from "./branded-ids";
-import { GameFriendIdPrefix, PlayerProfileIdPrefix, GameLobbyIdPrefix, GameMoveIdPrefix, CommMessageChannelIdPrefix, GameTableIdPrefix, GameTableActionIdPrefix, GamingGroupIdPrefix } from "./bfg-brands";
+import { GameFriendIdPrefix, PlayerProfileIdPrefix, GameLobbyIdPrefix, GameMoveIdPrefix, CommMessageChannelIdPrefix, GameTableIdPrefix, GameTableActionIdPrefix, GamingGroupIdPrefix } from "./bfg-id-prefixes";
 
 
 export const BfgGameFriendId = createBfgBrandedIdMetadata(GameFriendIdPrefix);

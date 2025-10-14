@@ -19,7 +19,7 @@ export default defineConfig({
     jsxRuntime: 'automatic'
   })],
   server: {
-    port: 62777
+    port: 62776
   },
   resolve: {
     alias: {

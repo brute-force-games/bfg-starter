@@ -2,7 +2,7 @@ import { z } from "zod";
 import { createBfgGameEngineProcessor, IBfgGameEngineProcessor } from "./bfg-game-engine-metadata";
 import { GameTable, PLAYER_SEATS } from "../../models/game-table/game-table";
 import { GameTableActionResult } from "../../models/game-table/table-phase";
-import { createFlipACoinHostRepresentation, createFlipACoinInput, createFlipACoinRepresentation } from "~/game-engine-components/flip-a-coin/flip-a-coin-components";
+import { createFlipACoinHostRepresentation, createFlipACoinInput, createFlipACoinRepresentation, createGameStateCombinationRepresentationAndInputComponent } from "~/game-engine-components/flip-a-coin/flip-a-coin-components";
 import { FlipACoinGameName } from "./supported-games";
 import { GameTableSeatSchema } from "../../models/game-table/game-table";
 import { BfgGameSpecificTableAction } from "../../models/game-table/game-table-action";
@@ -305,7 +305,7 @@ const flipACoinRendererFactory: BfgGameEngineRendererFactory<
   createGameStateHostComponent: createFlipACoinHostRepresentation,
   createGameStateRepresentationComponent: createFlipACoinRepresentation,
   createGameStateActionInputComponent: createFlipACoinInput,
-  createGameStateCombinationRepresentationAndInputComponent: undefined,
+  createGameStateCombinationRepresentationAndInputComponent: createGameStateCombinationRepresentationAndInputComponent,
 }
 
 

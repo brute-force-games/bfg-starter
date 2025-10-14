@@ -1,0 +1,6 @@
+[submodule "modules/bfg-engine"]
+	path = modules/bfg-engine
+	url = https://github.com/brute-force-games/bfg-engine
+[submodule "modules/bfg-gdp-basic-games"]
+	path = modules/bfg-gdp-basic-games
+	url = https://github.com/brute-force-games/bfg-gdp-basic-games

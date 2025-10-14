@@ -57,3 +57,26 @@ export const createFlipACoinHostRepresentation = (
     </>
   )
 }
+
+export const createGameStateCombinationRepresentationAndInputComponent = (
+  myPlayerSeat: GameTableSeat,
+  gameState: FlipACoinGameState,
+  mostRecentAction: FlipACoinGameAction,
+  onGameAction: (gameState: FlipACoinGameState, gameAction: FlipACoinGameAction) => void
+) => {
+  return (
+    <>
+      <FlipACoinRepresentation 
+        myPlayerSeat={myPlayerSeat} 
+        gameState={gameState} 
+        mostRecentAction={mostRecentAction}
+      />
+      <FlipACoinInput 
+        myPlayerSeat={myPlayerSeat} 
+        gameState={gameState} 
+        mostRecentAction={mostRecentAction}
+        onGameAction={onGameAction}
+      />
+    </>
+  );
+}

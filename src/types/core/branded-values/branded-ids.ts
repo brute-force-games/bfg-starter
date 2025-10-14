@@ -1,11 +1,6 @@
 import { z } from "zod";
-import { GameFriendIdPrefix, GameLobbyIdPrefix, PlayerProfileIdPrefix, GameMoveIdPrefix, CommMessageChannelIdPrefix, GameTableIdPrefix, GameTableActionIdPrefix, GamingGroupIdPrefix } from "./bfg-brands";
+import { GameFriendIdPrefix, GameLobbyIdPrefix, PlayerProfileIdPrefix, GameMoveIdPrefix, CommMessageChannelIdPrefix, GameTableIdPrefix, GameTableActionIdPrefix, GamingGroupIdPrefix } from "./bfg-id-prefixes";
 
-// export type BfgBrandedIds = {
-//   PlayerProfileId: IBfgBrandedId<"PlayerProfileId">,
-// };
-
-// export x = z.infer< BfgBrandedIds["PlayerProfileId"].idSchema>;
 
 export type BfgBrand =
   typeof GameFriendIdPrefix |
@@ -17,10 +12,6 @@ export type BfgBrand =
   typeof GameTableActionIdPrefix |
   typeof GamingGroupIdPrefix;
 
-
-// export type BrandedIdSchema<T extends string> = z.ZodBranded<z.ZodString, T>;
-
-// export type BrandedId<T extends string> = z.infer<BrandedIdSchema<T>>;
 
 export type BrandedIdSchema<T extends BfgBrand> = z.ZodBranded<z.ZodString, T>;
 
@@ -66,18 +57,6 @@ const parseId = (id: string) => parseBrandedIdValueFromSchema(bfgBrandedSchema, 
 }
 
 export type BfgBrandedIdMetadata = ReturnType<typeof createBfgBrandedIdMetadata>;
-
-
-
-// export const createBrandedIdValue = <T extends string>(brandSchema: BfgBrandedIdMetadata): BrandedId<T> => {
-//   console.log("createBrandedIdValue", brandSchema);
-  
-//   const uuid = crypto.randomUUID();
-//   const idPrefix = brandSchema.idPrefix;
-//   const retVal = `${idPrefix}_${uuid}`;
-
-//   return retVal as BrandedId<T>;
-// }
 
 
 export const createBrandedIdValue = <T extends BfgBrand>(idPrefix: BfgBrand): BrandedId<T> => {
