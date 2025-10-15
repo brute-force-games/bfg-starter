@@ -1,8 +1,12 @@
 import { createRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
+import { getBaseUrl } from './bfg-starter-hosting';
+
+const basePath = getBaseUrl();
 
 export const router = createRouter({
   routeTree,
+  basepath: basePath,
   scrollRestoration: true,
   // Development mode options for better error detection
   defaultPreload: 'intent',
@@ -15,7 +19,3 @@ export const router = createRouter({
     },
   }),
 })
-
-export function getRouter() {
-  return router
-}

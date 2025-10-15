@@ -1,23 +1,20 @@
-import { GameFriendId, GameTableId } from "./types/core/branded-values/bfg-branded-ids";
+import { GameFriendId, GameTableId } from "@bfg-engine";
+import { getBaseUrl } from "./bfg-starter-hosting";
 
-
-const getWindowOrigin = () => {
-  return window.location.origin;
-}
 
 export const createJoinGameUrl = (gameTableId: GameTableId) => {
-  return `${getWindowOrigin()}/games/${gameTableId}`;
+  return `${getBaseUrl()}/games/${gameTableId}`;
 }
 
 export const createFriendUrl = (friendId: GameFriendId) => {
   console.log("createFriendUrl", friendId);
-  return `${getWindowOrigin()}/friends/${friendId}`;
+  return `${getBaseUrl()}/friends/${friendId}`;
 }
 
 export const createHostedGameUrl = (gameTableId: GameTableId) => {
-  return `${getWindowOrigin()}/hosted-games/${gameTableId}`;
+  return `${getBaseUrl()}/hosted-games/${gameTableId}`;
 }
 
 export const createPlayerGameUrl = (gameTableId: GameTableId) => {
-  return `${getWindowOrigin()}/games/${gameTableId}`;
+  return `${getBaseUrl()}/games/${gameTableId}`;
 }
