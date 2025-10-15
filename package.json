@@ -9,9 +9,7 @@
     "build:gh-pages": "VITE_BASE_PATH=/bfg-starter/ vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "generate-routes": "tsr generate",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "generate-routes": "tsr generate"
   },
   "dependencies": {
     "@tanstack/react-form": "^1.23.2",
@@ -29,21 +27,13 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@chromatic-com/storybook": "^4.1.1",
-    "@storybook/addon-a11y": "^9.1.10",
-    "@storybook/addon-docs": "^9.1.10",
-    "@storybook/addon-onboarding": "^9.1.10",
-    "@storybook/addon-vitest": "^9.1.10",
-    "@storybook/react-vite": "^9.1.10",
     "@tanstack/router-cli": "^1.132.2",
     "@types/node": "^24.5.2",
     "@types/react": "^19.1.13",
     "@types/react-dom": "^19.1.9",
     "@vitest/browser": "^3.2.4",
     "@vitest/coverage-v8": "^3.2.4",
-    "eslint-plugin-storybook": "^9.1.10",
     "playwright": "^1.55.1",
-    "storybook": "^9.1.10",
     "typescript": "^5.9.2",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4"
