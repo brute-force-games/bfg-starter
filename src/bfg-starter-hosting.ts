@@ -1,13 +1,25 @@
 import { GameTableId, GameFriendId, GameHostingContextType } from "@bfg-engine";
 import { BfgStarterTrysteroConfig } from "./trystero-config";
+
+/**
+ * Get just the base path portion (without origin) for router configuration.
+ * This respects the Vite BASE_URL configuration for deployments to subdirectories.
+ */
+export const getBasePath = (): string => {
+  const basePath = import.meta.env.BASE_URL || '/';
+  // Ensure it starts with / and doesn't end with / (unless it's just '/')
+  const normalized = basePath.startsWith('/') ? basePath : `/${basePath}`;
+  return normalized === '/' ? '/' : normalized.replace(/\/+$/, '');
+};
+
 /**
  * Get the base URL for the application, including the configured base path.
  * This respects the Vite BASE_URL configuration for deployments to subdirectories.
  */
 export const getBaseUrl = (): string => {
   const origin = window.location.origin;
-  const basePath = import.meta.env.BASE_URL || '/';
-  return `${origin}${basePath}`.replace(/\/+$/, ''); // Remove trailing slash
+  const basePath = getBasePath();
+  return basePath === '/' ? origin : `${origin}${basePath}`;
 };
 
 
