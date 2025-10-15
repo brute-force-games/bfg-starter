@@ -1,15 +1,19 @@
 import { Outlet, createRootRoute, Scripts, } from '@tanstack/react-router'
 import { ProfileGuard } from '@bfg-engine/ui/components/profile-guard'
 import { BruteForceGamesAppBar } from '@bfg-engine/ui/components/bfg-app-bar/app-bar'
+import { GameHostingProvider } from '@bfg-engine/hooks/games-registry/game-hosting'
+import { BfgStarterGameHosting } from '../bfg-starter-hosting'
 
 
 export const RootComponent = () => {
   return (
     <>
-      <BruteForceGamesAppBar />
-      <ProfileGuard>
-        <Outlet />
-      </ProfileGuard>
+      <GameHostingProvider gameHosting={BfgStarterGameHosting}>
+        <BruteForceGamesAppBar />
+        <ProfileGuard>
+          <Outlet />
+        </ProfileGuard>
+      </GameHostingProvider>
       <Scripts />
     </>
   )

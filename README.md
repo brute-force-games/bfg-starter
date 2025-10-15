@@ -17,3 +17,28 @@ Update the [Dexie Cloud Config](./src/data/sync-engines/dexie-cloud/dexie-config
 ### [Tinybase / Cloudflare Durable Objects](https://tinybase.org/guides/integrations/cloudflare-durable-objects/)
 
 This demo could also use Tinybase Durable Objects, but we're not there yet. I've had luck with it in other scenarios, so it could work here.
+
+## Deployment
+
+### GitHub Pages
+
+This project is configured to automatically deploy to GitHub Pages when changes are pushed to the `main` branch.
+
+#### Initial Setup
+
+1. Go to your repository settings on GitHub
+2. Navigate to **Settings > Pages**
+3. Under **Build and deployment**, set:
+   - **Source**: GitHub Actions
+4. Push to the `main` branch to trigger the deployment
+
+The site will be available at: `https://YOUR_USERNAME.github.io/bfg-starter/`
+
+#### Manual Deployment
+
+To build for GitHub Pages locally:
+```bash
+npm run build:gh-pages
+```
+
+The built files will be in the `dist` directory.

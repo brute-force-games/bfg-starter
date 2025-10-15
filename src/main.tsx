@@ -3,6 +3,10 @@ import { createRoot } from 'react-dom/client'
 import { RouterProvider } from '@tanstack/react-router'
 import './index.css'
 import { router } from './router'
+import { initBasicGames } from '@bfg-gdp-basic-games'
+
+
+initBasicGames();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

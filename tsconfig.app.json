@@ -20,8 +20,8 @@
       "~/*": ["./src/*"],
       "@bfg-engine": ["./modules/bfg-engine/src"],
       "@bfg-engine/*": ["./modules/bfg-engine/src/*"],
-      "@bfg-games": ["./modules/bfg-gdp-basic-games/src"],
-      "@bfg-games/*": ["./modules/bfg-gdp-basic-games/src/*"]
+      "@bfg-gdp-basic-games": ["./modules/bfg-gdp-basic-games/src"],
+      "@bfg-gdp-basic-games/*": ["./modules/bfg-gdp-basic-games/src/*"]
     }
   },
   "include": ["src"]

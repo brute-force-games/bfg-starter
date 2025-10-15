@@ -5,8 +5,8 @@ import { HostedP2pLobbyComponent } from "@bfg-engine/ui/components/hosted-p2p-lo
 import { useHostedLobby, useHostedLobbyActions } from "@bfg-engine/hooks/stores/use-hosted-lobbies-store"
 import { useMyDefaultHostPlayerProfile } from "@bfg-engine/hooks/stores/use-my-player-profiles-store"
 import { GameLobby, LobbyOptions } from "@bfg-engine/models/p2p-lobby"
-import { BfgGameLobbyId, PlayerProfileId } from "~/types/core/branded-values/bfg-branded-ids"
 import { useGameRegistry } from "@bfg-engine/hooks/games-registry/games-registry"
+import { BfgGameLobbyId, PlayerProfileId } from "@bfg-engine/models/types/bfg-branded-ids"
 
 const paramsSchema = z.object({
   lobbyId: BfgGameLobbyId.idSchema,
