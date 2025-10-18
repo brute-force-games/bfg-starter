@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { z } from "zod"
 import { BfgGameLobbyId } from "@bfg-engine/models/types/bfg-branded-ids"
-import { HostedLobbyPage } from "@bfg-engine/ui/pages/hosted-lobby-page"
+import { HostedLobbyPage } from "../site-pages/hosted-lobby-page"
+import { ProfileGuard } from "@bfg-engine/ui/components/profile-guard"
 
 
 const paramsSchema = z.object({
@@ -17,13 +18,15 @@ const searchSchema = z.object({
 }).optional()
 
 
-export const HostedLobbyRoute = () => {
+const HostedLobbyRoute = () => {
   const { lobbyId } = Route.useParams();
 
   return (
-    <HostedLobbyPage
-      lobbyId={lobbyId}
-    />
+    <ProfileGuard>
+      <HostedLobbyPage
+        lobbyId={lobbyId}
+      />
+    </ProfileGuard>
   )
 }
 

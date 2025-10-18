@@ -1,17 +1,9 @@
 import { Link } from '@tanstack/react-router'
 import { NoActivityAppBar }  from '../../modules/bfg-engine/src/ui/components/app-bars/no-activity-app-bar'
-import { useRiskyMyDefaultPlayerProfile } from '@bfg-engine/hooks/stores/use-my-player-profiles-store'
-import { NoUserIndexPage } from './no-user-index-page'
 import { Container, Typography, Button, Stack } from '@bfg-engine'
 
 
-export const IndexPage = () => {
-  const myPlayerProfile = useRiskyMyDefaultPlayerProfile();
-
-  if (!myPlayerProfile) {
-    return <NoUserIndexPage />
-  }
-
+export const NoUserIndexPage = () => {
   return (
     <>
       <NoActivityAppBar />
@@ -19,11 +11,11 @@ export const IndexPage = () => {
         <Stack spacing={3}>
           <Typography variant="h3">Welcome to Brute Force Games</Typography>
           <Typography variant="body1" color="secondary">
-            Start a lobby to play with your friends!
+            Create a player profile to start playing!
           </Typography>
-          <Link to="/new-lobby" style={{ textDecoration: 'none' }}>
+          <Link to="/my-player-profiles" style={{ textDecoration: 'none' }}>
             <Button variant="contained" color="primary">
-              Create Lobby
+              Create Profile
             </Button>
           </Link>
         </Stack>

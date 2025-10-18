@@ -46,6 +46,9 @@ const getTrysteroConfig = () => {
 
 
 export const BfgStarterGameHosting: GameHostingContextType = {
+  getSiteTitle: () => {
+    return 'Brute Force Games Starter';
+  },
   getTrysteroConfig,
   getBaseUrl,
   createJoinGameUrl,

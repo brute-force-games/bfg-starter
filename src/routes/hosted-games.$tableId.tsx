@@ -1,7 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { z } from 'zod'
 import { BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-ids'
-import { HostedP2pGameComponent } from '@bfg-engine/ui/components/hosted-p2p-game-component'
+import { HostedGamePage } from '../site-pages/hosted-game-page'
+import { ProfileGuard } from '@bfg-engine/ui/components/profile-guard'
 
 const paramsSchema = z.object({
   tableId: BfgGameTableId.idSchema,
@@ -13,21 +14,25 @@ const searchSchema = z.object({
   autoStart: z.boolean().optional(),
 }).optional()
 
+
+const HostedGameRoute = () => {
+  const { tableId } = Route.useParams()
+
+  return (
+    <ProfileGuard>
+      <HostedGamePage
+        tableId={tableId}
+      />
+    </ProfileGuard>
+  )
+}
+
 export const Route = createFileRoute('/hosted-games/$tableId')({
   params: {
     parse: (params) => paramsSchema.parse(params),
     stringify: (params) => ({ tableId: params.tableId }),
   },
   validateSearch: searchSchema, // Standard Schema validation
-  component: HostedGamePage,
+  component: HostedGameRoute,
 })
 
-function HostedGamePage() {
-  const { tableId } = Route.useParams()
-
-  return (
-    <HostedP2pGameComponent
-      gameTableId={tableId}
-    />
-  )
-}

@@ -1,8 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { NewLobbyPage } from '@bfg-engine/ui/pages/new-lobby-page';
+import { NewLobbyPage } from '../site-pages/new-lobby-page';
+import { ProfileGuard } from '@bfg-engine/ui/components/profile-guard';
 
+
+const NewLobbyRoute = () => {
+  return (
+    <ProfileGuard>
+      <NewLobbyPage />
+    </ProfileGuard>
+  )
+}
 
 export const Route = createFileRoute('/new-lobby')({
-  // ssr: false,
-  component: NewLobbyPage,
+  component: NewLobbyRoute,
 })

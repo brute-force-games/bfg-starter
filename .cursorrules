@@ -1,7 +1,7 @@
-# HostaVibe Project Coding Standards
+# BFG Starter Project Coding Standards
 
 ## Project Overview
-This is a React Native/Expo TypeScript project using Clerk for authentication, Supabase for backend, and Expo Router for navigation. The project follows a component-based architecture with strict TypeScript typing.
+This is a React TypeScript project using vite for a board game playing framework over peer to peer. Player profiles are based on crpytography key based identities. Games are hosted by players who assume the role of host, which have special roles setting up the lobby and for the duration of the game. The project follows a component-based architecture with strict TypeScript typing.
 
 ## File Organization & Structure
 
@@ -19,6 +19,9 @@ This is a React Native/Expo TypeScript project using Clerk for authentication, S
   - `constants/` - Application constants
 - `assets/` - Static assets (images, fonts, sounds)
 - `utils/` - App-specific utilities -->
+
+### File Imports
+- Within the same project, use relative paths for import
 
 ### File Naming Conventions
 - Use kebab-case for file names: `my-component.tsx`
@@ -77,17 +80,9 @@ export const MyComponent = ({ title, onPress }: MyComponentProps) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-});
 ```
 
 ### Page Components
-- Use default export for page components
 - Keep page components thin, delegate to view components
 - Handle data fetching and state management at page level
 
@@ -140,32 +135,6 @@ useEffect(() => {
 ```
 
 ## Styling
-
-### StyleSheet Patterns
-- Use StyleSheet.create for all styles
-- Group related styles together
-- Use semantic naming for style properties
-- Prefer flexbox for layouts
-
-```typescript
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: '#fff',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-});
-```
 
 ### Responsive Design
 - Use device-specific hooks for responsive layouts

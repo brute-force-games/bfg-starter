@@ -1,8 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { z } from 'zod'
-import { useMyDefaultPlayerProfile } from '@bfg-engine/hooks/stores/use-my-player-profiles-store'
 import { BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-ids'
-import { PlayerP2pGameComponent } from '@bfg-engine/ui/components/player-p2p-game-component'
+import { PlayerGamePage } from '../site-pages/player-game-page'
+import { ProfileGuard } from '@bfg-engine/ui/components/profile-guard'
+
 
 // Define params schema using the existing BfgGameTableId schema
 const paramsSchema = z.object({
@@ -15,33 +16,23 @@ const searchSchema = z.object({
   debug: z.boolean().optional(),
 }).optional()
 
+
+const PlayerGameRoute = () => {
+  const { tableId } = Route.useParams();
+
+  return (
+    <ProfileGuard>
+      <PlayerGamePage tableId={tableId} />
+    </ProfileGuard>
+  )
+}
+
+
 export const Route = createFileRoute('/games/$tableId')({
   params: {
     parse: (params) => paramsSchema.parse(params),
     stringify: (params) => ({ tableId: params.tableId }),
   },
   validateSearch: searchSchema, // Standard Schema validation
-  component: PlayerGamePage,
+  component: PlayerGameRoute,
 })
-
-function PlayerGamePage() {
-  const { tableId } = Route.useParams() // tableId is now properly typed as GameTableId
-  
-  const myPlayerProfile = useMyDefaultPlayerProfile();
-
-  if (!myPlayerProfile) {
-    return (
-      <div className="p-6">
-        <h1 className="text-3xl font-bold mb-6">Loading Game...</h1>
-        <div className="text-gray-600">Loading game details...</div>
-      </div>
-    )
-  }
-
-  return (
-    <PlayerP2pGameComponent
-      gameTableId={tableId}
-      playerProfile={myPlayerProfile}
-    />
-  )
-}
