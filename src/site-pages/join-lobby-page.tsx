@@ -16,7 +16,7 @@ export const JoinLobbyPage = ({ lobbyId }: JoinLobbyPageProps) => {
 
   const JoinLobbyTabItems: readonly AppBarTabItem<JoinLobbyTabId>[] = [
     { id: 'player-lobby', label: 'Player Lobby' },
-    { id: 'player-p2p-lobby-details', label: 'P2P' },
+    { id: 'player-p2p-lobby-details', label: 'P2P Details' },
   ];
   
   const [activeTabId, setActiveTabId] = useState<JoinLobbyTabId>('player-lobby');
@@ -38,7 +38,7 @@ export const JoinLobbyPage = ({ lobbyId }: JoinLobbyPageProps) => {
       />
       <PlayerP2pLobbyComponent
         lobbyId={lobbyId}
-        playerProfile={myPlayerProfile}
+        myPlayerProfile={myPlayerProfile}
         activeTabId={activeTabId}
       />
     </>
