@@ -1,4 +1,4 @@
-import { PlayerP2pGameComponent, useMyDefaultPlayerProfile, Container, Typography, Stack } from "@bfg-engine";
+import { PlayerP2pGameComponent, useRiskyMyDefaultPlayerProfile, Container, Typography, Stack } from "@bfg-engine";
 import { GameTableId } from "@bfg-engine/models/types/bfg-branded-ids";
 import { BruteForceGamesAppBar } from "@bfg-engine/ui/components/bfg-app-bar/app-bar";
 import { AppBarTabItem } from "@bfg-engine/ui/components/bfg-app-bar/tab-item-hook";
@@ -18,7 +18,7 @@ export const PlayerGamePage = ({ tableId }: IPlayerGamePageProps) => {
     { id: 'player-p2p-game-details', label: 'P2P Details' },
   ];
   
-  const myPlayerProfile = useMyDefaultPlayerProfile();
+  const myPlayerProfile = useRiskyMyDefaultPlayerProfile();
   const [activeTabId, setActiveTabId] = useState<PlayerGameTabId>('player-game');
 
   if (!myPlayerProfile) {
