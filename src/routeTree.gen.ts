@@ -16,6 +16,8 @@ import { Route as JoinLobbyLobbyIdRouteImport } from './routes/join-lobby.$lobby
 import { Route as HostedLobbyLobbyIdRouteImport } from './routes/hosted-lobby.$lobbyId'
 import { Route as HostedGamesTableIdRouteImport } from './routes/hosted-games.$tableId'
 import { Route as GamesTableIdRouteImport } from './routes/games.$tableId'
+import { Route as GamesTableIdIndexRouteImport } from './routes/games.$tableId/index'
+import { Route as GamesTableIdObserveRouteImport } from './routes/games.$tableId/observe'
 
 const NewLobbyRoute = NewLobbyRouteImport.update({
   id: '/new-lobby',
@@ -52,34 +54,49 @@ const GamesTableIdRoute = GamesTableIdRouteImport.update({
   path: '/games/$tableId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GamesTableIdIndexRoute = GamesTableIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => GamesTableIdRoute,
+} as any)
+const GamesTableIdObserveRoute = GamesTableIdObserveRouteImport.update({
+  id: '/observe',
+  path: '/observe',
+  getParentRoute: () => GamesTableIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/my-player-profiles': typeof MyPlayerProfilesRoute
   '/new-lobby': typeof NewLobbyRoute
-  '/games/$tableId': typeof GamesTableIdRoute
+  '/games/$tableId': typeof GamesTableIdRouteWithChildren
   '/hosted-games/$tableId': typeof HostedGamesTableIdRoute
   '/hosted-lobby/$lobbyId': typeof HostedLobbyLobbyIdRoute
   '/join-lobby/$lobbyId': typeof JoinLobbyLobbyIdRoute
+  '/games/$tableId/observe': typeof GamesTableIdObserveRoute
+  '/games/$tableId/': typeof GamesTableIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/my-player-profiles': typeof MyPlayerProfilesRoute
   '/new-lobby': typeof NewLobbyRoute
-  '/games/$tableId': typeof GamesTableIdRoute
   '/hosted-games/$tableId': typeof HostedGamesTableIdRoute
   '/hosted-lobby/$lobbyId': typeof HostedLobbyLobbyIdRoute
   '/join-lobby/$lobbyId': typeof JoinLobbyLobbyIdRoute
+  '/games/$tableId/observe': typeof GamesTableIdObserveRoute
+  '/games/$tableId': typeof GamesTableIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/my-player-profiles': typeof MyPlayerProfilesRoute
   '/new-lobby': typeof NewLobbyRoute
-  '/games/$tableId': typeof GamesTableIdRoute
+  '/games/$tableId': typeof GamesTableIdRouteWithChildren
   '/hosted-games/$tableId': typeof HostedGamesTableIdRoute
   '/hosted-lobby/$lobbyId': typeof HostedLobbyLobbyIdRoute
   '/join-lobby/$lobbyId': typeof JoinLobbyLobbyIdRoute
+  '/games/$tableId/observe': typeof GamesTableIdObserveRoute
+  '/games/$tableId/': typeof GamesTableIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,15 +108,18 @@ export interface FileRouteTypes {
     | '/hosted-games/$tableId'
     | '/hosted-lobby/$lobbyId'
     | '/join-lobby/$lobbyId'
+    | '/games/$tableId/observe'
+    | '/games/$tableId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/my-player-profiles'
     | '/new-lobby'
-    | '/games/$tableId'
     | '/hosted-games/$tableId'
     | '/hosted-lobby/$lobbyId'
     | '/join-lobby/$lobbyId'
+    | '/games/$tableId/observe'
+    | '/games/$tableId'
   id:
     | '__root__'
     | '/'
@@ -109,13 +129,15 @@ export interface FileRouteTypes {
     | '/hosted-games/$tableId'
     | '/hosted-lobby/$lobbyId'
     | '/join-lobby/$lobbyId'
+    | '/games/$tableId/observe'
+    | '/games/$tableId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MyPlayerProfilesRoute: typeof MyPlayerProfilesRoute
   NewLobbyRoute: typeof NewLobbyRoute
-  GamesTableIdRoute: typeof GamesTableIdRoute
+  GamesTableIdRoute: typeof GamesTableIdRouteWithChildren
   HostedGamesTableIdRoute: typeof HostedGamesTableIdRoute
   HostedLobbyLobbyIdRoute: typeof HostedLobbyLobbyIdRoute
   JoinLobbyLobbyIdRoute: typeof JoinLobbyLobbyIdRoute
@@ -172,14 +194,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GamesTableIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/games/$tableId/': {
+      id: '/games/$tableId/'
+      path: '/'
+      fullPath: '/games/$tableId/'
+      preLoaderRoute: typeof GamesTableIdIndexRouteImport
+      parentRoute: typeof GamesTableIdRoute
+    }
+    '/games/$tableId/observe': {
+      id: '/games/$tableId/observe'
+      path: '/observe'
+      fullPath: '/games/$tableId/observe'
+      preLoaderRoute: typeof GamesTableIdObserveRouteImport
+      parentRoute: typeof GamesTableIdRoute
+    }
   }
 }
+
+interface GamesTableIdRouteChildren {
+  GamesTableIdObserveRoute: typeof GamesTableIdObserveRoute
+  GamesTableIdIndexRoute: typeof GamesTableIdIndexRoute
+}
+
+const GamesTableIdRouteChildren: GamesTableIdRouteChildren = {
+  GamesTableIdObserveRoute: GamesTableIdObserveRoute,
+  GamesTableIdIndexRoute: GamesTableIdIndexRoute,
+}
+
+const GamesTableIdRouteWithChildren = GamesTableIdRoute._addFileChildren(
+  GamesTableIdRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MyPlayerProfilesRoute: MyPlayerProfilesRoute,
   NewLobbyRoute: NewLobbyRoute,
-  GamesTableIdRoute: GamesTableIdRoute,
+  GamesTableIdRoute: GamesTableIdRouteWithChildren,
   HostedGamesTableIdRoute: HostedGamesTableIdRoute,
   HostedLobbyLobbyIdRoute: HostedLobbyLobbyIdRoute,
   JoinLobbyLobbyIdRoute: JoinLobbyLobbyIdRoute,

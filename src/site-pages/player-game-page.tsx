@@ -27,7 +27,7 @@ export const PlayerGamePage = ({ tableId }: IPlayerGamePageProps) => {
         <Stack spacing={3}>
           <Typography variant="h3">Loading Game...</Typography>
           <Typography variant="body1" color="secondary">
-            Loading game details...
+            Loading game ee details...
           </Typography>
         </Stack>
       </Container>

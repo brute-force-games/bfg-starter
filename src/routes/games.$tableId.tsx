@@ -1,8 +1,6 @@
-import { createFileRoute } from '@tanstack/react-router'
 import { z } from 'zod'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-ids'
-import { PlayerGamePage } from '../site-pages/player-game-page'
-import { ProfileGuard } from '@bfg-engine/ui/components/profile-guard'
 
 
 // Define params schema using the existing BfgGameTableId schema
@@ -17,15 +15,14 @@ const searchSchema = z.object({
 }).optional()
 
 
-const PlayerGameRoute = () => {
-  const { tableId } = Route.useParams();
-
-  return (
-    <ProfileGuard>
-      <PlayerGamePage tableId={tableId} />
-    </ProfileGuard>
-  )
-}
+// const GamesTableIdLayout = () => {
+//   // This is a layout route - it just wraps children with ProfileGuard
+//   return (
+//     // <ProfileGuard>
+//     <Outlet />
+//     // </ProfileGuard>
+//   )
+// }
 
 
 export const Route = createFileRoute('/games/$tableId')({
@@ -33,6 +30,7 @@ export const Route = createFileRoute('/games/$tableId')({
     parse: (params) => paramsSchema.parse(params),
     stringify: (params) => ({ tableId: params.tableId }),
   },
-  validateSearch: searchSchema, // Standard Schema validation
-  component: PlayerGameRoute,
+  validateSearch: searchSchema,
+  // component: GamesTableIdLayout,
+  component: Outlet,
 })

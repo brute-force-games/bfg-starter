@@ -1,0 +1,303 @@
+{
+  "projectProperties": {
+    "title": "BFG Roadmap",
+    "description": "",
+    "author": "5a6c7704-eae8-4fb7-977e-77291871e487",
+    "isFavorite": false
+  },
+  "projectExportVersion": "dbk-project-v2",
+  "exportTime": "2025-10-20T12:39:33.172Z",
+  "projectGraphVersions": [
+    {
+      "versionName": "Version 1",
+      "description": "Initial Description",
+      "projectGraph": {
+        "dbkProjectViewSettings": {
+          "blockerAreasCollapsed": false,
+          "showNodeDetails": false,
+          "nodesVisibility": {
+            "nodeVizType": "show-all-nodes"
+          },
+          "showInfoPanel": false,
+          "showMinimap": false,
+          "middleOfEdgesButtonMode": "no-action"
+        },
+        "dbkProjectDefaults": {
+          "defaultNewBlockerNodeAssignee": "",
+          "defaultNewDoneBlockNodeAssignee": "",
+          "defaultNewBlockerStatus": "in-progress:ready-to-work",
+          "defaultNewDoneBlockStatus": "in-progress:ready-to-work"
+        },
+        "dbkGraphStructure": {
+          "dbkNodesData": [
+            {
+              "nodeId": "578bbe08-fe6d-4228-b14b-b5e0172b26d0",
+              "label": "BFG Roadmap",
+              "description": "",
+              "descriptionFormatting": "plain-text",
+              "userDesignatedStatus": "in-progress:ready-to-work",
+              "workAssignee": "",
+              "rfXOrigin": 0.5,
+              "rfYOrigin": 0.5,
+              "passthroughStatusDesignationMethod": "use-most-severe-of-self-and-upstream-status",
+              "createdByUserId": "5a6c7704-eae8-4fb7-977e-77291871e487",
+              "createdAtUtc": "2025-10-20T12:33:33.730Z"
+            },
+            {
+              "nodeId": "ca0b384c-d1e1-4b68-89a7-78cff87885cc",
+              "label": "Signed Player Moves",
+              "description": "This will block BFG until it is complete.",
+              "descriptionFormatting": "plain-text",
+              "userDesignatedStatus": "in-progress:ready-to-work",
+              "workAssignee": "",
+              "rfXOrigin": 0.5,
+              "rfYOrigin": 0.5,
+              "passthroughStatusDesignationMethod": "use-most-severe-of-self-and-upstream-status",
+              "createdByUserId": "5a6c7704-eae8-4fb7-977e-77291871e487",
+              "createdAtUtc": "2025-10-20T12:33:33.730Z"
+            },
+            {
+              "nodeId": "fef7cd89-3f94-4dd7-b0ff-6e6e76ccb751",
+              "label": "Features",
+              "description": "",
+              "descriptionFormatting": "plain-text",
+              "userDesignatedStatus": "blocked:unknown",
+              "workAssignee": "",
+              "rfXOrigin": 0.5,
+              "rfYOrigin": 0,
+              "passthroughStatusDesignationMethod": "use-most-severe-of-self-and-upstream-status",
+              "createdByUserId": "5a6c7704-eae8-4fb7-977e-77291871e487",
+              "createdAtUtc": "2025-10-20T12:34:39.918Z"
+            },
+            {
+              "nodeId": "43839413-e4d6-4f47-be22-6ad48dcfc593",
+              "label": "Games",
+              "description": "",
+              "descriptionFormatting": "plain-text",
+              "userDesignatedStatus": "blocked:unknown",
+              "workAssignee": "",
+              "rfXOrigin": 0.5,
+              "rfYOrigin": 0,
+              "passthroughStatusDesignationMethod": "use-most-severe-of-self-and-upstream-status",
+              "createdByUserId": "5a6c7704-eae8-4fb7-977e-77291871e487",
+              "createdAtUtc": "2025-10-20T12:34:47.968Z"
+            },
+            {
+              "nodeId": "c84ca593-411f-4cc0-b36e-5ea9d5d27eee",
+              "label": "Bingo",
+              "description": "",
+              "descriptionFormatting": "plain-text",
+              "userDesignatedStatus": "blocked:unknown",
+              "workAssignee": "",
+              "rfXOrigin": 0.5,
+              "rfYOrigin": 0,
+              "passthroughStatusDesignationMethod": "use-most-severe-of-self-and-upstream-status",
+              "createdByUserId": "5a6c7704-eae8-4fb7-977e-77291871e487",
+              "createdAtUtc": "2025-10-20T12:34:53.595Z"
+            },
+            {
+              "nodeId": "dc0dc378-342e-475c-8d7c-02574a14bbae",
+              "label": "Incan Gold",
+              "description": "",
+              "descriptionFormatting": "plain-text",
+              "userDesignatedStatus": "blocked:unknown",
+              "workAssignee": "",
+              "rfXOrigin": 0.5,
+              "rfYOrigin": 0,
+              "passthroughStatusDesignationMethod": "use-most-severe-of-self-and-upstream-status",
+              "createdByUserId": "5a6c7704-eae8-4fb7-977e-77291871e487",
+              "createdAtUtc": "2025-10-20T12:35:00.817Z"
+            },
+            {
+              "nodeId": "8b2804b8-1436-426c-a4bf-d47e35cab398",
+              "label": "Trivia",
+              "description": "",
+              "descriptionFormatting": "plain-text",
+              "userDesignatedStatus": "blocked:unknown",
+              "workAssignee": "",
+              "rfXOrigin": 0.5,
+              "rfYOrigin": 0,
+              "passthroughStatusDesignationMethod": "use-most-severe-of-self-and-upstream-status",
+              "createdByUserId": "5a6c7704-eae8-4fb7-977e-77291871e487",
+              "createdAtUtc": "2025-10-20T12:35:14.068Z"
+            },
+            {
+              "nodeId": "3dbbddd6-28b6-44f1-98c3-c71e0698b758",
+              "label": "Guess Who",
+              "description": "",
+              "descriptionFormatting": "plain-text",
+              "userDesignatedStatus": "blocked:unknown",
+              "workAssignee": "",
+              "rfXOrigin": 0.5,
+              "rfYOrigin": 0,
+              "passthroughStatusDesignationMethod": "use-most-severe-of-self-and-upstream-status",
+              "createdByUserId": "5a6c7704-eae8-4fb7-977e-77291871e487",
+              "createdAtUtc": "2025-10-20T12:37:51.530Z"
+            },
+            {
+              "nodeId": "8047113f-0045-466b-92dc-abfb07902f29",
+              "label": "Custom Game Assets",
+              "description": "",
+              "descriptionFormatting": "plain-text",
+              "userDesignatedStatus": "blocked:unknown",
+              "workAssignee": "",
+              "rfXOrigin": 0.5,
+              "rfYOrigin": 0,
+              "passthroughStatusDesignationMethod": "use-most-severe-of-self-and-upstream-status",
+              "createdByUserId": "5a6c7704-eae8-4fb7-977e-77291871e487",
+              "createdAtUtc": "2025-10-20T12:38:01.316Z"
+            },
+            {
+              "nodeId": "d75d5c8d-33b3-46fb-8ab6-180c5a82e84c",
+              "label": "Private Player Moves",
+              "description": "",
+              "descriptionFormatting": "plain-text",
+              "userDesignatedStatus": "blocked:unknown",
+              "workAssignee": "",
+              "rfXOrigin": 0.5,
+              "rfYOrigin": 0,
+              "passthroughStatusDesignationMethod": "use-most-severe-of-self-and-upstream-status",
+              "createdByUserId": "5a6c7704-eae8-4fb7-977e-77291871e487",
+              "createdAtUtc": "2025-10-20T12:38:13.371Z"
+            },
+            {
+              "nodeId": "92ff3277-de75-4376-8dd6-68a89b8a78e8",
+              "label": "Export/Replay",
+              "description": "",
+              "descriptionFormatting": "plain-text",
+              "userDesignatedStatus": "blocked:unknown",
+              "workAssignee": "",
+              "rfXOrigin": 0.5,
+              "rfYOrigin": 0,
+              "passthroughStatusDesignationMethod": "use-most-severe-of-self-and-upstream-status",
+              "createdByUserId": "5a6c7704-eae8-4fb7-977e-77291871e487",
+              "createdAtUtc": "2025-10-20T12:38:58.338Z"
+            },
+            {
+              "nodeId": "89730735-bc94-46de-aec5-7008be77af90",
+              "label": "Integrate with Solid?",
+              "description": "",
+              "descriptionFormatting": "plain-text",
+              "userDesignatedStatus": "blocked:unknown",
+              "workAssignee": "",
+              "rfXOrigin": 0.5,
+              "rfYOrigin": 0,
+              "passthroughStatusDesignationMethod": "use-most-severe-of-self-and-upstream-status",
+              "createdByUserId": "5a6c7704-eae8-4fb7-977e-77291871e487",
+              "createdAtUtc": "2025-10-20T12:39:23.146Z"
+            }
+          ],
+          "dbkNodePositions": [
+            {
+              "nodeId": "578bbe08-fe6d-4228-b14b-b5e0172b26d0",
+              "x": -19.085537313646228,
+              "y": -103.82532298623556
+            },
+            {
+              "nodeId": "ca0b384c-d1e1-4b68-89a7-78cff87885cc",
+              "x": -459.25836815331763,
+              "y": 300.31851343462847
+            },
+            {
+              "nodeId": "fef7cd89-3f94-4dd7-b0ff-6e6e76ccb751",
+              "x": -216.04417462872232,
+              "y": 45.570512238532814
+            },
+            {
+              "nodeId": "43839413-e4d6-4f47-be22-6ad48dcfc593",
+              "x": 188.97162023842895,
+              "y": 43.46188351834111
+            },
+            {
+              "nodeId": "c84ca593-411f-4cc0-b36e-5ea9d5d27eee",
+              "x": 48.502065609992606,
+              "y": 306.07887695411347
+            },
+            {
+              "nodeId": "dc0dc378-342e-475c-8d7c-02574a14bbae",
+              "x": 326.38748889668193,
+              "y": 287.756761133013
+            },
+            {
+              "nodeId": "8b2804b8-1436-426c-a4bf-d47e35cab398",
+              "x": 191.24701054330646,
+              "y": 473.76631726285274
+            },
+            {
+              "nodeId": "3dbbddd6-28b6-44f1-98c3-c71e0698b758",
+              "x": 540.5465595238696,
+              "y": 285.6049556343545
+            },
+            {
+              "nodeId": "8047113f-0045-466b-92dc-abfb07902f29",
+              "x": -368.23278280951547,
+              "y": 406.70881072503687
+            },
+            {
+              "nodeId": "d75d5c8d-33b3-46fb-8ab6-180c5a82e84c",
+              "x": -680.7267480917793,
+              "y": 269.5912227298015
+            },
+            {
+              "nodeId": "92ff3277-de75-4376-8dd6-68a89b8a78e8",
+              "x": -153.10468514010054,
+              "y": 378.8421368661635
+            },
+            {
+              "nodeId": "89730735-bc94-46de-aec5-7008be77af90",
+              "x": -270.0016720061078,
+              "y": 565.8773158517752
+            }
+          ],
+          "dbkNodeDependencies": [
+            {
+              "taskNodeId": "ca0b384c-d1e1-4b68-89a7-78cff87885cc",
+              "dependentTaskNodeId": "fef7cd89-3f94-4dd7-b0ff-6e6e76ccb751"
+            },
+            {
+              "taskNodeId": "fef7cd89-3f94-4dd7-b0ff-6e6e76ccb751",
+              "dependentTaskNodeId": "578bbe08-fe6d-4228-b14b-b5e0172b26d0"
+            },
+            {
+              "taskNodeId": "43839413-e4d6-4f47-be22-6ad48dcfc593",
+              "dependentTaskNodeId": "578bbe08-fe6d-4228-b14b-b5e0172b26d0"
+            },
+            {
+              "taskNodeId": "c84ca593-411f-4cc0-b36e-5ea9d5d27eee",
+              "dependentTaskNodeId": "43839413-e4d6-4f47-be22-6ad48dcfc593"
+            },
+            {
+              "taskNodeId": "dc0dc378-342e-475c-8d7c-02574a14bbae",
+              "dependentTaskNodeId": "43839413-e4d6-4f47-be22-6ad48dcfc593"
+            },
+            {
+              "taskNodeId": "8b2804b8-1436-426c-a4bf-d47e35cab398",
+              "dependentTaskNodeId": "43839413-e4d6-4f47-be22-6ad48dcfc593"
+            },
+            {
+              "taskNodeId": "3dbbddd6-28b6-44f1-98c3-c71e0698b758",
+              "dependentTaskNodeId": "43839413-e4d6-4f47-be22-6ad48dcfc593"
+            },
+            {
+              "taskNodeId": "8047113f-0045-466b-92dc-abfb07902f29",
+              "dependentTaskNodeId": "fef7cd89-3f94-4dd7-b0ff-6e6e76ccb751"
+            },
+            {
+              "taskNodeId": "d75d5c8d-33b3-46fb-8ab6-180c5a82e84c",
+              "dependentTaskNodeId": "fef7cd89-3f94-4dd7-b0ff-6e6e76ccb751"
+            },
+            {
+              "taskNodeId": "92ff3277-de75-4376-8dd6-68a89b8a78e8",
+              "dependentTaskNodeId": "fef7cd89-3f94-4dd7-b0ff-6e6e76ccb751"
+            },
+            {
+              "taskNodeId": "89730735-bc94-46de-aec5-7008be77af90",
+              "dependentTaskNodeId": "fef7cd89-3f94-4dd7-b0ff-6e6e76ccb751"
+            }
+          ]
+        },
+        "dbkNamedViewports": []
+      }
+    }
+  ]
+}
