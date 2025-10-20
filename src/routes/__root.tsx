@@ -2,6 +2,11 @@ import { Outlet, createRootRoute, Scripts, useRouter } from '@tanstack/react-rou
 import { GameHostingProvider } from '@bfg-engine/hooks/games-registry/game-hosting'
 import { BfgStarterGameHosting } from '../bfg-starter-hosting'
 import { Container, Paper, Typography, Button, Stack, Box } from '@bfg-engine'
+import { Inspector } from 'tinybase/ui-react-inspector'
+import { Provider } from 'tinybase/ui-react'
+import { playerProfileStore } from '@bfg-engine/tb-store/player-profile-store'
+import { hostedGamesStore } from '@bfg-engine/tb-store/hosted-games-store'
+import { hostedLobbiesStore } from '@bfg-engine/tb-store/hosted-lobbies-store'
 
 export const RootErrorComponent = ({ error }: { error: Error }) => {
   const router = useRouter()
@@ -79,10 +84,14 @@ export const RootComponent = () => {
   return (
     <>
       <GameHostingProvider gameHosting={BfgStarterGameHosting}>
-        {/* <BruteForceGamesAppBar /> */}
-        {/* <ProfileGuard> */}
         <Outlet />
-        {/* </ProfileGuard> */}
+        <Provider store={playerProfileStore} storesById={{ 
+          playerProfiles: playerProfileStore,
+          hostedGames: hostedGamesStore,
+          hostedLobbies: hostedLobbiesStore,
+        }}>
+          <Inspector />
+        </Provider>
       </GameHostingProvider>
       <Scripts />
     </>
