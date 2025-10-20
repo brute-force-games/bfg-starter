@@ -5,7 +5,8 @@
   "type": "module",
   "workspaces": [
     "modules/bfg-engine",
-    "modules/bfg-gdp-basic-games"
+    "modules/bfg-gdp-basic-games",
+    "modules/bfg-gdp-party-games"
   ],
   "scripts": {
     "dev": "vite dev",

@@ -21,7 +21,9 @@
       "@bfg-engine": ["./modules/bfg-engine/src"],
       "@bfg-engine/*": ["./modules/bfg-engine/src/*"],
       "@bfg-gdp-basic-games": ["./modules/bfg-gdp-basic-games/src"],
-      "@bfg-gdp-basic-games/*": ["./modules/bfg-gdp-basic-games/src/*"]
+      "@bfg-gdp-basic-games/*": ["./modules/bfg-gdp-basic-games/src/*"],
+      "@bfg-gdp-party-games": ["./modules/bfg-gdp-party-games/src"],
+      "@bfg-gdp-party-games/*": ["./modules/bfg-gdp-party-games/src/*"]
     }
   },
   "include": ["src", "vite.config.ts"]

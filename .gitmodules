@@ -4,3 +4,6 @@
 [submodule "modules/bfg-gdp-basic-games"]
 	path = modules/bfg-gdp-basic-games
 	url = https://github.com/brute-force-games/bfg-gdp-basic-games
+[submodule "modules/bfg-gdp-party-games"]
+	path = modules/bfg-gdp-party-games
+	url = https://github.com/brute-force-games/bfg-gdp-party-games
