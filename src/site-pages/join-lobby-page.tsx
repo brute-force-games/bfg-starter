@@ -14,6 +14,8 @@ interface JoinLobbyPageProps {
 
 export const JoinLobbyPage = ({ lobbyId }: JoinLobbyPageProps) => {
 
+  console.log('JoinLobbyPage', lobbyId);
+
   const JoinLobbyTabItems: readonly AppBarTabItem<JoinLobbyTabId>[] = [
     { id: 'player-lobby', label: 'Player Lobby' },
     { id: 'player-p2p-lobby-details', label: 'P2P Details' },

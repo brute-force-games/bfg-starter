@@ -1,5 +1,5 @@
 import { createRouter } from '@tanstack/react-router'
-import { routeTree } from './routeTree.gen'
+import { routeTree } from './combined-route-tree'
 import { getBasePath } from './bfg-starter-hosting';
 
 const basePath = getBasePath();

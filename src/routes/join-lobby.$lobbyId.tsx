@@ -1,8 +1,9 @@
-import { createFileRoute } from '@tanstack/react-router'
 import { z } from 'zod'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { BfgGameLobbyId } from '@bfg-engine/models/types/bfg-branded-ids'
-import { JoinLobbyPage } from '~/site-pages/join-lobby-page'
-import { ProfileGuard } from '@bfg-engine'
+import { ProfileGuard, Typography, useMyDefaultPlayerProfile } from '@bfg-engine'
+import { P2pLobbyPlayerContextProvider } from '@bfg-engine/hooks/p2p/p2p-lobby-player-context'
+
 
 const paramsSchema = z.object({
   lobbyId: BfgGameLobbyId.idSchema,
@@ -19,9 +20,19 @@ const searchSchema = z.object({
 const JoinLobbyRoute = () => {
   const { lobbyId } = Route.useParams()
 
+  const myPlayerProfile = useMyDefaultPlayerProfile();
+  if (!myPlayerProfile) {
+    return <Typography variant="body1">Loading player profile...</Typography>
+  }
+
   return (
     <ProfileGuard>
-      <JoinLobbyPage lobbyId={lobbyId} />
+      <P2pLobbyPlayerContextProvider
+        lobbyId={lobbyId}
+        myPlayerProfile={myPlayerProfile}
+      >
+        <Outlet />
+      </P2pLobbyPlayerContextProvider>
     </ProfileGuard>
   )
 }

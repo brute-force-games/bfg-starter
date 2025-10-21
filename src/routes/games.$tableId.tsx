@@ -10,8 +10,8 @@ const paramsSchema = z.object({
 
 // Search params schema using Standard Schema
 const searchSchema = z.object({
-  spectate: z.boolean().optional(),
-  debug: z.boolean().optional(),
+  // spectate: z.boolean().optional(),
+  // debug: z.boolean().optional(),
 }).optional()
 
 
