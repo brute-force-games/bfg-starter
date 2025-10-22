@@ -1,8 +1,8 @@
 import { Link } from '@tanstack/react-router'
-import { NoActivityAppBar }  from '../../modules/bfg-engine/src/ui/components/app-bars/no-activity-app-bar'
 import { useRiskyMyDefaultPlayerProfile } from '@bfg-engine/hooks/stores/use-my-player-profiles-store'
 import { NoUserIndexPage } from './no-user-index-page'
 import { Container, Typography, Button, Stack } from '@bfg-engine'
+import { NoActivityAppBar } from '@bfg-engine/ui/components/app-bars/no-activity-app-bar'
 
 
 export const IndexPage = () => {
@@ -14,7 +14,13 @@ export const IndexPage = () => {
 
   return (
     <>
-      <NoActivityAppBar />
+      <NoActivityAppBar 
+        // tabItems={[]}
+        // activeTabId="home"
+      />
+      {/* <BruteForceGamesAppBar 
+        tabsConfig={null}
+      /> */}
       <Container style={{ padding: '24px' }}>
         <Stack spacing={3}>
           <Typography variant="h3">Welcome to Brute Force Games</Typography>

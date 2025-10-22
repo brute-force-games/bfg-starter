@@ -12,6 +12,10 @@ const HostedLobbyIndexRoute = () => {
   const p2pHostedLobby = useP2pHostedLobbyContext();
   const { allPlayerProfiles, lobbyState, lobbyActions, lobbyOptions, setLobbyOptions } = p2pHostedLobby;
 
+  if (!lobbyState) {
+    return <div>Loading...</div>;
+  }
+
   const activeTabId: HostedLobbyTabId = '/hosted-lobby/$lobbyId';
 
   const updateLobbyState = (lobbyState: GameLobby) => {
@@ -33,7 +37,6 @@ const HostedLobbyIndexRoute = () => {
         updateLobbyState={updateLobbyState}
         setLobbyPlayerPool={setLobbyPlayerPool}
       />
-
     </ProfileGuard>
   )
 }
