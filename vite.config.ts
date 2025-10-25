@@ -15,7 +15,11 @@ export default defineConfig({
     })
   ],
   server: {
-    port: 62776
+    port: 62776,
+    host: true
+  },
+  build: {
+    sourcemap: true
   },
   define: {
     BUILD_DETAILS: JSON.stringify({

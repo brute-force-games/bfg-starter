@@ -3,11 +3,11 @@ import { ProfileGuard } from '@bfg-engine/ui/components/profile-guard';
 import { BfgHostedGameBar, HostedGameTabId } from './-components';
 import { HostedGameView } from '@bfg-engine/ui/components/hosted-game-view';
 import { useP2pHostedGameContext } from '@bfg-engine/hooks/p2p/hosted-p2p-game-context';
+import { GameTableSeat } from '@bfg-engine/models/game-table/game-table';
 
 
 const HostedGameIndexRoute = () => {
 
-  // const { tableId } = Route.useParams();
   const p2pHostedGame = useP2pHostedGameContext();
   const {
     gameTable,
@@ -17,7 +17,8 @@ const HostedGameIndexRoute = () => {
     myPlayerSeat,
     gameActions,
     myHostPlayerProfile,
-    handlePlayerMove,
+    onSelfPlayerActionStr,
+    onHostActionStr,
   } = p2pHostedGame;
 
   if (!gameTable) {
@@ -36,7 +37,16 @@ const HostedGameIndexRoute = () => {
   //   lobbyActions.updateLobbyPlayerPool(lobbyState.id, playerPool);
   // }
 
-    console.log('HostedGamesIndexRoute - gameTableId:', gameTableId);
+  console.log('HostedGamesIndexRoute - gameTableId:', gameTableId);
+
+  const onMyPlayerGameAction = (playerAction: any) => {
+    console.log('🎮 HOST SENDING SELF PLAYER ACTION:', playerAction);
+    onSelfPlayerActionStr(playerAction);
+  }
+
+  const onActingAsPlayerGameAction = (_actingAsPlayerSeat: GameTableSeat, _playerAction: any) => {
+    throw new Error('Not implemented');
+  }
 
   return (
     <ProfileGuard>
@@ -49,7 +59,7 @@ const HostedGameIndexRoute = () => {
         updateLobbyState={updateLobbyState}
         setLobbyPlayerPool={setLobbyPlayerPool}
       /> */}
-      <div>Hosted Game: {gameTableId}</div>
+      {/* <div>Hosted Game: {gameTableId}</div> */}
 
       {/* <HostedP2pGameComponent
         gameTableId={tableId}
@@ -63,17 +73,11 @@ const HostedGameIndexRoute = () => {
         gameActions={gameActions}
         peerProfiles={peerProfiles}
         playerProfiles={allPlayerProfiles}
-        onPlayerGameAction={handlePlayerMove}
-
-        // activeTabId={activeTabId}
-        
-        // myPlayerProfile={myHostPlayerProfile}
-        // onPlayerGameAction={handlePlayerMove}
-        // myPlayerSeat={myPlayerSeat}
-        // hostedGame={hostedGame}
-        // gameActions={gameActions}
-        // peerProfiles={peerProfiles}
-        // playerProfiles={playerProfiles}
+        // onMyPlayerGameAction={onMyPlayerGameAction}
+        onActingAsPlayerGameAction={onActingAsPlayerGameAction}
+        onHostGameAction={onHostActionStr}
+        // onPlayerActionStr={onPlayerActionStr}
+        // onHostActionStr={onHostActionStr}
       />
     </ProfileGuard>
   )

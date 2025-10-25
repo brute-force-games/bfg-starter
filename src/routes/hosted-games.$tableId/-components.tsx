@@ -14,8 +14,9 @@ export const BfgHostedGameBar = ({ activeTabId }: BfgHostedGameBarProps) => {
   const HostedGameTabItems: readonly AppBarTabItem<HostedGameTabId>[] = [
     { id: '/hosted-games/$tableId', label: 'Host View', link: { to: '/hosted-games/$tableId' } },
     { id: '/hosted-games/$tableId/player', label: 'Host Player Game', link: { to: '/hosted-games/$tableId/player' } },
-    { id: '/hosted-games/$tableId/p2p-details', label: 'P2P Details', link: { to: '/hosted-games/$tableId/p2p-details' } },
+    { id: '/hosted-games/$tableId/observe', label: 'Observer View', link: { to: '/hosted-games/$tableId/observe' } },
     { id: '/hosted-games/$tableId/game-details', label: 'Game Details', link: { to: '/hosted-games/$tableId/game-details' } },
+    { id: '/hosted-games/$tableId/p2p-details', label: 'P2P Details', link: { to: '/hosted-games/$tableId/p2p-details' } },
   ];
 
   return (

@@ -18,7 +18,7 @@ const HostedGamePlayerRoute = () => {
     gameTable,
     gameActions,
     myPlayerSeat,
-    handlePlayerMove,
+    onSelfPlayerActionStr,
     myHostPlayerProfile,
   } = hostedGame;
 
@@ -32,7 +32,7 @@ const HostedGamePlayerRoute = () => {
         myPlayerSeat={myPlayerSeat}
         gameTable={gameTable}
         gameActions={gameActions}
-        onPlayerGameAction={handlePlayerMove}
+        onPlayerGameAction={onSelfPlayerActionStr}
       />
     </>
   )

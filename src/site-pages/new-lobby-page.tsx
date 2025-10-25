@@ -1,13 +1,15 @@
 import { NewLobbyAppBar } from "@bfg-engine/ui/components/app-bars/new-lobby-app-bar"
 import { NewLobbyComponent } from "@bfg-engine/ui/components/new-lobby/new-lobby-component"
+import { useSearch } from '@tanstack/react-router'
 
 
 export const NewLobbyPage = () => {
+  const search = useSearch({ from: '/new-lobby' })
   
   return (
     <>
       <NewLobbyAppBar />
-      <NewLobbyComponent />      
+      <NewLobbyComponent defaultGameTitle={search.gameTitle} />      
     </>
   )
 }

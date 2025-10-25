@@ -25,6 +25,7 @@ import { Route as HostedLobbyLobbyIdPlayerRouteImport } from './routes/hosted-lo
 import { Route as HostedLobbyLobbyIdP2pDetailsRouteImport } from './routes/hosted-lobby.$lobbyId/p2p-details'
 import { Route as HostedGamesTableIdPlayerRouteImport } from './routes/hosted-games.$tableId/player'
 import { Route as HostedGamesTableIdP2pDetailsRouteImport } from './routes/hosted-games.$tableId/p2p-details'
+import { Route as HostedGamesTableIdObserveRouteImport } from './routes/hosted-games.$tableId/observe'
 import { Route as HostedGamesTableIdGameDetailsRouteImport } from './routes/hosted-games.$tableId/game-details'
 import { Route as GamesTableIdObserveRouteImport } from './routes/games.$tableId/observe'
 
@@ -113,6 +114,12 @@ const HostedGamesTableIdP2pDetailsRoute =
     path: '/p2p-details',
     getParentRoute: () => HostedGamesTableIdRoute,
   } as any)
+const HostedGamesTableIdObserveRoute =
+  HostedGamesTableIdObserveRouteImport.update({
+    id: '/observe',
+    path: '/observe',
+    getParentRoute: () => HostedGamesTableIdRoute,
+  } as any)
 const HostedGamesTableIdGameDetailsRoute =
   HostedGamesTableIdGameDetailsRouteImport.update({
     id: '/game-details',
@@ -135,6 +142,7 @@ export interface FileRoutesByFullPath {
   '/join-lobby/$lobbyId': typeof JoinLobbyLobbyIdRouteWithChildren
   '/games/$tableId/observe': typeof GamesTableIdObserveRoute
   '/hosted-games/$tableId/game-details': typeof HostedGamesTableIdGameDetailsRoute
+  '/hosted-games/$tableId/observe': typeof HostedGamesTableIdObserveRoute
   '/hosted-games/$tableId/p2p-details': typeof HostedGamesTableIdP2pDetailsRoute
   '/hosted-games/$tableId/player': typeof HostedGamesTableIdPlayerRoute
   '/hosted-lobby/$lobbyId/p2p-details': typeof HostedLobbyLobbyIdP2pDetailsRoute
@@ -151,6 +159,7 @@ export interface FileRoutesByTo {
   '/new-lobby': typeof NewLobbyRoute
   '/games/$tableId/observe': typeof GamesTableIdObserveRoute
   '/hosted-games/$tableId/game-details': typeof HostedGamesTableIdGameDetailsRoute
+  '/hosted-games/$tableId/observe': typeof HostedGamesTableIdObserveRoute
   '/hosted-games/$tableId/p2p-details': typeof HostedGamesTableIdP2pDetailsRoute
   '/hosted-games/$tableId/player': typeof HostedGamesTableIdPlayerRoute
   '/hosted-lobby/$lobbyId/p2p-details': typeof HostedLobbyLobbyIdP2pDetailsRoute
@@ -172,6 +181,7 @@ export interface FileRoutesById {
   '/join-lobby/$lobbyId': typeof JoinLobbyLobbyIdRouteWithChildren
   '/games/$tableId/observe': typeof GamesTableIdObserveRoute
   '/hosted-games/$tableId/game-details': typeof HostedGamesTableIdGameDetailsRoute
+  '/hosted-games/$tableId/observe': typeof HostedGamesTableIdObserveRoute
   '/hosted-games/$tableId/p2p-details': typeof HostedGamesTableIdP2pDetailsRoute
   '/hosted-games/$tableId/player': typeof HostedGamesTableIdPlayerRoute
   '/hosted-lobby/$lobbyId/p2p-details': typeof HostedLobbyLobbyIdP2pDetailsRoute
@@ -194,6 +204,7 @@ export interface FileRouteTypes {
     | '/join-lobby/$lobbyId'
     | '/games/$tableId/observe'
     | '/hosted-games/$tableId/game-details'
+    | '/hosted-games/$tableId/observe'
     | '/hosted-games/$tableId/p2p-details'
     | '/hosted-games/$tableId/player'
     | '/hosted-lobby/$lobbyId/p2p-details'
@@ -210,6 +221,7 @@ export interface FileRouteTypes {
     | '/new-lobby'
     | '/games/$tableId/observe'
     | '/hosted-games/$tableId/game-details'
+    | '/hosted-games/$tableId/observe'
     | '/hosted-games/$tableId/p2p-details'
     | '/hosted-games/$tableId/player'
     | '/hosted-lobby/$lobbyId/p2p-details'
@@ -230,6 +242,7 @@ export interface FileRouteTypes {
     | '/join-lobby/$lobbyId'
     | '/games/$tableId/observe'
     | '/hosted-games/$tableId/game-details'
+    | '/hosted-games/$tableId/observe'
     | '/hosted-games/$tableId/p2p-details'
     | '/hosted-games/$tableId/player'
     | '/hosted-lobby/$lobbyId/p2p-details'
@@ -365,6 +378,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HostedGamesTableIdP2pDetailsRouteImport
       parentRoute: typeof HostedGamesTableIdRoute
     }
+    '/hosted-games/$tableId/observe': {
+      id: '/hosted-games/$tableId/observe'
+      path: '/observe'
+      fullPath: '/hosted-games/$tableId/observe'
+      preLoaderRoute: typeof HostedGamesTableIdObserveRouteImport
+      parentRoute: typeof HostedGamesTableIdRoute
+    }
     '/hosted-games/$tableId/game-details': {
       id: '/hosted-games/$tableId/game-details'
       path: '/game-details'
@@ -398,6 +418,7 @@ const GamesTableIdRouteWithChildren = GamesTableIdRoute._addFileChildren(
 
 interface HostedGamesTableIdRouteChildren {
   HostedGamesTableIdGameDetailsRoute: typeof HostedGamesTableIdGameDetailsRoute
+  HostedGamesTableIdObserveRoute: typeof HostedGamesTableIdObserveRoute
   HostedGamesTableIdP2pDetailsRoute: typeof HostedGamesTableIdP2pDetailsRoute
   HostedGamesTableIdPlayerRoute: typeof HostedGamesTableIdPlayerRoute
   HostedGamesTableIdIndexRoute: typeof HostedGamesTableIdIndexRoute
@@ -405,6 +426,7 @@ interface HostedGamesTableIdRouteChildren {
 
 const HostedGamesTableIdRouteChildren: HostedGamesTableIdRouteChildren = {
   HostedGamesTableIdGameDetailsRoute: HostedGamesTableIdGameDetailsRoute,
+  HostedGamesTableIdObserveRoute: HostedGamesTableIdObserveRoute,
   HostedGamesTableIdP2pDetailsRoute: HostedGamesTableIdP2pDetailsRoute,
   HostedGamesTableIdPlayerRoute: HostedGamesTableIdPlayerRoute,
   HostedGamesTableIdIndexRoute: HostedGamesTableIdIndexRoute,
