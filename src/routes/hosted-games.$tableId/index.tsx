@@ -12,12 +12,10 @@ const HostedGameIndexRoute = () => {
   const {
     gameTable,
     peerProfiles,
-    // otherPlayerProfiles,
     allPlayerProfiles,
     myPlayerSeat,
     gameActions,
     myHostPlayerProfile,
-    onSelfPlayerActionStr,
     onHostActionStr,
   } = p2pHostedGame;
 
@@ -37,12 +35,12 @@ const HostedGameIndexRoute = () => {
   //   lobbyActions.updateLobbyPlayerPool(lobbyState.id, playerPool);
   // }
 
-  console.log('HostedGamesIndexRoute - gameTableId:', gameTableId);
+  // console.log('HostedGamesIndexRoute - gameTableId:', gameTableId);
 
-  const onMyPlayerGameAction = (playerAction: any) => {
-    console.log('🎮 HOST SENDING SELF PLAYER ACTION:', playerAction);
-    onSelfPlayerActionStr(playerAction);
-  }
+  // const onMyPlayerGameAction = (playerAction: any) => {
+  //   console.log('🎮 HOST SENDING SELF PLAYER ACTION:', playerAction);
+  //   onSelfPlayerActionStr(playerAction);
+  // }
 
   const onActingAsPlayerGameAction = (_actingAsPlayerSeat: GameTableSeat, _playerAction: any) => {
     throw new Error('Not implemented');
@@ -51,21 +49,6 @@ const HostedGameIndexRoute = () => {
   return (
     <ProfileGuard>
       <BfgHostedGameBar activeTabId={activeTabId} />
-      {/* <LobbyHostStateComponent
-        playerProfiles={allPlayerProfiles}
-        lobbyState={lobbyState}
-        lobbyOptions={lobbyOptions}
-        setLobbyOptions={setLobbyOptions}
-        updateLobbyState={updateLobbyState}
-        setLobbyPlayerPool={setLobbyPlayerPool}
-      /> */}
-      {/* <div>Hosted Game: {gameTableId}</div> */}
-
-      {/* <HostedP2pGameComponent
-        gameTableId={tableId}
-        activeTabId={activeTabId}
-      /> */}
-
       <HostedGameView
         hostedGame={gameTable}
         myPlayerProfile={myHostPlayerProfile}
@@ -73,11 +56,8 @@ const HostedGameIndexRoute = () => {
         gameActions={gameActions}
         peerProfiles={peerProfiles}
         playerProfiles={allPlayerProfiles}
-        // onMyPlayerGameAction={onMyPlayerGameAction}
         onActingAsPlayerGameAction={onActingAsPlayerGameAction}
         onHostGameAction={onHostActionStr}
-        // onPlayerActionStr={onPlayerActionStr}
-        // onHostActionStr={onHostActionStr}
       />
     </ProfileGuard>
   )
