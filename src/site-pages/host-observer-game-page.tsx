@@ -8,7 +8,7 @@ export const HostObserverGamePage = () => {
   const activeTabId: HostedGameTabId = '/hosted-games/$tableId/observe';
 
   const hostedGame = useP2pHostedGameContext();
-  const { gameTable, gameActions } = hostedGame;
+  const { gameTable, gameActions, allPlayerProfiles } = hostedGame;
 
   return (
     <>
@@ -16,6 +16,7 @@ export const HostObserverGamePage = () => {
       <HostObserverP2pGameComponent
         hostedGame={gameTable}
         gameActions={gameActions}
+        allPlayerProfiles={allPlayerProfiles}
       />
     </>
   )

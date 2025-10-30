@@ -83,7 +83,9 @@ export const RootErrorComponent = ({ error }: { error: Error }) => {
 export const RootComponent = () => {
   return (
     <>
-      <GameHostingProvider gameHosting={BfgStarterGameHosting}>
+      <GameHostingProvider
+        gameHosting={BfgStarterGameHosting}
+      >
         <Outlet />
         <Provider store={playerProfileStore} storesById={{ 
           playerProfiles: playerProfileStore,

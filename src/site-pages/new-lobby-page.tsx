@@ -9,7 +9,9 @@ export const NewLobbyPage = () => {
   return (
     <>
       <NewLobbyAppBar />
-      <NewLobbyComponent defaultGameTitle={search.gameTitle} />      
+      <NewLobbyComponent
+        defaultGameTitle={search.gameTitle}
+      />      
     </>
   )
 }

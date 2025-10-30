@@ -15,22 +15,11 @@ const searchSchema = z.object({
 }).optional()
 
 
-// const GamesTableIdLayout = () => {
-//   // This is a layout route - it just wraps children with ProfileGuard
-//   return (
-//     // <ProfileGuard>
-//     <Outlet />
-//     // </ProfileGuard>
-//   )
-// }
-
-
 export const Route = createFileRoute('/games/$tableId')({
   params: {
     parse: (params) => paramsSchema.parse(params),
     stringify: (params) => ({ tableId: params.tableId }),
   },
   validateSearch: searchSchema,
-  // component: GamesTableIdLayout,
   component: Outlet,
 })

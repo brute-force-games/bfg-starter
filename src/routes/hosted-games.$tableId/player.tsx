@@ -29,7 +29,9 @@ const HostedGamePlayerRoute = () => {
 
   return (
     <>
-      <BfgHostedGameBar activeTabId={activeTabId} />
+      <BfgHostedGameBar
+        activeTabId={activeTabId}
+      />
       <PlayerGameView
         allPlayerProfiles={allPlayerProfiles}
         myPlayerProfile={myHostPlayerProfile}
