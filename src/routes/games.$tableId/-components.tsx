@@ -13,6 +13,7 @@ export const BfgPlayerGameBar = ({ activeTabId }: BfgPlayerGameBarProps) => {
 
   const PlayerGameTabItems: readonly AppBarTabItem<PlayerGameTabId>[] = [
     { id: '/games/$tableId', label: 'Player Game', link: { to: '/games/$tableId' } },
+    { id: '/games/$tableId/game-details', label: 'Game Details', link: { to: '/games/$tableId/game-details' } },
     { id: '/games/$tableId/observe', label: 'Observer View', link: { to: '/games/$tableId/observe' } },
   ];
 

@@ -1,13 +1,13 @@
-import { ObserverP2pGameComponent } from "@bfg-engine";
 import { GameTableId } from "@bfg-engine/models/types/bfg-branded-ids";
-import { BfgPlayerGameBar, PlayerGameTabId } from "~/routes/games.$tableId/-components";
+import { ObserverP2pGameDetailsComponent } from "@bfg-engine/ui/components/observer-p2p-game-details-component";
+import { BfgPlayerGameBar } from "~/routes/games.$tableId/-components";
 
 
-interface IObserverGamePageProps {
+interface IObserverGameDetailsPageProps {
   tableId: GameTableId;
 }
 
-export const ObserverGamePage = ({ tableId }: IObserverGamePageProps) => {
+export const ObserverGameDetailsPage = ({ tableId }: IObserverGameDetailsPageProps) => {
 
   // const ObserverGameTabItems: readonly AppBarTabItem<PlayerGameTabId>[] = [
   //   { id: 'player-game', label: 'Observer View' },
@@ -16,8 +16,7 @@ export const ObserverGamePage = ({ tableId }: IObserverGamePageProps) => {
   // ];
   
   // const [activeTabId, setActiveTabId] = useState<PlayerGameTabId>('player-game');
-  const activeTabId: PlayerGameTabId = '/games/$tableId/observe';
-  const mode = 'player-game';
+  const activeTabId = '/games/$tableId/game-details';
 
   return (
     <>
@@ -31,10 +30,8 @@ export const ObserverGamePage = ({ tableId }: IObserverGamePageProps) => {
       <BfgPlayerGameBar
         activeTabId={activeTabId}
       />
-      <ObserverP2pGameComponent
+      <ObserverP2pGameDetailsComponent
         gameTableId={tableId}
-        // mode="observer-game"
-        mode={mode}
       />
     </>
   )

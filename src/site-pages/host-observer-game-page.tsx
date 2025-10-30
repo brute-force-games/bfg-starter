@@ -12,7 +12,9 @@ export const HostObserverGamePage = () => {
 
   return (
     <>
-      <BfgHostedGameBar activeTabId={activeTabId} />
+      <BfgHostedGameBar
+        activeTabId={activeTabId}
+      />
       <HostObserverP2pGameComponent
         hostedGame={gameTable}
         gameActions={gameActions}

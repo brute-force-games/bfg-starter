@@ -33,7 +33,7 @@ const GameP2pDetailsRoute = () => {
 }
 
 
-export const Route = createFileRoute('/hosted-games/$tableId/p2p-details')({
+export const Route = createFileRoute('/games/$tableId/p2p-details')({
   params: {
     parse: (params) => paramsSchema.parse(params),
     stringify: (params) => ({ tableId: params.tableId }),

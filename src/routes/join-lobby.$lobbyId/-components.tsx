@@ -1,7 +1,7 @@
 import { BruteForceGamesAppBar } from "@bfg-engine/ui/components/bfg-app-bar/app-bar"
 import { AppBarTabItem } from "@bfg-engine/ui/components/bfg-app-bar/tab-item-hook";
-// import type { FileRoutesByTo } from '../../routeTree.gen';
 import { ChildRoutesOf } from "../-utils";
+
 
 // Utility type to extract all child routes of a specific path
 // type ChildRoutesOf<TPath extends string> = Extract<

@@ -1,9 +1,7 @@
 import { PlayerP2pGameComponent, useRiskyMyDefaultPlayerProfile, Container, Typography, Stack } from "@bfg-engine";
 import { GameTableId } from "@bfg-engine/models/types/bfg-branded-ids";
-import { BruteForceGamesAppBar } from "@bfg-engine/ui/components/bfg-app-bar/app-bar";
-import { AppBarTabItem } from "@bfg-engine/ui/components/bfg-app-bar/tab-item-hook";
-import { PlayerGameTabId } from "@bfg-engine/ui/components/bfg-tabs";
-import { useState } from "react";
+import { BfgPlayerGameBar } from "~/routes/games.$tableId/-components";
+import { PlayerGameTabId } from "~/routes/games.$tableId/-components";
 
 
 interface IPlayerGamePageProps {
@@ -12,14 +10,16 @@ interface IPlayerGamePageProps {
 
 export const PlayerGamePage = ({ tableId }: IPlayerGamePageProps) => {
 
-  const PlayerGameTabItems: readonly AppBarTabItem<PlayerGameTabId>[] = [
-    { id: 'player-game', label: 'Player Game' },
-    { id: 'player-game-details', label: 'Game Details' },
-    { id: 'player-p2p-game-details', label: 'P2P Details' },
-  ];
-  
+  // const PlayerGameTabItems: readonly AppBarTabItem<PlayerGameTabId>[] = [
+  //   { id: 'player-game', label: 'Player Game' },
+  //   { id: 'player-game-details', label: 'Game Details' },
+  //   { id: 'player-p2p-game-details', label: 'P2P Details' },
+  // ];
+
+  const activeTabId: PlayerGameTabId = '/games/$tableId';
+
   const myPlayerProfile = useRiskyMyDefaultPlayerProfile();
-  const [activeTabId, setActiveTabId] = useState<PlayerGameTabId>('player-game');
+  // const [activeTabId, setActiveTabId] = useState<PlayerGameTabId>('player-game');
 
   if (!myPlayerProfile) {
     return (
@@ -36,17 +36,20 @@ export const PlayerGamePage = ({ tableId }: IPlayerGamePageProps) => {
 
   return (
     <>
-      <BruteForceGamesAppBar
+      {/* <BruteForceGamesAppBar
         tabsConfig={{
           tabItems: PlayerGameTabItems,
           activeTabId: activeTabId,
           onTabChange: setActiveTabId
         }}
+      /> */}
+      <BfgPlayerGameBar
+        activeTabId={activeTabId}
       />
       <PlayerP2pGameComponent
         gameTableId={tableId}
         playerProfile={myPlayerProfile}
-        activeTabId={activeTabId}
+        mode="player-game"
       />
     </>
   )
