@@ -14,13 +14,7 @@ export const IndexPage = () => {
 
   return (
     <>
-      <NoActivityAppBar 
-        // tabItems={[]}
-        // activeTabId="home"
-      />
-      {/* <BruteForceGamesAppBar 
-        tabsConfig={null}
-      /> */}
+      <NoActivityAppBar />
       <Container style={{ padding: '24px' }}>
         <Stack spacing={3}>
           <Typography variant="h3">Welcome to Brute Force Games</Typography>

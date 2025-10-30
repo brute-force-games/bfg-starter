@@ -8,7 +8,7 @@ const HostedLobbyP2pDetailsRoute = () => {
   const activeTabId: HostedLobbyTabId = '/hosted-lobby/$lobbyId/p2p-details';
 
   const lobby = useP2pHostedLobbyContext();
-  const { connectionStatus, connectionEvents, peerProfiles, refreshConnection, allPlayerProfiles } = lobby;
+  const { connectionStatus, connectionEvents, peers, myHostPlayerProfile, peerPlayers, allPlayerProfiles, refreshConnection } = lobby;
 
   return (
     <>
@@ -18,8 +18,10 @@ const HostedLobbyP2pDetailsRoute = () => {
       <P2pConnectionComponent
         connectionStatus={connectionStatus}
         connectionEvents={connectionEvents}
-        peerProfiles={peerProfiles}
-        playerProfiles={allPlayerProfiles}
+        peers={peers}
+        myPeerPlayer={myHostPlayerProfile}
+        peerPlayers={peerPlayers}
+        allPlayerProfiles={allPlayerProfiles}
         onRefreshConnection={refreshConnection}
       />
     </>

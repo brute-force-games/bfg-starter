@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { createFileRoute } from '@tanstack/react-router'
 import { BfgHostedGameBar, HostedGameTabId } from './-components'
-import { useP2pHostedGameContext } from '@bfg-engine/hooks/p2p/hosted-p2p-game-context';
+import { useP2pHostedGameContext } from '@bfg-engine/hooks/p2p/game/hosted-p2p-game-context';
 import { BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-ids';
 import { HostedGameDetailsComponent } from '@bfg-engine/ui/components/host-game-details-component';
 
@@ -13,7 +13,6 @@ const paramsSchema = z.object({
 const HostedGameDetailsRoute = () => {
   const hostedGame = useP2pHostedGameContext();
   const { gameTable, gameActions } = hostedGame;
-  // return <div>Hello "/hosted-games/$tableId/game-details"!</div>
 
   const activeTabId: HostedGameTabId = '/hosted-games/$tableId/game-details';
 

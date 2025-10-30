@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-ids'
 import { ProfileGuard } from '@bfg-engine/ui/components/profile-guard'
 import { Outlet } from '@tanstack/react-router'
-import { P2pHostedGameContextProvider } from '@bfg-engine/hooks/p2p/hosted-p2p-game-context'
+import { P2pHostedGameContextProvider } from '@bfg-engine/hooks/p2p/game/hosted-p2p-game-context'
 import { useMyDefaultPlayerProfile } from '@bfg-engine/hooks/stores/use-my-player-profiles-store'
 import { Typography } from '@bfg-engine'
 

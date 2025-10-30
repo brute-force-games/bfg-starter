@@ -3,9 +3,7 @@ import { z } from "zod"
 import { BfgGameLobbyId } from "@bfg-engine/models/types/bfg-branded-ids"
 import { ProfileGuard } from "@bfg-engine/ui/components/profile-guard"
 import { Outlet } from "@tanstack/react-router"
-import { P2pHostedLobbyContextProvider } from "@bfg-engine/hooks/p2p/hosted-p2p-lobby-context"
-import { useMyDefaultPlayerProfile } from "@bfg-engine/hooks/stores/use-my-player-profiles-store"
-import { Typography } from "@bfg-engine/ui/bfg-ui"
+import { P2pHostedLobbyContextProvider } from "@bfg-engine/hooks/p2p/lobby/hosted-p2p-lobby-context"
 
 
 const paramsSchema = z.object({
@@ -24,16 +22,16 @@ const searchSchema = z.object({
 const HostedLobbyRoute = () => {
   const { lobbyId } = Route.useParams();
 
-  const myHostPlayerProfile = useMyDefaultPlayerProfile();
-  if (!myHostPlayerProfile) {
-    return <Typography variant="body1">Loading player profile...</Typography>
-  }
+  // const myHostPlayerProfile = useRiskyMyDefaultPlayerProfile();
+  // if (!myHostPlayerProfile) {
+  //   return <Typography variant="body1">Loading player profile...</Typography>
+  // }
 
   return (
     <ProfileGuard>
       <P2pHostedLobbyContextProvider
         lobbyId={lobbyId}
-        hostPlayerProfile={myHostPlayerProfile}
+        // hostPlayerProfile={myHostPlayerProfile}
       >
         <Outlet />
       </P2pHostedLobbyContextProvider>

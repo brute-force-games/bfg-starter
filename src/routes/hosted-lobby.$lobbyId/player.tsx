@@ -3,7 +3,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { BfgGameLobbyId } from '@bfg-engine/models/types/bfg-branded-ids';
 import { LobbyPlayerStateComponent } from '@bfg-engine';
 import { BfgHostedLobbyAppBar, HostedLobbyTabId } from './-components';
-import { useP2pHostedLobbyContext  } from '@bfg-engine/hooks/p2p/hosted-p2p-lobby-context';
+import { useP2pHostedLobbyContext  } from '@bfg-engine/hooks/p2p/lobby/hosted-p2p-lobby-context';
 
 
 const paramsSchema = z.object({

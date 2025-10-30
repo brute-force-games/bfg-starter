@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { ProfileGuard } from '@bfg-engine/ui/components/profile-guard';
-import { useP2pHostedLobbyContext } from '@bfg-engine/hooks/p2p/hosted-p2p-lobby-context';
+import { useP2pHostedLobbyContext } from '@bfg-engine/hooks/p2p/lobby/hosted-p2p-lobby-context';
 import { LobbyHostStateComponent } from '@bfg-engine/ui/components/lobby-host-state-component';
 import { GameLobby } from '@bfg-engine/models/p2p-lobby';
 import { PlayerProfileId } from '@bfg-engine/models/types/bfg-branded-ids';

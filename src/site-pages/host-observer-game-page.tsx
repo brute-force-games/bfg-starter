@@ -1,11 +1,7 @@
 import { HostObserverP2pGameComponent } from "@bfg-engine/ui/components/host-observer-p2p-game-component";
 import { BfgHostedGameBar, HostedGameTabId } from "~/routes/hosted-games.$tableId/-components";
-import { useP2pHostedGameContext } from "@bfg-engine/hooks/p2p/hosted-p2p-game-context";
+import { useP2pHostedGameContext } from "@bfg-engine/hooks/p2p/game/hosted-p2p-game-context";
 
-
-// interface IHostObserverGamePageProps {
-//   // tableId: GameTableId;
-// }
 
 export const HostObserverGamePage = () => {
 

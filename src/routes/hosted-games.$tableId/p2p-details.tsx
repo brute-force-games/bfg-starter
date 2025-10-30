@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { P2pConnectionComponent } from '@bfg-engine';
 import { createFileRoute } from '@tanstack/react-router'
 import { BfgHostedGameBar, HostedGameTabId } from './-components';
-import { useP2pHostedGameContext } from '@bfg-engine/hooks/p2p/hosted-p2p-game-context';
+import { useP2pHostedGameContext } from '@bfg-engine/hooks/p2p/game/hosted-p2p-game-context';
 import { BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-ids';
 
 
@@ -15,7 +15,7 @@ const HostedGameP2pDetailsRoute = () => {
   const activeTabId: HostedGameTabId = '/hosted-games/$tableId/p2p-details';
 
   const hostedGame = useP2pHostedGameContext();
-  const { connectionStatus, connectionEvents, peerProfiles, refreshConnection, allPlayerProfiles } = hostedGame;
+  const { connectionStatus, connectionEvents, peers, peerPlayers, refreshConnection, allPlayerProfiles } = hostedGame;
 
   return (
     <>
@@ -25,8 +25,9 @@ const HostedGameP2pDetailsRoute = () => {
       <P2pConnectionComponent
         connectionStatus={connectionStatus}
         connectionEvents={connectionEvents}
-        peerProfiles={peerProfiles}
-        playerProfiles={allPlayerProfiles}
+        peers={peers}
+        peerPlayers={peerPlayers}
+        allPlayerProfiles={allPlayerProfiles}
         onRefreshConnection={refreshConnection}
       />
     </>

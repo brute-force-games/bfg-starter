@@ -2,7 +2,7 @@ import { P2pConnectionComponent, Typography } from '@bfg-engine';
 import { useMyDefaultPlayerProfile } from '@bfg-engine/hooks/stores/use-my-player-profiles-store';
 import { createFileRoute } from '@tanstack/react-router'
 import { BfgJoinLobbyAppBar, JoinLobbyTabId } from './-components';
-import { useP2pLobbyPlayerContext } from '@bfg-engine/hooks/p2p/p2p-lobby-player-context';
+import { useP2pLobbyPlayerContext } from '@bfg-engine/hooks/p2p/lobby/p2p-lobby-player-context';
 
 
 const JoinLobbyP2pDetailsRoute = () => {
@@ -38,27 +38,24 @@ const JoinLobbyP2pDetailsRoute = () => {
   const {
     connectionStatus,
     connectionEvents,
-    peerProfiles,
+    peers,
+    peerPlayers,
     refreshConnection,
     allPlayerProfiles,
    } = lobby;
 
   return (
-    // <JoinLobbyPage lobbyId={lobbyId} />
     <>
       <BfgJoinLobbyAppBar 
         activeTabId={activeTabId}
       />
-      {/* <PlayerP2pLobbyComponent
-        lobbyId={lobbyId}
-        myPlayerProfile={myPlayerProfile}
-        activeTabId={activeTabId}
-      /> */}
       <P2pConnectionComponent
         connectionStatus={connectionStatus}
         connectionEvents={connectionEvents}
-        peerProfiles={peerProfiles}
-        playerProfiles={allPlayerProfiles}
+        peers={peers}
+        myPeerPlayer={myPlayerProfile}
+        peerPlayers={peerPlayers}
+        allPlayerProfiles={allPlayerProfiles}
         onRefreshConnection={refreshConnection}
       />
     </>
