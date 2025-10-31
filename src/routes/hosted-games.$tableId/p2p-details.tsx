@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { P2pConnectionComponent } from '@bfg-engine';
 import { createFileRoute } from '@tanstack/react-router'
 import { BfgHostedGameBar, HostedGameTabId } from './-components';
-import { useP2pHostedGameContext } from '@bfg-engine/hooks/p2p/game/hosted-p2p-game-context';
+// import { useP2pHostedGameContext } from '@bfg-engine/hooks/p2p/game/hosted-p2p-game-context';
 import { BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-ids';
 
 
@@ -12,26 +12,28 @@ const paramsSchema = z.object({
 
 const HostedGameP2pDetailsRoute = () => {
 
-  const activeTabId: HostedGameTabId = '/hosted-games/$tableId/p2p-details';
+  return <div>Hosted Game P2p Details Route</div>;
 
-  const hostedGame = useP2pHostedGameContext();
-  const { connectionStatus, connectionEvents, peers, peerPlayers, refreshConnection, allPlayerProfiles } = hostedGame;
+  // const activeTabId: HostedGameTabId = '/hosted-games/$tableId/p2p-details';
 
-  return (
-    <>
-      <BfgHostedGameBar 
-        activeTabId={activeTabId}
-      />
-      <P2pConnectionComponent
-        connectionStatus={connectionStatus}
-        connectionEvents={connectionEvents}
-        peers={peers}
-        peerPlayers={peerPlayers}
-        allPlayerProfiles={allPlayerProfiles}
-        onRefreshConnection={refreshConnection}
-      />
-    </>
-  )
+  // const hostedGame = useP2pHostedGameContext();
+  // const { connectionStatus, connectionEvents, peers, peerPlayers, refreshConnection, allPlayerProfiles } = hostedGame;
+
+  // return (
+  //   <>
+  //     <BfgHostedGameBar 
+  //       activeTabId={activeTabId}
+  //     />
+  //     <P2pConnectionComponent
+  //       connectionStatus={connectionStatus}
+  //       connectionEvents={connectionEvents}
+  //       peers={peers}
+  //       peerPlayers={peerPlayers}
+  //       allPlayerProfiles={allPlayerProfiles}
+  //       onRefreshConnection={refreshConnection}
+  //     />
+  //   </>
+  // )
 }
 
 

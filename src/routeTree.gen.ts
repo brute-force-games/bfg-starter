@@ -27,9 +27,14 @@ import { Route as HostedGamesTableIdPlayerRouteImport } from './routes/hosted-ga
 import { Route as HostedGamesTableIdP2pDetailsRouteImport } from './routes/hosted-games.$tableId/p2p-details'
 import { Route as HostedGamesTableIdObserveRouteImport } from './routes/hosted-games.$tableId/observe'
 import { Route as HostedGamesTableIdGameDetailsRouteImport } from './routes/hosted-games.$tableId/game-details'
+import { Route as Games2RoleTableIdRouteImport } from './routes/games2.$role.$tableId'
 import { Route as GamesTableIdP2pDetailsRouteImport } from './routes/games.$tableId/p2p-details'
 import { Route as GamesTableIdObserveRouteImport } from './routes/games.$tableId/observe'
 import { Route as GamesTableIdGameDetailsRouteImport } from './routes/games.$tableId/game-details'
+import { Route as Games2RoleTableIdIndexRouteImport } from './routes/games2.$role.$tableId/index'
+import { Route as Games2RoleTableIdP2pDetailsRouteImport } from './routes/games2.$role.$tableId/p2p-details'
+import { Route as Games2RoleTableIdGameDetailsRouteImport } from './routes/games2.$role.$tableId/game-details'
+import { Route as Games2RoleTableIdAdminRouteImport } from './routes/games2.$role.$tableId/admin'
 
 const NewLobbyRoute = NewLobbyRouteImport.update({
   id: '/new-lobby',
@@ -128,6 +133,11 @@ const HostedGamesTableIdGameDetailsRoute =
     path: '/game-details',
     getParentRoute: () => HostedGamesTableIdRoute,
   } as any)
+const Games2RoleTableIdRoute = Games2RoleTableIdRouteImport.update({
+  id: '/games2/$role/$tableId',
+  path: '/games2/$role/$tableId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const GamesTableIdP2pDetailsRoute = GamesTableIdP2pDetailsRouteImport.update({
   id: '/p2p-details',
   path: '/p2p-details',
@@ -143,6 +153,28 @@ const GamesTableIdGameDetailsRoute = GamesTableIdGameDetailsRouteImport.update({
   path: '/game-details',
   getParentRoute: () => GamesTableIdRoute,
 } as any)
+const Games2RoleTableIdIndexRoute = Games2RoleTableIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => Games2RoleTableIdRoute,
+} as any)
+const Games2RoleTableIdP2pDetailsRoute =
+  Games2RoleTableIdP2pDetailsRouteImport.update({
+    id: '/p2p-details',
+    path: '/p2p-details',
+    getParentRoute: () => Games2RoleTableIdRoute,
+  } as any)
+const Games2RoleTableIdGameDetailsRoute =
+  Games2RoleTableIdGameDetailsRouteImport.update({
+    id: '/game-details',
+    path: '/game-details',
+    getParentRoute: () => Games2RoleTableIdRoute,
+  } as any)
+const Games2RoleTableIdAdminRoute = Games2RoleTableIdAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => Games2RoleTableIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -155,6 +187,7 @@ export interface FileRoutesByFullPath {
   '/games/$tableId/game-details': typeof GamesTableIdGameDetailsRoute
   '/games/$tableId/observe': typeof GamesTableIdObserveRoute
   '/games/$tableId/p2p-details': typeof GamesTableIdP2pDetailsRoute
+  '/games2/$role/$tableId': typeof Games2RoleTableIdRouteWithChildren
   '/hosted-games/$tableId/game-details': typeof HostedGamesTableIdGameDetailsRoute
   '/hosted-games/$tableId/observe': typeof HostedGamesTableIdObserveRoute
   '/hosted-games/$tableId/p2p-details': typeof HostedGamesTableIdP2pDetailsRoute
@@ -166,6 +199,10 @@ export interface FileRoutesByFullPath {
   '/hosted-games/$tableId/': typeof HostedGamesTableIdIndexRoute
   '/hosted-lobby/$lobbyId/': typeof HostedLobbyLobbyIdIndexRoute
   '/join-lobby/$lobbyId/': typeof JoinLobbyLobbyIdIndexRoute
+  '/games2/$role/$tableId/admin': typeof Games2RoleTableIdAdminRoute
+  '/games2/$role/$tableId/game-details': typeof Games2RoleTableIdGameDetailsRoute
+  '/games2/$role/$tableId/p2p-details': typeof Games2RoleTableIdP2pDetailsRoute
+  '/games2/$role/$tableId/': typeof Games2RoleTableIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -185,6 +222,10 @@ export interface FileRoutesByTo {
   '/hosted-games/$tableId': typeof HostedGamesTableIdIndexRoute
   '/hosted-lobby/$lobbyId': typeof HostedLobbyLobbyIdIndexRoute
   '/join-lobby/$lobbyId': typeof JoinLobbyLobbyIdIndexRoute
+  '/games2/$role/$tableId/admin': typeof Games2RoleTableIdAdminRoute
+  '/games2/$role/$tableId/game-details': typeof Games2RoleTableIdGameDetailsRoute
+  '/games2/$role/$tableId/p2p-details': typeof Games2RoleTableIdP2pDetailsRoute
+  '/games2/$role/$tableId': typeof Games2RoleTableIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -198,6 +239,7 @@ export interface FileRoutesById {
   '/games/$tableId/game-details': typeof GamesTableIdGameDetailsRoute
   '/games/$tableId/observe': typeof GamesTableIdObserveRoute
   '/games/$tableId/p2p-details': typeof GamesTableIdP2pDetailsRoute
+  '/games2/$role/$tableId': typeof Games2RoleTableIdRouteWithChildren
   '/hosted-games/$tableId/game-details': typeof HostedGamesTableIdGameDetailsRoute
   '/hosted-games/$tableId/observe': typeof HostedGamesTableIdObserveRoute
   '/hosted-games/$tableId/p2p-details': typeof HostedGamesTableIdP2pDetailsRoute
@@ -209,6 +251,10 @@ export interface FileRoutesById {
   '/hosted-games/$tableId/': typeof HostedGamesTableIdIndexRoute
   '/hosted-lobby/$lobbyId/': typeof HostedLobbyLobbyIdIndexRoute
   '/join-lobby/$lobbyId/': typeof JoinLobbyLobbyIdIndexRoute
+  '/games2/$role/$tableId/admin': typeof Games2RoleTableIdAdminRoute
+  '/games2/$role/$tableId/game-details': typeof Games2RoleTableIdGameDetailsRoute
+  '/games2/$role/$tableId/p2p-details': typeof Games2RoleTableIdP2pDetailsRoute
+  '/games2/$role/$tableId/': typeof Games2RoleTableIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -223,6 +269,7 @@ export interface FileRouteTypes {
     | '/games/$tableId/game-details'
     | '/games/$tableId/observe'
     | '/games/$tableId/p2p-details'
+    | '/games2/$role/$tableId'
     | '/hosted-games/$tableId/game-details'
     | '/hosted-games/$tableId/observe'
     | '/hosted-games/$tableId/p2p-details'
@@ -234,6 +281,10 @@ export interface FileRouteTypes {
     | '/hosted-games/$tableId/'
     | '/hosted-lobby/$lobbyId/'
     | '/join-lobby/$lobbyId/'
+    | '/games2/$role/$tableId/admin'
+    | '/games2/$role/$tableId/game-details'
+    | '/games2/$role/$tableId/p2p-details'
+    | '/games2/$role/$tableId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -253,6 +304,10 @@ export interface FileRouteTypes {
     | '/hosted-games/$tableId'
     | '/hosted-lobby/$lobbyId'
     | '/join-lobby/$lobbyId'
+    | '/games2/$role/$tableId/admin'
+    | '/games2/$role/$tableId/game-details'
+    | '/games2/$role/$tableId/p2p-details'
+    | '/games2/$role/$tableId'
   id:
     | '__root__'
     | '/'
@@ -265,6 +320,7 @@ export interface FileRouteTypes {
     | '/games/$tableId/game-details'
     | '/games/$tableId/observe'
     | '/games/$tableId/p2p-details'
+    | '/games2/$role/$tableId'
     | '/hosted-games/$tableId/game-details'
     | '/hosted-games/$tableId/observe'
     | '/hosted-games/$tableId/p2p-details'
@@ -276,6 +332,10 @@ export interface FileRouteTypes {
     | '/hosted-games/$tableId/'
     | '/hosted-lobby/$lobbyId/'
     | '/join-lobby/$lobbyId/'
+    | '/games2/$role/$tableId/admin'
+    | '/games2/$role/$tableId/game-details'
+    | '/games2/$role/$tableId/p2p-details'
+    | '/games2/$role/$tableId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -286,6 +346,7 @@ export interface RootRouteChildren {
   HostedGamesTableIdRoute: typeof HostedGamesTableIdRouteWithChildren
   HostedLobbyLobbyIdRoute: typeof HostedLobbyLobbyIdRouteWithChildren
   JoinLobbyLobbyIdRoute: typeof JoinLobbyLobbyIdRouteWithChildren
+  Games2RoleTableIdRoute: typeof Games2RoleTableIdRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -416,6 +477,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HostedGamesTableIdGameDetailsRouteImport
       parentRoute: typeof HostedGamesTableIdRoute
     }
+    '/games2/$role/$tableId': {
+      id: '/games2/$role/$tableId'
+      path: '/games2/$role/$tableId'
+      fullPath: '/games2/$role/$tableId'
+      preLoaderRoute: typeof Games2RoleTableIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/games/$tableId/p2p-details': {
       id: '/games/$tableId/p2p-details'
       path: '/p2p-details'
@@ -436,6 +504,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/games/$tableId/game-details'
       preLoaderRoute: typeof GamesTableIdGameDetailsRouteImport
       parentRoute: typeof GamesTableIdRoute
+    }
+    '/games2/$role/$tableId/': {
+      id: '/games2/$role/$tableId/'
+      path: '/'
+      fullPath: '/games2/$role/$tableId/'
+      preLoaderRoute: typeof Games2RoleTableIdIndexRouteImport
+      parentRoute: typeof Games2RoleTableIdRoute
+    }
+    '/games2/$role/$tableId/p2p-details': {
+      id: '/games2/$role/$tableId/p2p-details'
+      path: '/p2p-details'
+      fullPath: '/games2/$role/$tableId/p2p-details'
+      preLoaderRoute: typeof Games2RoleTableIdP2pDetailsRouteImport
+      parentRoute: typeof Games2RoleTableIdRoute
+    }
+    '/games2/$role/$tableId/game-details': {
+      id: '/games2/$role/$tableId/game-details'
+      path: '/game-details'
+      fullPath: '/games2/$role/$tableId/game-details'
+      preLoaderRoute: typeof Games2RoleTableIdGameDetailsRouteImport
+      parentRoute: typeof Games2RoleTableIdRoute
+    }
+    '/games2/$role/$tableId/admin': {
+      id: '/games2/$role/$tableId/admin'
+      path: '/admin'
+      fullPath: '/games2/$role/$tableId/admin'
+      preLoaderRoute: typeof Games2RoleTableIdAdminRouteImport
+      parentRoute: typeof Games2RoleTableIdRoute
     }
   }
 }
@@ -505,6 +601,23 @@ const JoinLobbyLobbyIdRouteChildren: JoinLobbyLobbyIdRouteChildren = {
 const JoinLobbyLobbyIdRouteWithChildren =
   JoinLobbyLobbyIdRoute._addFileChildren(JoinLobbyLobbyIdRouteChildren)
 
+interface Games2RoleTableIdRouteChildren {
+  Games2RoleTableIdAdminRoute: typeof Games2RoleTableIdAdminRoute
+  Games2RoleTableIdGameDetailsRoute: typeof Games2RoleTableIdGameDetailsRoute
+  Games2RoleTableIdP2pDetailsRoute: typeof Games2RoleTableIdP2pDetailsRoute
+  Games2RoleTableIdIndexRoute: typeof Games2RoleTableIdIndexRoute
+}
+
+const Games2RoleTableIdRouteChildren: Games2RoleTableIdRouteChildren = {
+  Games2RoleTableIdAdminRoute: Games2RoleTableIdAdminRoute,
+  Games2RoleTableIdGameDetailsRoute: Games2RoleTableIdGameDetailsRoute,
+  Games2RoleTableIdP2pDetailsRoute: Games2RoleTableIdP2pDetailsRoute,
+  Games2RoleTableIdIndexRoute: Games2RoleTableIdIndexRoute,
+}
+
+const Games2RoleTableIdRouteWithChildren =
+  Games2RoleTableIdRoute._addFileChildren(Games2RoleTableIdRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MyPlayerProfilesRoute: MyPlayerProfilesRoute,
@@ -513,6 +626,7 @@ const rootRouteChildren: RootRouteChildren = {
   HostedGamesTableIdRoute: HostedGamesTableIdRouteWithChildren,
   HostedLobbyLobbyIdRoute: HostedLobbyLobbyIdRouteWithChildren,
   JoinLobbyLobbyIdRoute: JoinLobbyLobbyIdRouteWithChildren,
+  Games2RoleTableIdRoute: Games2RoleTableIdRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

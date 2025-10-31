@@ -22,22 +22,37 @@ export const getBaseUrl = (): string => {
   return basePath === '/' ? origin : `${origin}${basePath}`;
 };
 
-
-const createJoinGameUrl = (gameTableId: GameTableId) => {
-  return `${getBaseUrl()}/games/${gameTableId}`;
-}
-
 const createFriendUrl = (friendId: GameFriendId) => {
   console.log("createFriendUrl", friendId);
   return `${getBaseUrl()}/friends/${friendId}`;
 }
 
+// const createJoinGameUrl = (gameTableId: GameTableId) => {
+//   return `${getBaseUrl()}/games/${gameTableId}`;
+// }
+
+// const createHostedGameUrl = (gameTableId: GameTableId) => {
+//   return `${getBaseUrl()}/hosted-games/${gameTableId}`;
+// }
+
+// const createPlayerGameUrl = (gameTableId: GameTableId) => {
+//   return `${getBaseUrl()}/games/${gameTableId}`;
+// }
+
+const createJoinGameUrl = (gameTableId: GameTableId) => {
+  return `${getBaseUrl()}/games2/play/${gameTableId}`;
+}
+
 const createHostedGameUrl = (gameTableId: GameTableId) => {
-  return `${getBaseUrl()}/hosted-games/${gameTableId}`;
+  return `${getBaseUrl()}/games2/host/${gameTableId}`;
 }
 
 const createPlayerGameUrl = (gameTableId: GameTableId) => {
-  return `${getBaseUrl()}/games/${gameTableId}`;
+  return `${getBaseUrl()}/games2/play/${gameTableId}`;
+}
+
+const createObserverGameUrl = (gameTableId: GameTableId) => {
+  return `${getBaseUrl()}/games2/watch/${gameTableId}`;
 }
 
 const getTrysteroConfig = () => {
@@ -55,4 +70,5 @@ export const BfgStarterGameHosting: GameHostingContextType = {
   createFriendUrl,
   createHostedGameUrl,
   createPlayerGameUrl,
+  createObserverGameUrl,
 }

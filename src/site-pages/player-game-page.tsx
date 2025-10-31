@@ -1,7 +1,6 @@
 import { PlayerP2pGameComponent, useRiskyMyDefaultPlayerProfile, Container, Typography, Stack } from "@bfg-engine";
 import { GameTableId } from "@bfg-engine/models/types/bfg-branded-ids";
-import { BfgPlayerGameBar } from "~/routes/games.$tableId/-components";
-import { PlayerGameTabId } from "~/routes/games.$tableId/-components";
+import { BfgGameBar, GameTabId } from "~/routes/games2.$role.$tableId/-components";
 
 
 interface IPlayerGamePageProps {
@@ -10,16 +9,9 @@ interface IPlayerGamePageProps {
 
 export const PlayerGamePage = ({ tableId }: IPlayerGamePageProps) => {
 
-  // const PlayerGameTabItems: readonly AppBarTabItem<PlayerGameTabId>[] = [
-  //   { id: 'player-game', label: 'Player Game' },
-  //   { id: 'player-game-details', label: 'Game Details' },
-  //   { id: 'player-p2p-game-details', label: 'P2P Details' },
-  // ];
-
-  const activeTabId: PlayerGameTabId = '/games/$tableId';
+  const activeTabId: GameTabId = '/games2/$role/$tableId';
 
   const myPlayerProfile = useRiskyMyDefaultPlayerProfile();
-  // const [activeTabId, setActiveTabId] = useState<PlayerGameTabId>('player-game');
 
   if (!myPlayerProfile) {
     return (
@@ -43,9 +35,14 @@ export const PlayerGamePage = ({ tableId }: IPlayerGamePageProps) => {
           onTabChange: setActiveTabId
         }}
       /> */}
-      <BfgPlayerGameBar
+      {/* <BfgPlayerGameBar
+        activeTabId={activeTabId}
+      /> */}
+      <BfgGameBar
+        myGameTableAccess="play"
         activeTabId={activeTabId}
       />
+
       <PlayerP2pGameComponent
         gameTableId={tableId}
         playerProfile={myPlayerProfile}

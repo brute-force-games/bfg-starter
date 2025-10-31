@@ -1,9 +1,6 @@
 import { z } from 'zod';
 import { createFileRoute } from '@tanstack/react-router'
 import { BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-ids';
-import { BfgHostedGameBar, HostedGameTabId } from './-components';
-import { useP2pHostedGameContext } from '@bfg-engine/hooks/p2p/game/hosted-p2p-game-context';
-import { PlayerGameView } from '@bfg-engine/ui/components/player-game-view';
 
 
 const paramsSchema = z.object({
@@ -13,37 +10,39 @@ const paramsSchema = z.object({
 
 const HostedGamePlayerRoute = () => {
 
-  const hostedGame = useP2pHostedGameContext();
-  const {
-    gameTable,
-    allPlayerProfiles,
-    peers,
-    peerPlayers,
-    gameActions,
-    myPlayerSeat,
-    onSelfPlayerActionStr,
-    myHostPlayerProfile,
-  } = hostedGame;
+  return <div>Hosted Game Player Route</div>;
 
-  const activeTabId: HostedGameTabId = '/hosted-games/$tableId/player';
+  // const hostedGame = useP2pHostedGameContext();
+  // const {
+  //   gameTable,
+  //   allPlayerProfiles,
+  //   peers,
+  //   peerPlayers,
+  //   gameActions,
+  //   myPlayerSeat,
+  //   onSelfPlayerActionStr,
+  //   myHostPlayerProfile,
+  // } = hostedGame;
 
-  return (
-    <>
-      <BfgHostedGameBar
-        activeTabId={activeTabId}
-      />
-      <PlayerGameView
-        allPlayerProfiles={allPlayerProfiles}
-        myPlayerProfile={myHostPlayerProfile}
-        myPlayerSeat={myPlayerSeat}
-        gameTable={gameTable}
-        peers={peers}
-        peerPlayers={peerPlayers}
-        gameActions={gameActions}
-        onPlayerGameAction={onSelfPlayerActionStr}
-      />
-    </>
-  )
+  // const activeTabId: HostedGameTabId = '/hosted-games/$tableId/player';
+
+  // return (
+  //   <>
+  //     <BfgHostedGameBar
+  //       activeTabId={activeTabId}
+  //     />
+  //     <PlayerGameView
+  //       allPlayerProfiles={allPlayerProfiles}
+  //       myPlayerProfile={myHostPlayerProfile}
+  //       myPlayerSeat={myPlayerSeat}
+  //       gameTable={gameTable}
+  //       peers={peers}
+  //       peerPlayers={peerPlayers}
+  //       gameActions={gameActions}
+  //       onPlayerGameAction={onSelfPlayerActionStr}
+  //     />
+  //   </>
+  // )
 }
 
 
