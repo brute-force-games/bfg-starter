@@ -1,6 +1,6 @@
 import { GameTableAccessRole } from "@bfg-engine/models/game-roles";
 import { BruteForceGamesAppBar } from "@bfg-engine/ui/components/bfg-app-bar/app-bar";
-import { getGameTabItems, GameTabId } from "~/routes/games2.$role.$tableId/-components";
+import { getGameTabItems, GameTabId } from "~/routes/games.$role.$tableId/-components";
 import { NavSpine } from "@bfg-engine/ui/components/bfg-app-bar/nav-spine/index";
 import { useAppSettings } from "@bfg-engine/hooks/stores/use-my-app-settings-store";
 

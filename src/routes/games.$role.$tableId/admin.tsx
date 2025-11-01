@@ -31,7 +31,7 @@ const HostGameAdminRoute = () => {
 }
 
 
-export const Route = createFileRoute('/games2/$role/$tableId/admin')({
+export const Route = createFileRoute('/games/$role/$tableId/admin')({
   component: HostGameAdminRoute,
   params: {
     parse: (params) => paramsSchema.parse(params),

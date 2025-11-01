@@ -1,6 +1,7 @@
 import { ObserverP2pGameComponent } from "@bfg-engine";
 import { GameTableId } from "@bfg-engine/models/types/bfg-branded-ids";
-import { BfgPlayerGameBar, PlayerGameTabId } from "~/routes/games.$tableId/-components";
+import { BfgGameNavBar } from "~/components/bfg-game-nav-bar";
+import { GameTabId } from "~/routes/games.$role.$tableId/-components";
 
 
 interface IObserverGamePageProps {
@@ -9,32 +10,16 @@ interface IObserverGamePageProps {
 
 export const ObserverGamePage = ({ tableId }: IObserverGamePageProps) => {
 
-  // const ObserverGameTabItems: readonly AppBarTabItem<PlayerGameTabId>[] = [
-  //   { id: 'player-game', label: 'Observer View' },
-  //   { id: 'player-game-details', label: 'Game Details' },
-  //   // { id: 'player-p2p-game-details', label: 'P2P Details' },
-  // ];
-  
-  // const [activeTabId, setActiveTabId] = useState<PlayerGameTabId>('player-game');
-  const activeTabId: PlayerGameTabId = '/games/$tableId/observe';
-  const mode = 'player-game';
+  const activeTabId: GameTabId = '/games/$role/$tableId';
 
   return (
     <>
-      {/* <BruteForceGamesAppBar
-        tabsConfig={{
-          tabItems: ObserverGameTabItems,
-          activeTabId: activeTabId,
-          onTabChange: setActiveTabId
-        }}
-      /> */}
-      <BfgPlayerGameBar
+      <BfgGameNavBar
+        myGameTableAccess="watch"
         activeTabId={activeTabId}
       />
       <ObserverP2pGameComponent
         gameTableId={tableId}
-        // mode="observer-game"
-        mode={mode}
       />
     </>
   )

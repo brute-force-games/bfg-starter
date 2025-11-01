@@ -3,7 +3,7 @@ import { GameTableSeat } from "@bfg-engine/models/game-table/game-table";
 import { useHostedP2pGameWithStore } from "@bfg-engine/hooks/p2p/game/use-hosted-p2p-game-with-store";
 import { PublicPlayerProfile } from "@bfg-engine/models/player-profile/public-player-profile";
 import { GameTableId } from "@bfg-engine/models/types/bfg-branded-ids";
-import { BfgGameBar, GameTabId } from "~/routes/games2.$role.$tableId/-components";
+import { BfgGameBar, GameTabId } from "~/routes/games.$role.$tableId/-components";
 
 
 interface HostAdminViewPageProps {
@@ -62,8 +62,7 @@ export const HostAdminViewPage = ({ tableId, myPlayerProfile }: HostAdminViewPag
     )
   }
 
-  // const activeTabId: HostedGameTabId = '/hosted-games/$tableId';
-  const activeTabId: GameTabId = '/games2/$role/$tableId/admin';
+  const activeTabId: GameTabId = '/games/$role/$tableId/admin';
 
   const onActingAsPlayerGameAction = (_actingAsPlayerSeat: GameTableSeat, _playerAction: any) => {
     throw new Error('Not implemented');

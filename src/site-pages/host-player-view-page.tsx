@@ -1,7 +1,7 @@
 import { useHostedP2pGameWithStore } from "@bfg-engine/hooks/p2p/game/use-hosted-p2p-game-with-store";
 import { PublicPlayerProfile } from "@bfg-engine/models/player-profile/public-player-profile";
 import { GameTableId } from "@bfg-engine/models/types/bfg-branded-ids";
-import { BfgGameBar, GameTabId } from "~/routes/games2.$role.$tableId/-components";
+import { BfgGameBar, GameTabId } from "~/routes/games.$role.$tableId/-components";
 import { PlayerGameView } from "@bfg-engine/ui/components/player-game-view";
 
 
@@ -61,13 +61,10 @@ export const HostGamePlayerViewPage = ({ tableId, myPlayerProfile }: HostGamePla
   }
 
   // const activeTabId: HostedGameTabId = '/hosted-games/$tableId';
-  const activeTabId: GameTabId = '/games2/$role/$tableId';
+  const activeTabId: GameTabId = '/games/$role/$tableId';
 
   return (
     <>
-      {/* <BfgHostedGameBar
-        activeTabId={activeTabId}
-      /> */}
       <BfgGameBar
         myGameTableAccess={myGameTableAccess}
         activeTabId={activeTabId}

@@ -40,19 +40,19 @@ const createFriendUrl = (friendId: GameFriendId) => {
 // }
 
 const createJoinGameUrl = (gameTableId: GameTableId) => {
-  return `${getBaseUrl()}/games2/play/${gameTableId}`;
+  return `${getBaseUrl()}/games/play/${gameTableId}`;
 }
 
 const createHostedGameUrl = (gameTableId: GameTableId) => {
-  return `${getBaseUrl()}/games2/host/${gameTableId}`;
+  return `${getBaseUrl()}/games/host/${gameTableId}`;
 }
 
 const createPlayerGameUrl = (gameTableId: GameTableId) => {
-  return `${getBaseUrl()}/games2/play/${gameTableId}`;
+  return `${getBaseUrl()}/games/play/${gameTableId}`;
 }
 
 const createObserverGameUrl = (gameTableId: GameTableId) => {
-  return `${getBaseUrl()}/games2/watch/${gameTableId}`;
+  return `${getBaseUrl()}/games/watch/${gameTableId}`;
 }
 
 const getTrysteroConfig = () => {

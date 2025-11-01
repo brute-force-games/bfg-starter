@@ -1,6 +1,6 @@
 import { PlayerP2pGameComponent, useRiskyMyDefaultPlayerProfile, Container, Typography, Stack } from "@bfg-engine";
 import { GameTableId } from "@bfg-engine/models/types/bfg-branded-ids";
-import { BfgGameBar, GameTabId } from "~/routes/games2.$role.$tableId/-components";
+import { BfgGameBar, GameTabId } from "~/routes/games.$role.$tableId/-components";
 
 
 interface IPlayerGamePageProps {
@@ -9,7 +9,7 @@ interface IPlayerGamePageProps {
 
 export const PlayerGamePage = ({ tableId }: IPlayerGamePageProps) => {
 
-  const activeTabId: GameTabId = '/games2/$role/$tableId';
+  const activeTabId: GameTabId = '/games/$role/$tableId';
 
   const myPlayerProfile = useRiskyMyDefaultPlayerProfile();
 

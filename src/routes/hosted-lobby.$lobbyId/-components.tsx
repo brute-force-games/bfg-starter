@@ -1,4 +1,4 @@
-import { BruteForceGamesAppBar } from "@bfg-engine/ui/components/bfg-app-bar/app-bar"
+import { BfgStarterNavBar } from "@bfg-engine/ui/components/bfg-nav-bar/bfg-starter-nav-bar";
 import { AppBarTabItem } from "@bfg-engine/ui/components/bfg-app-bar/tab-item-hook";
 import { ChildRoutesOf } from "../-utils";
 
@@ -18,10 +18,11 @@ export const BfgHostedLobbyAppBar = ({ activeTabId }: BfgHostedLobbyAppBarProps)
   ];
 
   return (
-    <BruteForceGamesAppBar 
+    <BfgStarterNavBar 
       tabsConfig={{
         tabItems: HostedLobbyTabItems,
         activeTabId: activeTabId,
+        onTabChange: () => {}
       }}
     />
   )

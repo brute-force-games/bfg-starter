@@ -20,7 +20,7 @@ const GameDetailsRoute = () => {
   const p2pGame = useP2pGameContext();
   const { gameTable, gameActions, myGameTableAccess, hasRequestedTableAccess } = p2pGame;
 
-  const activeTabId: GameTabId = '/games2/$role/$tableId/game-details';
+  const activeTabId: GameTabId = '/games/$role/$tableId/game-details';
 
   if (!gameTable) {
     return <div>Game table not found: {tableId}</div>;
@@ -41,34 +41,19 @@ const GameDetailsRoute = () => {
         <HostedGameDetailsComponent
           gameTable={gameTable}
           gameActions={gameActions}
-          // myPlayerProfile={myPlayerProfile}
-          // myGameTableAccess={myGameTableAccess}
-          // activeTabId="/games2/$role/$tableId/"
-          // hostedP2pGame={hostedP2pGame}
-          // activeTabId="/games2/$role/$tableId/"
-          // activeTabId="/games2/$role/$tableId/"
         />
       </>
     )  
   }
 
   if (myGameTableAccess === 'player') {
-    // return <div>You are a player of this game table</div>;
     return (
       <>
         <BfgGameBar
           myGameTableAccess={myGameTableAccess}
           activeTabId={activeTabId}
         />
-        <PlayerGameDetailsComponent
-          // gameTable={gameTable}
-          // gameActions={gameActions}
-          // myPlayerProfile={myPlayerProfile}
-          // activeTabId="/games2/$role/$tableId/"
-          // hostedP2pGame={hostedP2pGame}
-          // activeTabId="/games2/$role/$tableId/"
-          // activeTabId="/games2/$role/$tableId/"
-        />
+        <PlayerGameDetailsComponent />
       </>
     )
   }
@@ -99,7 +84,7 @@ const GameDetailsRoute = () => {
 }
 
 
-export const Route = createFileRoute('/games2/$role/$tableId/game-details')({
+export const Route = createFileRoute('/games/$role/$tableId/game-details')({
   component: GameDetailsRoute,
   params: {
     parse: (params) => paramsSchema.parse(params),

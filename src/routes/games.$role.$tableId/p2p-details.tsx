@@ -12,7 +12,7 @@ const paramsSchema = z.object({
 
 const GameP2pDetailsRoute = () => {
 
-  const activeTabId: GameTabId = '/games2/$role/$tableId/p2p-details';
+  const activeTabId: GameTabId = '/games/$role/$tableId/p2p-details';
 
   const p2pGame = useP2pGameContext();
   const { connectionStatus, connectionEvents, peers, peerPlayers, refreshConnection, allPlayerProfiles, myGameTableAccess } = p2pGame;
@@ -36,7 +36,7 @@ const GameP2pDetailsRoute = () => {
 }
 
 
-export const Route = createFileRoute('/games2/$role/$tableId/p2p-details')({
+export const Route = createFileRoute('/games/$role/$tableId/p2p-details')({
   params: {
     parse: (params) => paramsSchema.parse(params),
     stringify: (params) => ({ tableId: params.tableId }),

@@ -13,7 +13,7 @@ const paramsSchema = z.object({
 })
 
 
-const Games2ParentRoute = () => {
+const GamesParentRoute = () => {
   const { role, tableId } = Route.useParams()
   const myPlayerProfile = useRiskyMyDefaultPlayerProfile()
 
@@ -31,12 +31,12 @@ const Games2ParentRoute = () => {
 }
 
 
-export const Route = createFileRoute('/games2/$role/$tableId')({
+export const Route = createFileRoute('/games/$role/$tableId')({
   params: {
     parse: (params) => paramsSchema.parse(params),
     stringify: (params) => ({ role: params.role, tableId: params.tableId }),
   },
-  component: Games2ParentRoute,
+  component: GamesParentRoute,
 })
 
 
