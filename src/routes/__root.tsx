@@ -7,6 +7,7 @@ import { Provider } from 'tinybase/ui-react'
 import { playerProfileStore } from '@bfg-engine/tb-store/player-profile-store'
 import { hostedGamesStore } from '@bfg-engine/tb-store/hosted-games-store'
 import { hostedLobbiesStore } from '@bfg-engine/tb-store/hosted-lobbies-store'
+import { appSettingsStore } from '@bfg-engine/tb-store/app-settings-store'
 
 export const RootErrorComponent = ({ error }: { error: Error }) => {
   const router = useRouter()
@@ -91,6 +92,7 @@ export const RootComponent = () => {
           playerProfiles: playerProfileStore,
           hostedGames: hostedGamesStore,
           hostedLobbies: hostedLobbiesStore,
+          appSettings: appSettingsStore,
         }}>
           <Inspector />
         </Provider>

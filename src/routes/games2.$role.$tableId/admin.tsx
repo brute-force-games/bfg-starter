@@ -19,22 +19,17 @@ const HostGameAdminRoute = () => {
   const myPlayerProfile = useRiskyMyDefaultPlayerProfile();
 
   if (role === 'host') {
-    // return <div>You are the host of this game table</div>;
     return (
       <HostAdminViewPage
         tableId={tableId}
         myPlayerProfile={myPlayerProfile}
-        // myGameTableAccess={myGameTableAccess}
-        // activeTabId="/games2/$role/$tableId/"
-        // hostedP2pGame={hostedP2pGame}
-        // activeTabId="/games2/$role/$tableId/"
-        // activeTabId="/games2/$role/$tableId/"
       />
     )  
   }
 
   return <div>You are not the host of this game table</div>;
 }
+
 
 export const Route = createFileRoute('/games2/$role/$tableId/admin')({
   component: HostGameAdminRoute,

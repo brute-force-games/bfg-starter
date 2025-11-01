@@ -78,6 +78,7 @@ export const HostAdminViewPage = ({ tableId, myPlayerProfile }: HostAdminViewPag
         myGameTableAccess={myGameTableAccess}
         activeTabId={activeTabId}
       />
+      
       <HostedGameView
         hostedGame={gameTable}
         myPlayerProfile={myPlayerProfile}
