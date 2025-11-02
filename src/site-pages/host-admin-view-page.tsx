@@ -3,19 +3,21 @@ import { GameTableSeat } from "@bfg-engine/models/game-table/game-table";
 import { useHostedP2pGameWithStore } from "@bfg-engine/hooks/p2p/game/use-hosted-p2p-game-with-store";
 import { PublicPlayerProfile } from "@bfg-engine/models/player-profile/public-player-profile";
 import { GameTableId } from "@bfg-engine/models/types/bfg-branded-ids";
-import { BfgGameBar, GameTabId } from "~/routes/games.$role.$tableId/-components";
+import { GameTabId, getGameTabItems } from "~/routes/games.$role.$tableId/-components";
+import { BfgGameScreenFrame } from "@bfg-engine/ui/components/bfg-game-screen-frame";
+import { useGameRegistry } from "@bfg-engine/hooks/games-registry/games-registry";
 
 
 interface HostAdminViewPageProps {
   tableId: GameTableId;
   myPlayerProfile: PublicPlayerProfile | null;
-  // activeTabId: HostedGameTabId;
 }
 
 export const HostAdminViewPage = ({ tableId, myPlayerProfile }: HostAdminViewPageProps) => {
 
   const hostedP2pGame = useHostedP2pGameWithStore(tableId, myPlayerProfile);
-
+  const gameRegistry = useGameRegistry();
+  
   if (!hostedP2pGame) {
     return (
       <div className="p-6">
@@ -68,27 +70,48 @@ export const HostAdminViewPage = ({ tableId, myPlayerProfile }: HostAdminViewPag
     throw new Error('Not implemented');
   }
 
+  const gameTabItems = getGameTabItems(myGameTableAccess);
+  const tabsConfig = {
+    tabItems: gameTabItems,
+    activeTabId: activeTabId,
+    onTabChange: () => { console.log('onTabChange not implemented'); }
+  };
+
+
+  const gameMetadata = gameRegistry.getGameMetadata(gameTable.gameTitle);
+  const latestGameSpecificStateStr = gameActions.length > 0 ? 
+    gameActions[gameActions.length - 1].nextGameStateStr :
+    null;
+  const latestGameSpecificState = latestGameSpecificStateStr ?
+    gameMetadata.gameSpecificStateEncoder.decode(latestGameSpecificStateStr) :
+    null;
+
   return (
     <>
-      {/* <BfgHostedGameBar
-        activeTabId={activeTabId}
-      /> */}
-      <BfgGameBar
+      {/* <BfgGameBar
         myGameTableAccess={myGameTableAccess}
         activeTabId={activeTabId}
-      />
-      
-      <HostedGameView
-        hostedGame={gameTable}
-        myPlayerProfile={myPlayerProfile}
-        myPlayerSeat={myPlayerSeat}
-        gameActions={gameActions}
-        peers={peers}
-        peerPlayers={peerPlayers}
+      /> */}
+      <BfgGameScreenFrame
+        tabsConfig={tabsConfig}
+        gameMetadata={gameMetadata}
+        gameTable={gameTable}
         allPlayerProfiles={allPlayerProfiles}
-        onActingAsPlayerGameAction={onActingAsPlayerGameAction}
-        onHostGameAction={onHostActionStr}
-      />
+        gameState={latestGameSpecificState}
+        gameActions={gameActions}
+      >
+        <HostedGameView
+          hostedGame={gameTable}
+          myPlayerProfile={myPlayerProfile}
+          myPlayerSeat={myPlayerSeat}
+          gameActions={gameActions}
+          peers={peers}
+          peerPlayers={peerPlayers}
+          allPlayerProfiles={allPlayerProfiles}
+          onActingAsPlayerGameAction={onActingAsPlayerGameAction}
+          onHostGameAction={onHostActionStr}
+        />
+      </BfgGameScreenFrame>
     </>
   )
 }

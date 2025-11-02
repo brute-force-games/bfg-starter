@@ -198,6 +198,7 @@ export interface IHvbBackend {
 - Comment complex business logic
 - Document custom hooks with JSDoc
 - Explain non-obvious code decisions
+- Only use forward-slash style comments. Never comment out code with asterisk style continuous comment sections.
 
 ### Import/Export Patterns
 - Use named imports for components and utilities
