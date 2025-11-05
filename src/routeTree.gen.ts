@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as NewLobbyRouteImport } from './routes/new-lobby'
 import { Route as MyPlayerProfilesRouteImport } from './routes/my-player-profiles'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as P2pGameRoomTableIdRouteImport } from './routes/p2p-game-room.$tableId'
+import { Route as P2pDemoRoomIdRouteImport } from './routes/p2p-demo.$roomId'
 import { Route as JoinLobbyLobbyIdRouteImport } from './routes/join-lobby.$lobbyId'
 import { Route as HostedLobbyLobbyIdRouteImport } from './routes/hosted-lobby.$lobbyId'
 import { Route as JoinLobbyLobbyIdIndexRouteImport } from './routes/join-lobby.$lobbyId/index'
@@ -38,6 +40,16 @@ const MyPlayerProfilesRoute = MyPlayerProfilesRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const P2pGameRoomTableIdRoute = P2pGameRoomTableIdRouteImport.update({
+  id: '/p2p-game-room/$tableId',
+  path: '/p2p-game-room/$tableId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const P2pDemoRoomIdRoute = P2pDemoRoomIdRouteImport.update({
+  id: '/p2p-demo/$roomId',
+  path: '/p2p-demo/$roomId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const JoinLobbyLobbyIdRoute = JoinLobbyLobbyIdRouteImport.update({
@@ -112,6 +124,8 @@ export interface FileRoutesByFullPath {
   '/new-lobby': typeof NewLobbyRoute
   '/hosted-lobby/$lobbyId': typeof HostedLobbyLobbyIdRouteWithChildren
   '/join-lobby/$lobbyId': typeof JoinLobbyLobbyIdRouteWithChildren
+  '/p2p-demo/$roomId': typeof P2pDemoRoomIdRoute
+  '/p2p-game-room/$tableId': typeof P2pGameRoomTableIdRoute
   '/games/$role/$tableId': typeof GamesRoleTableIdRouteWithChildren
   '/hosted-lobby/$lobbyId/p2p-details': typeof HostedLobbyLobbyIdP2pDetailsRoute
   '/hosted-lobby/$lobbyId/player': typeof HostedLobbyLobbyIdPlayerRoute
@@ -127,6 +141,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/my-player-profiles': typeof MyPlayerProfilesRoute
   '/new-lobby': typeof NewLobbyRoute
+  '/p2p-demo/$roomId': typeof P2pDemoRoomIdRoute
+  '/p2p-game-room/$tableId': typeof P2pGameRoomTableIdRoute
   '/hosted-lobby/$lobbyId/p2p-details': typeof HostedLobbyLobbyIdP2pDetailsRoute
   '/hosted-lobby/$lobbyId/player': typeof HostedLobbyLobbyIdPlayerRoute
   '/join-lobby/$lobbyId/p2p-details': typeof JoinLobbyLobbyIdP2pDetailsRoute
@@ -144,6 +160,8 @@ export interface FileRoutesById {
   '/new-lobby': typeof NewLobbyRoute
   '/hosted-lobby/$lobbyId': typeof HostedLobbyLobbyIdRouteWithChildren
   '/join-lobby/$lobbyId': typeof JoinLobbyLobbyIdRouteWithChildren
+  '/p2p-demo/$roomId': typeof P2pDemoRoomIdRoute
+  '/p2p-game-room/$tableId': typeof P2pGameRoomTableIdRoute
   '/games/$role/$tableId': typeof GamesRoleTableIdRouteWithChildren
   '/hosted-lobby/$lobbyId/p2p-details': typeof HostedLobbyLobbyIdP2pDetailsRoute
   '/hosted-lobby/$lobbyId/player': typeof HostedLobbyLobbyIdPlayerRoute
@@ -163,6 +181,8 @@ export interface FileRouteTypes {
     | '/new-lobby'
     | '/hosted-lobby/$lobbyId'
     | '/join-lobby/$lobbyId'
+    | '/p2p-demo/$roomId'
+    | '/p2p-game-room/$tableId'
     | '/games/$role/$tableId'
     | '/hosted-lobby/$lobbyId/p2p-details'
     | '/hosted-lobby/$lobbyId/player'
@@ -178,6 +198,8 @@ export interface FileRouteTypes {
     | '/'
     | '/my-player-profiles'
     | '/new-lobby'
+    | '/p2p-demo/$roomId'
+    | '/p2p-game-room/$tableId'
     | '/hosted-lobby/$lobbyId/p2p-details'
     | '/hosted-lobby/$lobbyId/player'
     | '/join-lobby/$lobbyId/p2p-details'
@@ -194,6 +216,8 @@ export interface FileRouteTypes {
     | '/new-lobby'
     | '/hosted-lobby/$lobbyId'
     | '/join-lobby/$lobbyId'
+    | '/p2p-demo/$roomId'
+    | '/p2p-game-room/$tableId'
     | '/games/$role/$tableId'
     | '/hosted-lobby/$lobbyId/p2p-details'
     | '/hosted-lobby/$lobbyId/player'
@@ -212,6 +236,8 @@ export interface RootRouteChildren {
   NewLobbyRoute: typeof NewLobbyRoute
   HostedLobbyLobbyIdRoute: typeof HostedLobbyLobbyIdRouteWithChildren
   JoinLobbyLobbyIdRoute: typeof JoinLobbyLobbyIdRouteWithChildren
+  P2pDemoRoomIdRoute: typeof P2pDemoRoomIdRoute
+  P2pGameRoomTableIdRoute: typeof P2pGameRoomTableIdRoute
   GamesRoleTableIdRoute: typeof GamesRoleTableIdRouteWithChildren
 }
 
@@ -236,6 +262,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/p2p-game-room/$tableId': {
+      id: '/p2p-game-room/$tableId'
+      path: '/p2p-game-room/$tableId'
+      fullPath: '/p2p-game-room/$tableId'
+      preLoaderRoute: typeof P2pGameRoomTableIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/p2p-demo/$roomId': {
+      id: '/p2p-demo/$roomId'
+      path: '/p2p-demo/$roomId'
+      fullPath: '/p2p-demo/$roomId'
+      preLoaderRoute: typeof P2pDemoRoomIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/join-lobby/$lobbyId': {
@@ -376,6 +416,8 @@ const rootRouteChildren: RootRouteChildren = {
   NewLobbyRoute: NewLobbyRoute,
   HostedLobbyLobbyIdRoute: HostedLobbyLobbyIdRouteWithChildren,
   JoinLobbyLobbyIdRoute: JoinLobbyLobbyIdRouteWithChildren,
+  P2pDemoRoomIdRoute: P2pDemoRoomIdRoute,
+  P2pGameRoomTableIdRoute: P2pGameRoomTableIdRoute,
   GamesRoleTableIdRoute: GamesRoleTableIdRouteWithChildren,
 }
 export const routeTree = rootRouteImport

@@ -1,5 +1,5 @@
 import { GameTableId, GameFriendId, GameHostingContextType } from "@bfg-engine";
-import { BfgStarterTrysteroConfig } from "./trystero-config";
+import { BfgStarterSupabaseTrysteroConfig, BfgStarterTrysteroConfig } from "./bfg-trystero-config";
 
 /**
  * Get just the base path portion (without origin) for router configuration.
@@ -57,6 +57,7 @@ const createObserverGameUrl = (gameTableId: GameTableId) => {
 
 const getTrysteroConfig = () => {
   return BfgStarterTrysteroConfig;
+  // return BfgStarterSupabaseTrysteroConfig;
 }
 
 

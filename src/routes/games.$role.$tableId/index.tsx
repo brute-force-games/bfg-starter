@@ -1,9 +1,9 @@
+import { z } from 'zod'
 import { createFileRoute } from '@tanstack/react-router'
 import { PlayerGamePage } from '~/site-pages/player-game-page'
 import { ObserverGamePage } from '~/site-pages/observer-game-page'
 import { useRiskyMyDefaultPlayerProfile } from '@bfg-engine'
 import { HostGamePlayerViewPage } from '~/site-pages/host-player-view-page'
-import { z } from 'zod'
 import { GameTableAccessRoleSchema } from '@bfg-engine/models/game-roles'
 import { BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-ids'
 
@@ -15,14 +15,18 @@ const paramsSchema = z.object({
 type RouteParams = z.infer<typeof paramsSchema>
 
 const GamesRoleAndTableIdPage = () => {
+
+  console.log('GamesRoleAndTableIdPage');
+
   const { role, tableId } = Route.useParams() as RouteParams
-  const myPlayerProfile = useRiskyMyDefaultPlayerProfile();
+  // const myPlayerProfile = useRiskyMyDefaultPlayerProfile();
 
   if (role === 'host') {
+    console.log('HostGamePlayerViewPage');
     return (
       <HostGamePlayerViewPage
-        tableId={tableId}
-        myPlayerProfile={myPlayerProfile}
+        // tableId={tableId}
+        // myPlayerProfile={myPlayerProfile}
       />
     )  
   }
@@ -30,7 +34,7 @@ const GamesRoleAndTableIdPage = () => {
   if (role === 'play') {
     return (
       <PlayerGamePage
-        tableId={tableId}
+        // tableId={tableId}
       />
     )
   }

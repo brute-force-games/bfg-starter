@@ -2,12 +2,12 @@ import { z } from 'zod';
 import { createFileRoute } from '@tanstack/react-router'
 import { GameTabId, getGameTabItems } from './-components'
 import { BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-ids';
-import { useP2pGameContext } from '@bfg-engine/hooks/p2p/game/p2p-game-context';
 import { GameTableAccessRoleSchema } from '@bfg-engine/models/game-roles';
 import { HostedGameDetailsComponent } from '@bfg-engine/ui/components/host-game-details-component';
 import { PlayerGameDetailsComponent } from '@bfg-engine/ui/components/player-game-details-component';
-import { ObserverP2pGameDetailsComponent, useGameRegistry } from '@bfg-engine';
+import { Container, ObserverP2pGameDetailsComponent, Stack, Typography } from '@bfg-engine';
 import { BfgGameScreenFrame } from '@bfg-engine/ui/components/bfg-game-screen-frame';
+import { useBfgGameRoomForRole } from '@bfg-engine/hooks/p2p/game/use-bfg-game-room';
 
 
 const paramsSchema = z.object({
@@ -18,10 +18,42 @@ const paramsSchema = z.object({
 const GameDetailsRoute = () => {
   const { role, tableId } = Route.useParams()
   
-  const p2pGame = useP2pGameContext();
-  const { gameTable, gameActions, myGameTableAccess, hasRequestedTableAccess, allPlayerProfiles } = p2pGame;
+  // const p2pGame = useP2pGameContext();
+  const p2pGame = useBfgGameRoomForRole(role);
 
-  const gameRegistry = useGameRegistry();
+  if (!p2pGame) {
+    return (
+      <Container style={{ padding: '24px' }}>
+        <Stack spacing={3}>
+          <Typography variant="h3">Loading Game...</Typography>
+          <Typography variant="body1" color="secondary">
+            Loading P2P Game...
+          </Typography>
+        </Stack>
+      </Container>
+    )
+  }
+
+  const { p2pDetails, maxAllowedAccessRole, allowedRoles } = p2pGame;
+
+  if (!p2pDetails) {
+    return (
+      <Container style={{ padding: '24px' }}>
+        <Stack spacing={3}>
+          <Typography variant="h3">Loading Game...</Typography>
+          <Typography variant="body1" color="secondary">
+            Loading P2P Game Details...
+          </Typography>
+        </Stack>
+      </Container>
+    )
+  }
+
+  const { allPlayerProfiles } = p2pDetails;
+  const { gameTable, gameActions, gameMetadata } = p2pGame.publicGameDetails;
+  // const { gameMetadata } = p2pGame.gameDetails;
+
+  // const gameRegistry = useGameRegistry();
 
   const activeTabId: GameTabId = '/games/$role/$tableId/game-details';
 
@@ -29,12 +61,12 @@ const GameDetailsRoute = () => {
     return <div>Game table not found: {tableId}</div>;
   }
 
-  if (!hasRequestedTableAccess) {
+  if (!allowedRoles.includes(role)) {
     return <div>You are not allowed to access this game table as a {role}</div>;
   }
-  const gameMetadata = gameRegistry.getGameMetadata(gameTable.gameTitle);
+  // const gameMetadata = gameRegistry.getGameMetadata(gameTable.gameTitle);
 
-  const gameTabItems = getGameTabItems(myGameTableAccess);
+  const gameTabItems = getGameTabItems(role);
   const tabsConfig = {
     tabItems: gameTabItems,
     activeTabId: activeTabId,
@@ -42,7 +74,7 @@ const GameDetailsRoute = () => {
   };
 
   const getGameScreen = () => {
-    if (myGameTableAccess === 'host') {
+    if (role === 'host') {
       return (
         <HostedGameDetailsComponent
           gameTable={gameTable}
@@ -50,12 +82,12 @@ const GameDetailsRoute = () => {
         />
       )
     }
-    if (myGameTableAccess === 'player') {
+    if (role === 'player') {
       return (
         <PlayerGameDetailsComponent />
       )
     }
-    if (myGameTableAccess === 'observer') {
+    if (role === 'observer') {
       return (
         <ObserverP2pGameDetailsComponent
           gameTableId={tableId}
@@ -63,14 +95,14 @@ const GameDetailsRoute = () => {
       )
     }
 
-    throw new Error(`Invalid game table access role: ${myGameTableAccess}`);
+    throw new Error(`Invalid game table access role: ${role}`);
   }
 
   const gameScreen = getGameScreen();
 
   const latestGameAction = gameActions[gameActions.length - 1];
   const latestGameSpecificState = latestGameAction ?
-    gameMetadata.gameSpecificStateEncoder.decode(latestGameAction.nextGameStateStr) :
+    gameMetadata.encoders.hostGameStateEncoder.decode(latestGameAction.nextGameStateStr) :
     null;
 
   return (
