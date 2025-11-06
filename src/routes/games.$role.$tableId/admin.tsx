@@ -1,41 +1,40 @@
-import { z } from 'zod';
-import { GameTableAccessRoleSchema } from '@bfg-engine/models/game-roles';
-import { BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-ids';
 import { createFileRoute } from '@tanstack/react-router';
-import { useRiskyMyDefaultPlayerProfile } from '@bfg-engine';
 import { HostAdminViewPage } from '~/site-pages/host-admin-view-page';
+import { useBfgGameRoomForContextRole } from '@bfg-engine/hooks/p2p/game/use-bfg-game-room';
 
 
-const paramsSchema = z.object({
-  role: GameTableAccessRoleSchema,
-  tableId: BfgGameTableId.idSchema,
-})
+// const paramsSchema = z.object({
+//   role: GameTableAccessRoleSchema,
+//   tableId: BfgGameTableId.idSchema,
+// })
 
-type RouteParams = z.infer<typeof paramsSchema>
+// type RouteParams = z.infer<typeof paramsSchema>
 
 
 const HostGameAdminRoute = () => {
-  const { role, tableId } = Route.useParams() as RouteParams
-  const myPlayerProfile = useRiskyMyDefaultPlayerProfile();
 
-  if (role === 'host') {
-    return (
-      <HostAdminViewPage
-        tableId={tableId}
-        myPlayerProfile={myPlayerProfile}
-      />
-    )  
+  const p2pGameRoom = useBfgGameRoomForContextRole();
+  if (!p2pGameRoom) {
+    return <div>Loading game room...</div>;
+  }
+  
+  const { accessRole } = p2pGameRoom;
+  if (accessRole !== 'host') {
+    return <div>You are not the host of this game table</div>;
   }
 
-  return <div>You are not the host of this game table</div>;
+  return (
+    <HostAdminViewPage
+      {...p2pGameRoom}
+    />
+  )
 }
 
 
 export const Route = createFileRoute('/games/$role/$tableId/admin')({
   component: HostGameAdminRoute,
-  params: {
-    parse: (params) => paramsSchema.parse(params),
-    stringify: (params) => ({ role: params.role, tableId: params.tableId }),
-  },
+  // params: {
+  //   parse: (params) => paramsSchema.parse(params),
+  //   stringify: (params) => ({ role: params.role, tableId: params.tableId }),
+  // },
 })
-

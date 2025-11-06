@@ -18,7 +18,7 @@ const HostedLobbyP2pDetailsRoute = () => {
       <P2pConnectionComponent
         connectionStatus={connectionStatus}
         connectionEvents={connectionEvents}
-        peers={peers}
+        peerIds={peers}
         myPeerPlayer={myHostPlayerProfile}
         peerPlayers={peerPlayers}
         allPlayerProfiles={allPlayerProfiles}

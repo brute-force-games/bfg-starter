@@ -1,26 +1,60 @@
-import { ObserverP2pGameComponent } from "@bfg-engine";
-import { GameTableId } from "@bfg-engine/models/types/bfg-branded-ids";
-import { BfgGameNavBar } from "~/components/bfg-game-nav-bar";
-import { GameTabId } from "~/routes/games.$role.$tableId/-components";
+import { Container, ObserverP2pGameComponent, Stack, Typography } from "@bfg-engine";
+import { IBfgGameRoomForObserver } from "@bfg-engine/hooks/p2p/game/p2p-game-types";
+import { BfgGameScreenFrame } from "@bfg-engine/ui/components/bfg-game-screen-frame";
+import { GameTabId, getGameTabItems } from "~/routes/games.$role.$tableId/-components";
 
 
-interface IObserverGamePageProps {
-  tableId: GameTableId;
+interface ObserverGamePageProps {
+  p2pGameRoom: IBfgGameRoomForObserver;
 }
 
-export const ObserverGamePage = ({ tableId }: IObserverGamePageProps) => {
+export const ObserverGamePage = ({ p2pGameRoom }: ObserverGamePageProps) => {
+
+  const { publicGameDetails } = p2pGameRoom;
+
+  if (!publicGameDetails) {
+    return (
+      <Container style={{ padding: '24px' }}>
+        <Stack spacing={3}>
+          <Typography variant="h3">Loading Game...</Typography>
+          <Typography variant="body1" color="secondary">
+            Loading P2P Game...
+          </Typography>
+        </Stack>
+      </Container>
+    )
+  }
+
+  const { gameTable, gameActions, gameMetadata, allPlayerProfiles } = publicGameDetails;
+
+  const latestGameSpecificStateStr = gameActions.length > 0 ? 
+    gameActions[gameActions.length - 1].nextGameStateStr :
+    null;
+  const latestGameSpecificState = latestGameSpecificStateStr ?
+    gameMetadata.encoders.publicGameStateEncoder.decode(latestGameSpecificStateStr) :
+    null;
 
   const activeTabId: GameTabId = '/games/$role/$tableId';
 
+  const gameTabItems = getGameTabItems('watch');
+  const tabsConfig = {
+    tabItems: gameTabItems,
+    activeTabId: activeTabId,
+    onTabChange: () => { console.log('onTabChange not implemented'); }
+  };
+
   return (
-    <>
-      <BfgGameNavBar
-        myGameTableAccess="watch"
-        activeTabId={activeTabId}
-      />
+    <BfgGameScreenFrame
+      tabsConfig={tabsConfig}
+      gameMetadata={gameMetadata}
+      gameTable={gameTable}
+      allPlayerProfiles={allPlayerProfiles}
+      gameState={latestGameSpecificState}
+      gameActions={gameActions}
+    >
       <ObserverP2pGameComponent
-        gameTableId={tableId}
+        {...publicGameDetails}
       />
-    </>
+    </BfgGameScreenFrame>
   )
 }

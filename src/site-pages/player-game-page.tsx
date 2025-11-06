@@ -1,88 +1,19 @@
-import { PlayerP2pGameComponent, useRiskyMyDefaultPlayerProfile, Container, Typography, Stack } from "@bfg-engine";
-// import { useP2pGameContext } from "@bfg-engine/hooks/p2p/game/p2p-game-context";
-// import { useP2pGameAsPlayer } from "@bfg-engine/hooks/p2p/game/use-p2p-game";
-import { GameTableId } from "@bfg-engine/models/types/bfg-branded-ids";
+import { PlayerP2pGameComponent } from "@bfg-engine";
 import { BfgGameScreenFrame } from "@bfg-engine/ui/components/bfg-game-screen-frame";
 import { GameTabId, getGameTabItems } from "~/routes/games.$role.$tableId/-components";
-import { useGameRegistry } from "@bfg-engine/hooks/games-registry/games-registry";
-import { useBfgGameRoomForRole, useP2pGameRoomAsPlayer } from "@bfg-engine/hooks/p2p/game/use-bfg-game-room";
-import { IPlayerBfgGameDetails } from "@bfg-engine/hooks/p2p/game/p2p-game-types";
+import { IBfgGameRoomForPlayer } from "@bfg-engine/hooks/p2p/game/p2p-game-types";
 
 
-// interface IPlayerGamePageProps {
-//   tableId: GameTableId;
-// }
+interface PlayerGamePageProps {
+  p2pGameRoom: IBfgGameRoomForPlayer;
+}
 
-// export const PlayerGamePage = ({ tableId }: IPlayerGamePageProps) => {
+export const PlayerGamePage = ({ p2pGameRoom }: PlayerGamePageProps) => {
 
-export const PlayerGamePage = () => {
+  const { playerGameDetails } = p2pGameRoom;
 
-  const p2pGameRoom = useP2pGameRoomAsPlayer();
+  const { gameTable, gameActions, gameMetadata, allPlayerProfiles } = playerGameDetails;
 
-  if (!p2pGameRoom) {
-    return (
-      <Container style={{ padding: '24px' }}>
-        <Stack spacing={3}>
-          <Typography variant="h3">Loading Game...</Typography>
-          <Typography variant="body1" color="secondary">
-            Loading P2P Game...
-          </Typography>
-        </Stack>
-      </Container>
-    )
-  }
-
-  const playerGameDetails = p2pGameRoom.playerGameDetails;
-
-  const { gameTable, gameActions, gameMetadata, allPlayerProfiles, myPlayerProfile } = playerGameDetails;
-
-
-  // if (!p2pGame) {
-  //   return (
-  //     <Container style={{ padding: '24px' }}>
-  //       <Stack spacing={3}>
-  //         <Typography variant="h3">Loading Game...</Typography>
-  //         <Typography variant="body1" color="secondary">
-  //           Loading P2P Game...
-  //         </Typography>
-  //       </Stack>
-  //     </Container>
-  //   )
-  // }
-
-  // const { gameTable, gameActions, gameMetadata, allPlayerProfiles, myPlayerProfile } = p2pGame.p2pDetails;
-
-  // const p2p = p2pGame.p2p;
-  // if (!p2p) {
-  //   return (
-  //     <Container style={{ padding: '24px' }}></Container>
-  // if (!gameTable) {
-  //   return (
-  //     <Container style={{ padding: '24px' }}>
-  //       <Stack spacing={3}>
-  //         <Typography variant="h3">Loading Game...</Typography>
-  //         <Typography variant="body1" color="secondary">
-  //           Loading game table...
-  //         </Typography>
-  //       </Stack>
-  //     </Container>
-  //   )
-  // }
-
-  // if (!gameActions) {
-  //   return (
-  //     <Container style={{ padding: '24px' }}>
-  //       <Stack spacing={3}>
-  //         <Typography variant="h3">Loading Game...</Typography>
-  //         <Typography variant="body1" color="secondary">
-  //           Loading game actions...
-  //         </Typography>
-  //       </Stack>
-  //     </Container>
-  //   )
-  // }
-
-  // const gameMetadata = gameRegistry.getGameMetadata(gameTable.gameTitle);
   const latestGameSpecificStateStr = gameActions.length > 0 ? 
     gameActions[gameActions.length - 1].nextGameStateStr :
     null;
@@ -109,8 +40,6 @@ export const PlayerGamePage = () => {
       gameActions={gameActions}
     >
       <PlayerP2pGameComponent
-        // gameTableId={tableId}
-        // myPlayerProfile={myPlayerProfile}
         {...playerGameDetails}
       />
     </BfgGameScreenFrame>

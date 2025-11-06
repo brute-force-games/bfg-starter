@@ -7,7 +7,7 @@ import { HostedGameDetailsComponent } from '@bfg-engine/ui/components/host-game-
 import { PlayerGameDetailsComponent } from '@bfg-engine/ui/components/player-game-details-component';
 import { Container, ObserverP2pGameDetailsComponent, Stack, Typography } from '@bfg-engine';
 import { BfgGameScreenFrame } from '@bfg-engine/ui/components/bfg-game-screen-frame';
-import { useBfgGameRoomForRole } from '@bfg-engine/hooks/p2p/game/use-bfg-game-room';
+import { useBfgGameRoomForContextRole } from '@bfg-engine/hooks/p2p/game/use-bfg-game-room';
 
 
 const paramsSchema = z.object({
@@ -16,12 +16,11 @@ const paramsSchema = z.object({
 })
 
 const GameDetailsRoute = () => {
-  const { role, tableId } = Route.useParams()
+  // const { role, tableId } = Route.useParams()
   
-  // const p2pGame = useP2pGameContext();
-  const p2pGame = useBfgGameRoomForRole(role);
+  const bfgGameRoom = useBfgGameRoomForContextRole();
 
-  if (!p2pGame) {
+  if (!bfgGameRoom) {
     return (
       <Container style={{ padding: '24px' }}>
         <Stack spacing={3}>
@@ -33,40 +32,26 @@ const GameDetailsRoute = () => {
       </Container>
     )
   }
+  
+  const { publicGameDetails, allowedRoles, accessRole } = bfgGameRoom;
 
-  const { p2pDetails, maxAllowedAccessRole, allowedRoles } = p2pGame;
-
-  if (!p2pDetails) {
-    return (
-      <Container style={{ padding: '24px' }}>
-        <Stack spacing={3}>
-          <Typography variant="h3">Loading Game...</Typography>
-          <Typography variant="body1" color="secondary">
-            Loading P2P Game Details...
-          </Typography>
-        </Stack>
-      </Container>
-    )
+  if (!publicGameDetails) {
+    return <div>Public game details not found</div>;
   }
 
-  const { allPlayerProfiles } = p2pDetails;
-  const { gameTable, gameActions, gameMetadata } = p2pGame.publicGameDetails;
-  // const { gameMetadata } = p2pGame.gameDetails;
-
-  // const gameRegistry = useGameRegistry();
+  const { gameTable, gameActions, gameMetadata, allPlayerProfiles } = publicGameDetails;
 
   const activeTabId: GameTabId = '/games/$role/$tableId/game-details';
 
   if (!gameTable) {
-    return <div>Game table not found: {tableId}</div>;
+    return <div>Game table not found: {bfgGameRoom.gameTableId}</div>;
   }
 
-  if (!allowedRoles.includes(role)) {
-    return <div>You are not allowed to access this game table as a {role}</div>;
+  if (!allowedRoles.includes(accessRole)) {
+    return <div>You are not allowed to access this game table as a {accessRole}</div>;
   }
-  // const gameMetadata = gameRegistry.getGameMetadata(gameTable.gameTitle);
 
-  const gameTabItems = getGameTabItems(role);
+  const gameTabItems = getGameTabItems(accessRole);
   const tabsConfig = {
     tabItems: gameTabItems,
     activeTabId: activeTabId,
@@ -74,7 +59,7 @@ const GameDetailsRoute = () => {
   };
 
   const getGameScreen = () => {
-    if (role === 'host') {
+    if (accessRole === 'host') {
       return (
         <HostedGameDetailsComponent
           gameTable={gameTable}
@@ -82,20 +67,20 @@ const GameDetailsRoute = () => {
         />
       )
     }
-    if (role === 'player') {
+    if (accessRole === 'play') {
       return (
         <PlayerGameDetailsComponent />
       )
     }
-    if (role === 'observer') {
+    if (accessRole === 'watch') {
       return (
         <ObserverP2pGameDetailsComponent
-          gameTableId={tableId}
+          {...publicGameDetails}
         />
       )
     }
 
-    throw new Error(`Invalid game table access role: ${role}`);
+    throw new Error(`Invalid game table access role: ${accessRole}`);
   }
 
   const gameScreen = getGameScreen();

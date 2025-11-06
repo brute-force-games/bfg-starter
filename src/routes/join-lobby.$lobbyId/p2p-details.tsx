@@ -52,7 +52,7 @@ const JoinLobbyP2pDetailsRoute = () => {
       <P2pConnectionComponent
         connectionStatus={connectionStatus}
         connectionEvents={connectionEvents}
-        peers={peers}
+        peerIds={peers}
         myPeerPlayer={myPlayerProfile}
         peerPlayers={peerPlayers}
         allPlayerProfiles={allPlayerProfiles}

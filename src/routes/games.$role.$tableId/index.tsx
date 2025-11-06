@@ -1,60 +1,51 @@
-import { z } from 'zod'
 import { createFileRoute } from '@tanstack/react-router'
 import { PlayerGamePage } from '~/site-pages/player-game-page'
 import { ObserverGamePage } from '~/site-pages/observer-game-page'
-import { useRiskyMyDefaultPlayerProfile } from '@bfg-engine'
 import { HostGamePlayerViewPage } from '~/site-pages/host-player-view-page'
-import { GameTableAccessRoleSchema } from '@bfg-engine/models/game-roles'
-import { BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-ids'
+import { useBfgGameRoomForContextRole } from '@bfg-engine/hooks/p2p/game/use-bfg-game-room'
 
-const paramsSchema = z.object({
-  role: GameTableAccessRoleSchema,
-  tableId: BfgGameTableId.idSchema,
-})
-
-type RouteParams = z.infer<typeof paramsSchema>
 
 const GamesRoleAndTableIdPage = () => {
 
-  console.log('GamesRoleAndTableIdPage');
+  const p2pGameRoom = useBfgGameRoomForContextRole();
+  if (!p2pGameRoom) {
+    return <div>Loading game room...</div>;
+  }
+  
+  const { accessRole } = p2pGameRoom;
 
-  const { role, tableId } = Route.useParams() as RouteParams
-  // const myPlayerProfile = useRiskyMyDefaultPlayerProfile();
-
-  if (role === 'host') {
-    console.log('HostGamePlayerViewPage');
+  if (accessRole === 'host') {
     return (
       <HostGamePlayerViewPage
-        // tableId={tableId}
-        // myPlayerProfile={myPlayerProfile}
+        p2pGameRoom={p2pGameRoom}
       />
     )  
   }
 
-  if (role === 'play') {
+  if (accessRole === 'play') {
     return (
       <PlayerGamePage
-        // tableId={tableId}
+        p2pGameRoom={p2pGameRoom}
       />
     )
   }
 
-  if (role === 'watch') {
+  if (accessRole === 'watch') {
     return (
-      <ObserverGamePage
-        tableId={tableId}
+      <ObserverGamePage 
+        p2pGameRoom={p2pGameRoom}
       />
     )
   }
 
-  return <div>You can not access this game table as a {role}</div>;
+  return <div>You can not access this game table as a {accessRole}</div>;
 }
 
 
 export const Route = createFileRoute('/games/$role/$tableId/')({
   component: GamesRoleAndTableIdPage,
-  params: {
-    parse: (params) => paramsSchema.parse(params),
-    stringify: (params) => ({ role: params.role, tableId: params.tableId }),
-  },
+  // params: {
+  //   parse: (params) => paramsSchema.parse(params),
+  //   stringify: (params) => ({ role: params.role, tableId: params.tableId }),
+  // },
 })

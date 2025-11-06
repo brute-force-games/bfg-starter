@@ -27,7 +27,7 @@ export const P2pDetailsObserverPage = ({ tableId }: IP2pDetailsObserverPageProps
       <P2pConnectionComponent
         connectionStatus={connectionStatus}
         connectionEvents={connectionEvents}
-        peers={peers}
+        peerIds={peers}
         peerPlayers={peerPlayers}
         allPlayerProfiles={allPlayerProfiles}
         onRefreshConnection={refreshConnection}
