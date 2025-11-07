@@ -24,7 +24,7 @@
 //         tabsConfig={{
 //           tabItems: ObserverGameTabItems,
 //           activeTabId: activeTabId,
-//           onTabChange: setActiveTabId
+//           onTabClicked: setActiveTabId
 //         }}
 //       /> */}
 //       <BfgPlayerGameBar

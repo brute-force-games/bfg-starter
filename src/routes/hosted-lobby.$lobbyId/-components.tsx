@@ -22,7 +22,7 @@ export const BfgHostedLobbyAppBar = ({ activeTabId }: BfgHostedLobbyAppBarProps)
       tabsConfig={{
         tabItems: HostedLobbyTabItems,
         activeTabId: activeTabId,
-        onTabChange: () => {}
+        onTabClicked: () => {}
       }}
     />
   )

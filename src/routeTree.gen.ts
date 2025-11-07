@@ -11,11 +11,15 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as NewLobbyRouteImport } from './routes/new-lobby'
 import { Route as MyPlayerProfilesRouteImport } from './routes/my-player-profiles'
+import { Route as DevRouteImport } from './routes/dev'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DevIndexRouteImport } from './routes/dev/index'
 import { Route as P2pGameRoomTableIdRouteImport } from './routes/p2p-game-room.$tableId'
 import { Route as P2pDemoRoomIdRouteImport } from './routes/p2p-demo.$roomId'
 import { Route as JoinLobbyLobbyIdRouteImport } from './routes/join-lobby.$lobbyId'
 import { Route as HostedLobbyLobbyIdRouteImport } from './routes/hosted-lobby.$lobbyId'
+import { Route as DevHostedGamesManagerRouteImport } from './routes/dev/hosted-games-manager'
+import { Route as DevGameSettingsRouteImport } from './routes/dev/game-settings'
 import { Route as JoinLobbyLobbyIdIndexRouteImport } from './routes/join-lobby.$lobbyId/index'
 import { Route as HostedLobbyLobbyIdIndexRouteImport } from './routes/hosted-lobby.$lobbyId/index'
 import { Route as JoinLobbyLobbyIdP2pDetailsRouteImport } from './routes/join-lobby.$lobbyId/p2p-details'
@@ -37,10 +41,20 @@ const MyPlayerProfilesRoute = MyPlayerProfilesRouteImport.update({
   path: '/my-player-profiles',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DevRoute = DevRouteImport.update({
+  id: '/dev',
+  path: '/dev',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const DevIndexRoute = DevIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DevRoute,
 } as any)
 const P2pGameRoomTableIdRoute = P2pGameRoomTableIdRouteImport.update({
   id: '/p2p-game-room/$tableId',
@@ -61,6 +75,16 @@ const HostedLobbyLobbyIdRoute = HostedLobbyLobbyIdRouteImport.update({
   id: '/hosted-lobby/$lobbyId',
   path: '/hosted-lobby/$lobbyId',
   getParentRoute: () => rootRouteImport,
+} as any)
+const DevHostedGamesManagerRoute = DevHostedGamesManagerRouteImport.update({
+  id: '/hosted-games-manager',
+  path: '/hosted-games-manager',
+  getParentRoute: () => DevRoute,
+} as any)
+const DevGameSettingsRoute = DevGameSettingsRouteImport.update({
+  id: '/game-settings',
+  path: '/game-settings',
+  getParentRoute: () => DevRoute,
 } as any)
 const JoinLobbyLobbyIdIndexRoute = JoinLobbyLobbyIdIndexRouteImport.update({
   id: '/',
@@ -120,12 +144,16 @@ const GamesRoleTableIdAdminRoute = GamesRoleTableIdAdminRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/dev': typeof DevRouteWithChildren
   '/my-player-profiles': typeof MyPlayerProfilesRoute
   '/new-lobby': typeof NewLobbyRoute
+  '/dev/game-settings': typeof DevGameSettingsRoute
+  '/dev/hosted-games-manager': typeof DevHostedGamesManagerRoute
   '/hosted-lobby/$lobbyId': typeof HostedLobbyLobbyIdRouteWithChildren
   '/join-lobby/$lobbyId': typeof JoinLobbyLobbyIdRouteWithChildren
   '/p2p-demo/$roomId': typeof P2pDemoRoomIdRoute
   '/p2p-game-room/$tableId': typeof P2pGameRoomTableIdRoute
+  '/dev/': typeof DevIndexRoute
   '/games/$role/$tableId': typeof GamesRoleTableIdRouteWithChildren
   '/hosted-lobby/$lobbyId/p2p-details': typeof HostedLobbyLobbyIdP2pDetailsRoute
   '/hosted-lobby/$lobbyId/player': typeof HostedLobbyLobbyIdPlayerRoute
@@ -141,8 +169,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/my-player-profiles': typeof MyPlayerProfilesRoute
   '/new-lobby': typeof NewLobbyRoute
+  '/dev/game-settings': typeof DevGameSettingsRoute
+  '/dev/hosted-games-manager': typeof DevHostedGamesManagerRoute
   '/p2p-demo/$roomId': typeof P2pDemoRoomIdRoute
   '/p2p-game-room/$tableId': typeof P2pGameRoomTableIdRoute
+  '/dev': typeof DevIndexRoute
   '/hosted-lobby/$lobbyId/p2p-details': typeof HostedLobbyLobbyIdP2pDetailsRoute
   '/hosted-lobby/$lobbyId/player': typeof HostedLobbyLobbyIdPlayerRoute
   '/join-lobby/$lobbyId/p2p-details': typeof JoinLobbyLobbyIdP2pDetailsRoute
@@ -156,12 +187,16 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/dev': typeof DevRouteWithChildren
   '/my-player-profiles': typeof MyPlayerProfilesRoute
   '/new-lobby': typeof NewLobbyRoute
+  '/dev/game-settings': typeof DevGameSettingsRoute
+  '/dev/hosted-games-manager': typeof DevHostedGamesManagerRoute
   '/hosted-lobby/$lobbyId': typeof HostedLobbyLobbyIdRouteWithChildren
   '/join-lobby/$lobbyId': typeof JoinLobbyLobbyIdRouteWithChildren
   '/p2p-demo/$roomId': typeof P2pDemoRoomIdRoute
   '/p2p-game-room/$tableId': typeof P2pGameRoomTableIdRoute
+  '/dev/': typeof DevIndexRoute
   '/games/$role/$tableId': typeof GamesRoleTableIdRouteWithChildren
   '/hosted-lobby/$lobbyId/p2p-details': typeof HostedLobbyLobbyIdP2pDetailsRoute
   '/hosted-lobby/$lobbyId/player': typeof HostedLobbyLobbyIdPlayerRoute
@@ -177,12 +212,16 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/dev'
     | '/my-player-profiles'
     | '/new-lobby'
+    | '/dev/game-settings'
+    | '/dev/hosted-games-manager'
     | '/hosted-lobby/$lobbyId'
     | '/join-lobby/$lobbyId'
     | '/p2p-demo/$roomId'
     | '/p2p-game-room/$tableId'
+    | '/dev/'
     | '/games/$role/$tableId'
     | '/hosted-lobby/$lobbyId/p2p-details'
     | '/hosted-lobby/$lobbyId/player'
@@ -198,8 +237,11 @@ export interface FileRouteTypes {
     | '/'
     | '/my-player-profiles'
     | '/new-lobby'
+    | '/dev/game-settings'
+    | '/dev/hosted-games-manager'
     | '/p2p-demo/$roomId'
     | '/p2p-game-room/$tableId'
+    | '/dev'
     | '/hosted-lobby/$lobbyId/p2p-details'
     | '/hosted-lobby/$lobbyId/player'
     | '/join-lobby/$lobbyId/p2p-details'
@@ -212,12 +254,16 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/dev'
     | '/my-player-profiles'
     | '/new-lobby'
+    | '/dev/game-settings'
+    | '/dev/hosted-games-manager'
     | '/hosted-lobby/$lobbyId'
     | '/join-lobby/$lobbyId'
     | '/p2p-demo/$roomId'
     | '/p2p-game-room/$tableId'
+    | '/dev/'
     | '/games/$role/$tableId'
     | '/hosted-lobby/$lobbyId/p2p-details'
     | '/hosted-lobby/$lobbyId/player'
@@ -232,6 +278,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  DevRoute: typeof DevRouteWithChildren
   MyPlayerProfilesRoute: typeof MyPlayerProfilesRoute
   NewLobbyRoute: typeof NewLobbyRoute
   HostedLobbyLobbyIdRoute: typeof HostedLobbyLobbyIdRouteWithChildren
@@ -257,12 +304,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MyPlayerProfilesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dev': {
+      id: '/dev'
+      path: '/dev'
+      fullPath: '/dev'
+      preLoaderRoute: typeof DevRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/dev/': {
+      id: '/dev/'
+      path: '/'
+      fullPath: '/dev/'
+      preLoaderRoute: typeof DevIndexRouteImport
+      parentRoute: typeof DevRoute
     }
     '/p2p-game-room/$tableId': {
       id: '/p2p-game-room/$tableId'
@@ -291,6 +352,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/hosted-lobby/$lobbyId'
       preLoaderRoute: typeof HostedLobbyLobbyIdRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/dev/hosted-games-manager': {
+      id: '/dev/hosted-games-manager'
+      path: '/hosted-games-manager'
+      fullPath: '/dev/hosted-games-manager'
+      preLoaderRoute: typeof DevHostedGamesManagerRouteImport
+      parentRoute: typeof DevRoute
+    }
+    '/dev/game-settings': {
+      id: '/dev/game-settings'
+      path: '/game-settings'
+      fullPath: '/dev/game-settings'
+      preLoaderRoute: typeof DevGameSettingsRouteImport
+      parentRoute: typeof DevRoute
     }
     '/join-lobby/$lobbyId/': {
       id: '/join-lobby/$lobbyId/'
@@ -365,6 +440,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface DevRouteChildren {
+  DevGameSettingsRoute: typeof DevGameSettingsRoute
+  DevHostedGamesManagerRoute: typeof DevHostedGamesManagerRoute
+  DevIndexRoute: typeof DevIndexRoute
+}
+
+const DevRouteChildren: DevRouteChildren = {
+  DevGameSettingsRoute: DevGameSettingsRoute,
+  DevHostedGamesManagerRoute: DevHostedGamesManagerRoute,
+  DevIndexRoute: DevIndexRoute,
+}
+
+const DevRouteWithChildren = DevRoute._addFileChildren(DevRouteChildren)
+
 interface HostedLobbyLobbyIdRouteChildren {
   HostedLobbyLobbyIdP2pDetailsRoute: typeof HostedLobbyLobbyIdP2pDetailsRoute
   HostedLobbyLobbyIdPlayerRoute: typeof HostedLobbyLobbyIdPlayerRoute
@@ -412,6 +501,7 @@ const GamesRoleTableIdRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  DevRoute: DevRouteWithChildren,
   MyPlayerProfilesRoute: MyPlayerProfilesRoute,
   NewLobbyRoute: NewLobbyRoute,
   HostedLobbyLobbyIdRoute: HostedLobbyLobbyIdRouteWithChildren,

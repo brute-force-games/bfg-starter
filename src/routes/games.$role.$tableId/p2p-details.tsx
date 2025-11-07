@@ -38,7 +38,7 @@ const GameP2pDetailsRoute = () => {
   const tabsConfig = {
     tabItems: gameTabItems,
     activeTabId: activeTabId,
-    onTabChange: () => { console.log('onTabChange not implemented'); }
+    onTabClicked: () => { console.log('onTabClicked not implemented'); }
   };
 
   return (

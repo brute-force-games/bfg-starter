@@ -38,7 +38,7 @@ export const BfgGameNavBar = <TTabId extends GameTabId = GameTabId>(props: BfgGa
   //           tabsConfig={{
   //             tabItems: gameTabItems,
   //             activeTabId: activeTabId,
-  //             onTabChange: () => {}
+  //             onTabClicked: () => {}
 
   const gameTabItems = getGameTabItems(myGameTableAccess);
 
@@ -51,7 +51,7 @@ export const BfgGameNavBar = <TTabId extends GameTabId = GameTabId>(props: BfgGa
   //         tabsConfig={{
   //           tabItems: gameTabItems,
   //           activeTabId: activeTabId,
-  //           onTabChange: () => {}
+  //           onTabClicked: () => {}
   //         }}
   //       />
   //       <Box style={{ flexGrow: 1 }} />
@@ -73,7 +73,7 @@ export const BfgGameNavBar = <TTabId extends GameTabId = GameTabId>(props: BfgGa
             tabsConfig={{
               tabItems: gameTabItems,
               activeTabId: activeTabId,
-              onTabChange: () => {}
+              onTabClicked: () => {}
             }}
           />
           {/* <Box style={{ flexGrow: 1 }} />

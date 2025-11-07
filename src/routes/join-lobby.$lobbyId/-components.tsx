@@ -1,13 +1,8 @@
-import { BruteForceGamesAppBar } from "@bfg-engine/ui/components/bfg-app-bar/app-bar"
 import { AppBarTabItem } from "@bfg-engine/ui/components/bfg-app-bar/tab-item-hook";
 import { ChildRoutesOf } from "../-utils";
+import { BfgStarterNavBar } from "@bfg-engine/ui/components/bfg-nav-bar/bfg-starter-nav-bar";
 
 
-// Utility type to extract all child routes of a specific path
-// type ChildRoutesOf<TPath extends string> = Extract<
-//   keyof FileRoutesByTo,
-//   `${TPath}${string}`
-// >;
 
 // Automatically includes ALL child routes under /join-lobby/$lobbyId
 export type JoinLobbyTabId = ChildRoutesOf<'/join-lobby/$lobbyId'>;
@@ -32,17 +27,25 @@ export const BfgJoinLobbyAppBar = ({ activeTabId }: BfgJoinLobbyAppBarProps) => 
     },
   ];
 
-  const setActiveTabId = (tabId: JoinLobbyTabId) => {
-    console.log('setActiveTabId', tabId);
+  const setActiveTabId = (_tabId: JoinLobbyTabId) => {
+    console.warn('setActiveTabId not implemented');
   }
 
   return (
-    <BruteForceGamesAppBar 
+    // <BruteForceGamesAppBar 
+    //   tabsConfig={{
+    //     tabItems: JoinLobbyTabItems,
+    //     activeTabId: activeTabId,
+    //     onTabClicked: setActiveTabId
+    //   }}
+    // />
+    <BfgStarterNavBar<JoinLobbyTabId>
       tabsConfig={{
         tabItems: JoinLobbyTabItems,
         activeTabId: activeTabId,
-        onTabChange: setActiveTabId
+        onTabClicked: setActiveTabId
       }}
     />
+
   )
 }

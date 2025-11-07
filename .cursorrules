@@ -48,6 +48,10 @@ interface ComponentProps {
 export type SortMethod = 'name' | 'lastUpdated';
 ```
 
+
+### Function Definitions
+- Use arrow style functions all the time.
+
 ### Zod Schemas
 - Use Zod for runtime validation
 - Create branded types from Zod schemas
