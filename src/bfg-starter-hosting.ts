@@ -1,5 +1,5 @@
-import { GameTableId, GameFriendId, GameHostingContextType } from "@bfg-engine";
-import { BfgStarterSupabaseTrysteroConfig, BfgStarterTrysteroConfig } from "./bfg-trystero-config";
+import { BfgGameTableId, GameFriendId, GameHostingContextType } from "@bfg-engine";
+import { BfgStarterTrysteroConfig } from "./bfg-trystero-config";
 
 /**
  * Get just the base path portion (without origin) for router configuration.
@@ -27,31 +27,31 @@ const createFriendUrl = (friendId: GameFriendId) => {
   return `${getBaseUrl()}/friends/${friendId}`;
 }
 
-// const createJoinGameUrl = (gameTableId: GameTableId) => {
+// const createJoinGameUrl = (gameTableId: BfgGameTableId) => {
 //   return `${getBaseUrl()}/games/${gameTableId}`;
 // }
 
-// const createHostedGameUrl = (gameTableId: GameTableId) => {
+// const createHostedGameUrl = (gameTableId: BfgGameTableId) => {
 //   return `${getBaseUrl()}/hosted-games/${gameTableId}`;
 // }
 
-// const createPlayerGameUrl = (gameTableId: GameTableId) => {
+// const createPlayerGameUrl = (gameTableId: BfgGameTableId) => {
 //   return `${getBaseUrl()}/games/${gameTableId}`;
 // }
 
-const createJoinGameUrl = (gameTableId: GameTableId) => {
+const createJoinGameUrl = (gameTableId: BfgGameTableId) => {
   return `${getBaseUrl()}/games/play/${gameTableId}`;
 }
 
-const createHostedGameUrl = (gameTableId: GameTableId) => {
+const createHostedGameUrl = (gameTableId: BfgGameTableId) => {
   return `${getBaseUrl()}/games/host/${gameTableId}`;
 }
 
-const createPlayerGameUrl = (gameTableId: GameTableId) => {
+const createPlayerGameUrl = (gameTableId: BfgGameTableId) => {
   return `${getBaseUrl()}/games/play/${gameTableId}`;
 }
 
-const createObserverGameUrl = (gameTableId: GameTableId) => {
+const createObserverGameUrl = (gameTableId: BfgGameTableId) => {
   return `${getBaseUrl()}/games/watch/${gameTableId}`;
 }
 

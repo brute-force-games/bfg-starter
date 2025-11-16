@@ -37,21 +37,17 @@ export const HostGamePlayerViewPage = ({ p2pGameRoom }: HostGamePlayerViewPagePr
     return <div>You are not the host of this game table</div>;
   }
 
-  if (!gameActions) {
-    return (
-      <div className="p-6">
-        <h1 className="text-3xl font-bold mb-6">Loading Game Actions...</h1>
-        <div className="text-gray-600">Loading game action history...</div>
-      </div>
-    )
-  }
+  // if (!gameActions || gameActions.length === 0) {
+  //   return (
+  //     <div className="p-6">
+  //       <h1 className="text-3xl font-bold mb-6">Loading Game Actions...</h1>
+  //       <div className="text-gray-600">Loading game action history...</div>
+  //     </div>
+  //   )
+  // }
 
-  const latestGameSpecificStateStr = gameActions.length > 0 ? 
-    gameActions[gameActions.length - 1].nextGameStateStr :
-    null;
-  const latestHostGameState = latestGameSpecificStateStr ?
-    gameMetadata.encoders.hostGameStateEncoder.decode(latestGameSpecificStateStr) :
-    null;
+  const latestGameSpecificStateStr = gameActions[gameActions.length - 1].nextGameStateStr;
+  const latestHostGameState = gameMetadata.encoders.hostGameStateEncoder.decode(latestGameSpecificStateStr);
 
   const activeTabId: GameTabId = '/games/$role/$tableId';
 

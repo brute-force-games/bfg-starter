@@ -1,13 +1,13 @@
 import { z } from 'zod';
 import { createFileRoute } from '@tanstack/react-router'
-import { BfgGameLobbyId } from '@bfg-engine/models/types/bfg-branded-ids';
 import { LobbyPlayerStateComponent } from '@bfg-engine';
 import { BfgHostedLobbyAppBar, HostedLobbyTabId } from './-components';
 import { useP2pHostedLobbyContext  } from '@bfg-engine/hooks/p2p/lobby/hosted-p2p-lobby-context';
+import { BfgGameLobbyIdToolbox } from '../../../modules/bfg-engine/src/models/types/bfg-branded-uuids';
 
 
 const paramsSchema = z.object({
-  lobbyId: BfgGameLobbyId.idSchema,
+  lobbyId: BfgGameLobbyIdToolbox.idSchema,
 })
 
 

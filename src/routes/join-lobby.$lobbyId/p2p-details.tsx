@@ -1,18 +1,18 @@
-import { P2pConnectionComponent, Typography } from '@bfg-engine';
-import { useMyDefaultPlayerProfile } from '@bfg-engine/hooks/stores/use-my-player-profiles-store';
+import { P2pConnectionComponent, type PlayerProfileId } from '@bfg-engine';
 import { createFileRoute } from '@tanstack/react-router'
 import { BfgJoinLobbyAppBar, JoinLobbyTabId } from './-components';
 import { useP2pLobbyPlayerContext } from '@bfg-engine/hooks/p2p/lobby/p2p-lobby-player-context';
+import type { PeerId } from '../../../modules/bfg-engine/src/hooks/p2p/p2p-types';
 
 
 const JoinLobbyP2pDetailsRoute = () => {
   // const { lobbyId } = Route.useParams();
 
 
-  const myPlayerProfile = useMyDefaultPlayerProfile();
-  if (!myPlayerProfile) {
-    return <Typography variant="body1">Loading player profile...</Typography>
-  }
+  // const myPlayerProfile = useMyDefaultPlayerProfile();
+  // if (!myPlayerProfile) {
+  //   return <Typography variant="body1">Loading player profile...</Typography>
+  // }
 
   // const JoinLobbyTabItems: readonly AppBarTabItem<JoinLobbyTabId>[] = [
   //   {
@@ -38,11 +38,16 @@ const JoinLobbyP2pDetailsRoute = () => {
   const {
     connectionStatus,
     connectionEvents,
-    peers,
+    peerIds,
     peerPlayers,
-    refreshConnection,
+    myPlayerProfile,
     allPlayerProfiles,
    } = lobby;
+
+  const peerIdsToPlayerIdsMap = new Map<PeerId, PlayerProfileId>();
+  for (const [peerId, playerProfile] of peerPlayers) {
+    peerIdsToPlayerIdsMap.set(peerId, playerProfile.id);
+  }
 
   return (
     <>
@@ -52,11 +57,11 @@ const JoinLobbyP2pDetailsRoute = () => {
       <P2pConnectionComponent
         connectionStatus={connectionStatus}
         connectionEvents={connectionEvents}
-        peerIds={peers}
-        myPeerPlayer={myPlayerProfile}
-        peerPlayers={peerPlayers}
+        peerIds={peerIds}
+        myPeerProfile={myPlayerProfile}
+        peerIdsToPlayerIds={peerIdsToPlayerIdsMap}
         allPlayerProfiles={allPlayerProfiles}
-        onRefreshConnection={refreshConnection}
+        // onRefreshConnection={refreshConnection}
       />
     </>
   )

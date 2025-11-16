@@ -75,7 +75,7 @@ const profile = await addPrivatePlayerProfile(
 import { asPlayerMakeSignedMove } from '~/data/dexie-data-ops/as-player-make-signed-move';
 
 await asPlayerMakeSignedMove(
-  gameTableId,
+  BfgGameTableId,
   playerProfile, // Contains private key
   moveAction
 );

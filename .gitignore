@@ -133,3 +133,5 @@ dist
 storybook-static
 
 .vscode/chrome-debug-profile/*
+
+reports/*

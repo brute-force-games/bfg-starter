@@ -4,13 +4,13 @@ import { BfgGameScreenFrame } from "@bfg-engine/ui/components/bfg-game-screen-fr
 import { GameTabId, getGameTabItems } from "~/routes/games.$role.$tableId/-components";
 
 
-interface ObserverGamePageProps {
-  p2pGameRoom: IBfgGameRoomForObserver;
-}
+// interface ObserverGamePageProps {
+//   p2pGameRoom: IBfgGameRoomForObserver;
+// }
 
-export const ObserverGamePage = ({ p2pGameRoom }: ObserverGamePageProps) => {
+export const ObserverGamePage = (props: IBfgGameRoomForObserver) => {
 
-  const { publicGameDetails } = p2pGameRoom;
+  const { publicGameDetails } = props;
 
   if (!publicGameDetails) {
     return (

@@ -1,13 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router"
 import { z } from "zod"
-import { BfgGameLobbyId } from "@bfg-engine/models/types/bfg-branded-ids"
+// import { BfgGameLobbyId } from "@bfg-engine/models/types/bfg-branded-ids"
 import { ProfileGuard } from "@bfg-engine/ui/components/profile-guard"
 import { Outlet } from "@tanstack/react-router"
 import { P2pHostedLobbyContextProvider } from "@bfg-engine/hooks/p2p/lobby/hosted-p2p-lobby-context"
+import { BfgGameLobbyIdToolbox } from "@bfg-engine/models/types/bfg-branded-uuids"
 
 
 const paramsSchema = z.object({
-  lobbyId: BfgGameLobbyId.idSchema,
+  lobbyId: BfgGameLobbyIdToolbox.idSchema,
 })
 
 // Search params schema using Standard Schema

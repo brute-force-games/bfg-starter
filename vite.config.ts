@@ -2,6 +2,8 @@
 import { defineConfig } from 'vite';
 import tsConfigPaths from 'vite-tsconfig-paths';
 import viteReact from '@vitejs/plugin-react';
+import { checker } from 'vite-plugin-checker';
+
 
 export default defineConfig({
   base: process.env.VITE_BASE_PATH || '/',
@@ -12,7 +14,12 @@ export default defineConfig({
     // }),
     viteReact({
       jsxRuntime: 'automatic'
-    })
+    }),
+    checker({
+      typescript: {
+        buildMode: true,
+      },
+    }),
   ],
   server: {
     port: 62776,

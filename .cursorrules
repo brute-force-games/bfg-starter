@@ -31,12 +31,17 @@ This is a React TypeScript project using vite for a board game playing framework
 
 ## TypeScript & Type Safety
 
+### Type arguments
+- do not use default type arguments in any case. Things should be fully typed or explicitly worked around.
+
 ### Type Definitions
 - Always define interfaces for component props
 - Use branded types for IDs and special strings
 - Prefer `interface` over `type` for object shapes
 - Use union types for discriminated unions
 - Export types from dedicated type files
+- Never convert to unknown to get around needing strict type definitions. The only time it is acceptable is if you are going from one branded string type to another. If you do that, make a comment to that effect.
+- Do not cast any types to `any`. This should be a deliberate choice and we should work harder to clean up or simplify our type system rather than admit default and use any as a type or an input to a generic.
 
 ```typescript
 interface ComponentProps {
@@ -56,6 +61,7 @@ export type SortMethod = 'name' | 'lastUpdated';
 - Use Zod for runtime validation
 - Create branded types from Zod schemas
 - Export schemas from dedicated files
+
 
 ```typescript
 export const HvbColorSchema = z.string().brand('HvbColor');
@@ -228,6 +234,19 @@ import { MyType } from '@/src/types/MyType';
 - Mock external dependencies
 - Use descriptive test names
 
+### Unit Tests
+- Unit tests should live in a top-level directory that mirrors source structure. Unit tests should fail when tests files are not in the same relative place as the under-test files.
+- If an under-test file is moved, its matching unit test should be moved to the corresponding location
+- If a directory with under-test files is moved, its corresponding directory in the test directory structure should be moved as well
+- Vitest uses the exact same syntax as Jest for parameterized tests: it.each() or test.each(). If tests have similar patterns, make efforts to use this pattern, especially if the only variation in test execution is data.
+
+### Behavior/Gherkin Tests
+- Behavior/Gherkin tests should live in a top-level directory that mirrors source structure. Unit tests should fail when tests files are not in the same relative place as the under-test files.
+- If an under-test file is moved, its matching unit test should be moved to the corresponding location
+- If a directory with under-test files is moved, its corresponding directory in the test directory structure should be moved as well
+
+
+
 ## Accessibility
 
 ### Accessibility Patterns
@@ -333,3 +352,7 @@ import { MyType } from '@/src/types/MyType';
 - Document setup procedures
 - Explain architecture decisions
 - Provide troubleshooting guides
+
+### Communication in Integrated Development Environments
+- when giving me commands to run, DO NOT join them together into a single line. Give each individual command as an independent statement.
+- if you have multiple commands to relay to the end user, give them in two formats. The first should be all commands as a single copy/paste block. Then, enumerate each command with its own copy/paste button.

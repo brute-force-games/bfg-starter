@@ -79,7 +79,7 @@ const profileId = await addProfile(
 import { asPlayerMakeTinyBaseSignedMove } from '~/data/dexie-data-ops/as-player-make-tinybase-signed-move';
 
 await asPlayerMakeTinyBaseSignedMove(
-  gameTableId,
+  BfgGameTableId,
   playerProfileId, // Just the ID, private key retrieved from store
   moveAction
 );

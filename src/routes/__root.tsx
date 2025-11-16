@@ -5,9 +5,12 @@ import { Container, Paper, Typography, Button, Stack, Box } from '@bfg-engine'
 import { Inspector } from 'tinybase/ui-react-inspector'
 import { Provider } from 'tinybase/ui-react'
 import { playerProfileStore } from '@bfg-engine/tb-store/player-profile-store'
-import { hostedGamesStore } from '@bfg-engine/tb-store/hosted-games-store'
+// import { hostedGamesStore } from '@bfg-engine/tb-store/hosted-games-store'
 import { hostedLobbiesStore } from '@bfg-engine/tb-store/hosted-lobbies-store'
 import { appSettingsStore } from '@bfg-engine/tb-store/app-settings-store'
+import { useAppSettings } from '@bfg-engine/hooks/stores/use-my-app-settings-store'
+import { gameArchivesStore } from '../../modules/bfg-engine/src/tb-store/games-archives-store'
+// import { gameActionsStore } from '@bfg-engine/tb-store/hosted-game-actions-store'
 
 export const RootErrorComponent = ({ error }: { error: Error }) => {
   const router = useRouter()
@@ -82,19 +85,23 @@ export const RootErrorComponent = ({ error }: { error: Error }) => {
 }
 
 export const RootComponent = () => {
+  const appSettings = useAppSettings();
+
   return (
     <>
       <GameHostingProvider
         gameHosting={BfgStarterGameHosting}
       >
         <Outlet />
-        <Provider store={playerProfileStore} storesById={{ 
+        <Provider store={playerProfileStore} storesById={{
           playerProfiles: playerProfileStore,
-          hostedGames: hostedGamesStore,
+          // hostedGames: hostedGamesStore,
+          gameArchives: gameArchivesStore,
           hostedLobbies: hostedLobbiesStore,
           appSettings: appSettingsStore,
+          // gameActions: gameActionsStore,
         }}>
-          <Inspector />
+          {appSettings.debugSettingShowTinybaseInspector && <Inspector />}
         </Provider>
       </GameHostingProvider>
       <Scripts />

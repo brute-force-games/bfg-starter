@@ -1,16 +1,14 @@
 import { z } from 'zod'
-import {joinRoom} from 'trystero'
-import {useState} from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import { P2pGameRoomContextProvider, useP2pGameRoomContext } from '@bfg-engine/hooks/p2p/game/p2p-game-room-context'
-import { BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-ids'
+import { BfgGameTableIdToolbox } from '@bfg-engine/models/types/bfg-branded-uuids'
 
 
-const trysteroConfig = {appId: 'gbthurn-und-taxis-99'}
+// const trysteroConfig = {appId: 'gbthurn-und-taxis-99'}
 
 
 const paramsSchema = z.object({
-  tableId: BfgGameTableId.idSchema,
+  tableId: BfgGameTableIdToolbox.idSchema,
 })
 
 
@@ -29,7 +27,10 @@ export const P2pGameRoomRoute = () => {
   const { tableId } = Route.useParams();
 
   return (
-    <P2pGameRoomContextProvider gameTableId={tableId}>
+    <P2pGameRoomContextProvider
+      gameTableId={tableId}
+      requestedRole="watch"
+    >
       <P2pGameRoom />
     </P2pGameRoomContextProvider>
   )

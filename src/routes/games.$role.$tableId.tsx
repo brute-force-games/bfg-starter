@@ -1,13 +1,13 @@
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { z } from 'zod'
-import { BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-ids'
+import { BfgGameTableIdToolbox } from '@bfg-engine/models/types/bfg-branded-uuids'
 import { GameTableAccessRoleSchema } from '@bfg-engine/models/game-roles'
 import { P2pGameRoomContextProvider } from '@bfg-engine/hooks/p2p/game/p2p-game-room-context'
 
 
 const paramsSchema = z.object({
   role: GameTableAccessRoleSchema,
-  tableId: BfgGameTableId.idSchema,
+  tableId: BfgGameTableIdToolbox.idSchema,
 })
 
 

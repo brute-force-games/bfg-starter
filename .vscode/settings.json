@@ -1,0 +1,7 @@
+{
+  "typescript.preferences.includePackageJsonAutoImports": "auto",
+  "typescript.preferences.preferTypeOnlyAutoImports": true,
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "typescript.workspaceSymbols.scope": "allOpenProjects",
+  "typescript.preferences.tsconfig": "./tsconfig.app.json"
+}

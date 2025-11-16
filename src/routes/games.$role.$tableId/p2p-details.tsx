@@ -28,9 +28,9 @@ const GameP2pDetailsRoute = () => {
 
   const { accessRole, p2pDetails } = bfgGameRoom;
 
-  const refreshConnection = () => {
-    console.error('refreshConnection not implemented');
-  }
+  // const refreshConnection = () => {
+  //   console.error('refreshConnection not implemented');
+  // }
 
   const activeTabId: GameTabId = '/games/$role/$tableId/p2p-details';
 
@@ -48,7 +48,7 @@ const GameP2pDetailsRoute = () => {
       />
       <P2pConnectionComponent
         {...p2pDetails}
-        onRefreshConnection={refreshConnection}
+        // onRefreshConnection={refreshConnection}
       />
     </>
   )

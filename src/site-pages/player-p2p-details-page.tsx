@@ -1,5 +1,5 @@
 // import { P2pConnectionComponent } from "@bfg-engine/ui/components/p2p-connection-component"
-// import { GameTableId } from "@bfg-engine/models/types/bfg-branded-ids"
+// import { BfgGameTableId } from "@bfg-engine/models/types/bfg-branded-ids"
 // import { BfgPlayerGameBar, PlayerGameTabId } from "~/routes/games.$tableId/-components";
 // import { PrivatePlayerProfile } from "@bfg-engine/models/player-profile/private-player-profile";
 // import { usePlayerP2pGame } from "@bfg-engine/hooks/p2p/game/use-player-p2p-game";
@@ -7,7 +7,7 @@
 
 
 // interface IP2pDetailsPlayerPageProps {
-//   tableId: GameTableId;
+//   tableId: BfgGameTableId;
 //   myPlayerProfile: PrivatePlayerProfile;
 // }
 

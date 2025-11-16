@@ -16,7 +16,10 @@ export const HostAdminViewPage = (props: IBfgGameRoomForHost) => {
     gameActions,
   } = hostGameDetails;
 
+  console.log('HostAdminViewPage - gameTable:', gameTable, 'hostGameDetails:', hostGameDetails);
+
   if (!gameTable) {
+    console.error('HostAdminViewPage: gameTable is null/undefined', { gameTable, hostGameDetails, props });
     return <div>Game table not found</div>;
   }
 

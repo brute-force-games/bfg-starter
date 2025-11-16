@@ -27,7 +27,7 @@ export const P2pDemoRoute = () => {
     setPeerColors(peerColors => ({...peerColors, [peer]: color}))
   )
 
-  const updateColor = e => {
+  const updateColor = (e: React.ChangeEvent<HTMLInputElement>) => {
     const {value} = e.target
 
     // when updating my own color, broadcast it to all peers:
@@ -44,9 +44,9 @@ export const P2pDemoRoute = () => {
 
       <h2>Peer colors:</h2>
       <ul>
-        {Object.entries(peerColors).map(([peerId, color]) => (
-          <li key={peerId} style={{backgroundColor: color}}>
-            {peerId}: {color}
+        {Object.entries(peerColors).map(([peerId, color]: [string, unknown]) => (
+          <li key={peerId} style={{backgroundColor: color as string}}>
+            {peerId}: {color as string}
           </li>
         ))}
       </ul>

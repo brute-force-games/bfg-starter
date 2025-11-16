@@ -1,13 +1,12 @@
 import { z } from 'zod';
 import { createFileRoute } from '@tanstack/react-router'
-import { GameTabId, getGameTabItems } from './-components'
 import { BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-ids';
 import { GameTableAccessRoleSchema } from '@bfg-engine/models/game-roles';
-import { HostedGameDetailsComponent } from '@bfg-engine/ui/components/host-game-details-component';
-import { PlayerGameDetailsComponent } from '@bfg-engine/ui/components/player-game-details-component';
-import { Container, ObserverP2pGameDetailsComponent, Stack, Typography } from '@bfg-engine';
-import { BfgGameScreenFrame } from '@bfg-engine/ui/components/bfg-game-screen-frame';
+import { Container, Stack, Typography } from '@bfg-engine';
 import { useBfgGameRoomForContextRole } from '@bfg-engine/hooks/p2p/game/use-bfg-game-room';
+import { PlayerGameDetailsPage } from '~/site-pages/player-game-details-page';
+import { HostedGameDetailsPage } from '~/site-pages/host-game-details-page';
+import { ObserverGameDetailsPage } from '~/site-pages/observer-game-details-page';
 
 
 const paramsSchema = z.object({
@@ -16,7 +15,6 @@ const paramsSchema = z.object({
 })
 
 const GameDetailsRoute = () => {
-  // const { role, tableId } = Route.useParams()
   
   const bfgGameRoom = useBfgGameRoomForContextRole();
 
@@ -39,69 +37,78 @@ const GameDetailsRoute = () => {
     return <div>Public game details not found</div>;
   }
 
-  const { gameTable, gameActions, gameMetadata, allPlayerProfiles } = publicGameDetails;
+  // const { gameTable, gameActions, gameMetadata, allPlayerProfiles } = publicGameDetails;
+  // const { gameTable, gameActions, gameMetadata, allPlayerProfiles } = playerGameDetails;
 
-  const activeTabId: GameTabId = '/games/$role/$tableId/game-details';
+  // const activeTabId: GameTabId = '/games/$role/$tableId/game-details';
 
-  if (!gameTable) {
-    return <div>Game table not found: {bfgGameRoom.gameTableId}</div>;
-  }
+  // console.log('GameDetailsRoute - gameTable:', 'publicGameDetails:', publicGameDetails);
+
+  // if (!gameTable) {
+  //   console.error('GameDetailsRoute: gameTable is null/undefined', { gameTable, publicGameDetails, bfgGameRoom });
+  //   return <div>Game table not found: {bfgGameRoom.gameTableId}</div>;
+  // }
 
   if (!allowedRoles.includes(accessRole)) {
     return <div>You are not allowed to access this game table as a {accessRole}</div>;
   }
 
-  const gameTabItems = getGameTabItems(accessRole);
-  const tabsConfig = {
-    tabItems: gameTabItems,
-    activeTabId: activeTabId,
-    onTabClicked: () => { console.log('onTabClicked not implemented'); }
-  };
+  // const gameTabItems = getGameTabItems(accessRole);
+  // const tabsConfig = {
+  //   tabItems: gameTabItems,
+  //   activeTabId: activeTabId,
+  //   onTabClicked: () => { console.log('onTabClicked not implemented'); }
+  // };
 
-  const getGameScreen = () => {
+  // const getGameScreen = () => {
+    
     if (accessRole === 'host') {
+      
       return (
-        <HostedGameDetailsComponent
-          gameTable={gameTable}
-          gameActions={gameActions}
+        <HostedGameDetailsPage
+          {...bfgGameRoom}
         />
       )
     }
+
     if (accessRole === 'play') {
+      
       return (
-        <PlayerGameDetailsComponent />
+        <PlayerGameDetailsPage
+          {...bfgGameRoom}
+        />
       )
     }
     if (accessRole === 'watch') {
       return (
-        <ObserverP2pGameDetailsComponent
-          {...publicGameDetails}
+        <ObserverGameDetailsPage
+          {...bfgGameRoom}
         />
       )
     }
 
     throw new Error(`Invalid game table access role: ${accessRole}`);
-  }
+  // }
 
-  const gameScreen = getGameScreen();
+  // const gameScreen = getGameScreen();
 
-  const latestGameAction = gameActions[gameActions.length - 1];
-  const latestGameSpecificState = latestGameAction ?
-    gameMetadata.encoders.hostGameStateEncoder.decode(latestGameAction.nextGameStateStr) :
-    null;
+  // const latestGameAction = gameActions[gameActions.length - 1];
+  // const latestGameSpecificState = latestGameAction ?
+  //   gameMetadata.encoders.hostGameStateEncoder.decode(latestGameAction.nextGameStateStr) :
+  //   null;
 
-  return (
-    <BfgGameScreenFrame
-      tabsConfig={tabsConfig}
-      gameMetadata={gameMetadata}
-      gameTable={gameTable}
-      allPlayerProfiles={allPlayerProfiles}
-      gameState={latestGameSpecificState}
-      gameActions={gameActions}
-    >
-      {gameScreen}
-    </BfgGameScreenFrame>
-  )
+  // return (
+  //   <BfgGameScreenFrame
+  //     tabsConfig={tabsConfig}
+  //     gameMetadata={gameMetadata}
+  //     gameTable={gameTable}
+  //     allPlayerProfiles={allPlayerProfiles}
+  //     gameState={latestGameSpecificState}
+  //     gameActions={gameActions}
+  //   >
+  //     {gameScreen}
+  //   </BfgGameScreenFrame>
+  // )
 }
 
 

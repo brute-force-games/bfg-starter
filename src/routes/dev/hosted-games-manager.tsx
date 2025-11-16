@@ -1,13 +1,13 @@
+import { useState } from 'react';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useHostedGames } from '@bfg-engine/hooks/stores/use-hosted-games-store';
-import { deleteHostedGame } from '@bfg-engine/tb-store/hosted-games-store';
 import { Table, TableColumn } from '@bfg-engine/ui/bfg-ui/components/Table';
 import { Card } from '@bfg-engine/ui/bfg-ui/components/Card';
 import { Typography } from '@bfg-engine/ui/bfg-ui/components/Typography';
 import { Button } from '@bfg-engine/ui/bfg-ui/components/Button';
 import { GameTable } from '@bfg-engine/models/game-table/game-table';
-import { GameTableId } from '@bfg-engine/models/types/bfg-branded-ids';
-import { useState } from 'react';
+import { type BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-uuids';
+import { useHostedGames } from '../../../modules/bfg-engine/src/hooks/stores/use-hosted-games-store';
+
 
 const formatTimestamp = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -33,10 +33,11 @@ const HostedGamesManagerPage = () => {
   const hostedGames = useHostedGames();
   const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
 
-  const handleDelete = (gameId: GameTableId) => {
+  const handleDelete = (gameId: BfgGameTableId) => {
     if (window.confirm('Are you sure you want to delete this game? This action cannot be undone.')) {
       setDeletingIds(prev => new Set(prev).add(gameId));
-      const success = deleteHostedGame(gameId);
+      // const success = deleteHostedGame(gameId);
+      const success = false;
       if (!success) {
         alert('Failed to delete game');
       }
@@ -88,6 +89,17 @@ const HostedGamesManagerPage = () => {
       ),
     },
     {
+      key: 'id',
+      label: 'Game Table ID',
+      sortable: true,
+      width: '200px',
+      render: (id: string) => (
+        <Typography variant="body2" style={{ fontFamily: 'monospace', fontSize: '12px' }}>
+          {id}
+        </Typography>
+      ),
+    },
+    {
       key: 'createdAt',
       label: 'Time Created',
       sortable: true,
@@ -136,7 +148,7 @@ const HostedGamesManagerPage = () => {
           variant="contained"
           color="error"
           size="small"
-          onClick={() => handleDelete(id as GameTableId)}
+          onClick={() => handleDelete(id as BfgGameTableId)}
           disabled={deletingIds.has(id)}
           style={{ minWidth: '80px' }}
         >

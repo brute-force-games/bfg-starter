@@ -1,11 +1,11 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { useHostedGames } from '@bfg-engine/hooks/stores/use-hosted-games-store';
 import { useAppSettings } from '@bfg-engine/hooks/stores/use-my-app-settings-store';
 import { useUserGameSettings } from '@bfg-engine/hooks/stores/use-user-game-settings-store';
 import { useUserGameTableSettings } from '@bfg-engine/hooks/stores/use-user-game-table-settings-store';
-import { useGameRegistry } from '@bfg-engine/hooks/games-registry/games-registry';
+import { useGameRegistry } from '@bfg-engine/hooks/games-registry/games-registry-hook';
 import { BfgSupportedGameTitle } from '@bfg-engine/models/game-box-definition';
-import { GameTableId } from '@bfg-engine/models/types/bfg-branded-ids';
+import { type BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-uuids';
+import { useHostedGames } from '../../../modules/bfg-engine/src/hooks/stores/use-hosted-games-store';
 
 interface SettingsRowProps {
   label: string;
@@ -153,7 +153,7 @@ const GameSettingsView = ({ gameTitle }: GameSettingsViewProps) => {
 };
 
 interface GameTableSettingsViewProps {
-  gameTableId: GameTableId;
+  gameTableId: BfgGameTableId;
   gameTitle: BfgSupportedGameTitle;
   tableName: string | null;
 }
