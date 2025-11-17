@@ -6,8 +6,8 @@ import { Typography } from '@bfg-engine/ui/bfg-ui/components/Typography';
 import { Button } from '@bfg-engine/ui/bfg-ui/components/Button';
 import { GameTable } from '@bfg-engine/models/game-table/game-table';
 import { type BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-uuids';
-import { useHostedGames } from '../../../modules/bfg-engine/src/hooks/stores/use-hosted-games-store';
-
+// import { useHostedGames } from '../../../modules/bfg-engine/src/hooks/stores/use-hosted-games-store';
+import { useHostedGames } from '../../../modules/bfg-engine/src/hooks/stores/hosted-games-store';
 
 const formatTimestamp = (timestamp: number): string => {
   const date = new Date(timestamp);

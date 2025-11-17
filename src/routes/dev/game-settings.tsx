@@ -5,7 +5,8 @@ import { useUserGameTableSettings } from '@bfg-engine/hooks/stores/use-user-game
 import { useGameRegistry } from '@bfg-engine/hooks/games-registry/games-registry-hook';
 import { BfgSupportedGameTitle } from '@bfg-engine/models/game-box-definition';
 import { type BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-uuids';
-import { useHostedGames } from '../../../modules/bfg-engine/src/hooks/stores/use-hosted-games-store';
+import { useHostedGames } from '../../../modules/bfg-engine/src/hooks/stores/hosted-games-store';
+// import { useHostedGames } from '../../../modules/bfg-engine/src/hooks/stores/use-hosted-games-store';
 
 interface SettingsRowProps {
   label: string;

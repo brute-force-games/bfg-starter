@@ -1,17 +1,17 @@
 import { z } from 'zod';
 import { createFileRoute } from '@tanstack/react-router'
-import { BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-ids';
 import { GameTableAccessRoleSchema } from '@bfg-engine/models/game-roles';
 import { Container, Stack, Typography } from '@bfg-engine';
 import { useBfgGameRoomForContextRole } from '@bfg-engine/hooks/p2p/game/use-bfg-game-room';
 import { PlayerGameDetailsPage } from '~/site-pages/player-game-details-page';
 import { HostedGameDetailsPage } from '~/site-pages/host-game-details-page';
 import { ObserverGameDetailsPage } from '~/site-pages/observer-game-details-page';
+import { BfgGameTableIdToolbox } from '@bfg-engine/models/types/bfg-branded-uuids';
 
 
 const paramsSchema = z.object({
   role: GameTableAccessRoleSchema,
-  tableId: BfgGameTableId.idSchema,
+  tableId: BfgGameTableIdToolbox.idSchema,
 })
 
 const GameDetailsRoute = () => {
