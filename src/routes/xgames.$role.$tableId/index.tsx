@@ -39,33 +39,34 @@ const GamesRoleAndTableIdPage = () => {
     );
   }
   
-  const { accessRole } = p2pGameRoom;
+  // const { accessRole } = p2pGameRoom;
+  const { role, gameRoom } = p2pGameRoom;
 
-  if (accessRole === 'host') {
+  if (role === 'host') {
     return (
       <HostGamePlayerViewPage
-        p2pGameRoom={p2pGameRoom}
+        p2pGameRoom={gameRoom}
       />
     )  
   }
 
-  if (accessRole === 'play') {
+  if (role === 'play') {
     return (
       <PlayerGamePage
-        {...p2pGameRoom}
+        {...gameRoom}
       />
     )
   }
 
-  if (accessRole === 'watch') {
+  if (role === 'watch') {
     return (
       <ObserverGamePage 
-        {...p2pGameRoom}
+        {...gameRoom}
       />
     )
   }
 
-  return <div>You can not access this game table as a {accessRole}</div>;
+  return <div>You can not access this game table as a {role}</div>;
 }
 
 

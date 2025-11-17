@@ -1,33 +1,39 @@
 import { PlayerP2pGameComponent } from "@bfg-engine";
 import { BfgGameScreenFrame } from "@bfg-engine/ui/components/bfg-game-screen-frame";
-import { GameTabId, getGameTabItems } from "~/routes/games.$role.$tableId/-components";
-import { IBfgGameRoomForPlayer } from "@bfg-engine/hooks/p2p/game/p2p-game-types";
-import type { BfgGameActionByPlayer, BfgGameActionByHost } from "../../modules/bfg-engine/src/game-metadata/metadata-types/game-action-types";
-import type { BfgGameStateForHost, BfgGameStateForPlayer, BfgGameStateForWatcher } from "../../modules/bfg-engine/src/game-metadata/metadata-types/game-state-types";
+import { GameTabId, getGameTabItems } from "~/routes/xgames.$role.$tableId/-components";
+import { IBfgGameTableForPlayer } from "@bfg-engine/hooks/p2p/game/p2p-game-types";
+// import type { BfgGameActionByPlayer, BfgGameActionByHost } from "../../modules/bfg-engine/src/game-metadata/metadata-types/game-action-types";
+// import type { BfgGameStateForHost, BfgGameStateForPlayer, BfgGameStateForWatcher } from "../../modules/bfg-engine/src/game-metadata/metadata-types/game-state-types";
+// import { convertPlayerEventToBoardEvent, convertWatcherEventToBoardEvent } from "../../modules/bfg-engine/src/models/game-table/game-table-event-converter";
 
 
 // interface PlayerGamePageProps {
-//   p2pGameRoom: IBfgGameRoomForPlayer;
+//   p2pGameRoom: IBfgGameTableForPlayer;
 // }
 
-export const PlayerGamePage = <
-  GSH extends BfgGameStateForHost,
-  GSP extends BfgGameStateForPlayer,
-  GSW extends BfgGameStateForWatcher,
-  PGA extends BfgGameActionByPlayer,
-  HGA extends BfgGameActionByHost,
-> (props: IBfgGameRoomForPlayer<GSH, GSP, GSW, PGA, HGA>) => {
+// export const PlayerGamePage = <
+//   GSH extends BfgGameStateForHost,
+//   GSP extends BfgGameStateForPlayer,
+//   GSW extends BfgGameStateForWatcher,
+//   PGA extends BfgGameActionByPlayer,
+//   HGA extends BfgGameActionByHost,
+// > (props: IBfgGameRoomForPlayer<GSH, GSP, GSW, PGA, HGA>) => {
+export const PlayerGamePage = (props: IBfgGameTableForPlayer) => {
 
   const { playerGameDetails } = props;
 
-  const { gameTable, gameActions, gameMetadata, allPlayerProfiles } = playerGameDetails;
+  const { gameRoom , watcherGameEvents, playerGameEvents, gameMetadata, allPlayerProfiles } = playerGameDetails;
 
-  const latestGameSpecificStateStr = gameActions.length > 0 ? 
-    gameActions[gameActions.length - 1].nextGameStateStr :
-    null;
-  const latestGameSpecificState = latestGameSpecificStateStr ?
-    gameMetadata.encoders.publicGameStateEncoder.decode(latestGameSpecificStateStr) :
-    null;
+  // const watcherBoardEvents = watcherGameEvents.map(event => 
+  //   convertWatcherEventToBoardEvent(event, gameMetadata)
+  // );
+
+  // const playerBoardEvents = playerGameEvents.map(event => 
+  //   convertPlayerEventToBoardEvent(event, gameMetadata)
+  // );
+
+  const latestGameSpecificState = playerGameEvents[playerGameEvents.length - 1].nextGamePlayerState;
+  // const boardEvents = [...watcherBoardEvents, ...playerBoardEvents];
 
   // if (!latestGameSpecificState) {
   //   return (
@@ -52,10 +58,10 @@ export const PlayerGamePage = <
     <BfgGameScreenFrame
       tabsConfig={tabsConfig}
       gameMetadata={gameMetadata}
-      gameTable={gameTable}
+      gameRoom={gameRoom}
       allPlayerProfiles={allPlayerProfiles}
       gameState={latestGameSpecificState}
-      gameActions={gameActions}
+      boardEvents={watcherGameEvents}
     >
       <PlayerP2pGameComponent
         {...playerGameDetails}

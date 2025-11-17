@@ -1,33 +1,42 @@
 import { useState } from "react"
 import { GameActionHistoryComponent } from "@bfg-engine/ui/components/game-action-history-component"
-import { IBfgGameRoomForHost } from "@bfg-engine/hooks/p2p/game/p2p-game-types"
 import { BfgGameScreenFrame } from "@bfg-engine/ui/components/bfg-game-screen-frame"
 import { Box, Paper, Stack, Tabs, Tab, Settings, TabPanel, Typography } from "@bfg-engine"
-import { GameTabId, getGameTabItems } from "~/routes/games.$role.$tableId/-components"
+import { GameTabId, getGameTabItems } from "~/routes/xgames.$role.$tableId/-components"
 import { PrettyJsonObject } from "@bfg-engine/ui/bfg-ui/components/PrettyJsonObject/PrettyJsonObject"
 import { Gamepad, History } from "@bfg-engine/ui/bfg-ui/icons"
+import { IBfgGameTableForHost } from "@bfg-engine/hooks/p2p/game/p2p-game-types"
+import { convertHostEventToBoardEvent } from "../../modules/bfg-engine/src/models/game-table/game-table-event-converter"
 
 // interface IHostedGameDetailsComponentProps {
-//   gameTable: GameTable
-//   gameActions: DbGameTableAction[]
+//   gameRoom: gameRoom
+//   gameActions: DbgameRoomAction[]
 // }
 
-export const HostedGameDetailsPage = (props: IBfgGameRoomForHost) => {
+export const HostedGameDetailsPage = (props: IBfgGameTableForHost) => {
   
-  const { hostGameDetails, p2pDetails, accessRole } = props;
-  const { gameMetadata, gameTable, gameActions } = hostGameDetails;
+  // const { hostGameDetails, p2pDetails, accessRole } = props;
+  const { hostGameDetails, publicGameDetails, p2pDetails, accessRole, gameMetadata } = props;
+  
+  if (!hostGameDetails || !publicGameDetails || !p2pDetails || !gameMetadata) {
+    return <div>Game details not available</div>;
+  }
+  
+  // const { gameMetadata, gameRoom, watcherGameEvents } = hostGameDetails;
+  // const { gameActions } = hostGameDetails;
+  const { gameRoom, watcherGameEvents } = publicGameDetails;
   const { allPlayerProfiles } = p2pDetails;
   const [activeTab, setActiveTab] = useState(0);
 
   // const gameRegistry = useGameRegistry();
-  // const gameMetadata = gameRegistry.getGameMetadata(gameTable.gameTitle);
+  // const gameMetadata = gameRegistry.getGameMetadata(gameRoom.gameTitle);
 
-  const latestGameSpecificStateStr = gameActions.length > 0 ? 
-    gameActions[gameActions.length - 1].nextGameStateStr :
-    null;
-  const latestGameSpecificState = latestGameSpecificStateStr ?
-    gameMetadata.encoders.hostGameStateEncoder.decode(latestGameSpecificStateStr) :
-    null;
+  // const latestGameSpecificStateStr = gameActions.length > 0 ? 
+  //   gameActions[gameActions.length - 1].nextGameStateStr :
+  //   null;
+  // const latestGameSpecificState = latestGameSpecificStateStr ?
+  //   gameMetadata.encoders.hostGameStateEncoder.decode(latestGameSpecificStateStr) :
+  //   null;
 
   // const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
   //   setActiveTab(newValue);
@@ -47,15 +56,23 @@ export const HostedGameDetailsPage = (props: IBfgGameRoomForHost) => {
     setActiveTab(newValue);
   };
 
+  const latestHostGameEvent = hostGameDetails.latestHostGameEvent;
+  const latestHostGameState = latestHostGameEvent.nextGameHostState;
+
+  // Convert host events to board events format for GameActionHistoryComponent
+  const gameActions = hostGameDetails.hostGameEvents.map(event => 
+    convertHostEventToBoardEvent(event, gameMetadata)
+  );
+
 
   return (
     <BfgGameScreenFrame
       tabsConfig={tabsConfig}
       gameMetadata={gameMetadata}
-      gameTable={gameTable}
+      gameRoom={gameRoom}
       allPlayerProfiles={allPlayerProfiles}
-      gameState={latestGameSpecificState}
-      gameActions={gameActions}
+      gameState={latestHostGameState}
+      boardEvents={watcherGameEvents}
     >
       <Box>
         <Paper elevation={2}>
@@ -76,7 +93,7 @@ export const HostedGameDetailsPage = (props: IBfgGameRoomForHost) => {
                     Game Title:
                   </Typography>
                   <Typography variant="body1" component="span" style={{ marginLeft: '8px' }}>
-                    {gameTable?.gameTitle}
+                    {gameRoom?.gameTitle}
                   </Typography>
                 </Box>
                 <Box>
@@ -84,7 +101,7 @@ export const HostedGameDetailsPage = (props: IBfgGameRoomForHost) => {
                     Game ID:
                   </Typography>
                   <Typography variant="body2" component="span" style={{ marginLeft: '8px', fontFamily: 'monospace' }}>
-                    {gameTable?.id}
+                    {gameRoom?.id}
                   </Typography>
                 </Box>
                 <Box>
@@ -92,7 +109,7 @@ export const HostedGameDetailsPage = (props: IBfgGameRoomForHost) => {
                     Status:
                   </Typography>
                   <Typography variant="body1" component="span" style={{ marginLeft: '8px' }}>
-                    {gameTable?.currentStatusDescription}
+                    {gameRoom?.latestRoomStatusDescription}
                   </Typography>
                 </Box>
                 <Box>
@@ -100,7 +117,7 @@ export const HostedGameDetailsPage = (props: IBfgGameRoomForHost) => {
                     Phase:
                   </Typography>
                   <Typography variant="body1" component="span" style={{ marginLeft: '8px' }}>
-                    {gameTable?.tablePhase}
+                    {gameRoom?.latestRoomPhase}
                   </Typography>
                 </Box>
                 <Box>
@@ -108,7 +125,7 @@ export const HostedGameDetailsPage = (props: IBfgGameRoomForHost) => {
                     Created:
                   </Typography>
                   <Typography variant="body1" component="span" style={{ marginLeft: '8px' }}>
-                    {gameTable ? new Date(gameTable.createdAt).toLocaleString() : ''}
+                    {gameRoom ? new Date(gameRoom.createdAt).toLocaleString() : ''}
                   </Typography>
                 </Box>
               </Stack>
@@ -118,7 +135,7 @@ export const HostedGameDetailsPage = (props: IBfgGameRoomForHost) => {
                   Raw Game Data
                 </Typography>
                 <PrettyJsonObject>
-                  {gameTable}
+                  {gameRoom}
                 </PrettyJsonObject>
               </Box>
             </Stack>
@@ -136,7 +153,7 @@ export const HostedGameDetailsPage = (props: IBfgGameRoomForHost) => {
           <TabPanel value={activeTab} index={2}>
             <Box>
               <PrettyJsonObject>
-                {latestGameSpecificState}
+                {latestHostGameState}
               </PrettyJsonObject>
             </Box>
           </TabPanel>

@@ -32,7 +32,7 @@ const JoinLobbyIndexRoute = () => {
       return;
     }
 
-    const isPlayerAlreadySeated = lobbyState.playerPool.includes(myPlayerProfile.id);
+    const isPlayerAlreadySeated = lobbyState.playerPool.some(p => p.id === myPlayerProfile.id);
     const currentPlayerCount = lobbyState.playerPool.length;
     const maxPlayers = lobbyState.maxNumPlayers;
 

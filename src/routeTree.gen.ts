@@ -26,10 +26,10 @@ import { Route as JoinLobbyLobbyIdP2pDetailsRouteImport } from './routes/join-lo
 import { Route as HostedLobbyLobbyIdPlayerRouteImport } from './routes/hosted-lobby.$lobbyId/player'
 import { Route as HostedLobbyLobbyIdP2pDetailsRouteImport } from './routes/hosted-lobby.$lobbyId/p2p-details'
 import { Route as GamesRoleTableIdRouteImport } from './routes/games.$role.$tableId'
-import { Route as GamesRoleTableIdIndexRouteImport } from './routes/games.$role.$tableId/index'
-import { Route as GamesRoleTableIdP2pDetailsRouteImport } from './routes/games.$role.$tableId/p2p-details'
-import { Route as GamesRoleTableIdGameDetailsRouteImport } from './routes/games.$role.$tableId/game-details'
-import { Route as GamesRoleTableIdAdminRouteImport } from './routes/games.$role.$tableId/admin'
+import { Route as GamesRoleTableIdIndexRouteImport } from './routes/xgames.$role.$tableId/index'
+import { Route as GamesRoleTableIdP2pDetailsRouteImport } from './routes/xgames.$role.$tableId/p2p-details'
+import { Route as GamesRoleTableIdGameDetailsRouteImport } from './routes/xgames.$role.$tableId/game-details'
+import { Route as GamesRoleTableIdAdminRouteImport } from './routes/xgames.$role.$tableId/admin'
 
 const NewLobbyRoute = NewLobbyRouteImport.update({
   id: '/new-lobby',

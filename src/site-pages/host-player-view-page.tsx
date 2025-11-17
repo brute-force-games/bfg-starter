@@ -1,18 +1,18 @@
-import { GameTabId, getGameTabItems } from "~/routes/games.$role.$tableId/-components";
+import { GameTabId, getGameTabItems } from "~/routes/xgames.$role.$tableId/-components";
 import { PlayerGameView } from "@bfg-engine/ui/components/player-game-view";
 import { BfgGameScreenFrame } from "@bfg-engine/ui/components/bfg-game-screen-frame";
-import { IBfgGameRoomForHost } from "@bfg-engine/hooks/p2p/game/p2p-game-types";
+import { IBfgGameTableForHost } from "@bfg-engine/hooks/p2p/game/p2p-game-types";
 
 
 interface HostGamePlayerViewPageProps {
-  p2pGameRoom: IBfgGameRoomForHost;
+  p2pGameRoom: IBfgGameTableForHost;
 }
 
 export const HostGamePlayerViewPage = ({ p2pGameRoom }: HostGamePlayerViewPageProps) => {
 
-  const { publicGameDetails, playerGameDetails } = p2pGameRoom;
+  const { publicGameDetails, playerGameDetails, hostGameDetails, gameMetadata } = p2pGameRoom;
 
-  if (!publicGameDetails || !playerGameDetails) {
+  if (!publicGameDetails || !playerGameDetails || !hostGameDetails || !gameMetadata) {
     return (
       <div className="p-6">
         <h1 className="text-3xl font-bold mb-6">Game Details Not Available</h1>
@@ -21,16 +21,16 @@ export const HostGamePlayerViewPage = ({ p2pGameRoom }: HostGamePlayerViewPagePr
     )
   }
 
-  const { allPlayerProfiles } = publicGameDetails;
+  const { allPlayerProfiles, gameRoom, watcherGameEvents } = publicGameDetails;
 
-  const {
-    gameTable,
-    gameActions,
-    gameMetadata,
-  } = publicGameDetails;
+  // const {
+  //   gameTable,
+  //   gameActions,
+  //   gameMetadata,
+  // } = publicGameDetails;
 
-  if (!gameTable) {
-    return <div>Game table not found</div>;
+  if (!gameRoom) {
+    return <div>Game room not found</div>;
   }
 
   if (p2pGameRoom.maxAllowedAccessRole !== 'host') {
@@ -46,8 +46,10 @@ export const HostGamePlayerViewPage = ({ p2pGameRoom }: HostGamePlayerViewPagePr
   //   )
   // }
 
-  const latestGameSpecificStateStr = gameActions[gameActions.length - 1].nextGameStateStr;
-  const latestHostGameState = gameMetadata.encoders.hostGameStateEncoder.decode(latestGameSpecificStateStr);
+  // const latestGameSpecificStateStr = gameActions[gameActions.length - 1].nextGameStateStr;
+  // const latestHostGameState = gameMetadata.encoders.hostGameStateEncoder.decode(latestGameSpecificStateStr);
+  const latestHostGameEvent = hostGameDetails.latestHostGameEvent;
+  const latestHostGameState = latestHostGameEvent.nextGameHostState;
 
   const activeTabId: GameTabId = '/games/$role/$tableId';
 
@@ -62,10 +64,10 @@ export const HostGamePlayerViewPage = ({ p2pGameRoom }: HostGamePlayerViewPagePr
     <BfgGameScreenFrame
       tabsConfig={tabsConfig}
       gameMetadata={gameMetadata}
-      gameTable={gameTable}
+      gameRoom={gameRoom}
       allPlayerProfiles={allPlayerProfiles}
       gameState={latestHostGameState}
-      gameActions={gameActions}
+      boardEvents={watcherGameEvents}
     >
       <PlayerGameView
         {...playerGameDetails}

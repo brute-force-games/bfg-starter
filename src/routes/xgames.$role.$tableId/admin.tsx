@@ -45,14 +45,15 @@ const HostGameAdminRoute = () => {
     );
   }
   
-  const { accessRole } = p2pGameRoom;
-  if (accessRole !== 'host') {
+  // const { accessRole } = p2pGameRoom;
+  const { role, gameRoom } = p2pGameRoom;
+  if (role !== 'host') {
     return <div>You are not the host of this game table</div>;
   }
 
   return (
     <HostAdminViewPage
-      {...p2pGameRoom}
+      {...gameRoom}
     />
   )
 }

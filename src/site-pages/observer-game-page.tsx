@@ -1,14 +1,10 @@
 import { Container, ObserverP2pGameComponent, Stack, Typography } from "@bfg-engine";
-import { IBfgGameRoomForObserver } from "@bfg-engine/hooks/p2p/game/p2p-game-types";
 import { BfgGameScreenFrame } from "@bfg-engine/ui/components/bfg-game-screen-frame";
-import { GameTabId, getGameTabItems } from "~/routes/games.$role.$tableId/-components";
+import { GameTabId, getGameTabItems } from "~/routes/xgames.$role.$tableId/-components";
+import type { IBfgGameTableForObserver } from "../../modules/bfg-engine/src/hooks/p2p/game/p2p-game-types";
 
 
-// interface ObserverGamePageProps {
-//   p2pGameRoom: IBfgGameRoomForObserver;
-// }
-
-export const ObserverGamePage = (props: IBfgGameRoomForObserver) => {
+export const ObserverGamePage = (props: IBfgGameTableForObserver) => {
 
   const { publicGameDetails } = props;
 
@@ -25,14 +21,20 @@ export const ObserverGamePage = (props: IBfgGameRoomForObserver) => {
     )
   }
 
-  const { gameTable, gameActions, gameMetadata, allPlayerProfiles } = publicGameDetails;
+  const { gameRoom, latestWatcherGameEvent, watcherGameEvents, gameMetadata, allPlayerProfiles } = publicGameDetails;
 
-  const latestGameSpecificStateStr = gameActions.length > 0 ? 
-    gameActions[gameActions.length - 1].nextGameStateStr :
-    null;
-  const latestGameSpecificState = latestGameSpecificStateStr ?
-    gameMetadata.encoders.publicGameStateEncoder.decode(latestGameSpecificStateStr) :
-    null;
+  // const latestGameSpecificStateStr = gameActions.length > 0 ? 
+  //   gameActions[gameActions.length - 1].nextGameStateStr :
+  //   null;
+  // const latestGameSpecificState = latestGameSpecificStateStr ?
+  //   gameMetadata.encoders.publicGameStateEncoder.decode(latestGameSpecificStateStr) :
+  //   null;
+  const latestGameSpecificState = latestWatcherGameEvent.nextGameWatcherState;
+
+  // Convert watcher events to board events format
+  // const boardEvents = watcherGameEvents.map(event => 
+  //   convertWatcherEventToBoardEvent(event, gameMetadata)
+  // );
 
   const activeTabId: GameTabId = '/games/$role/$tableId';
 
@@ -47,10 +49,11 @@ export const ObserverGamePage = (props: IBfgGameRoomForObserver) => {
     <BfgGameScreenFrame
       tabsConfig={tabsConfig}
       gameMetadata={gameMetadata}
-      gameTable={gameTable}
+      gameRoom={gameRoom}
       allPlayerProfiles={allPlayerProfiles}
       gameState={latestGameSpecificState}
-      gameActions={gameActions}
+      // latestWatcherGameEvent={latestWatcherGameEvent}
+      boardEvents={watcherGameEvents}
     >
       <ObserverP2pGameComponent
         {...publicGameDetails}

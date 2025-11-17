@@ -226,6 +226,18 @@ import { useMyHook } from '@/src/hooks/useMyHook';
 import { MyType } from '@/src/types/MyType';
 ```
 
+
+## Refactoring
+
+### Deleting lines of code and files
+- When making code changes, DO NOT DELETE CODE. Instead, comment out code that is being removed. It is OK to add line breaks to make commenting out part of a line possible.
+- DO NOT DELETE A FILE - instead, comment it out and leave it to the user to delete it.
+- Reminder: Only use line level comment styles. DO NOT COMMENT OUT IN BLOCKS ACROSS MULTIPLE LINES.
+- Do not delete ANY lines of code. Not even code that is already commented out!!!
+
+### Type consolidation
+- When making changes, keep an eye on types with similar structures. Note to the user that they are similar and might be able to re-used. Prefer to use transformation and adapters to go from a base type to a type used for-purpose.
+
 ## Testing
 
 ### Test Structure

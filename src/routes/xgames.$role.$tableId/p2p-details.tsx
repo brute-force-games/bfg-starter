@@ -26,7 +26,9 @@ const GameP2pDetailsRoute = () => {
     )
   }
 
-  const { accessRole, p2pDetails } = bfgGameRoom;
+  // const { accessRole, p2pDetails } = bfgGameRoom;
+  const { gameRoom } = bfgGameRoom;
+  const { accessRole, p2pDetails } = gameRoom;
 
   // const refreshConnection = () => {
   //   console.error('refreshConnection not implemented');

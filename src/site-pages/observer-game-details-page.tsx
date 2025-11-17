@@ -1,5 +1,5 @@
 import { Container, Stack, Typography } from "@bfg-engine";
-import { IBfgGameRoomForObserver } from "@bfg-engine/hooks/p2p/game/p2p-game-types";
+import { type IBfgGameTableForObserver } from "@bfg-engine/hooks/p2p/game/p2p-game-types";
 import { ContentLoading } from "@bfg-engine/ui/bfg-ui/components/ContentLoading/ContentLoading";
 
 
@@ -11,7 +11,7 @@ import { ContentLoading } from "@bfg-engine/ui/bfg-ui/components/ContentLoading/
 // }
 
 // export const ObserverP2pGameDetailsComponent = ({ BfgGameTableId }: IObserverP2pGameDetailsComponentProps) => {
-export const ObserverGameDetailsPage = (props: IBfgGameRoomForObserver) => {
+export const ObserverGameDetailsPage = (props: IBfgGameTableForObserver) => {
 
   
   const { publicGameDetails } = props;
@@ -26,15 +26,15 @@ export const ObserverGameDetailsPage = (props: IBfgGameRoomForObserver) => {
     );
   }
 
-  const { gameMetadata, gameTable, gameActions } = publicGameDetails;
-  if (!gameMetadata || !gameTable || !gameActions) {
+  const { gameMetadata, gameRoom, watcherGameEvents } = publicGameDetails;
+  if (!gameMetadata || !gameRoom || !watcherGameEvents || watcherGameEvents.length === 0) {
     return (
       <Container style={{ padding: '24px' }}>
         <Stack spacing={3}>
           <Typography variant="h3">Loading Observer Game Details...</Typography>
           { !gameMetadata && <Typography variant="body1" color="secondary">Waiting for game metadata...</Typography> }
-          { !gameTable && <Typography variant="body1" color="secondary">Waiting for game table...</Typography> }
-          { !gameActions && <Typography variant="body1" color="secondary">Waiting for game actions...</Typography> }
+          { !gameRoom && <Typography variant="body1" color="secondary">Waiting for game room...</Typography> }
+          { (!watcherGameEvents || watcherGameEvents.length === 0) && <Typography variant="body1" color="secondary">Waiting for game events...</Typography> }
         </Stack>
       </Container>
     );
@@ -61,7 +61,7 @@ export const ObserverGameDetailsPage = (props: IBfgGameRoomForObserver) => {
   // }
   // const { gameTable, gameActions } = p2p;
 
-  if (!gameTable || !gameActions) {
+  if (!gameRoom || !watcherGameEvents || watcherGameEvents.length === 0) {
     return (
       <ContentLoading
         message="Loading Game xDetails..."
@@ -73,7 +73,7 @@ export const ObserverGameDetailsPage = (props: IBfgGameRoomForObserver) => {
   //   throw new Error('Game Table ID does not match: ' + gameTable.id + ' !== ' + BfgGameTableId);
   // }
   
-  const latestAction = gameActions[gameActions.length - 1];
+  const latestAction = watcherGameEvents[watcherGameEvents.length - 1];
   if (!latestAction) {
     return (
       <Container maxWidth={false} style={{ padding: '24px 16px', width: '100%' }}>
@@ -109,7 +109,7 @@ export const ObserverGameDetailsPage = (props: IBfgGameRoomForObserver) => {
       <div style={{ padding: '20px' }}>
         <h2>Game Details</h2>
         <div style={{ marginBottom: '16px' }}>
-          <strong>Game Table ID:</strong> {gameTable.id}
+          <strong>Game Room ID:</strong> {gameRoom.id}
         </div>
         <div style={{ marginBottom: '16px' }}>
           <strong>Game State:</strong>
@@ -120,11 +120,11 @@ export const ObserverGameDetailsPage = (props: IBfgGameRoomForObserver) => {
             overflow: 'auto',
             maxHeight: '400px'
           }}>
-            {JSON.stringify(gameTable, null, 2)}
+            {JSON.stringify(gameRoom, null, 2)}
           </pre>
         </div>
         <div>
-          <strong>Game Actions ({gameActions.length}):</strong>
+          <strong>Game Actions ({watcherGameEvents.length}):</strong>
           <pre style={{ 
             backgroundColor: '#f5f5f5', 
             padding: '12px', 
@@ -132,7 +132,7 @@ export const ObserverGameDetailsPage = (props: IBfgGameRoomForObserver) => {
             overflow: 'auto',
             maxHeight: '400px'
           }}>
-            {JSON.stringify(gameActions, null, 2)}
+            {JSON.stringify(watcherGameEvents, null, 2)}
           </pre>
         </div>
       </div>

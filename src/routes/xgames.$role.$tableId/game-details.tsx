@@ -31,7 +31,9 @@ const GameDetailsRoute = () => {
     )
   }
   
-  const { publicGameDetails, allowedRoles, accessRole } = bfgGameRoom;
+  // const { publicGameDetails, allowedRoles, accessRole } = bfgGameRoom;
+  const { gameRoom } = bfgGameRoom;
+  const { publicGameDetails, allowedRoles, accessRole } = gameRoom;
 
   if (!publicGameDetails) {
     return <div>Public game details not found</div>;
@@ -66,7 +68,7 @@ const GameDetailsRoute = () => {
       
       return (
         <HostedGameDetailsPage
-          {...bfgGameRoom}
+          {...gameRoom}
         />
       )
     }
@@ -75,14 +77,14 @@ const GameDetailsRoute = () => {
       
       return (
         <PlayerGameDetailsPage
-          {...bfgGameRoom}
+          {...gameRoom}
         />
       )
     }
     if (accessRole === 'watch') {
       return (
         <ObserverGameDetailsPage
-          {...bfgGameRoom}
+          {...gameRoom}
         />
       )
     }

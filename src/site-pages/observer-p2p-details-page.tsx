@@ -1,7 +1,7 @@
 import { P2pConnectionComponent } from "@bfg-engine/ui/components/p2p-connection-component"
 // import { BfgGameTabId, BfgPlayerGameBar, PlayerGameTabId } from "~/routes/games.$role.$tableId/-components";
 // import { useObserverP2pGame } from "@bfg-engine/hooks/p2p/game/use-observer-p2p-game";
-import { IBfgGameRoomForObserver } from "@bfg-engine/hooks/p2p/game/p2p-game-types";
+import { IBfgGameTableForObserver } from "@bfg-engine/hooks/p2p/game/p2p-game-types";
 import { BruteForceGamesAppBar } from "@bfg-engine/ui/components/bfg-app-bar/app-bar";
 
   
@@ -9,7 +9,7 @@ import { BruteForceGamesAppBar } from "@bfg-engine/ui/components/bfg-app-bar/app
 //   tableId: BfgGameTableId;
 // }
 
-export const ObserverP2pDetailsPage = (props: IBfgGameRoomForObserver) => {
+export const ObserverP2pDetailsPage = (props: IBfgGameTableForObserver) => {
 
   const { publicGameDetails, p2pDetails } = props;
   if (!publicGameDetails) {
