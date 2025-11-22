@@ -7,6 +7,7 @@ import { BfgHostedLobbyAppBar, HostedLobbyTabId } from './-components';
 
 
 const HostedLobbyIndexRoute = () => {
+  const { autoStart } = Route.useSearch();
 
   const p2pHostedLobby = useP2pHostedLobbyContext();
   const { allPlayerProfiles, lobbyState, lobbyActions, lobbyOptions, setLobbyOptions } = p2pHostedLobby;
@@ -34,6 +35,7 @@ const HostedLobbyIndexRoute = () => {
         lobbyOptions={lobbyOptions}
         setLobbyOptions={setLobbyOptions}
         updateLobbyState={updateLobbyState}
+        autoStart={autoStart ?? false}
         // setLobbyPlayerPool={setLobbyPlayerPool}
       />
     </ProfileGuard>

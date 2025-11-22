@@ -226,6 +226,11 @@ import { useMyHook } from '@/src/hooks/useMyHook';
 import { MyType } from '@/src/types/MyType';
 ```
 
+### Default Values
+- Avoid using `undefined` and behaviors that rely on variables having an `undefined` value. This is a code smell about a path not being considered at implementation time.
+- Use `null` to explicitly show that there is no value present.
+- If a value does not exist (e.g. is undefined), do not create a "reasonable default". Throw an error or return `null` to indicate it is not there. 
+
 
 ## Refactoring
 

@@ -1,6 +1,6 @@
 import { Container, ObserverP2pGameComponent, Stack, Typography } from "@bfg-engine";
 import { BfgGameScreenFrame } from "@bfg-engine/ui/components/bfg-game-screen-frame";
-import { GameTabId, getGameTabItems } from "~/routes/xgames.$role.$tableId/-components";
+import { GameTabId, getGameTabItems } from "~/routes/games/-components";
 import type { IBfgGameTableForObserver } from "../../modules/bfg-engine/src/hooks/p2p/game/p2p-game-types";
 
 
@@ -36,7 +36,7 @@ export const ObserverGamePage = (props: IBfgGameTableForObserver) => {
   //   convertWatcherEventToBoardEvent(event, gameMetadata)
   // );
 
-  const activeTabId: GameTabId = '/games/$role/$tableId';
+  const activeTabId: GameTabId = '/games/watch/$tableId';
 
   const gameTabItems = getGameTabItems('watch');
   const tabsConfig = {

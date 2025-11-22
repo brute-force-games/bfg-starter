@@ -1,20 +1,18 @@
 import { z } from 'zod'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 import { BfgGameTableIdToolbox } from '@bfg-engine/models/types/bfg-branded-uuids'
-import { GameTableAccessRoleSchema } from '@bfg-engine/models/game-roles'
 import { P2pGameRoomContextProvider } from '@bfg-engine/hooks/p2p/game/p2p-game-room-context'
 import { useLatestHostedGameIdentifiers } from '@bfg-engine/tb-store/game-instance-store'
 
 
 const paramsSchema = z.object({
-  role: GameTableAccessRoleSchema,
   tableId: BfgGameTableIdToolbox.idSchema,
 })
 
 
-const GamesParentRoute = () => {
-  const { role, tableId } = Route.useParams()
-  
+const PlayGameParentRoute = () => {
+  const { tableId } = Route.useParams()
+
   const { gameInstanceId, gameTableId, gameRoomId } = useLatestHostedGameIdentifiers(tableId);
   
   return (
@@ -22,7 +20,7 @@ const GamesParentRoute = () => {
       gameInstanceId={gameInstanceId}
       gameTableId={gameTableId}
       gameRoomId={gameRoomId}
-      requestedRole={role}
+      requestedRole="play"
     >
       <Outlet />
     </P2pGameRoomContextProvider>
@@ -30,10 +28,11 @@ const GamesParentRoute = () => {
 }
 
 
-export const Route = createFileRoute('/xgames/$role/$tableId')({
+export const Route = createFileRoute('/games/play/$tableId')({
   params: {
     parse: (params) => paramsSchema.parse(params),
-    stringify: (params) => ({ role: params.role, tableId: params.tableId }),
+    stringify: (params) => ({ tableId: params.tableId }),
   },
-  component: GamesParentRoute,
+  component: PlayGameParentRoute,
 })
+

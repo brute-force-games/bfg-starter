@@ -1,8 +1,8 @@
 import { Container, P2pConnectionComponent, Stack, Typography } from '@bfg-engine';
 import { createFileRoute } from '@tanstack/react-router'
-import { GameTabId, getGameTabItems } from './-components';
+import { GameTabId, getGameTabItems } from '../-components';
 import { BfgStarterNavBar } from '@bfg-engine/ui/components/bfg-nav-bar/bfg-starter-nav-bar';
-import { useP2pGameRoomAsHost } from '@bfg-engine/hooks/p2p/game/use-p2p-game-room-as-host';
+import { useP2pGameRoomAsPlayer } from '@bfg-engine/hooks/p2p/game/use-p2p-game-room-as-player';
 
 
 // const paramsSchema = z.object({
@@ -12,7 +12,7 @@ import { useP2pGameRoomAsHost } from '@bfg-engine/hooks/p2p/game/use-p2p-game-ro
 
 const GameP2pDetailsRoute = () => {
 
-  const p2pGameRoom = useP2pGameRoomAsHost();
+  const p2pGameRoom = useP2pGameRoomAsPlayer();
   if (!p2pGameRoom) {
     return (
       <Container style={{ padding: '24px' }}>
@@ -34,7 +34,7 @@ const GameP2pDetailsRoute = () => {
   //   console.error('refreshConnection not implemented');
   // }
 
-  const activeTabId: GameTabId = '/xgames/$role/$tableId/p2p-details';
+  const activeTabId: GameTabId = '/games/play/$tableId/p2p-details';
 
   const gameTabItems = getGameTabItems(accessRole);
   const tabsConfig = {
@@ -57,7 +57,7 @@ const GameP2pDetailsRoute = () => {
 }
 
 
-export const Route = createFileRoute('/xgames/$role/$tableId/p2p-details')({
+export const Route = createFileRoute('/games/play/$tableId/p2p-details')({
   // params: {
   //   parse: (params) => paramsSchema.parse(params),
   //   stringify: (params) => ({ tableId: params.tableId }),

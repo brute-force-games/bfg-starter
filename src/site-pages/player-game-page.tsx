@@ -1,6 +1,6 @@
 import { PlayerP2pGameComponent } from "@bfg-engine";
 import { BfgGameScreenFrame } from "@bfg-engine/ui/components/bfg-game-screen-frame";
-import { GameTabId, getGameTabItems } from "~/routes/xgames.$role.$tableId/-components";
+import { GameTabId, getGameTabItems } from "~/routes/games/-components";
 import { IBfgGameTableForPlayer } from "@bfg-engine/hooks/p2p/game/p2p-game-types";
 // import type { BfgGameActionByPlayer, BfgGameActionByHost } from "../../modules/bfg-engine/src/game-metadata/metadata-types/game-action-types";
 // import type { BfgGameStateForHost, BfgGameStateForPlayer, BfgGameStateForWatcher } from "../../modules/bfg-engine/src/game-metadata/metadata-types/game-state-types";
@@ -45,7 +45,7 @@ export const PlayerGamePage = (props: IBfgGameTableForPlayer) => {
   //   )
   // }
 
-  const activeTabId: GameTabId = '/games/$role/$tableId';
+  const activeTabId: GameTabId = '/games/play/$tableId';
 
   const gameTabItems = getGameTabItems('play');
   const tabsConfig = {

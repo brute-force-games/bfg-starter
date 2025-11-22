@@ -2,7 +2,7 @@ import { useState } from "react"
 import { GameActionHistoryComponent } from "@bfg-engine/ui/components/game-action-history-component"
 import { BfgGameScreenFrame } from "@bfg-engine/ui/components/bfg-game-screen-frame"
 import { Box, Paper, Stack, Tabs, Tab, Settings, TabPanel, Typography } from "@bfg-engine"
-import { GameTabId, getGameTabItems } from "~/routes/xgames.$role.$tableId/-components"
+import { GameTabId, getGameTabItems } from "~/routes/games/-components"
 import { PrettyJsonObject } from "@bfg-engine/ui/bfg-ui/components/PrettyJsonObject/PrettyJsonObject"
 import { Gamepad, History } from "@bfg-engine/ui/bfg-ui/icons"
 import { IBfgGameTableForHost } from "@bfg-engine/hooks/p2p/game/p2p-game-types"
@@ -41,7 +41,7 @@ export const HostedGameDetailsPage = (props: IBfgGameTableForHost) => {
   // const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
   //   setActiveTab(newValue);
   // };
-  const activeTabId: GameTabId = '/games/$role/$tableId/game-details';
+  const activeTabId: GameTabId = '/games/host/$tableId/game-details';
 
 
 

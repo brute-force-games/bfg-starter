@@ -158,6 +158,12 @@ const HostedGamesManagerPage = () => {
     },
   ];
 
+  const data = hostedGames.map(game => ({
+    id: game.gameRoom.id,
+    createdAt: game.gameRoom.createdAt,
+    lastUpdatedAt: game.gameRoom.lastUpdatedAt,
+  }));
+
   return (
     <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>
       <div style={{ marginBottom: '24px' }}>
@@ -174,7 +180,7 @@ const HostedGamesManagerPage = () => {
           </Typography>
           <Table
             columns={columns}
-            data={hostedGames}
+            data={data}
             defaultSort={{ column: 'createdAt', direction: 'desc' }}
             emptyMessage="No hosted games found. Create a game to see it here."
           />

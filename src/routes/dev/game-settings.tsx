@@ -6,6 +6,7 @@ import { useGameRegistry } from '@bfg-engine/hooks/games-registry/games-registry
 import { BfgSupportedGameTitle } from '@bfg-engine/models/game-box-definition';
 import { type BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-uuids';
 import { useHostedGames } from '../../../modules/bfg-engine/src/hooks/stores/hosted-games-store';
+import { type HydratedLatestGameSnapshot } from '../../../modules/bfg-engine/src/models/internal/game-room-snapshot-from-tb';
 // import { useHostedGames } from '../../../modules/bfg-engine/src/hooks/stores/use-hosted-games-store';
 
 interface SettingsRowProps {
@@ -247,13 +248,14 @@ function GameSettingsDebugPage() {
   const allGameTitles = gameRegistry.getAvailableGameTitles();
 
   // Group tables by game title
-  const tablesByGame = hostedGames.reduce((acc, table) => {
-    if (!acc[table.gameTitle]) {
-      acc[table.gameTitle] = [];
+  const tablesByGame = hostedGames.reduce((acc: Record<BfgSupportedGameTitle, HydratedLatestGameSnapshot[]>, table: HydratedLatestGameSnapshot) => {
+    const gameTitle = table.gameRoom.gameTitle;
+    if (!acc[gameTitle]) {
+      acc[gameTitle] = [];
     }
-    acc[table.gameTitle].push(table);
+    acc[gameTitle].push(table);
     return acc;
-  }, {} as Record<BfgSupportedGameTitle, typeof hostedGames>);
+  }, {} as Record<BfgSupportedGameTitle, HydratedLatestGameSnapshot[]>);
 
   return (
     <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>
@@ -304,12 +306,12 @@ function GameSettingsDebugPage() {
                 <h4 style={{ marginBottom: '16px', color: '#666' }}>
                   Tables for {gameTitle} ({tablesForGame.length})
                 </h4>
-                {tablesForGame.map((gameTable) => (
+                {tablesForGame.map((gameTable: HydratedLatestGameSnapshot) => (
                   <GameTableSettingsView
-                    key={gameTable.id}
-                    gameTableId={gameTable.id}
-                    gameTitle={gameTable.gameTitle}
-                    tableName={gameTable.tableName}
+                    key={gameTable.gameRoom.gameTableId}
+                    gameTableId={gameTable.gameRoom.gameTableId}
+                    gameTitle={gameTable.gameRoom.gameTitle}
+                    tableName={gameTable.gameRoom.tableName}
                   />
                 ))}
               </div>

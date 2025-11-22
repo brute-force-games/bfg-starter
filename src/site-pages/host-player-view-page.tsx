@@ -1,4 +1,4 @@
-import { GameTabId, getGameTabItems } from "~/routes/xgames.$role.$tableId/-components";
+import { GameTabId, getGameTabItems } from "~/routes/games/-components";
 import { PlayerGameView } from "@bfg-engine/ui/components/player-game-view";
 import { BfgGameScreenFrame } from "@bfg-engine/ui/components/bfg-game-screen-frame";
 import { IBfgGameTableForHost } from "@bfg-engine/hooks/p2p/game/p2p-game-types";
@@ -51,7 +51,7 @@ export const HostGamePlayerViewPage = ({ p2pGameRoom }: HostGamePlayerViewPagePr
   const latestHostGameEvent = hostGameDetails.latestHostGameEvent;
   const latestHostGameState = latestHostGameEvent.nextGameHostState;
 
-  const activeTabId: GameTabId = '/games/$role/$tableId';
+  const activeTabId: GameTabId = '/games/host/$tableId';
 
   const gameTabItems = getGameTabItems('host');
   const tabsConfig = {

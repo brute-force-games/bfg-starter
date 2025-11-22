@@ -1,4 +1,4 @@
-import { Environment, EnvSettings } from "./env-types";
+import { Environment, EnvSettings } from "@bfg-engine";
 
 
 // this is declared in vite.config.ts and will be replaced during build

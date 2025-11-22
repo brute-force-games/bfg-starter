@@ -5,7 +5,6 @@ import { Button, Container, Paper, Stack, Typography } from '@bfg-engine';
 
 
 // const paramsSchema = z.object({
-//   role: GameTableAccessRoleSchema,
 //   tableId: BfgGameTableId.idSchema,
 // })
 
@@ -59,10 +58,11 @@ const HostGameAdminRoute = () => {
 }
 
 
-export const Route = createFileRoute('/xgames/$role/$tableId/admin')({
+export const Route = createFileRoute('/games/host/$tableId/admin')({
   component: HostGameAdminRoute,
   // params: {
   //   parse: (params) => paramsSchema.parse(params),
-  //   stringify: (params) => ({ role: params.role, tableId: params.tableId }),
+  //   stringify: (params) => ({ tableId: params.tableId }),
   // },
 })
+

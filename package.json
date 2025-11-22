@@ -12,7 +12,7 @@
     "prebuild": "npm run test && npm run test:bdd",
     "dev": "vite dev",
     "build": "vite build",
-    "build:gh-pages": "VITE_BASE_PATH=/bfg-starter/ vite build",
+    "build:gh-pages": "VITE_APP_URL_ROOT_PATH=/bfg-starter/ vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",

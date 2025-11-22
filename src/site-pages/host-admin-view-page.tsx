@@ -1,5 +1,5 @@
 import { HostedGameView } from "@bfg-engine/ui/components/hosted-game-view";
-import { GameTabId, getGameTabItems } from "~/routes/xgames.$role.$tableId/-components";
+import { GameTabId, getGameTabItems } from "~/routes/games/-components";
 import { BfgGameScreenFrame } from "@bfg-engine/ui/components/bfg-game-screen-frame";
 import { AppBarTabsConfig } from "@bfg-engine/ui/components/bfg-app-bar/tabs-config";
 import { IBfgGameTableForHost } from "@bfg-engine/hooks/p2p/game/p2p-game-types";
@@ -39,7 +39,7 @@ export const HostAdminViewPage = (props: IBfgGameTableForHost) => {
   //   )
   // }
 
-  const activeTabId: GameTabId = '/games/$role/$tableId/admin';
+  const activeTabId: GameTabId = '/games/host/$tableId/admin';
   const gameTabItems = getGameTabItems('host');
   const tabsConfig: AppBarTabsConfig<GameTabId> = {
     tabItems: gameTabItems,

@@ -1,21 +1,13 @@
-import { createFileRoute, useRouter } from '@tanstack/react-router';
-import { HostAdminViewPage } from '~/site-pages/host-admin-view-page';
-import { useP2pGameRoomAsHost } from '@bfg-engine/hooks/p2p/game/use-p2p-game-room-as-host';
-import { Button, Container, Paper, Stack, Typography } from '@bfg-engine';
+import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { ObserverGamePage } from '~/site-pages/observer-game-page'
+import { useP2pGameRoomAsObserver } from '@bfg-engine/hooks/p2p/game/use-p2p-game-room-as-observer'
+import { Button, Container, Paper, Stack, Typography } from '@bfg-engine'
 
 
-// const paramsSchema = z.object({
-//   role: GameTableAccessRoleSchema,
-//   tableId: BfgGameTableId.idSchema,
-// })
-
-// type RouteParams = z.infer<typeof paramsSchema>
-
-
-const HostGameAdminRoute = () => {
+const ObserverGameIndexPage = () => {
   const router = useRouter();
 
-  const p2pGameRoom = useP2pGameRoomAsHost();
+  const p2pGameRoom = useP2pGameRoomAsObserver();
   if (!p2pGameRoom) {
     return (
       <Container maxWidth="md" style={{ padding: '32px' }}>
@@ -47,20 +39,42 @@ const HostGameAdminRoute = () => {
   
   // const { accessRole } = p2pGameRoom;
   const { accessRole } = p2pGameRoom;
-  if (accessRole !== 'host') {
-    return <div>You are not the host of this game table</div>;
+
+  // TypeScript narrowing - parent route already scopes to watch, but TypeScript doesn't know that
+  if (accessRole !== 'watch') {
+    return <div>You are not a watcher at this game table</div>;
   }
 
+  // if (role === 'host') {
+  //   return (
+  //     <HostGamePlayerViewPage
+  //       p2pGameRoom={gameRoom}
+  //     />
+  //   )  
+  // }
+
+  // if (role === 'play') {
+  //   return (
+  //     <PlayerGamePage
+  //       {...gameRoom}
+  //     />
+  //   )
+  // }
+
+  // if (role === 'watch') {
   return (
-    <HostAdminViewPage
+    <ObserverGamePage 
       {...p2pGameRoom}
     />
-  )
+  );
+  // }
+
+  // return <div>You can not access this game table as a {role}</div>;
 }
 
 
-export const Route = createFileRoute('/xgames/$role/$tableId/admin')({
-  component: HostGameAdminRoute,
+export const Route = createFileRoute('/games/watch/$tableId/')({
+  component: ObserverGameIndexPage,
   // params: {
   //   parse: (params) => paramsSchema.parse(params),
   //   stringify: (params) => ({ role: params.role, tableId: params.tableId }),

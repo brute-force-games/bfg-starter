@@ -3,25 +3,25 @@ import { GameTableAccessRole } from "@bfg-engine/models/game-roles";
 import { ChildRoutesOf } from "../-utils";
 
 
-export type GameTabId = ChildRoutesOf<'/games/$role/$tableId'>;
+export type GameTabId = ChildRoutesOf<'/xgames/$role/$tableId'>;
 
 
 const HostGameTabItems: readonly AppBarTabItem<GameTabId>[] = [
-  { id: '/games/$role/$tableId/admin', label: 'Admin', link: { to: '/games/$role/$tableId/admin' } },
-  { id: '/games/$role/$tableId', label: 'Host Player', link: { to: '/games/$role/$tableId' } },
-  { id: '/games/$role/$tableId/game-details', label: 'Game Details', link: { to: '/games/$role/$tableId/game-details' } },
-  { id: '/games/$role/$tableId/p2p-details', label: 'P2P Details', link: { to: '/games/$role/$tableId/p2p-details' } },
+  { id: '/xgames/$role/$tableId/admin', label: 'Admin', link: { to: '/games/$role/$tableId/admin' } },
+  { id: '/xgames/$role/$tableId', label: 'Host Player', link: { to: '/games/$role/$tableId' } },
+  { id: '/xgames/$role/$tableId/game-details', label: 'Game Details', link: { to: '/games/$role/$tableId/game-details' } },
+  { id: '/xgames/$role/$tableId/p2p-details', label: 'P2P Details', link: { to: '/games/$role/$tableId/p2p-details' } },
 ];
 
 const PlayerGameTabItems: readonly AppBarTabItem<GameTabId>[] = [
-  { id: '/games/$role/$tableId', label: 'Player View', link: { to: '/games/$role/$tableId' } },
-  { id: '/games/$role/$tableId/game-details', label: 'Game Details', link: { to: '/games/$role/$tableId/game-details' } },
-  { id: '/games/$role/$tableId/p2p-details', label: 'P2P Details', link: { to: '/games/$role/$tableId/p2p-details' } },
+  { id: '/xgames/$role/$tableId', label: 'Player View', link: { to: '/games/$role/$tableId' } },
+  { id: '/xgames/$role/$tableId/game-details', label: 'Game Details', link: { to: '/games/$role/$tableId/game-details' } },
+  { id: '/xgames/$role/$tableId/p2p-details', label: 'P2P Details', link: { to: '/games/$role/$tableId/p2p-details' } },
 ];
 
 const ObsertverGameTabItems: readonly AppBarTabItem<GameTabId>[] = [
-  { id: '/games/$role/$tableId/game-details', label: 'Game Details', link: { to: '/games/$role/$tableId/game-details' } },
-  { id: '/games/$role/$tableId/p2p-details', label: 'P2P Details', link: { to: '/games/$role/$tableId/p2p-details' } },
+  { id: '/xgames/$role/$tableId/game-details', label: 'Game Details', link: { to: '/games/$role/$tableId/game-details' } },
+  { id: '/xgames/$role/$tableId/p2p-details', label: 'P2P Details', link: { to: '/games/$role/$tableId/p2p-details' } },
 ];
 
 

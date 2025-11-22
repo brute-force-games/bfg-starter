@@ -4,7 +4,7 @@ import { Paper, Stack, Typography, Box, Container, Settings, Tab, TabPanel, Tabs
 import { PrettyJsonObject } from "@bfg-engine/ui/bfg-ui/components/PrettyJsonObject/PrettyJsonObject"
 import { Gamepad, History } from "@bfg-engine/ui/bfg-ui/icons"
 import { BfgGameScreenFrame } from "@bfg-engine/ui/components/bfg-game-screen-frame"
-import { GameTabId, getGameTabItems } from "~/routes/xgames.$role.$tableId/-components"
+import { GameTabId, getGameTabItems } from "~/routes/games/-components"
 import { IBfgGameTableForPlayer } from "@bfg-engine/hooks/p2p/game/p2p-game-types"
 import { convertWatcherEventToBoardEvent } from "../../modules/bfg-engine/src/models/game-table/game-table-event-converter"
 
@@ -32,13 +32,10 @@ export const PlayerGameDetailsPage = (props: IBfgGameTableForPlayer) => {
     );
   }
 
-  // const gameRegistry = useGameRegistry();
-  // const gameMetadata = gameRegistry.getGameMetadata(gameRoom.gameTitle);
-
   const latestWatcherGameEvent = watcherGameEvents[watcherGameEvents.length - 1];
   const latestGameSpecificState = latestWatcherGameEvent.nextGameWatcherState;
 
-  const activeTabId: GameTabId = '/games/$role/$tableId/game-details';
+  const activeTabId: GameTabId = '/games/play/$tableId/game-details';
   const gameTabItems = getGameTabItems('play');
   const tabsConfig = {
     tabItems: gameTabItems,

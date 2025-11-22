@@ -1,23 +1,22 @@
 import { TrysteroConfig } from "@bfg-engine";
+import { env } from "./env/env-schema";
 
+// Parse Nostr relay URLs from comma-separated string
+const getNostrRelays = (): string[] => {
+  return env.VITE_NOSTR_RELAYS.split(',').map((relay: string) => relay.trim()).filter(Boolean);
+};
 
 export const BfgStarterTrysteroConfig: TrysteroConfig = {
-  // appId: 'bfg-starter-trystero-test2',
-  appId: 'Kartoffel5583',
+  appId: env.VITE_TRYSTERO_APP_ID,
   // Use alternative Nostr relays that don't require PoW
   tracker: {
-    announce: [
-      'wss://relay.snort.social', 
-      'wss://nosr.org',
-      'wss://relay.nostr.band',
-      'wss://relay.damus.io',
-    ]
+    announce: getNostrRelays()
   }
 }
 
 export const BfgStarterSupabaseTrysteroConfig: any = {
-  appId: 'https://daqryoumnoqtafafupwz.supabase.co',
-  supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhcXJ5b3Vtbm9xdGFmYWZ1cHd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTEzODEzMDAsImV4cCI6MjA2Njk1NzMwMH0._gAsid1K4V64iO1EIIdhucrwjb7VIKg8jX6gggKbYhA',
+  appId: env.VITE_SUPABASE_URL,
+  supabaseKey: env.VITE_SUPABASE_ANON_KEY,
   // tracker: {
   //   announce: [
   //     'wss://relay.damus.io',

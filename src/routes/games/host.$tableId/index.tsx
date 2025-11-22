@@ -1,18 +1,10 @@
-import { createFileRoute, useRouter } from '@tanstack/react-router';
-import { HostAdminViewPage } from '~/site-pages/host-admin-view-page';
-import { useP2pGameRoomAsHost } from '@bfg-engine/hooks/p2p/game/use-p2p-game-room-as-host';
-import { Button, Container, Paper, Stack, Typography } from '@bfg-engine';
+import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { HostGamePlayerViewPage } from '~/site-pages/host-player-view-page'
+import { useP2pGameRoomAsHost } from '@bfg-engine/hooks/p2p/game/use-p2p-game-room-as-host'
+import { Button, Container, Paper, Stack, Typography } from '@bfg-engine'
 
 
-// const paramsSchema = z.object({
-//   role: GameTableAccessRoleSchema,
-//   tableId: BfgGameTableId.idSchema,
-// })
-
-// type RouteParams = z.infer<typeof paramsSchema>
-
-
-const HostGameAdminRoute = () => {
+const HostGameIndexPage = () => {
   const router = useRouter();
 
   const p2pGameRoom = useP2pGameRoomAsHost();
@@ -47,20 +39,42 @@ const HostGameAdminRoute = () => {
   
   // const { accessRole } = p2pGameRoom;
   const { accessRole } = p2pGameRoom;
+
+  // TypeScript narrowing - parent route already scopes to host, but TypeScript doesn't know that
   if (accessRole !== 'host') {
     return <div>You are not the host of this game table</div>;
   }
 
+  // if (role === 'host') {
   return (
-    <HostAdminViewPage
-      {...p2pGameRoom}
+    <HostGamePlayerViewPage
+      p2pGameRoom={p2pGameRoom}
     />
-  )
+  );
+  // }
+
+  // if (role === 'play') {
+  //   return (
+  //     <PlayerGamePage
+  //       {...gameRoom}
+  //     />
+  //   )
+  // }
+
+  // if (role === 'watch') {
+  //   return (
+  //     <ObserverGamePage 
+  //       {...gameRoom}
+  //     />
+  //   )
+  // }
+
+  // return <div>You can not access this game table as a {role}</div>;
 }
 
 
-export const Route = createFileRoute('/xgames/$role/$tableId/admin')({
-  component: HostGameAdminRoute,
+export const Route = createFileRoute('/games/host/$tableId/')({
+  component: HostGameIndexPage,
   // params: {
   //   parse: (params) => paramsSchema.parse(params),
   //   stringify: (params) => ({ role: params.role, tableId: params.tableId }),
