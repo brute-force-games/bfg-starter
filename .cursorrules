@@ -62,6 +62,13 @@ export type SortMethod = 'name' | 'lastUpdated';
 - Create branded types from Zod schemas
 - Export schemas from dedicated files
 
+### Casting
+- ALWAYS avoid casting objects and intefaces.
+- When creating objects, DO NOT create empty objects and cast them.
+- Prefer to generate code that will not compile instead of casting.
+- Don't accept any as a method or function type.
+
+
 
 ```typescript
 export const HvbColorSchema = z.string().brand('HvbColor');
