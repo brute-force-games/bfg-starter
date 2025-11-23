@@ -1,12 +1,12 @@
 import { z } from 'zod'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
-import { BfgGameTableIdToolbox } from '@bfg-engine/models/types/bfg-branded-uuids'
+import { BfgGameInstanceIdToolbox } from '@bfg-engine/models/types/bfg-branded-uuids'
 import { P2pGameRoomContextProvider } from '@bfg-engine/hooks/p2p/game/p2p-game-room-context'
 import { useLatestHostedGameIdentifiers } from '@bfg-engine/tb-store/game-instance-store'
 
 
 const paramsSchema = z.object({
-  tableId: BfgGameTableIdToolbox.idSchema,
+  tableId: BfgGameInstanceIdToolbox.idSchema,
 })
 
 
