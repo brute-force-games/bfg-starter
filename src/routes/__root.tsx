@@ -43,10 +43,12 @@ const parseStackTraceLine = (line: string): React.ReactNode[] => {
   // Pattern to match file paths with line and optional column numbers
   // Matches: file.tsx:123:45, file.tsx:123, (file.tsx:123:45), etc.
   // Also matches file paths in URLs like http://localhost:62776/src/file.tsx:23:9
+  // Handles query parameters: file.tsx?t=123:44:11
   // The pattern requires the file path to start with a letter, dot, or slash (not a number)
   // This avoids matching port numbers (like 62776) from URLs
   // We use a negative lookbehind to ensure we don't match the port number part of URLs
-  const fileLocationPattern = /(?<!https?:\/\/[^:]*:)([a-zA-Z./][\w./-]*\.(tsx?|jsx?|ts|js)):(\d+)(?::(\d+))?/g
+  // Updated to handle query parameters (?t=...) that may appear before line numbers in Vite stack traces
+  const fileLocationPattern = /(?<!https?:\/\/[^:]*:)([a-zA-Z./][\w./-]*\.(tsx?|jsx?|ts|js))(?:\?[^:]*)?:(\d+)(?::(\d+))?/g
   
   const parts: React.ReactNode[] = []
   let lastIndex = 0
@@ -61,6 +63,8 @@ const parseStackTraceLine = (line: string): React.ReactNode[] => {
     }
     
     const filePath = match[1]
+    // match[2] is the file extension (tsx, jsx, ts, js)
+    // Note: We use a non-capturing group for query params, so indices remain the same
     const lineNumber = match[3]
     const columnNumber = match[4] || '1'
     

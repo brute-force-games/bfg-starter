@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { createFileRoute } from '@tanstack/react-router'
-import { GameTableAccessRoleSchema } from '@bfg-engine/models/game-roles';
 import { Container, Stack, Typography } from '@bfg-engine';
 import { useP2pGameRoomAsPlayer } from '@bfg-engine/hooks/p2p/game/use-p2p-game-room-as-player';
 import { PlayerGameDetailsPage } from '~/site-pages/player-game-details-page';
@@ -8,7 +7,6 @@ import { BfgGameTableIdToolbox } from '@bfg-engine/models/types/bfg-branded-uuid
 
 
 const paramsSchema = z.object({
-  role: GameTableAccessRoleSchema,
   tableId: BfgGameTableIdToolbox.idSchema,
 })
 
@@ -78,6 +76,6 @@ export const Route = createFileRoute('/games/play/$tableId/game-details')({
   component: GameDetailsRoute,
   params: {
     parse: (params) => paramsSchema.parse(params),
-    stringify: (params) => ({ role: params.role, tableId: params.tableId }),
+    stringify: (params) => ({ tableId: params.tableId }),
   },
 })
