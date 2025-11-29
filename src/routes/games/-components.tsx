@@ -1,38 +1,38 @@
 import { AppBarTabItem } from "@bfg-engine/ui/components/bfg-app-bar/tab-item-hook";
-import { GameTableAccessRole } from "@bfg-engine/models/game-roles";
+import { type GameTableAccessLevel } from "../../../modules/bfg-engine/src/models/internal/user-game-perspective";
 import { ChildRoutesOf } from "../-utils";
 
 
-export type HostGameTabId = ChildRoutesOf<'/games/host/$tableId'>;
-export type PlayerGameTabId = ChildRoutesOf<'/games/play/$tableId'>;
-export type ObserverGameTabId = ChildRoutesOf<'/games/watch/$tableId'>;
+export type HostGameTabId = ChildRoutesOf<'/games/host/$gameId'>;
+export type PlayerGameTabId = ChildRoutesOf<'/games/play/$gameId'>;
+export type ObserverGameTabId = ChildRoutesOf<'/games/watch/$gameId'>;
 export type GameTabId = HostGameTabId | PlayerGameTabId | ObserverGameTabId;
 
 
 const HostGameTabItems: readonly AppBarTabItem<HostGameTabId>[] = [
-  { id: '/games/host/$tableId/admin', label: 'Admin', link: { to: '/games/host/$tableId/admin' } },
-  { id: '/games/host/$tableId', label: 'Host Player', link: { to: '/games/host/$tableId' } },
-  { id: '/games/host/$tableId/game-details', label: 'Game Details', link: { to: '/games/host/$tableId/game-details' } },
-  { id: '/games/host/$tableId/p2p-details', label: 'P2P Details', link: { to: '/games/host/$tableId/p2p-details' } },
+  { id: '/games/host/$gameId/admin', label: 'Admin', link: { to: '/games/host/$gameId/admin' } },
+  { id: '/games/host/$gameId', label: 'Host Player', link: { to: '/games/host/$gameId' } },
+  { id: '/games/host/$gameId/game-details', label: 'Game Details', link: { to: '/games/host/$gameId/game-details' } },
+  { id: '/games/host/$gameId/p2p-details', label: 'P2P Details', link: { to: '/games/host/$gameId/p2p-details' } },
 ];
 
 const PlayerGameTabItems: readonly AppBarTabItem<PlayerGameTabId>[] = [
-  { id: '/games/play/$tableId', label: 'Player View', link: { to: '/games/play/$tableId' } },
-  { id: '/games/play/$tableId/game-details', label: 'Game Details', link: { to: '/games/play/$tableId/game-details' } },
-  { id: '/games/play/$tableId/p2p-details', label: 'P2P Details', link: { to: '/games/play/$tableId/p2p-details' } },
+  { id: '/games/play/$gameId', label: 'Player View', link: { to: '/games/play/$gameId' } },
+  { id: '/games/play/$gameId/game-details', label: 'Game Details', link: { to: '/games/play/$gameId/game-details' } },
+  { id: '/games/play/$gameId/p2p-details', label: 'P2P Details', link: { to: '/games/play/$gameId/p2p-details' } },
 ];
 
 const ObsertverGameTabItems: readonly AppBarTabItem<ObserverGameTabId>[] = [
-  { id: '/games/watch/$tableId/game-details', label: 'Game Details', link: { to: '/games/watch/$tableId/game-details' } },
-  { id: '/games/watch/$tableId/p2p-details', label: 'P2P Details', link: { to: '/games/watch/$tableId/p2p-details' } },
+  { id: '/games/watch/$gameId/game-details', label: 'Game Details', link: { to: '/games/watch/$gameId/game-details' } },
+  { id: '/games/watch/$gameId/p2p-details', label: 'P2P Details', link: { to: '/games/watch/$gameId/p2p-details' } },
 ];
 
 
-export const getGameTabItems = (myGameTableAccess: GameTableAccessRole): readonly AppBarTabItem<GameTabId>[] => {
+export const getGameTabItems = (myGameTableAccess: GameTableAccessLevel): readonly AppBarTabItem<GameTabId>[] => {
   if (myGameTableAccess === 'host') {
     return HostGameTabItems;
   }
-  if (myGameTableAccess === 'play') {
+  if (myGameTableAccess === 'player') {
     return PlayerGameTabItems;
   }
   return ObsertverGameTabItems;

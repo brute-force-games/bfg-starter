@@ -6,7 +6,7 @@ import { useGameRegistry } from '@bfg-engine/hooks/games-registry/games-registry
 import { BfgSupportedGameTitle } from '@bfg-engine/models/game-box-definition';
 import { type BfgGameTableId } from '@bfg-engine/models/types/bfg-branded-uuids';
 import { useHostedGames } from '../../../modules/bfg-engine/src/hooks/stores/hosted-games-store';
-import { type HydratedLatestGameSnapshot } from '../../../modules/bfg-engine/src/models/internal/game-room-snapshot-from-tb';
+import { type HydratedLatestGameSnapshot } from '@bfg-engine/models/internal/game-room-snapshot';
 // import { useHostedGames } from '../../../modules/bfg-engine/src/hooks/stores/use-hosted-games-store';
 
 interface SettingsRowProps {

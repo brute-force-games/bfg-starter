@@ -14,7 +14,7 @@ export const ObserverGamePage = (props: IBfgGameTableForObserver) => {
         <Stack spacing={3}>
           <Typography variant="h3">Loading Game...</Typography>
           <Typography variant="body1" color="secondary">
-            Loading P2P Game...
+            Loading P2P Game for observer...
           </Typography>
         </Stack>
       </Container>
@@ -22,6 +22,20 @@ export const ObserverGamePage = (props: IBfgGameTableForObserver) => {
   }
 
   const { gameRoom, latestWatcherGameEvent, watcherGameEvents, gameMetadata, allPlayerProfiles } = publicGameDetails;
+
+  if (!gameMetadata || !gameRoom || !watcherGameEvents || watcherGameEvents.length === 0 || !latestWatcherGameEvent) {
+    return (
+      <Container style={{ padding: '24px' }}>
+        <Stack spacing={3}>
+          <Typography variant="h3">Loading Game...</Typography>
+          { !gameMetadata && <Typography variant="body1" color="secondary">Waiting for game metadata...</Typography> }
+          { !gameRoom && <Typography variant="body1" color="secondary">Waiting for game room...</Typography> }
+          { (!watcherGameEvents || watcherGameEvents.length === 0) && <Typography variant="body1" color="secondary">Waiting for game events...</Typography> }
+          { !latestWatcherGameEvent && <Typography variant="body1" color="secondary">Waiting for latest game event...</Typography> }
+        </Stack>
+      </Container>
+    );
+  }
 
   // const latestGameSpecificStateStr = gameActions.length > 0 ? 
   //   gameActions[gameActions.length - 1].nextGameStateStr :
@@ -36,9 +50,9 @@ export const ObserverGamePage = (props: IBfgGameTableForObserver) => {
   //   convertWatcherEventToBoardEvent(event, gameMetadata)
   // );
 
-  const activeTabId: GameTabId = '/games/watch/$tableId';
+  const activeTabId: GameTabId = '/games/watch/$gameId';
 
-  const gameTabItems = getGameTabItems('watch');
+  const gameTabItems = getGameTabItems('observer');
   const tabsConfig = {
     tabItems: gameTabItems,
     activeTabId: activeTabId,
@@ -52,7 +66,6 @@ export const ObserverGamePage = (props: IBfgGameTableForObserver) => {
       gameRoom={gameRoom}
       allPlayerProfiles={allPlayerProfiles}
       gameState={latestGameSpecificState}
-      // latestWatcherGameEvent={latestWatcherGameEvent}
       boardEvents={watcherGameEvents}
     >
       <ObserverP2pGameComponent

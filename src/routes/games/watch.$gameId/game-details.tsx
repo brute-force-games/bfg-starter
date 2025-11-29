@@ -1,18 +1,18 @@
 import { z } from 'zod';
 import { createFileRoute } from '@tanstack/react-router'
 import { Container, Stack, Typography } from '@bfg-engine';
-import { useP2pGameRoomAsHost } from '@bfg-engine/hooks/p2p/game/use-p2p-game-room-as-host';
-import { HostedGameDetailsPage } from '~/site-pages/host-game-details-page';
-import { BfgGameInstanceIdToolbox } from '@bfg-engine/models/types/bfg-branded-uuids';
+import { useGameRoomAsObserver } from '@bfg-engine/hooks/p2p/game/use-game-room-as-observer';
+import { ObserverGameDetailsPage } from '~/site-pages/observer-game-details-page';
+import { BfgGameTableIdToolbox } from '@bfg-engine/models/types/bfg-branded-uuids';
 
 
 const paramsSchema = z.object({
-  tableId: BfgGameInstanceIdToolbox.idSchema,
+  tableId: BfgGameTableIdToolbox.idSchema,
 })
 
 const GameDetailsRoute = () => {
   
-  const p2pGameRoom = useP2pGameRoomAsHost();
+  const p2pGameRoom = useGameRoomAsObserver();
 
   if (!p2pGameRoom) {
     return (
@@ -20,7 +20,7 @@ const GameDetailsRoute = () => {
         <Stack spacing={3}>
           <Typography variant="h3">Loading Game...</Typography>
           <Typography variant="body1" color="secondary">
-            Loading P2P Game...
+            Loading P2P Game details for observer...
           </Typography>
         </Stack>
       </Container>
@@ -29,28 +29,28 @@ const GameDetailsRoute = () => {
   
   // const { publicGameDetails, allowedRoles, accessRole } = bfgGameRoom;
   // const { gameRoom } = p2pGameRoom;
-  const { publicGameDetails, allowedRoles, accessRole } = p2pGameRoom;
+  const { publicGameDetails, allowedLevels, accessLevel } = p2pGameRoom;
 
   if (!publicGameDetails) {
     return <div>Public game details not found</div>;
   }
 
-  if (!allowedRoles.includes(accessRole)) {
-    return <div>You are not allowed to access this game table as a {accessRole}</div>;
+  if (!allowedLevels.includes(accessLevel)) {
+    return <div>You are not allowed to access this game table as a {accessLevel}</div>;
   }
 
 
-  if (accessRole !== 'host') {
-    return <div>You are not the host of this game table</div>;
+  if (accessLevel !== 'observer') {
+    return <div>You are not a watcher at this game table</div>;
   }
 
   // if (accessRole === 'host') {
     
-    return (
-      <HostedGameDetailsPage
-        {...p2pGameRoom}
-      />
-    )
+  //   return (
+  //     <HostedGameDetailsPage
+  //       {...gameRoom}
+  //     />
+  //   )
   // }
 
   // if (accessRole === 'play') {
@@ -61,19 +61,20 @@ const GameDetailsRoute = () => {
   //     />
   //   )
   // }
+
   // if (accessRole === 'watch') {
-  //   return (
-  //     <ObserverGameDetailsPage
-  //       {...gameRoom}
-  //     />
-  //   )
+    return (
+      <ObserverGameDetailsPage
+        {...p2pGameRoom}
+      />
+    )
   // }
 
   // throw new Error(`Invalid game table access role: ${accessRole}`);
 }
 
 
-export const Route = createFileRoute('/games/host/$tableId/game-details')({
+export const Route = createFileRoute('/games/watch/$gameId/game-details')({
   component: GameDetailsRoute,
   params: {
     parse: (params) => paramsSchema.parse(params),

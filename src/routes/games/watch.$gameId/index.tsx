@@ -1,14 +1,17 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { ObserverGamePage } from '~/site-pages/observer-game-page'
-import { useP2pGameRoomAsObserver } from '@bfg-engine/hooks/p2p/game/use-p2p-game-room-as-observer'
 import { Button, Container, Paper, Stack, Typography } from '@bfg-engine'
+import { useGameRoomWithUnknownAccessMode } from '../../../../modules/bfg-engine/src/hooks/p2p/game/use-game-room-with-unknown-access-mode'
+import { adaptToGameRoomAsObserver } from '../../../../modules/bfg-engine/src/hooks/p2p/game/watcher/adapt-to-game-room-as-observer'
 
 
 const ObserverGameIndexPage = () => {
   const router = useRouter();
 
-  const p2pGameRoom = useP2pGameRoomAsObserver();
-  if (!p2pGameRoom) {
+  const gameRoomUnknown = useGameRoomWithUnknownAccessMode();
+  const gameRoom = adaptToGameRoomAsObserver(gameRoomUnknown);
+  
+  if (!gameRoom) {
     return (
       <Container maxWidth="md" style={{ padding: '32px' }}>
         <Paper elevation={2} style={{
@@ -37,46 +40,21 @@ const ObserverGameIndexPage = () => {
     );
   }
   
-  // const { accessRole } = p2pGameRoom;
-  const { accessRole } = p2pGameRoom;
+  const { accessLevel } = gameRoom;
 
   // TypeScript narrowing - parent route already scopes to watch, but TypeScript doesn't know that
-  if (accessRole !== 'watch') {
+  if (accessLevel !== 'observer') {
     return <div>You are not a watcher at this game table</div>;
   }
 
-  // if (role === 'host') {
-  //   return (
-  //     <HostGamePlayerViewPage
-  //       p2pGameRoom={gameRoom}
-  //     />
-  //   )  
-  // }
-
-  // if (role === 'play') {
-  //   return (
-  //     <PlayerGamePage
-  //       {...gameRoom}
-  //     />
-  //   )
-  // }
-
-  // if (role === 'watch') {
   return (
     <ObserverGamePage 
-      {...p2pGameRoom}
+      {...gameRoom}
     />
   );
-  // }
-
-  // return <div>You can not access this game table as a {role}</div>;
 }
 
 
-export const Route = createFileRoute('/games/watch/$tableId/')({
+export const Route = createFileRoute('/games/watch/$gameId/')({
   component: ObserverGameIndexPage,
-  // params: {
-  //   parse: (params) => paramsSchema.parse(params),
-  //   stringify: (params) => ({ role: params.role, tableId: params.tableId }),
-  // },
 })

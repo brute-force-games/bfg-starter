@@ -35,8 +35,8 @@ export const PlayerGameDetailsPage = (props: IBfgGameTableForPlayer) => {
   const latestWatcherGameEvent = watcherGameEvents[watcherGameEvents.length - 1];
   const latestGameSpecificState = latestWatcherGameEvent.nextGameWatcherState;
 
-  const activeTabId: GameTabId = '/games/play/$tableId/game-details';
-  const gameTabItems = getGameTabItems('play');
+  const activeTabId: GameTabId = '/games/play/$gameId/game-details';
+  const gameTabItems = getGameTabItems('player');
   const tabsConfig = {
     tabItems: gameTabItems,
     activeTabId: activeTabId,

@@ -1,21 +1,18 @@
-import { GameTableAccessRole } from "@bfg-engine/models/game-roles";
 import { BruteForceGamesAppBar } from "@bfg-engine/ui/components/bfg-app-bar/app-bar";
-import { getGameTabItems, GameTabId } from "~/routes/xgames.$role.$tableId/-components";
+import { GameTabId, getGameTabItems } from "../routes/games/-components";
 import { NavSpine } from "@bfg-engine/ui/components/bfg-app-bar/nav-spine/index";
 import { useAppSettings } from "@bfg-engine/hooks/stores/use-my-app-settings-store";
+import type { GameTableAccessLevel } from "../../modules/bfg-engine/src/models/internal/user-game-perspective";
 
 
 interface BfgGameNavBarProps<TTabId extends string = string> {
-  // isNarrowScreen: boolean;
-  myGameTableAccess: GameTableAccessRole;
+  myGameTableAccess: GameTableAccessLevel;
   activeTabId: TTabId;  
 }
 
 export const BfgGameNavBar = <TTabId extends GameTabId = GameTabId>(props: BfgGameNavBarProps<TTabId>) => {
   const { myGameTableAccess, activeTabId } = props;
 
-  // const myPlayerProfiles = useMyPlayerProfiles();
-  // const myDefaultPlayerProfile = useRiskyMyDefaultPlayerProfile();
   const appSettings = useAppSettings();
 
   if (appSettings.gameSpineLocation === 'nav-bar') {

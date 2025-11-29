@@ -1,14 +1,19 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { HostGamePlayerViewPage } from '~/site-pages/host-player-view-page'
-import { useP2pGameRoomAsHost } from '@bfg-engine/hooks/p2p/game/use-p2p-game-room-as-host'
 import { Button, Container, Paper, Stack, Typography } from '@bfg-engine'
+import { useGameRoomWithUnknownAccessMode } from '../../../../modules/bfg-engine/src/hooks/p2p/game/use-game-room-with-unknown-access-mode'
+import { adaptToHostedGameRoom } from '../../../../modules/bfg-engine/src/hooks/p2p/game/host/adapt-to-hosted-game-room'
 
 
 const HostGameIndexPage = () => {
   const router = useRouter();
 
-  const p2pGameRoom = useP2pGameRoomAsHost();
-  if (!p2pGameRoom) {
+  // const p2pGameRoom = useGameRoomAsHost();
+  const gameRoomUnknown = useGameRoomWithUnknownAccessMode();
+  const gameRoom = adaptToHostedGameRoom(gameRoomUnknown);
+
+  
+  if (!gameRoom) {
     return (
       <Container maxWidth="md" style={{ padding: '32px' }}>
         <Paper elevation={2} style={{
@@ -38,17 +43,17 @@ const HostGameIndexPage = () => {
   }
   
   // const { accessRole } = p2pGameRoom;
-  const { accessRole } = p2pGameRoom;
+  const { accessLevel } = gameRoom;
 
   // TypeScript narrowing - parent route already scopes to host, but TypeScript doesn't know that
-  if (accessRole !== 'host') {
+  if (accessLevel !== 'host') {
     return <div>You are not the host of this game table</div>;
   }
 
   // if (role === 'host') {
   return (
     <HostGamePlayerViewPage
-      p2pGameRoom={p2pGameRoom}
+      p2pGameRoom={gameRoom}
     />
   );
   // }
@@ -73,7 +78,7 @@ const HostGameIndexPage = () => {
 }
 
 
-export const Route = createFileRoute('/games/host/$tableId/')({
+export const Route = createFileRoute('/games/host/$gameId/')({
   component: HostGameIndexPage,
   // params: {
   //   parse: (params) => paramsSchema.parse(params),

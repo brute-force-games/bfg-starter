@@ -16,7 +16,7 @@ import { convertHostEventToBoardEvent } from "../../modules/bfg-engine/src/model
 export const HostedGameDetailsPage = (props: IBfgGameTableForHost) => {
   
   // const { hostGameDetails, p2pDetails, accessRole } = props;
-  const { hostGameDetails, publicGameDetails, p2pDetails, accessRole, gameMetadata } = props;
+  const { hostGameDetails, publicGameDetails, p2pDetails, accessLevel, gameMetadata } = props;
   
   if (!hostGameDetails || !publicGameDetails || !p2pDetails || !gameMetadata) {
     return <div>Game details not available</div>;
@@ -41,11 +41,10 @@ export const HostedGameDetailsPage = (props: IBfgGameTableForHost) => {
   // const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
   //   setActiveTab(newValue);
   // };
-  const activeTabId: GameTabId = '/games/host/$tableId/game-details';
+  const activeTabId: GameTabId = '/games/host/$gameId/game-details';
 
 
-
-  const gameTabItems = getGameTabItems(accessRole);
+  const gameTabItems = getGameTabItems(accessLevel);
   const tabsConfig = {
     tabItems: gameTabItems,
     activeTabId: activeTabId,

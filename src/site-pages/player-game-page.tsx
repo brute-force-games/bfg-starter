@@ -45,9 +45,9 @@ export const PlayerGamePage = (props: IBfgGameTableForPlayer) => {
   //   )
   // }
 
-  const activeTabId: GameTabId = '/games/play/$tableId';
+  const activeTabId: GameTabId = '/games/play/$gameId';
 
-  const gameTabItems = getGameTabItems('play');
+  const gameTabItems = getGameTabItems('player');
   const tabsConfig = {
     tabItems: gameTabItems,
     activeTabId: activeTabId,

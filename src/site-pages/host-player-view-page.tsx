@@ -33,7 +33,7 @@ export const HostGamePlayerViewPage = ({ p2pGameRoom }: HostGamePlayerViewPagePr
     return <div>Game room not found</div>;
   }
 
-  if (p2pGameRoom.maxAllowedAccessRole !== 'host') {
+  if (p2pGameRoom.maxAllowedAccessLevel !== 'host') {
     return <div>You are not the host of this game table</div>;
   }
 
@@ -51,7 +51,7 @@ export const HostGamePlayerViewPage = ({ p2pGameRoom }: HostGamePlayerViewPagePr
   const latestHostGameEvent = hostGameDetails.latestHostGameEvent;
   const latestHostGameState = latestHostGameEvent.nextGameHostState;
 
-  const activeTabId: GameTabId = '/games/host/$tableId';
+  const activeTabId: GameTabId = '/games/host/$gameId';
 
   const gameTabItems = getGameTabItems('host');
   const tabsConfig = {

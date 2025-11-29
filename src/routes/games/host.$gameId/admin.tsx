@@ -1,6 +1,6 @@
 import { createFileRoute, useRouter } from '@tanstack/react-router';
 import { HostAdminViewPage } from '~/site-pages/host-admin-view-page';
-import { useP2pGameRoomAsHost } from '@bfg-engine/hooks/p2p/game/use-p2p-game-room-as-host';
+import { useGameRoomAsHost } from '@bfg-engine/hooks/p2p/game/use-game-room-as-host';
 import { Button, Container, Paper, Stack, Typography } from '@bfg-engine';
 
 
@@ -14,7 +14,7 @@ import { Button, Container, Paper, Stack, Typography } from '@bfg-engine';
 const HostGameAdminRoute = () => {
   const router = useRouter();
 
-  const p2pGameRoom = useP2pGameRoomAsHost();
+  const p2pGameRoom = useGameRoomAsHost();
   if (!p2pGameRoom) {
     return (
       <Container maxWidth="md" style={{ padding: '32px' }}>
@@ -44,9 +44,8 @@ const HostGameAdminRoute = () => {
     );
   }
   
-  // const { accessRole } = p2pGameRoom;
-  const { accessRole } = p2pGameRoom;
-  if (accessRole !== 'host') {
+  const { accessLevel } = p2pGameRoom;
+  if (accessLevel !== 'host') {
     return <div>You are not the host of this game table</div>;
   }
 
@@ -58,7 +57,7 @@ const HostGameAdminRoute = () => {
 }
 
 
-export const Route = createFileRoute('/games/host/$tableId/admin')({
+export const Route = createFileRoute('/games/host/$gameId/admin')({
   component: HostGameAdminRoute,
   // params: {
   //   parse: (params) => paramsSchema.parse(params),

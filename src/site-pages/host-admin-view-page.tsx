@@ -39,7 +39,7 @@ export const HostAdminViewPage = (props: IBfgGameTableForHost) => {
   //   )
   // }
 
-  const activeTabId: GameTabId = '/games/host/$tableId/admin';
+  const activeTabId: GameTabId = '/games/host/$gameId/admin';
   const gameTabItems = getGameTabItems('host');
   const tabsConfig: AppBarTabsConfig<GameTabId> = {
     tabItems: gameTabItems,
