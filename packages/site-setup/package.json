@@ -77,5 +77,6 @@
       "optional": true
     }
   },
-  "coverageMinimum": 100
+  "coverageMinimum": 100,
+  "specSchemas": "none"
 }
