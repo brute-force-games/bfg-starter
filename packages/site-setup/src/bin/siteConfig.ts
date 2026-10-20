@@ -11,7 +11,7 @@ import { onCase, type Cases } from "@brute-force-games/cases";
  * beside the shared ones, and what the smoke check opens beside the routes it finds (`smokePages`,
  * pages for routes with parameters) or leaves out (`smokeSkip`).
  */
-export const SITE_CONFIG_FILE = "bfg-site.json";
+const SITE_CONFIG_FILE = "bfg-site.json";
 
 const checkSchema = z.object({
   name: z.string().min(1),

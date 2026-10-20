@@ -13,13 +13,13 @@ import { isBundledSource, snapshotIsStale } from "./storybookFreshness.ts";
  */
 
 /** Where the route is. */
-export const STORYBOOK_MOUNT = "/storybook";
+const STORYBOOK_MOUNT = "/storybook";
 
 /** Set to "0" to only build the snapshot when it's missing, never to refresh it. */
-export const AUTO_REBUILD_ENV = "BFG_STORYBOOK_AUTOBUILD";
+const AUTO_REBUILD_ENV = "BFG_STORYBOOK_AUTOBUILD";
 
 /** Wait this long after the last change before rebuilding, so a burst of saves builds once. */
-export const REBUILD_DELAY_MS = 3000;
+const REBUILD_DELAY_MS = 3000;
 
 /** Builds the site's Storybook into a folder: the Storybook CLI, or a stand-in in tests. */
 export interface StorybookBuilder {
@@ -34,7 +34,7 @@ export const storybookCli = (bin: string): StorybookBuilder => ({
         if (error === null) {
           built();
         } else {
-          failed(error);
+          failed(new Error(error.message, { cause: error }));
         }
       });
     }),
@@ -108,8 +108,8 @@ export function createRebuilder(
     });
   };
   const settled = async (): Promise<void> => {
-    while (running !== undefined) {
-      await running;
+    for (let current = running; current !== undefined; current = running) {
+      await current;
     }
   };
   return {

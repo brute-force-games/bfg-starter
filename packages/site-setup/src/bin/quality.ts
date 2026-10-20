@@ -27,7 +27,7 @@ import { commitOf, jsonAt, writeJson, writeWhole } from "./siteFiles.ts";
  * count of unreachable code. The SARIF stays with the run, in its coverage folder, never committed;
  * only the run's totals go into <quality folder>/history.json. The logic is qualityHistory.ts.
  */
-export const HISTORY_FILE = "history.json";
+const HISTORY_FILE = "history.json";
 
 /** The site's complexity scope: its complexity config, over its sources. */
 export const complexityScopeOf = (config: SiteConfig): ComplexityScope => ({
@@ -36,7 +36,7 @@ export const complexityScopeOf = (config: SiteConfig): ComplexityScope => ({
 });
 
 /** oxlint, asked only for unreachable code, as JSON, over the site's sources and tests. */
-export const unreachableCode = (config: SiteConfig): Command => ({
+const unreachableCode = (config: SiteConfig): Command => ({
   program: "npx",
   args: [
     "oxlint",

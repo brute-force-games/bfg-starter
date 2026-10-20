@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { existsSync } from "node:fs";
 import { devices } from "@playwright/test";
 import { tmpdir } from "node:os";
@@ -50,10 +51,7 @@ describe("a site's e2e config, this run's", () => {
     // Act
     const config = sitePlaywrightConfig(SITE, env);
     // Assert
-    const made = env["E2E_RUN_DIR"];
-    if (made === undefined) {
-      throw new Error("no output folder was made");
-    }
+    const made = z.string().parse(env["E2E_RUN_DIR"]);
     expect(config.outputDir).toBe(made);
     expect(made.startsWith(tmpdir())).toBe(true);
     expect(existsSync(made)).toBe(true);

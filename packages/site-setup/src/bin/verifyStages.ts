@@ -155,7 +155,7 @@ export interface StageResult {
   readonly checks: readonly CheckResult[];
 }
 
-export const stageGreen = (result: StageResult): boolean =>
+const stageGreen = (result: StageResult): boolean =>
   result.checks.every((each) => each.outcome.kind === "passed");
 
 /**

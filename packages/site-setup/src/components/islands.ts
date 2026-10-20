@@ -5,7 +5,7 @@
  */
 
 /** The selector for an island still showing the server's HTML. */
-export const UNHYDRATED_ISLAND = "astro-island[ssr]";
+const UNHYDRATED_ISLAND = "astro-island[ssr]";
 
 /** Whether no island under `root` is still waiting to hydrate. */
 export const allIslandsHydrated = (root: ParentNode): boolean => root.querySelector(UNHYDRATED_ISLAND) === null;

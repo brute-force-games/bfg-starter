@@ -66,7 +66,7 @@ export function writeComplexityReport(
 }
 
 /** A command that ran: its exit code, or none when a signal stopped it. */
-const exitCodeOf = (status: number | null): number => (status === null ? 1 : status);
+const exitCodeOf = (status: number | null): number => status ?? 1;
 
 /** The ports on the site at `root`: the commands run there, the files written there. */
 export const nodeComplexityPorts = (root: string): ComplexityPorts => ({

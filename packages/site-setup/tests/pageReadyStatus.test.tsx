@@ -21,11 +21,11 @@ afterEach(() => {
 
 /** The page's status line's text; a page without one fails the test. */
 function statusText(): string {
-  const status = document.querySelector('[role="status"]');
+  const status = document.querySelector('output[aria-label="Page status"]');
   if (status === null) {
     throw new Error("the page has no status");
   }
-  return String(status.textContent);
+  return status.textContent;
 }
 
 describe("a page's ready status", () => {
@@ -47,15 +47,17 @@ describe("a page's ready status", () => {
     const before = statusText();
     await act(async () => {
       slower.removeAttribute("ssr");
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await new Promise((resolve) => {
+        setTimeout(resolve, 0);
+      });
     });
     // Assert
     expect(before).toBe("Loading…");
     expect(statusText()).toBe("Ready");
   });
 
-  it("is named as room-ui's ReadyStatus is, the page's one status", () => {
-    expect(renderToString(<PageReadyStatus />)).toContain('aria-label="Page status"');
+  it("is named as room-ui's ReadyStatus is, the page's one status, an <output> (role status)", () => {
+    expect(renderToString(<PageReadyStatus />)).toMatch(/^<output aria-live="polite" aria-label="Page status">/u);
   });
 
   it("is room-view's loading, then ready", () => {

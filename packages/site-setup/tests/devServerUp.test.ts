@@ -39,10 +39,6 @@ describe("whether a dev server answers", () => {
 });
 
 describe("the dev-server gate", () => {
-  afterEach(() => {
-    vi.unstubAllEnvs();
-  });
-
   it("lets the run go on when every page is healthy", async () => {
     // Arrange
     const { ports, seen } = fakeSmoke({ [SERVER]: HEALTHY, [`${SERVER}/`]: HEALTHY });
@@ -68,6 +64,14 @@ describe("the dev-server gate", () => {
     );
   });
 
+});
+
+describe("the dev-server gate, before any page", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.restoreAllMocks();
+  });
+
   it("stops the run, saying how to start the dev server, when there's none", async () => {
     await expect(
       devServerGate({ E2E_BASE_URL: SERVER }, siteWith(), fakeSmoke({}).ports),
@@ -88,10 +92,12 @@ describe("the dev-server gate", () => {
     );
   });
 
-  it("is Playwright's global setup, reading this process's environment", async () => {
+  it("is Playwright's global setup, reading this process's environment and folder", async () => {
     // Arrange
-    vi.stubEnv("E2E_BASE_URL", undefined);
+    const root = siteWith(null);
+    vi.stubEnv("E2E_BASE_URL", SERVER);
+    vi.spyOn(process, "cwd").mockReturnValue(root);
     // Act, Assert
-    await expect(devServerUp()).rejects.toThrow("E2E_BASE_URL isn't set");
+    await expect(devServerUp()).rejects.toThrow(`No bfg-site.json at ${join(root, "bfg-site.json")}`);
   });
 });

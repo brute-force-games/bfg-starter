@@ -9,7 +9,7 @@ import { exitCodeOf, type SitePorts } from "./ports.ts";
  * other's output, and a failed build leaves the last good one in place. The fresh folder is under
  * .builds/, beside the target, so the swap is a rename. The arguments are freshBuildArgs.ts's.
  */
-export const BUILDS_FOLDER = ".builds";
+const BUILDS_FOLDER = ".builds";
 
 export function freshBuild(site: SitePorts, argv: readonly string[]): number {
   const reading = readFreshBuild(argv);

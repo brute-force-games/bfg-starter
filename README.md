@@ -66,6 +66,26 @@ The scripts a site runs, in its folder (`npx bfg-site <command>`):
 - `check-node`: `.nvmrc`, devbox.json's `nodejs@<major>` and package.json's `engines.node`,
   whichever the site has, must agree with each other and with the running Node.
 
+### The scripts a site starts with
+
+Every site starts with these in its package.json, as the example has them (a test holds the
+example to this list):
+
+| Script | Runs | When |
+| --- | --- | --- |
+| `dev` | `astro dev` | while you work |
+| `check:watch` | `astro check --watch` | beside `dev`, in a second terminal: the dev server doesn't type-check `.astro` files and `tsc` can't read them, so this catches what `astro check` would (a page passing its layout the wrong props) as you save |
+| `build` | `astro build` | to build the site |
+| `typecheck` | `astro sync && astro check && tsc --noEmit` | once, before you're done |
+| `test` | `vitest run --project unit` | the unit tests |
+| `test:e2e` | `playwright test` | the end-to-end tests, against your dev server |
+| `smoke` | `bfg-site smoke` | before any heavy run: is your dev server healthy? |
+| `lint` | `oxlint --type-aware && knip` | lint and dead code |
+| `format`, `format:check` | `oxfmt [--check] --ignore-path .gitignore` | formatting |
+| `verify` | `bfg-site verify` | every stage, smoke first |
+
+A site using Storybook adds `storybook`.
+
 ### `bfg-site.json`
 
 At the site's root. `devServerPort` is required: where verify looks for your dev server, unless
@@ -148,6 +168,10 @@ instead: the Playwright preset imports Playwright's types only, and the site pas
   and `browser` (the e2e helpers and the smoke check in headless Chromium, the smoke check against
   a tiny server of the test's own, one file at a time).
 - `npm run typecheck`: the setup, and the example site (`astro check` and `tsc`).
+- `npm run lint`: the setup's oxlint (its own preset, `.oxlintrc.json`) and knip (`knip.ts`); the
+  example lints itself (`npm run example:lint`).
+- `npm run format`, `npm run format:check`: the setup formatted as every site is, by its own
+  `siteOxfmtConfig` (`oxfmt.config.ts`).
 - `npm run example:test`, `npm run example:build`: the example site's tests and build.
 - `npm run example:lint`: the example's oxlint, then knip.
 - `npm run example:e2e`: the example's end-to-end tests, against its dev server, which you start.

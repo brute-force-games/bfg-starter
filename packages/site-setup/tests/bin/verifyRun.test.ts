@@ -60,6 +60,9 @@ describe("a verify run", () => {
     expect(seen.said.at(-1)).toBe("\nRed: static.");
   });
 
+});
+
+describe("a verify run with a sick dev server", () => {
   it("stops at a red smoke check, running nothing else", async () => {
     // Arrange
     const { site, seen } = fakeSite({ statuses: { smoke: 1 }, answers: { [YOURS]: "up" } });
@@ -165,7 +168,7 @@ describe("a verify run on a dev server of its own", () => {
       ["astro", "dev", "--ignore-lock", "--port", "4999"],
       ["astro", "dev", "--ignore-lock", "--port", "4999"],
     ]);
-    const onServer = seen.ran.filter((check) => check.name === "smoke" || check.name === "e2e");
+    const onServer = seen.ran.filter((check) => ["smoke", "e2e"].includes(check.name));
     expect(onServer.map((check) => check.env["E2E_BASE_URL"])).toEqual([OWN, OWN]);
     expect(onServer.map((check) => check.env["BFG_REPORT_DIR"])).toEqual(["/r", "/r"]);
     expect(seen.stopped).toEqual(["own dev server", "own dev server"]);

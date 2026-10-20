@@ -1,6 +1,7 @@
 import { runBfgSite } from "../../src/bin/commands.ts";
 import type { SitePorts } from "../../src/bin/ports.ts";
 import { openSiteBrowser } from "../../src/smoke/siteBrowser.ts";
+import type { PageVisit, SmokeBrowser } from "../../src/smoke/smokeCheck.ts";
 
 /** The `bfg-site` command's entry (src/bin/bfg-site.ts): its command line, in the folder it's run from. */
 
@@ -16,8 +17,12 @@ vi.mock("../../src/bin/commands.ts", () => ({
 }));
 
 vi.mock("../../src/smoke/siteBrowser.ts", () => ({
-  openSiteBrowser: vi.fn(() =>
-    Promise.resolve({ timeoutMs: 1000, visit: vi.fn(), close: vi.fn() }),
+  openSiteBrowser: vi.fn<() => Promise<SmokeBrowser>>(() =>
+    Promise.resolve({
+      timeoutMs: 1000,
+      visit: vi.fn<(url: string) => Promise<PageVisit>>(),
+      close: vi.fn<() => Promise<void>>(),
+    }),
   ),
 }));
 

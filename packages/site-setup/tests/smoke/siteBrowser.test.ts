@@ -25,12 +25,12 @@ describe("the site's own Chromium", () => {
 });
 
 describe("the Chromium in a Playwright module", () => {
-  const chromium = { launch: () => undefined };
+  const chromium = { launch: () => Promise.resolve() };
 
   it.each([
     {
       what: "a function carrying it (Playwright's `test`)",
-      module: Object.assign(() => undefined, { chromium }),
+      module: Object.assign(() => null, { chromium }),
     },
     { what: "an object carrying it", module: { chromium } },
   ])("is found in $what", ({ module }) => {
@@ -45,6 +45,6 @@ describe("the Chromium in a Playwright module", () => {
     { what: "a Chromium that isn't an object", module: { chromium: "chromium" } },
     { what: "a missing Chromium", module: { chromium: null } },
   ])("isn't found in $what", ({ module }) => {
-    expect(() => chromiumOf(module)).toThrow();
+    expect(() => chromiumOf(module)).toThrow("Invalid input");
   });
 });

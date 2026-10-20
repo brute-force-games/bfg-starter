@@ -20,7 +20,7 @@ import { jsonAt, writeJson } from "./siteFiles.ts";
  */
 
 /** knip, asked for its findings as JSON. */
-export const KNIP_JSON: Command = {
+const KNIP_JSON: Command = {
   program: "npx",
   args: ["knip", "--reporter", "json", "--no-progress"],
 };

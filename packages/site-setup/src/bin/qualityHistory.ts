@@ -19,12 +19,8 @@ const countsSchema = z.object({
   lines: countSchema,
 });
 
-/** All four coverage metrics. */
-export type Counts = z.infer<typeof countsSchema>;
-
 /** Vitest's `coverage-summary.json`: `total`, and each file by its path. */
 export const coverageSummarySchema = z.looseObject({ total: countsSchema });
-export type CoverageSummary = z.infer<typeof coverageSummarySchema>;
 
 /** As much of a SARIF log as the history reads: each run's results. */
 export const sarifLogSchema = z.object({

@@ -36,8 +36,14 @@ export function storybookRoute({ root, includeInBuild }: StorybookRouteOptions):
         const folders = storybookFoldersOf(root);
         serveStorybookOn(
           {
-            onChange: (changed) => server.watcher.on("all", (_event, path) => changed(path)),
-            use: (middleware) => server.middlewares.use(middleware),
+            onChange: (changed) => {
+              server.watcher.on("all", (_event, path) => {
+                changed(path);
+              });
+            },
+            use: (middleware) => {
+              server.middlewares.use(middleware);
+            },
           },
           folders,
           createRebuilder(folders, storybookCli(bin), logger),

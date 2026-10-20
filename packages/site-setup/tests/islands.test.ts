@@ -17,7 +17,10 @@ function pageWith(...islands: readonly ("ssr" | "hydrated")[]): HTMLElement[] {
 }
 
 /** The next turn, after the MutationObserver's callbacks have run. */
-const settled = (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 0));
+const settled = (): Promise<void> =>
+  new Promise((resolve) => {
+    setTimeout(resolve, 0);
+  });
 
 afterEach(() => {
   document.body.innerHTML = "";

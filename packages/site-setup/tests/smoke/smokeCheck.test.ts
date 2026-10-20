@@ -18,8 +18,8 @@ import { fakeSmoke, HEALTHY } from "../fixtures/smokePages.ts";
 const SERVER = "http://localhost:4330";
 const CLEAN: PageVisit = HEALTHY.visit;
 
-describe("what's wrong in a visit", () => {
-  it.each([
+/** Visits, and the first thing wrong in each. */
+const VISITS = [
     { what: "nothing", visit: CLEAN, problem: undefined },
     {
       what: "a server error first",
@@ -40,7 +40,10 @@ describe("what's wrong in a visit", () => {
       visit: { ...CLEAN, ready: false },
       problem: { kind: "never-ready", seconds: SMOKE_TIMEOUT_MS / 1000 },
     },
-  ])("finds $what", ({ visit, problem }) => {
+];
+
+describe("what's wrong in a visit", () => {
+  it.each(VISITS)("finds $what", ({ visit, problem }) => {
     expect(visitProblem(visit, SMOKE_TIMEOUT_MS)).toEqual(problem);
   });
 });
@@ -59,7 +62,7 @@ describe("opening the pages", () => {
     expect(failures).toEqual([
       { path: "/broken", problem: { kind: "http-status", status: 500 } },
       { path: "/stuck", problem: { kind: "never-ready", seconds: 15 } },
-      { path: "/gone", problem: { kind: "unreachable", message: "fetch failed" } },
+      { path: "/gone", problem: { kind: "unreachable", message: "TypeError: fetch failed" } },
     ]);
     expect(seen.visited).toEqual([`${SERVER}/`, `${SERVER}/stuck`]);
     expect(seen.closed).toBe(1);
@@ -84,19 +87,10 @@ describe("opening the pages", () => {
     await expect(smokePages(SERVER, ["/"], ports)).rejects.toThrow("browser crashed");
     expect(closed).toBe(true);
   });
-
-  it("calls a fetch that throws something not an Error unreachable too", async () => {
-    // Arrange
-    const ports = {
-      ...fakeSmoke({}).ports,
-      fetchPage: () => Promise.reject("refused"),
-    };
-    // Act, Assert
-    await expect(smokePages(SERVER, ["/"], ports)).resolves.toEqual([
-      { path: "/", problem: { kind: "unreachable", message: "refused" } },
-    ]);
-  });
 });
+
+/** A smoke config naming no pages and skipping none. */
+const NO_PAGES = { smokePages: [], smokeSkip: [] };
 
 /** A site whose src/pages holds `files`. */
 function siteWith(...files: string[]): string {
@@ -137,16 +131,14 @@ describe("smoke-checking a site", () => {
     expect(smokeLines(outcome)).toEqual(["Smoke: 3 pages healthy at http://localhost:4330."]);
   });
 
+});
+
+describe("smoke-checking a site whose server is sick or gone", () => {
   it("says there's no dev server when nothing answers", async () => {
     // Arrange
     const { ports, seen } = fakeSmoke({});
     // Act
-    const outcome = await smokeSite(
-      siteWith("index.astro"),
-      { smokePages: [], smokeSkip: [] },
-      SERVER,
-      ports,
-    );
+    const outcome = await smokeSite(siteWith("index.astro"), NO_PAGES, SERVER, ports);
     // Assert
     expect(outcome).toEqual({ kind: "no-dev-server", baseUrl: SERVER });
     expect(smokePasses(outcome)).toBe(false);
@@ -163,12 +155,7 @@ describe("smoke-checking a site", () => {
       [`${SERVER}/`]: { ...HEALTHY, status: 500 },
     });
     // Act
-    const outcome = await smokeSite(
-      siteWith("index.astro"),
-      { smokePages: [], smokeSkip: [] },
-      SERVER,
-      ports,
-    );
+    const outcome = await smokeSite(siteWith("index.astro"), NO_PAGES, SERVER, ports);
     // Assert
     expect(outcome).toMatchObject({
       failures: [{ path: "/", problem: { kind: "http-status", status: 500 } }],

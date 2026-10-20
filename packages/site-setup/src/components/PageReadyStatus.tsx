@@ -16,8 +16,8 @@ export const pageReadiness = (hydrated: boolean): RoomReadiness =>
 
 export function PageReadyStatus(): React.JSX.Element {
   return (
-    <p role="status" aria-live="polite" aria-label={READY_STATUS_NAME}>
+    <output aria-live="polite" aria-label={READY_STATUS_NAME}>
       {readinessText(pageReadiness(useAllIslandsHydrated()))}
-    </p>
+    </output>
   );
 }

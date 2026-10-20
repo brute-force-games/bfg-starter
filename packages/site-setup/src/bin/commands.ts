@@ -60,7 +60,7 @@ const COMMANDS: Readonly<Record<string, BinCommand>> = {
   "check-node": (_args, site) => Promise.resolve(checkNode(site, process.version)),
 };
 
-export const COMMAND_NAMES: readonly string[] = Object.keys(COMMANDS);
+const COMMAND_NAMES: readonly string[] = Object.keys(COMMANDS);
 
 /** Runs `bfg-site`'s command line in `site`: its exit code. */
 export function runBfgSite(argv: readonly string[], site: SitePorts): Promise<number> {

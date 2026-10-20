@@ -63,7 +63,7 @@ async function httpProblem(url: string, fetchPage: typeof fetch): Promise<PagePr
     const response = await fetchPage(url, { signal: AbortSignal.timeout(SMOKE_TIMEOUT_MS) });
     return response.status === 200 ? undefined : { kind: "http-status", status: response.status };
   } catch (error) {
-    return { kind: "unreachable", message: error instanceof Error ? error.message : String(error) };
+    return { kind: "unreachable", message: String(error) };
   }
 }
 
@@ -160,7 +160,7 @@ export function smokeLines(outcome: SmokeOutcome): string[] {
   }
   const { baseUrl, paths, failures, unlisted } = outcome;
   return [
-    ...failures.map(failureLine),
+    ...failures.map((failure) => failureLine(failure)),
     ...unlisted.map(
       (pattern) =>
         `  ✗ ${pattern}: has parameters; name a page for it in bfg-site.json's smokePages (or list it in smokeSkip)`,

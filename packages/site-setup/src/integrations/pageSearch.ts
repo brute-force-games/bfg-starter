@@ -10,13 +10,13 @@ import * as pagefind from "pagefind";
  */
 
 /** Pages added to an index: how many, and what went wrong. */
-export interface PagesAdded {
+interface PagesAdded {
   readonly errors: readonly string[];
   readonly page_count: number;
 }
 
 /** An index written out: what went wrong. */
-export interface IndexWritten {
+interface IndexWritten {
   readonly errors: readonly string[];
 }
 

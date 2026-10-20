@@ -14,7 +14,7 @@ function withIndexPage(root: string): void {
   writeFileSync(join(root, "src", "pages", "index.astro"), "");
 }
 
-describe("bfg-site smoke", () => {
+describe("bfg-site smoke, passing", () => {
   it("passes, saying so, when every page of your dev server is healthy", async () => {
     // Arrange
     const { site, seen } = fakeSite({ pages: { [YOURS]: HEALTHY, [`${YOURS}/`]: HEALTHY } });
@@ -42,6 +42,9 @@ describe("bfg-site smoke", () => {
     expect(seen.smoke.visited).toEqual([`${own}/`]);
   });
 
+});
+
+describe("bfg-site smoke, failing", () => {
   it("fails, complaining of each failed page, when one isn't", async () => {
     // Arrange
     const { site, seen } = fakeSite({

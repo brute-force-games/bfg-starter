@@ -18,7 +18,7 @@ export interface PinText {
 }
 
 /** A pin, read: its major version. */
-export interface NodePin {
+interface NodePin {
   readonly source: NodePinSource;
   readonly major: number;
 }

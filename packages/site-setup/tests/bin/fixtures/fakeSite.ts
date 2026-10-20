@@ -34,7 +34,7 @@ export interface Script {
   readonly pages: Readonly<Record<string, FakePage>>;
 }
 
-export const SCRIPT: Script = {
+const SCRIPT: Script = {
   statuses: {},
   outputs: {},
   answers: {},
@@ -44,7 +44,7 @@ export const SCRIPT: Script = {
 };
 
 /** What the stand-ins saw: the checks run, the lines said, the processes stopped. */
-export interface Seen {
+interface Seen {
   readonly ran: Check[];
   readonly said: string[];
   readonly complained: string[];

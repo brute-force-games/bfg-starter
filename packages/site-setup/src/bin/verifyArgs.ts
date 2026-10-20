@@ -33,7 +33,7 @@ export type VerifyRun =
   | { readonly kind: "stage"; readonly stage: StageName; readonly devServer: DevServerSource };
 
 /** A run that can't take a dev server of its own: the build's, or one stage but smoke or e2e. */
-export type RunWithoutDevServer =
+type RunWithoutDevServer =
   | { readonly kind: "build" }
   | { readonly kind: "stage"; readonly stage: StageName };
 

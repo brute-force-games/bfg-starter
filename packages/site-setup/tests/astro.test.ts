@@ -12,7 +12,13 @@ function integrationNames(config: AstroUserConfig): string[] {
   if (integrations === undefined) {
     throw new Error("the config has no integrations");
   }
-  return integrations.flat().flatMap((integration) => (integration ? [integration.name] : []));
+  return integrations
+    .flat()
+    .flatMap((integration) =>
+      integration === false || integration === null || integration === undefined
+        ? []
+        : [integration.name],
+    );
 }
 
 describe("a site's Astro config", () => {

@@ -11,7 +11,7 @@ import { DEAD_CODE_KINDS, type DeadCode, type DeadCodeKind } from "./qualityHist
 export const DEAD_CODE_BASELINE_FILE = "dead-code-baseline.json";
 
 /** The kinds that ratchet down from a baseline; every other kind is held at zero. */
-export type RatchetedKind = "exports" | "types";
+type RatchetedKind = "exports" | "types";
 const RATCHETED_KINDS: readonly RatchetedKind[] = ["exports", "types"];
 
 const count = z.number().int().nonnegative();

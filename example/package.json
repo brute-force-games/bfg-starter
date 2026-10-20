@@ -5,10 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
+    "check:watch": "astro check --watch",
     "build": "astro build",
     "typecheck": "astro sync && astro check && tsc --noEmit",
     "test": "vitest run --project unit",
     "test:e2e": "playwright test",
+    "smoke": "bfg-site smoke",
     "lint": "oxlint --type-aware && knip",
     "format": "oxfmt --ignore-path .gitignore",
     "format:check": "oxfmt --check --ignore-path .gitignore",
