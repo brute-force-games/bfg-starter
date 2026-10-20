@@ -20,7 +20,12 @@ describe("a site's knip config", () => {
     // Act
     const config = siteKnipConfig({ root: site });
     // Assert
-    expect(config).toEqual({ entry: [], ignore: [], ignoreDependencies: [], rules: DEAD_CODE_RULES });
+    expect(config).toEqual({
+      entry: [],
+      ignore: [],
+      ignoreDependencies: [],
+      rules: DEAD_CODE_RULES,
+    });
     expect(new Set(Object.values(DEAD_CODE_RULES))).toEqual(new Set(["error"]));
   });
 

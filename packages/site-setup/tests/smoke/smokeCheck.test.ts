@@ -20,26 +20,26 @@ const CLEAN: PageVisit = HEALTHY.visit;
 
 /** Visits, and the first thing wrong in each. */
 const VISITS = [
-    { what: "nothing", visit: CLEAN, problem: undefined },
-    {
-      what: "a server error first",
-      visit: {
-        pageErrors: ["boom"],
-        serverErrors: [{ url: `${SERVER}/a.js`, status: 504 }],
-        ready: false,
-      },
-      problem: { kind: "server-error", error: { url: `${SERVER}/a.js`, status: 504 } },
+  { what: "nothing", visit: CLEAN, problem: undefined },
+  {
+    what: "a server error first",
+    visit: {
+      pageErrors: ["boom"],
+      serverErrors: [{ url: `${SERVER}/a.js`, status: 504 }],
+      ready: false,
     },
-    {
-      what: "an uncaught error before no Ready",
-      visit: { pageErrors: ["_jsxDEV is not a function", "later"], serverErrors: [], ready: false },
-      problem: { kind: "page-error", message: "_jsxDEV is not a function" },
-    },
-    {
-      what: "no Ready",
-      visit: { ...CLEAN, ready: false },
-      problem: { kind: "never-ready", seconds: SMOKE_TIMEOUT_MS / 1000 },
-    },
+    problem: { kind: "server-error", error: { url: `${SERVER}/a.js`, status: 504 } },
+  },
+  {
+    what: "an uncaught error before no Ready",
+    visit: { pageErrors: ["_jsxDEV is not a function", "later"], serverErrors: [], ready: false },
+    problem: { kind: "page-error", message: "_jsxDEV is not a function" },
+  },
+  {
+    what: "no Ready",
+    visit: { ...CLEAN, ready: false },
+    problem: { kind: "never-ready", seconds: SMOKE_TIMEOUT_MS / 1000 },
+  },
 ];
 
 describe("what's wrong in a visit", () => {
@@ -130,7 +130,6 @@ describe("smoke-checking a site", () => {
     expect(smokePasses(outcome)).toBe(true);
     expect(smokeLines(outcome)).toEqual(["Smoke: 3 pages healthy at http://localhost:4330."]);
   });
-
 });
 
 describe("smoke-checking a site whose server is sick or gone", () => {

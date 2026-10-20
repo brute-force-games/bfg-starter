@@ -1,8 +1,11 @@
 {
   "name": "@brute-force-games/site-setup",
   "private": true,
-  "type": "module",
   "description": "What every Brute Force Games static site shares, as presets a site extends: its Astro config, its test stages' Vitest config, its Playwright config and dev-server gate, its TypeScript, oxlint, knip and oxfmt bases, its style tokens and its base layout, its content collections, Storybook and integrations, and each run's HTML reports. The plan: the repo migration plan, \"The shared site setup\".",
+  "bin": {
+    "bfg-site": "./src/bin/bfg-site.ts"
+  },
+  "type": "module",
   "exports": {
     "./astro": "./src/astro.ts",
     "./vitest": "./src/vitest.ts",
@@ -31,9 +34,6 @@
     "./e2e": "./src/e2e.ts",
     "./e2e-guard": "./src/e2eGuard.ts"
   },
-  "bin": {
-    "bfg-site": "./src/bin/bfg-site.ts"
-  },
   "dependencies": {
     "@brute-force-games/cases": "file:../../../bfg-core/platform/cases",
     "@brute-force-games/room-view": "file:../../../bfg-core/platform/room-view",
@@ -57,7 +57,6 @@
     "vite": ">=7.0.0",
     "vitest": "^5.0.0"
   },
-  "coverageMinimum": 100,
   "peerDependenciesMeta": {
     "@storybook/react-vite": {
       "optional": true
@@ -77,5 +76,6 @@
     "storybook": {
       "optional": true
     }
-  }
+  },
+  "coverageMinimum": 100
 }

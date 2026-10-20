@@ -1,17 +1,8 @@
 {
-  "jsPlugins": [
-    "oxlint-plugin-complexity"
-  ],
+  "jsPlugins": ["oxlint-plugin-complexity"],
   "plugins": [],
   "categories": {},
-  "ignorePatterns": [
-    "dist",
-    "coverage",
-    ".astro",
-    "storybook-static",
-    ".builds",
-    "reports"
-  ],
+  "ignorePatterns": ["dist", "coverage", ".astro", "storybook-static", ".builds", "reports"],
   "rules": {
     "complexity/complexity": [
       "warn",

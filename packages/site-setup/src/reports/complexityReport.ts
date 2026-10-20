@@ -71,9 +71,13 @@ const exitCodeOf = (status: number | null): number => status ?? 1;
 /** The ports on the site at `root`: the commands run there, the files written there. */
 export const nodeComplexityPorts = (root: string): ComplexityPorts => ({
   output: (command) =>
-    spawnSync(command.program, command.args, { cwd: root, encoding: "utf8", maxBuffer: 64 * 1024 * 1024 })
-      .stdout,
-  run: (command) => exitCodeOf(spawnSync(command.program, command.args, { cwd: root, stdio: "inherit" }).status),
+    spawnSync(command.program, command.args, {
+      cwd: root,
+      encoding: "utf8",
+      maxBuffer: 64 * 1024 * 1024,
+    }).stdout,
+  run: (command) =>
+    exitCodeOf(spawnSync(command.program, command.args, { cwd: root, stdio: "inherit" }).status),
   write: (path, text) => {
     mkdirSync(dirname(path), { recursive: true });
     writeFileSync(path, text);

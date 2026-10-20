@@ -1,4 +1,8 @@
-import { READY_STATUS_NAME, readinessText, type RoomReadiness } from "@brute-force-games/room-view/readiness";
+import {
+  READY_STATUS_NAME,
+  readinessText,
+  type RoomReadiness,
+} from "@brute-force-games/room-view/readiness";
 import { useAllIslandsHydrated } from "./useAllIslandsHydrated.ts";
 
 /**

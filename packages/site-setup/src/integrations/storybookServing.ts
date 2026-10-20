@@ -1,5 +1,13 @@
 import { execFile } from "node:child_process";
-import { createReadStream, existsSync, mkdirSync, mkdtempSync, renameSync, rmSync, statSync } from "node:fs";
+import {
+  createReadStream,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  renameSync,
+  rmSync,
+  statSync,
+} from "node:fs";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { join } from "node:path";
 import { contentTypeFor, resolveStaticTarget } from "./staticDir.ts";

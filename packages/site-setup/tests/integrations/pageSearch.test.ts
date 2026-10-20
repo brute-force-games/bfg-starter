@@ -1,7 +1,12 @@
 import { existsSync, mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { indexPages, type IndexStarted, type PageIndex, type PageIndexer } from "../../src/integrations/pageSearch.ts";
+import {
+  indexPages,
+  type IndexStarted,
+  type PageIndex,
+  type PageIndexer,
+} from "../../src/integrations/pageSearch.ts";
 
 /** Search over a built site's pages (src/integrations/pageSearch.ts), with Pagefind itself. */
 
@@ -19,7 +24,10 @@ afterEach(() => {
 function page(path: string, text: string): void {
   const full = join(site, path);
   mkdirSync(join(full, ".."), { recursive: true });
-  writeFileSync(full, `<!doctype html><html lang="en"><body><main data-pagefind-body><h1>${text}</h1><p>${text} words.</p></main></body></html>`);
+  writeFileSync(
+    full,
+    `<!doctype html><html lang="en"><body><main data-pagefind-body><h1>${text}</h1><p>${text} words.</p></main></body></html>`,
+  );
 }
 
 describe("page search", () => {
@@ -66,7 +74,10 @@ function standIn(created: IndexStarted): PageIndexer & { readonly closed: () => 
 }
 
 /** An index whose adding and writing report `addErrors` and `writeErrors`. */
-const indexReporting = (addErrors: readonly string[], writeErrors: readonly string[]): PageIndex => ({
+const indexReporting = (
+  addErrors: readonly string[],
+  writeErrors: readonly string[],
+): PageIndex => ({
   addDirectory: () => Promise.resolve({ errors: addErrors, page_count: 1 }),
   writeFiles: () => Promise.resolve({ errors: writeErrors }),
 });

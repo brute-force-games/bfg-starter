@@ -7,6 +7,8 @@ import { readFileSync } from "node:fs";
  */
 export function runtimeImportsOf(file: URL, pkg: string): string[] {
   const escaped = pkg.replaceAll(/[/.]/gu, (char) => `\\${char}`);
-  const imports = readFileSync(file, "utf8").matchAll(new RegExp(String.raw`\bimport\s+([^;]*?)\s+from\s+"${escaped}"`, "gu"));
+  const imports = readFileSync(file, "utf8").matchAll(
+    new RegExp(String.raw`\bimport\s+([^;]*?)\s+from\s+"${escaped}"`, "gu"),
+  );
   return [...imports].map(([, what]) => String(what)).filter((what) => !what.startsWith("type "));
 }

@@ -63,7 +63,6 @@ describe("the dev-server gate", () => {
       "  ✗ /: uncaught error: _jsxDEV is not a function",
     );
   });
-
 });
 
 describe("the dev-server gate, before any page", () => {
@@ -98,6 +97,8 @@ describe("the dev-server gate, before any page", () => {
     vi.stubEnv("E2E_BASE_URL", SERVER);
     vi.spyOn(process, "cwd").mockReturnValue(root);
     // Act, Assert
-    await expect(devServerUp()).rejects.toThrow(`No bfg-site.json at ${join(root, "bfg-site.json")}`);
+    await expect(devServerUp()).rejects.toThrow(
+      `No bfg-site.json at ${join(root, "bfg-site.json")}`,
+    );
   });
 });

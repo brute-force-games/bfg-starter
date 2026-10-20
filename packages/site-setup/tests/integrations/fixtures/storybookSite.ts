@@ -33,7 +33,9 @@ export function storybookSite(): StorybookSite {
 }
 
 /** A builder that writes a Storybook build's index, saying `which`, and counts its builds. */
-export function writingBuilder(which: string): StorybookBuilder & { readonly builds: () => number } {
+export function writingBuilder(
+  which: string,
+): StorybookBuilder & { readonly builds: () => number } {
   let builds = 0;
   return {
     build: (outputDir) => {

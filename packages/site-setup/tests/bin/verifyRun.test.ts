@@ -59,7 +59,6 @@ describe("a verify run", () => {
     expect(seen.ran.map((check) => check.name)).not.toContain("e2e");
     expect(seen.said.at(-1)).toBe("\nRed: static.");
   });
-
 });
 
 describe("a verify run with a sick dev server", () => {

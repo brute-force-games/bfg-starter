@@ -63,15 +63,9 @@ describe("the complexity report", () => {
   });
 
   it("asks oxlint for complexity as SARIF, and sarif-explorer for HTML", () => {
-    expect(complexitySarif({ config: "lint/complexity.json", sources: ["src", "tools"] }).args).toEqual([
-      "oxlint",
-      "-c",
-      "lint/complexity.json",
-      "--format",
-      "sarif",
-      "src",
-      "tools",
-    ]);
+    expect(
+      complexitySarif({ config: "lint/complexity.json", sources: ["src", "tools"] }).args,
+    ).toEqual(["oxlint", "-c", "lint/complexity.json", "--format", "sarif", "src", "tools"]);
     expect(renderSarif("in.sarif", "out.html").args).toEqual([
       "sarif-explorer",
       "--input",

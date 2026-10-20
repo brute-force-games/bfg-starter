@@ -43,7 +43,9 @@ describe("waiting for the page to be ready", () => {
 
   it("doesn't take an unnamed status's Ready for the page's", async () => {
     // Arrange: a game's own status says Ready; the page's still loads.
-    await page.setContent('<p role="status">Ready</p><p role="status" aria-label="Page status">Loading…</p>');
+    await page.setContent(
+      '<p role="status">Ready</p><p role="status" aria-label="Page status">Loading…</p>',
+    );
     // Act, Assert
     await expect(pageReady(page)).rejects.toThrow(/Timeout/u);
   });
@@ -76,6 +78,8 @@ describe("waiting for an island to hydrate", () => {
 
   it("times out while it still shows the server's HTML", async () => {
     await page.setContent("<astro-island ssr><button>Press</button></astro-island>");
-    await expect(islandHydrated(page.getByRole("button", { name: "Press" }))).rejects.toThrow(/Timeout/u);
+    await expect(islandHydrated(page.getByRole("button", { name: "Press" }))).rejects.toThrow(
+      /Timeout/u,
+    );
   });
 });

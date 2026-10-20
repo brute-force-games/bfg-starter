@@ -1,5 +1,11 @@
 import { tmpdir } from "node:os";
-import { missingHtmlReporter, packageIn, siteTestConfig, siteTestConfigIn, siteVitestConfig } from "../src/vitest.ts";
+import {
+  missingHtmlReporter,
+  packageIn,
+  siteTestConfig,
+  siteTestConfigIn,
+  siteVitestConfig,
+} from "../src/vitest.ts";
 
 /** A site's test stages (src/vitest.ts): the three projects, and coverage in a folder per run. */
 
@@ -10,7 +16,10 @@ describe("a site's test config", () => {
     // Assert
     expect(config.projects).toEqual([
       { extends: true, test: { name: "unit", include: ["tests/unit/**/*.test.{ts,tsx}"] } },
-      { extends: true, test: { name: "integration", include: ["tests/integration/**/*.test.{ts,tsx}"] } },
+      {
+        extends: true,
+        test: { name: "integration", include: ["tests/integration/**/*.test.{ts,tsx}"] },
+      },
       { extends: true, test: { name: "property", include: ["tests/property/**/*.test.{ts,tsx}"] } },
     ]);
     expect(config).toMatchObject({ environment: "jsdom", globals: true, cache: false });
@@ -48,18 +57,17 @@ describe("a site's test reports", () => {
   });
 
   it("are HTML too, in the folder a verify's run gives", () => {
-    expect(siteTestConfigIn({}, { BFG_TEST_REPORT_DIR: "/runs/one/tests/unit" }, () => true).reporters).toEqual([
-      "default",
-      ["html", { outputDir: "/runs/one/tests/unit" }],
-    ]);
+    expect(
+      siteTestConfigIn({}, { BFG_TEST_REPORT_DIR: "/runs/one/tests/unit" }, () => true).reporters,
+    ).toEqual(["default", ["html", { outputDir: "/runs/one/tests/unit" }]]);
   });
 });
 
 describe("a site's test reports, without the html reporter's package", () => {
   it("stop the run, saying what to install", () => {
-    expect(() => siteTestConfigIn({}, { BFG_TEST_REPORT_DIR: "/runs/one/tests/unit" }, () => false)).toThrow(
-      missingHtmlReporter("/runs/one/tests/unit"),
-    );
+    expect(() =>
+      siteTestConfigIn({}, { BFG_TEST_REPORT_DIR: "/runs/one/tests/unit" }, () => false),
+    ).toThrow(missingHtmlReporter("/runs/one/tests/unit"));
     expect(missingHtmlReporter("/r")).toContain("@vitest/ui");
   });
 });

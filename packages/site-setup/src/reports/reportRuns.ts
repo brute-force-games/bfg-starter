@@ -82,7 +82,9 @@ export function keptRunsOf(given: string | undefined): KeptRuns {
   if (given === undefined) {
     return { kind: "keep", runs: KEPT_BY_DEFAULT };
   }
-  return WHOLE_FROM_ONE.test(given) ? { kind: "keep", runs: Number(given) } : { kind: "unreadable", given };
+  return WHOLE_FROM_ONE.test(given)
+    ? { kind: "keep", runs: Number(given) }
+    : { kind: "unreadable", given };
 }
 
 /** Why `REPORTS_KEEP` can't be read, in words. */

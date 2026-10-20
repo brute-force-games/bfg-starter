@@ -67,7 +67,12 @@ const reportersFor = ({ reportDir }: E2ERun): ReporterDescription[] =>
 
 /** The site's Playwright config for `run`. */
 export function playwrightConfigOf(
-  { devices, projects = chromeOf(devices), timeout = 120_000, expectTimeout = 30_000 }: SitePlaywrightOptions,
+  {
+    devices,
+    projects = chromeOf(devices),
+    timeout = 120_000,
+    expectTimeout = 30_000,
+  }: SitePlaywrightOptions,
   run: E2ERun,
 ): PlaywrightTestConfig {
   return {
@@ -99,5 +104,8 @@ export function sitePlaywrightConfig(
   env[E2E_RUN_DIR_ENV] = outputDir;
   env[DEV_SERVER_URL_ENV] = baseUrl;
   const reportDir = env[REPORT_DIR_ENV];
-  return playwrightConfigOf(options, reportDir === undefined ? { outputDir, baseUrl } : { outputDir, baseUrl, reportDir });
+  return playwrightConfigOf(
+    options,
+    reportDir === undefined ? { outputDir, baseUrl } : { outputDir, baseUrl, reportDir },
+  );
 }

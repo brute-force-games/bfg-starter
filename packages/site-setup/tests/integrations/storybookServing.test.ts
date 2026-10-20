@@ -160,7 +160,10 @@ describe("the route", () => {
     // Arrange
     site.file("storybook-static/index.html", 100, "<p>stories</p>");
     // Act
-    const response = await get(serveStorybook(site.folders.snapshot, () => false), "/storybook/");
+    const response = await get(
+      serveStorybook(site.folders.snapshot, () => false),
+      "/storybook/",
+    );
     // Assert
     expect(response).toEqual({
       status: 200,
@@ -179,14 +182,20 @@ describe("the route", () => {
     // Arrange
     site.file("storybook-static/assets/index.html", 100);
     // Act
-    const response = await get(serveStorybook(site.folders.snapshot, () => false), path);
+    const response = await get(
+      serveStorybook(site.folders.snapshot, () => false),
+      path,
+    );
     // Assert
     expect(response.status).toBe(status);
   });
 
   it("says it's building, and refreshes, until the first build is done", async () => {
     // Act
-    const response = await get(serveStorybook(site.folders.snapshot, () => true), "/storybook/");
+    const response = await get(
+      serveStorybook(site.folders.snapshot, () => true),
+      "/storybook/",
+    );
     // Assert
     expect(response.status).toBe(503);
     expect(response.body).toContain("Storybook is building");

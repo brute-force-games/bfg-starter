@@ -41,7 +41,6 @@ describe("bfg-site smoke, passing", () => {
     expect(status).toBe(0);
     expect(seen.smoke.visited).toEqual([`${own}/`]);
   });
-
 });
 
 describe("bfg-site smoke, failing", () => {

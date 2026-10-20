@@ -53,7 +53,9 @@ export function siteTestConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./tests/setup.ts"],
-    ...(testReportDir === undefined ? {} : { reporters: ["default", ["html", { outputDir: testReportDir }]] }),
+    ...(testReportDir === undefined
+      ? {}
+      : { reporters: ["default", ["html", { outputDir: testReportDir }]] }),
     // No results cache: it's one file every run reads and writes, and runs side by side must not
     // share state.
     cache: false,

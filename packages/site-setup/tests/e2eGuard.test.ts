@@ -24,8 +24,14 @@ describe("a site's e2e tests", () => {
   });
 
   it("are caught at each goto of their own, in any file under the folder, by file and line", () => {
-    writeFileSync(join(dir, "home.spec.ts"), 'await open(page, "/");\nawait page.goto("/about/");\n');
-    writeFileSync(join(dir, "rooms", "players.ts"), 'export const join = (page) => page.goto("/");\n');
+    writeFileSync(
+      join(dir, "home.spec.ts"),
+      'await open(page, "/");\nawait page.goto("/about/");\n',
+    );
+    writeFileSync(
+      join(dir, "rooms", "players.ts"),
+      'export const join = (page) => page.goto("/");\n',
+    );
     writeFileSync(join(dir, "notes.md"), 'page.goto("/") in prose\n');
     expect(directGotos(dir)).toEqual(["home.spec.ts:2", "rooms/players.ts:1"]);
   });
@@ -33,6 +39,8 @@ describe("a site's e2e tests", () => {
 
 describe("the e2e helpers' imports", () => {
   it("take only Playwright's types, never its code", () => {
-    expect(runtimeImportsOf(new URL("../src/e2e.ts", import.meta.url), "@playwright/test")).toEqual([]);
+    expect(runtimeImportsOf(new URL("../src/e2e.ts", import.meta.url), "@playwright/test")).toEqual(
+      [],
+    );
   });
 });

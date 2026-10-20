@@ -20,7 +20,10 @@ export interface SiteStorybookOptions {
 export const SITE_STORIES: readonly string[] = ["../src/**/*.stories.@(ts|tsx)"];
 
 /** Storybook's Vite, given what the site links: its checkouts served, one copy of each shared package. */
-export function storybookVite(vite: InlineConfig, { root, linked }: SiteStorybookOptions): InlineConfig {
+export function storybookVite(
+  vite: InlineConfig,
+  { root, linked }: SiteStorybookOptions,
+): InlineConfig {
   if (linked === undefined) {
     return vite;
   }

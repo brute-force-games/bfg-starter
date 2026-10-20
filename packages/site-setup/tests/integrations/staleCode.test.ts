@@ -1,4 +1,8 @@
-import { CODE_CHANGED_EVENT, codeChanged, warnsOfStaleCode } from "../../src/integrations/staleCode.ts";
+import {
+  CODE_CHANGED_EVENT,
+  codeChanged,
+  warnsOfStaleCode,
+} from "../../src/integrations/staleCode.ts";
 
 /** The stale-code warning (src/integrations/staleCode.ts): every tab told what changed, in dev. */
 

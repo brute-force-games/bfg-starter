@@ -54,7 +54,10 @@ export default defineConfig({
     ],
     coverage: {
       // Each run in a folder of its own (`npm run test:coverage` passes one), never a shared one.
-      reportsDirectory: join(tmpdir(), `bfg-starter-coverage-${String(process.pid)}-${String(Date.now())}`),
+      reportsDirectory: join(
+        tmpdir(),
+        `bfg-starter-coverage-${String(process.pid)}-${String(Date.now())}`,
+      ),
       reporter: ["text-summary", "json-summary", "html"],
       include: ["packages/site-setup/src/**/*.{ts,tsx}"],
       exclude: approved.exclusions.map(({ glob }) => `packages/site-setup/${glob}`),

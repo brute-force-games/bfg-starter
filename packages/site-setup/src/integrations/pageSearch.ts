@@ -22,7 +22,10 @@ interface IndexWritten {
 
 /** A Pagefind index, as indexing uses it. */
 export interface PageIndex {
-  readonly addDirectory: (directory: { readonly path: string; readonly glob: string }) => Promise<PagesAdded>;
+  readonly addDirectory: (directory: {
+    readonly path: string;
+    readonly glob: string;
+  }) => Promise<PagesAdded>;
   readonly writeFiles: (output: { readonly outputPath: string }) => Promise<IndexWritten>;
 }
 
@@ -39,7 +42,11 @@ export interface PageIndexer {
 }
 
 /** Indexes the pages `glob` picks in the built site at `site`; how many it indexed. */
-export async function indexPages(site: string, glob: string, indexer: PageIndexer = pagefind): Promise<number> {
+export async function indexPages(
+  site: string,
+  glob: string,
+  indexer: PageIndexer = pagefind,
+): Promise<number> {
   try {
     const { index, errors } = await indexer.createIndex();
     if (index === undefined) {

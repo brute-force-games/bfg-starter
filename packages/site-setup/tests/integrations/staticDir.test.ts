@@ -26,12 +26,9 @@ describe("resolveStaticTarget", () => {
     "/storybook/%2e%2e/secrets.txt",
     "/storybook/a/../../x",
     "/storybook/..%2F..%2Fpackage.json",
-  ])(
-    "refuses %s, which escapes the build directory",
-    (url) => {
-      expect(resolveStaticTarget(root, "/storybook", url)).toEqual({ kind: "outside" });
-    },
-  );
+  ])("refuses %s, which escapes the build directory", (url) => {
+    expect(resolveStaticTarget(root, "/storybook", url)).toEqual({ kind: "outside" });
+  });
 });
 
 describe("contentTypeFor", () => {

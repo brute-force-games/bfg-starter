@@ -8,7 +8,8 @@
 const UNHYDRATED_ISLAND = "astro-island[ssr]";
 
 /** Whether no island under `root` is still waiting to hydrate. */
-export const allIslandsHydrated = (root: ParentNode): boolean => root.querySelector(UNHYDRATED_ISLAND) === null;
+export const allIslandsHydrated = (root: ParentNode): boolean =>
+  root.querySelector(UNHYDRATED_ISLAND) === null;
 
 /**
  * Calls `done` once every island in `document` has hydrated: at once if they have, else when the
@@ -27,7 +28,12 @@ export function whenAllIslandsHydrated(document: Document, done: () => void): ()
       done();
     }
   });
-  observer.observe(document, { subtree: true, childList: true, attributes: true, attributeFilter: ["ssr"] });
+  observer.observe(document, {
+    subtree: true,
+    childList: true,
+    attributes: true,
+    attributeFilter: ["ssr"],
+  });
   return () => {
     observer.disconnect();
   };

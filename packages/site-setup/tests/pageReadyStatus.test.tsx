@@ -57,10 +57,15 @@ describe("a page's ready status", () => {
   });
 
   it("is named as room-ui's ReadyStatus is, the page's one status, an <output> (role status)", () => {
-    expect(renderToString(<PageReadyStatus />)).toMatch(/^<output aria-live="polite" aria-label="Page status">/u);
+    expect(renderToString(<PageReadyStatus />)).toMatch(
+      /^<output aria-live="polite" aria-label="Page status">/u,
+    );
   });
 
   it("is room-view's loading, then ready", () => {
-    expect([pageReadiness(false), pageReadiness(true)]).toEqual([{ kind: "loading" }, { kind: "ready" }]);
+    expect([pageReadiness(false), pageReadiness(true)]).toEqual([
+      { kind: "loading" },
+      { kind: "ready" },
+    ]);
   });
 });
