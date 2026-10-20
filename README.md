@@ -80,6 +80,24 @@ import { siteAstroConfig } from "@brute-force-games/site-setup/astro";
 export default siteAstroConfig({ root: import.meta.dirname, site: "https://bruteforce.games", port: 4322 });
 ```
 
+### The ready status
+
+Every page says, in its header, whether it's ready to use: "Loading…" until it can be, then
+"Ready" (bfg-core's
+[docs/design-notes/ready-status.md](../bfg-core/docs/design-notes/ready-status.md)). BaseLayout's
+`status` slot shows `PageReadyStatus`, ready once every island on the page has hydrated; a room's
+page puts the room's own `ReadyStatus` (room-ui) there instead. Both are one `role="status"` named
+`READY_STATUS_NAME`, in room-view's words.
+
+End-to-end tests start every page from it: they open pages through `open(page, url)` (`./e2e`),
+which waits for "Ready", never with `page.goto`, and a site's unit test asserts
+`directGotos("tests/e2e")` (`./e2e-guard`) is empty. `pageReady(page)` waits again after a page
+changes in place (a new room); `islandHydrated(locator)` waits for one island.
+
+The components import room-view's dependency-free `./readiness` entry and React only, and the
+Astro preset pre-bundles what they import (`SETUP_RUNTIME`, held to their imports by a test), so a
+site's first visit never re-optimizes and reloads the page.
+
 ### Linking with `file:`
 
 A site links the setup by `file:`, so the presets' runtime imports (Astro's React integration,
