@@ -25,13 +25,18 @@
     "./reports/folder": "./src/reports/reportFolder.ts",
     "./reports/complexity": "./src/reports/complexityReport.ts",
     "./dev-server-caches": "./src/bin/devServerCaches.ts",
-    "./coverage-minimum": "./src/bin/coverageMinimum.ts"
+    "./coverage-minimum": "./src/bin/coverageMinimum.ts",
+    "./components/PageReadyStatus": "./src/components/PageReadyStatus.tsx",
+    "./components/useAllIslandsHydrated": "./src/components/useAllIslandsHydrated.ts",
+    "./e2e": "./src/e2e.ts",
+    "./e2e-guard": "./src/e2eGuard.ts"
   },
   "bin": {
     "bfg-site": "./src/bin/bfg-site.ts"
   },
   "dependencies": {
     "@brute-force-games/cases": "file:../../../bfg-core/platform/cases",
+    "@brute-force-games/room-view": "file:../../../bfg-core/platform/room-view",
     "zod": "4.6.7"
   },
   "peerDependencies": {

@@ -1,11 +1,16 @@
 ---
 import "../styles/tokens.css";
 import "../styles/global.css";
+import { PageReadyStatus } from "../src/components/PageReadyStatus.tsx";
 
 /**
  * A Brute Force Games site's page (@brute-force-games/site-setup/layouts/BaseLayout.astro): its
  * header (the site's name and nav), and the page's content on the shared tokens. Modelled on
  * site-bruteforce.games'. A site's theme overrides token values after this one's styles.
+ *
+ * The header ends with the page's ready status (bfg-core's docs/design-notes/ready-status.md):
+ * `PageReadyStatus` unless the page fills the `status` slot, as a room's page does with the
+ * room's own, so a page has one "Ready".
  */
 interface NavLink {
   href: string;
@@ -40,6 +45,9 @@ const { site, title, description, nav } = Astro.props;
       <nav aria-label="Site">
         {nav.map(({ href, label }) => <a href={href}>{label}</a>)}
       </nav>
+      <div class="status">
+        <slot name="status"><PageReadyStatus client:load /></slot>
+      </div>
     </header>
     <main>
       <slot />
@@ -59,6 +67,9 @@ const { site, title, description, nav } = Astro.props;
     font-weight: 700;
     color: inherit;
     text-decoration: none;
+  }
+  .status {
+    margin-left: auto;
   }
   nav {
     display: flex;

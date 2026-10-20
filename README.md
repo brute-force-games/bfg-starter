@@ -22,6 +22,9 @@ flowchart LR
 | `./playwright` | `sitePlaywrightConfig({ port, devices })` (`devices` the site's own, from its `@playwright/test`): e2e against the site's own dev server (never started for it; no run at all without it, the gate saying how to start it), each run's output in a fresh folder |
 | `./lint` | the oxlint base a site's `.oxlintrc.json` extends (bfg-core's preset) |
 | `./knip` | `siteKnipConfig({ entry?, ignore?, ignoreDependencies?, root? })`, a site's `knip.ts`: every kind of dead code held at zero, its content collections an entry if it has a `content/` folder |
+| `./components/PageReadyStatus` | the ready status of a page with no room: "Loading…" until every island has hydrated, then "Ready", in room-view's words (`useAllIslandsHydrated` is `./components/useAllIslandsHydrated`) |
+| `./e2e` | `open(page, url)` (goes to a page and waits for its "Ready"), `pageReady(page)`, `islandHydrated(locator)`, `readyStatus(page)`: Playwright's types only |
+| `./e2e-guard` | `directGotos(dir)`: each `.goto(` a site's e2e tests make themselves, for a unit test that keeps every page opened through `open` |
 | `./oxfmt` | `siteOxfmtConfig({ ignore? })`, a site's `oxfmt.config.ts` (oxfmt has no `extends`): authored prose, lock files and tool output left alone |
 | `./content` | `markdownIn(folder)`, `yamlIn(folder)`: a content collection's loader, over content/`folder` |
 | `./storybook` | `siteStorybookConfig({ root, linked? })`, a site's `.storybook/main.ts`: React on Vite, its own stories, no telemetry, its links served as in its Astro config |
@@ -35,7 +38,7 @@ flowchart LR
 | `./dev-server-caches` | `devServerCachesFrom(env)`: the caches of a dev server of verify's own (`BFG_DEV_SERVER_CACHE`), for a site's Astro config not yet on the preset |
 | `./coverage-minimum` | `readCoverageMinimums(path)` and the ratchet's schema: a site's Vitest config reads its `coverage-minimum.json` through it |
 | `./styles/tokens.css`, `./styles/global.css` | the design tokens (a site overrides values, never names) and the body rule |
-| `./layouts/BaseLayout.astro` | the page shell: head, title, description, a nav, and slots for the head and the page |
+| `./layouts/BaseLayout.astro` | the page shell: head, title, description, a nav, and slots for the head and the page; its header ends with the page's ready status (`status` slot, `PageReadyStatus` unless the page fills it) |
 
 ### The `bfg-site` command
 

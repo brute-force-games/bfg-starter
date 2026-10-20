@@ -1,6 +1,7 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { devices } from "@playwright/test";
 import { tmpdir } from "node:os";
+import { runtimeImportsOf } from "./fixtures/imports.ts";
 import { DEV_SERVER_GATE, playwrightConfigOf, sitePlaywrightConfig } from "../src/playwright.ts";
 
 /** A site's end-to-end config (src/playwright.ts): its dev server, gated; one worker; its run's folder. */
@@ -78,11 +79,6 @@ describe("the preset's imports", () => {
   it("takes only Playwright's types, never its code, so a site's runner loads one copy", () => {
     // A runtime import would resolve from bfg-starter's node_modules when a site links the setup
     // by file:, and Playwright refuses a second copy of itself.
-    const source = readFileSync(new URL("../src/playwright.ts", import.meta.url), "utf8");
-    const imports = [...source.matchAll(/\bimport\s+([^;]*?)\s+from\s+"@playwright\/test"/gu)].map(
-      ([, what]) => what,
-    );
-    expect(imports.length).toBeGreaterThan(0);
-    expect(imports.filter((what) => !String(what).startsWith("type "))).toEqual([]);
+    expect(runtimeImportsOf(new URL("../src/playwright.ts", import.meta.url), "@playwright/test")).toEqual([]);
   });
 });

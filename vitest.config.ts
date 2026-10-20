@@ -30,13 +30,33 @@ export default defineConfig({
   test: {
     environment: "node",
     globals: true,
-    include: ["packages/site-setup/tests/**/*.test.ts"],
     cache: false,
+    projects: [
+      {
+        extends: true,
+        test: {
+          name: "unit",
+          include: ["packages/site-setup/tests/**/*.test.{ts,tsx}"],
+          exclude: ["packages/site-setup/tests/browser/**"],
+        },
+      },
+      // The e2e helpers, in a real headless Chromium: one file at a time, so it doesn't slow the
+      // unit project, and still counted toward coverage.
+      {
+        extends: true,
+        test: {
+          name: "browser",
+          include: ["packages/site-setup/tests/browser/**/*.test.ts"],
+          fileParallelism: false,
+          testTimeout: 20_000,
+        },
+      },
+    ],
     coverage: {
       // Each run in a folder of its own (`npm run test:coverage` passes one), never a shared one.
       reportsDirectory: join(tmpdir(), `bfg-starter-coverage-${String(process.pid)}-${String(Date.now())}`),
       reporter: ["text-summary", "json-summary", "html"],
-      include: ["packages/site-setup/src/**/*.ts"],
+      include: ["packages/site-setup/src/**/*.{ts,tsx}"],
       exclude: approved.exclusions.map(({ glob }) => `packages/site-setup/${glob}`),
       thresholds: {
         lines: setup.coverageMinimum,

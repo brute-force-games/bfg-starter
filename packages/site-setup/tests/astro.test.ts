@@ -1,5 +1,6 @@
 import type { AstroUserConfig } from "astro";
-import { LINKED_DEDUPE, LINKED_RUNTIME, siteAstroConfig } from "../src/astro.ts";
+import { readdirSync, readFileSync } from "node:fs";
+import { LINKED_DEDUPE, LINKED_RUNTIME, SETUP_RUNTIME, SOURCE_PACKAGES, siteAstroConfig } from "../src/astro.ts";
 
 /** A site's Astro config (src/astro.ts): static, React, its port; linked packages' Vite settings. */
 
@@ -23,13 +24,14 @@ describe("a site's Astro config", () => {
       output: "static",
       site: "https://one.example",
       server: { port: 4400 },
-      vite: { server: { strictPort: true }, optimizeDeps: { include: [] }, worker: { format: "es" } },
+      vite: { server: { strictPort: true }, optimizeDeps: { include: [...SETUP_RUNTIME] }, worker: { format: "es" } },
     });
     expect(integrationNames(config)).toEqual(["@astrojs/react"]);
   });
 
   it("pre-bundles what the site’s own pages reach only by a dynamic import", () => {
     expect(siteAstroConfig({ ...SITE, optimize: ["mermaid"] }).vite?.optimizeDeps?.include).toEqual([
+      ...SETUP_RUNTIME,
       "mermaid",
     ]);
   });
@@ -55,7 +57,7 @@ describe("a site's Astro config, linking bfg-core's packages", () => {
     // Assert
     expect(config.vite?.server).toEqual({ strictPort: true, fs: { allow: ["/sites/one", "/sites"] } });
     expect(config.vite?.resolve?.dedupe).toEqual([...LINKED_DEDUPE]);
-    expect(config.vite?.optimizeDeps?.include).toEqual([...LINKED_RUNTIME, "mermaid"]);
+    expect(config.vite?.optimizeDeps?.include).toEqual([...SETUP_RUNTIME, ...LINKED_RUNTIME, "mermaid"]);
   });
 });
 
@@ -74,5 +76,63 @@ describe("a site's Astro config, on a dev server of verify's own", () => {
     // Assert
     expect(config.cacheDir).toBeUndefined();
     expect(config.vite?.cacheDir).toBeUndefined();
+  });
+});
+
+/** The package a bare optimize entry names: `tinybase` for `tinybase/synchronizers`, a scope kept. */
+const packageOf = (entry: string): string =>
+  entry.split("/").slice(0, entry.startsWith("@") ? 2 : 1).join("/");
+
+describe("the linked runtime's entries", () => {
+  it("are each, if bare, a package the site dedupes, so they resolve to the site's one copy", () => {
+    const bare = LINKED_RUNTIME.filter((entry) => !entry.includes(" > "));
+    expect(bare.map((entry) => packageOf(entry)).filter((name) => !LINKED_DEDUPE.includes(name))).toEqual([]);
+  });
+
+  it("name what only a linked package uses through it, Vite's nested form", () => {
+    expect(LINKED_RUNTIME).toContain("@brute-force-games/identity > @hpke/core");
+  });
+});
+
+describe("a site's Astro config, its packages in dev SSR", () => {
+  it.each([
+    { what: "linking bfg-core", options: { ...SITE, linked: "/sites" } },
+    { what: "linking nothing (the setup's own components still come from source)", options: SITE },
+  ])("compiles every Brute Force Games package for SSR, never leaves it to Node: $what", ({ options }) => {
+    expect(siteAstroConfig(options, {}).vite?.ssr?.noExternal).toEqual([SOURCE_PACKAGES]);
+  });
+
+  it.each([
+    { name: "@brute-force-games/room-view", source: true },
+    { name: "@brute-force-games/site-setup/components/PageReadyStatus", source: true },
+    { name: "react", source: false },
+    { name: "@astrojs/react", source: false },
+  ])("counts $name as a source package: $source", ({ name, source }) => {
+    expect(SOURCE_PACKAGES.test(name)).toBe(source);
+  });
+});
+
+/** The packages the setup's components import (src/components/): third-party, by package name. */
+function componentPackages(): string[] {
+  const folder = new URL("../src/components/", import.meta.url);
+  const specs = readdirSync(folder).flatMap((file) =>
+    [...readFileSync(new URL(file, folder), "utf8").matchAll(/\bfrom\s+"([^".][^"]*)"/gu)].map(([, spec]) => String(spec)),
+  );
+  const names = specs
+    .filter((spec) => !SOURCE_PACKAGES.test(spec))
+    .map((spec) => spec.split("/").slice(0, spec.startsWith("@") ? 2 : 1).join("/"));
+  return [...new Set(names)].toSorted();
+}
+
+describe("what the setup's own components need, pre-bundled", () => {
+  it("is in every site's config, linked or not, so a first visit never re-optimizes", () => {
+    expect(siteAstroConfig(SITE, {}).vite?.optimizeDeps?.include).toEqual(expect.arrayContaining([...SETUP_RUNTIME]));
+    expect(siteAstroConfig({ ...SITE, linked: "/sites" }, {}).vite?.optimizeDeps?.include).toEqual(
+      expect.arrayContaining([...SETUP_RUNTIME]),
+    );
+  });
+
+  it("covers every third-party package the components import", () => {
+    expect(componentPackages()).toEqual([...SETUP_RUNTIME].toSorted());
   });
 });
