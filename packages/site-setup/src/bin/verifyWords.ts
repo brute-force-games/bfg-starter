@@ -4,7 +4,7 @@ import { OWN_DEV_SERVER_WAIT_SECONDS } from "./ownDevServer.ts";
 import type { Check, ProcessState } from "./ports.ts";
 import type { CheckOutcome, CheckResult, E2ESkip, Verdict } from "./verifyStages.ts";
 
-/** What verify says of a run: a line per check, why e2e didn't run, and the verdict. */
+/** What verify says of a run: a line per check, why smoke or e2e didn't run, and the verdict. */
 
 /** What follows a check's name in its line. */
 const outcomeWords: Cases<CheckOutcome, "kind", string> = {
@@ -32,6 +32,10 @@ export const ownDevServerUnanswered = (
       : { kind: "not-ready", waitedSeconds: OWN_DEV_SERVER_WAIT_SECONDS },
   seconds,
 });
+
+/** Why the smoke check didn't run, in a `verify` run: no dev server answered at `url`. */
+export const smokeSkippedLine = (url: string): string =>
+  `smoke: skipped, no dev server at ${url} (start yours with \`npm run dev\`, or run with ${OWN_DEV_SERVER_FLAG})`;
 
 /** Why e2e didn't run, in words. */
 export const skippedLine = (reason: E2ESkip): string =>

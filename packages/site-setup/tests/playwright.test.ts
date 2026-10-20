@@ -35,7 +35,11 @@ describe("a site's e2e config", () => {
       RUN,
     );
     // Assert
-    expect(config).toMatchObject({ projects: [{ name: "solo" }], timeout: 5, expect: { timeout: 1 } });
+    expect(config).toMatchObject({
+      projects: [{ name: "solo" }],
+      timeout: 5,
+      expect: { timeout: 1 },
+    });
   });
 });
 
@@ -64,14 +68,23 @@ describe("a site's e2e config, this run's", () => {
       E2E_BASE_URL: "http://127.0.0.1:9999",
     });
     // Assert
-    expect(config).toMatchObject({ outputDir: "/runs/given", use: { baseURL: "http://127.0.0.1:9999" } });
+    expect(config).toMatchObject({
+      outputDir: "/runs/given",
+      use: { baseURL: "http://127.0.0.1:9999" },
+    });
   });
 
   it("adds Playwright's HTML report to a verify's run folder", () => {
     // Act
-    const config = sitePlaywrightConfig(SITE, { E2E_RUN_DIR: "/runs/given", BFG_REPORT_DIR: "/reports/run" });
+    const config = sitePlaywrightConfig(SITE, {
+      E2E_RUN_DIR: "/runs/given",
+      BFG_REPORT_DIR: "/reports/run",
+    });
     // Assert
-    expect(config.reporter).toEqual([["list"], ["html", { outputFolder: "/reports/run/e2e", open: "never" }]]);
+    expect(config.reporter).toEqual([
+      ["list"],
+      ["html", { outputFolder: "/reports/run/e2e", open: "never" }],
+    ]);
   });
 });
 
@@ -79,6 +92,17 @@ describe("the preset's imports", () => {
   it("takes only Playwright's types, never its code, so a site's runner loads one copy", () => {
     // A runtime import would resolve from bfg-starter's node_modules when a site links the setup
     // by file:, and Playwright refuses a second copy of itself.
-    expect(runtimeImportsOf(new URL("../src/playwright.ts", import.meta.url), "@playwright/test")).toEqual([]);
+    expect(
+      runtimeImportsOf(new URL("../src/playwright.ts", import.meta.url), "@playwright/test"),
+    ).toEqual([]);
+  });
+
+  it.each([
+    "../src/devServerUp.ts",
+    "../src/smoke/smokeCheck.ts",
+    "../src/smoke/siteBrowser.ts",
+    "../src/e2e.ts",
+  ])("keeps the gate's %s to Playwright's types, the site's own loaded at run time", (file) => {
+    expect(runtimeImportsOf(new URL(file, import.meta.url), "@playwright/test")).toEqual([]);
   });
 });

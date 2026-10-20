@@ -1,15 +1,23 @@
 import { runBfgSite } from "../../src/bin/commands.ts";
 import type { SitePorts } from "../../src/bin/ports.ts";
+import { openSiteBrowser } from "../../src/smoke/siteBrowser.ts";
 
 /** The `bfg-site` command's entry (src/bin/bfg-site.ts): its command line, in the folder it's run from. */
 
 vi.mock("../../src/bin/commands.ts", () => ({
   runBfgSite: vi.fn<(argv: readonly string[], site: SitePorts) => Promise<number>>(
-    (_argv, site) => {
+    async (_argv, site) => {
       site.say(`now ${site.now().toISOString().slice(0, 2)}`);
       site.complain("complained");
-      return Promise.resolve(7);
+      await site.smoke.openBrowser();
+      return 7;
     },
+  ),
+}));
+
+vi.mock("../../src/smoke/siteBrowser.ts", () => ({
+  openSiteBrowser: vi.fn(() =>
+    Promise.resolve({ timeoutMs: 1000, visit: vi.fn(), close: vi.fn() }),
   ),
 }));
 
@@ -33,5 +41,6 @@ describe("the bfg-site command", () => {
     );
     expect(said).toHaveBeenCalledWith("now 20");
     expect(complained).toHaveBeenCalledWith("complained");
+    expect(openSiteBrowser).toHaveBeenCalledWith(process.cwd());
   });
 });

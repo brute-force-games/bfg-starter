@@ -26,6 +26,8 @@ describe("a site's config", () => {
         staticChecks: [],
         unitProject: "unit",
         formatIgnoreFiles: [".gitignore"],
+        smokePages: [],
+        smokeSkip: [],
       },
     });
   });

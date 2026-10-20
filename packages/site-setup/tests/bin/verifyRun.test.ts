@@ -30,6 +30,7 @@ describe("a verify run", () => {
     // Assert
     expect(passed).toBe(true);
     expect(seen.ran.map((check) => check.name)).toEqual([
+      "smoke",
       "astro sync",
       "node version",
       "format",
@@ -58,6 +59,18 @@ describe("a verify run", () => {
     expect(seen.ran.map((check) => check.name)).not.toContain("e2e");
     expect(seen.said.at(-1)).toBe("\nRed: static.");
   });
+
+  it("stops at a red smoke check, running nothing else", async () => {
+    // Arrange
+    const { site, seen } = fakeSite({ statuses: { smoke: 1 }, answers: { [YOURS]: "up" } });
+    // Act
+    const passed = await verify(site, plan(VERIFY));
+    // Assert
+    expect(passed).toBe(false);
+    expect(seen.ran.map((check) => check.name)).toEqual(["smoke"]);
+    expect(seen.said).toContain("output of smoke\n");
+    expect(seen.said.at(-1)).toBe("\nRed: smoke.");
+  });
 });
 
 describe("a verify run without your dev server", () => {
@@ -68,7 +81,11 @@ describe("a verify run without your dev server", () => {
     const passed = await verify(site, plan(VERIFY));
     // Assert
     expect(passed).toBe(false);
-    expect(seen.asked).toEqual([YOURS]);
+    expect(seen.asked).toEqual([YOURS, YOURS]);
+    expect(seen.said).toContain(
+      "\nsmoke: skipped, no dev server at http://localhost:4330 (start yours with `npm run dev`, or run with --own-dev-server)",
+    );
+    expect(seen.ran.map((check) => check.name)).not.toContain("smoke");
     expect(seen.said.at(-1)).toBe(
       "\nNot verified: every stage below e2e is green, but e2e didn't run (no dev server).",
     );
@@ -117,7 +134,7 @@ describe("a verify run's caches", () => {
     expect(seen.ran.map((check) => check.env["BFG_DEV_SERVER_CACHE"])).toEqual(
       seen.ran.map(() => join(folder, "checks-cache")),
     );
-    expect(seen.ran).toHaveLength(11);
+    expect(seen.ran).toHaveLength(12);
   });
 
   it("keep an own dev server's apart from the checks'", async () => {
@@ -130,14 +147,14 @@ describe("a verify run's caches", () => {
     const e2e = seen.ran
       .filter((check) => check.name === "e2e")
       .map((check) => check.env["BFG_DEV_SERVER_CACHE"]);
-    expect(server).toHaveLength(1);
+    expect(server).toHaveLength(2);
     expect(e2e).toHaveLength(1);
     expect(server).not.toEqual(e2e);
   });
 });
 
 describe("a verify run on a dev server of its own", () => {
-  it("starts it, runs e2e against it once it answers, and stops it", async () => {
+  it("starts one for smoke and one for e2e, runs each against its own once it answers, and stops it", async () => {
     // Arrange
     const { site, seen } = fakeSite({ answers: { [OWN]: "up" } });
     // Act
@@ -146,14 +163,15 @@ describe("a verify run on a dev server of its own", () => {
     expect(passed).toBe(true);
     expect(seen.started.map((check) => check.args)).toEqual([
       ["astro", "dev", "--ignore-lock", "--port", "4999"],
+      ["astro", "dev", "--ignore-lock", "--port", "4999"],
     ]);
-    const e2e = seen.ran.filter((check) => check.name === "e2e");
-    expect(e2e.map((check) => check.env["E2E_BASE_URL"])).toEqual([OWN]);
-    expect(e2e.map((check) => check.env["BFG_REPORT_DIR"])).toEqual(["/r"]);
-    expect(seen.stopped).toEqual(["own dev server"]);
+    const onServer = seen.ran.filter((check) => check.name === "smoke" || check.name === "e2e");
+    expect(onServer.map((check) => check.env["E2E_BASE_URL"])).toEqual([OWN, OWN]);
+    expect(onServer.map((check) => check.env["BFG_REPORT_DIR"])).toEqual(["/r", "/r"]);
+    expect(seen.stopped).toEqual(["own dev server", "own dev server"]);
   });
 
-  it("calls e2e red when its server ends without answering", async () => {
+  it("calls smoke red, and stops, when its server ends without answering", async () => {
     // Arrange
     const { site, seen } = fakeSite({ startedState: { kind: "ended", status: 1 } });
     // Act
@@ -161,7 +179,7 @@ describe("a verify run on a dev server of its own", () => {
     // Assert
     expect(passed).toBe(false);
     expect(seen.said).toContain("output of own dev server\n");
-    expect(seen.said.at(-1)).toBe("\nRed: e2e.");
+    expect(seen.said.at(-1)).toBe("\nRed: smoke.");
     expect(seen.stopped).toEqual(["own dev server"]);
   });
 

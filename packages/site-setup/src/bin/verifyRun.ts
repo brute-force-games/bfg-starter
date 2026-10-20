@@ -22,14 +22,21 @@ import {
   type Stage,
   type StageResult,
 } from "./verifyStages.ts";
-import { checkLine, ownDevServerUnanswered, skippedLine, verdictLine } from "./verifyWords.ts";
+import {
+  checkLine,
+  ownDevServerUnanswered,
+  skippedLine,
+  smokeSkippedLine,
+  verdictLine,
+} from "./verifyWords.ts";
 
 /**
- * Runs the test stages: each stage's checks at once, each writing its output to a file in this
- * run's own fresh folder, then a line per check and the whole output of any that failed. The plan
- * and its rules are verifyStages.ts; this is the processes, through the site's ports. e2e runs
- * against the maintainer's dev server, or with `--own-dev-server` one started here, on a free port,
- * its caches in this run's folder, and stopped once e2e ends.
+ * Runs the stages: each stage's checks at once, each writing its output to a file in this run's
+ * own fresh folder, then a line per check and the whole output of any that failed. The plan and its
+ * rules are verifyStages.ts; this is the processes, through the site's ports. smoke and e2e run
+ * against the maintainer's dev server (smoke is skipped when none answers), or with
+ * `--own-dev-server` against one started here for each of them, on a free port, its caches in this
+ * run's folder, and stopped once the stage ends.
  *
  * Every check runs with Astro's and Vite's caches in this run's folder too (BFG_DEV_SERVER_CACHE,
  * which the Astro preset reads): `astro sync`, `astro check` and Vitest all start Vite, and in the
@@ -150,6 +157,15 @@ async function gateFor(
   );
 }
 
+/** For a smoke stage on your dev server: its address, if nothing answers there (it's skipped). */
+async function yourServerDown(run: Run, stage: Stage, port: number): Promise<string | undefined> {
+  if (stage.name !== "smoke" || stage.devServer.kind !== "yours") {
+    return undefined;
+  }
+  const url = yourDevServerUrl(port, run.site.env);
+  return (await run.site.processes.answers(url)) === "down" ? url : undefined;
+}
+
 /** What verify is given: what's asked, the site's config, and where the run's reports go. */
 export interface VerifyPlan {
   readonly run: VerifyRun;
@@ -177,6 +193,12 @@ export async function verify(
   const results: StageResult[] = [];
   let gate: E2EDecision = { kind: "not-asked" };
   for (const stage of stagesOf(asked, config, reports)) {
+    const down =
+      asked.kind === "verify" ? await yourServerDown(run, stage, config.devServerPort) : undefined;
+    if (down !== undefined) {
+      site.say(`\n${smokeSkippedLine(down)}`);
+      continue;
+    }
     if (stage.name === "e2e" && asked.kind === "verify") {
       gate = await gateFor(run, stage, results, config.devServerPort);
       if (gate.kind === "skip") {

@@ -19,7 +19,7 @@ flowchart LR
 | `./astro` | `siteAstroConfig({ root, site?, port, linked?, optimize? })`: static pages (at `site`, else `SITE_URL`, else its dev server) with React islands, its own dev port, and the Vite settings `file:`-linked bfg-core packages need |
 | `./vitest` | `siteVitestConfig(options)`: the unit, integration and property stages, coverage in a fresh folder per run, held to the site's minimums |
 | `./tsconfig.json` | the TypeScript base a site's `tsconfig.json` extends |
-| `./playwright` | `sitePlaywrightConfig({ port, devices })` (`devices` the site's own, from its `@playwright/test`): e2e against the site's own dev server (never started for it; no run at all without it, the gate saying how to start it), each run's output in a fresh folder |
+| `./playwright` | `sitePlaywrightConfig({ port, devices })` (`devices` the site's own, from its `@playwright/test`): e2e against the site's own dev server (never started for it; no run at all unless it's healthy, the gate running the smoke check and saying what's wrong), each run's output in a fresh folder |
 | `./lint` | the oxlint base a site's `.oxlintrc.json` extends (bfg-core's preset) |
 | `./knip` | `siteKnipConfig({ entry?, ignore?, ignoreDependencies?, root? })`, a site's `knip.ts`: every kind of dead code held at zero, its content collections an entry if it has a `content/` folder |
 | `./components/PageReadyStatus` | the ready status of a page with no room: "Loading…" until every island has hydrated, then "Ready", in room-view's words (`useAllIslandsHydrated` is `./components/useAllIslandsHydrated`) |
@@ -44,12 +44,15 @@ flowchart LR
 
 The scripts a site runs, in its folder (`npx bfg-site <command>`):
 
-- `verify`: the test stages, cheapest first (static, unit, integration, property, e2e). Each
-  check's output goes to a fresh folder, and the run's reports to `reports/<date-time>-<commit>/`.
-  e2e runs only once the stages below it are green and your dev server answers. `--build` runs
-  every stage but e2e and stops at the first red one; `--stage <name>` runs one stage;
-  `--own-dev-server` runs e2e on a dev server verify starts on a free port and stops afterwards
-  (its caches stay in the run's folder).
+- `smoke`: whether the dev server in play is healthy, page by page (below). Run it alone before
+  any heavy run against your dev server; it never starts or restarts one.
+- `verify`: the smoke check first, then the test stages, cheapest first (smoke, static, unit,
+  integration, property, e2e). A red smoke check stops the run at once; with no dev server up it's
+  skipped (and so is e2e). Each check's output goes to a fresh folder, and the run's reports to
+  `reports/<date-time>-<commit>/`. e2e runs only once the stages below it are green and your dev
+  server answers. `--build` runs every stage but smoke and e2e and stops at the first red one;
+  `--stage <name>` runs one stage; `--own-dev-server` runs smoke and e2e each on a dev server
+  verify starts on a free port and stops afterwards (its caches stay in the run's folder).
 - `coverage [--record] [--reports=<run folder>] [vitest arguments]`: the unit tests with coverage,
   in a folder of their own. A green run of the whole suite raises
   `<qualityFolder>/coverage-minimum.json`, if the site keeps one.
@@ -69,8 +72,10 @@ At the site's root. `devServerPort` is required: where verify looks for your dev
 `E2E_BASE_URL` says otherwise. The rest have defaults: `qualityFolder` (`"docs/quality"`),
 `sources` (`["src", "scripts"]`, for the complexity and unreachable-code counts), `unitProject`
 (`"unit"`, the Vitest project coverage counts), `formatIgnoreFiles` (`[".gitignore"]`, each given to
-the format check as `--ignore-path`), and `staticChecks` (the site's own checks,
-`{ "name", "program", "args" }`, run beside the shared static ones).
+the format check as `--ignore-path`), `staticChecks` (the site's own checks,
+`{ "name", "program", "args" }`, run beside the shared static ones), `smokePages` (`[]`, pages the
+smoke check opens beside the routes it finds: at least one for each route with parameters, such as
+`"/rooms/demo"` for `/rooms/[id]`) and `smokeSkip` (`[]`, routes or patterns it leaves out).
 
 A site's config is then a few lines:
 
@@ -98,6 +103,26 @@ The components import room-view's dependency-free `./readiness` entry and React 
 Astro preset pre-bundles what they import (`SETUP_RUNTIME`, held to their imports by a test), so a
 site's first visit never re-optimizes and reloads the page.
 
+### The smoke check
+
+Is the dev server healthy, before anything heavy runs against it? A stale one fails every page in
+ways a base-URL fetch can't see: a 500 on each game page, or every island failing to hydrate
+("_jsxDEV is not a function") after another run re-optimized its dependencies under it.
+
+For every page route in `src/pages` (endpoints and `_`-prefixed files left out, routes with
+parameters through `smokePages`), it asks for the page and wants a 200, then opens it in headless
+Chromium and wants no uncaught error, no response of 500 or more while it loads (Vite answers 504
+for a dependency it re-optimized), and the page's status reading "Ready" within 15 seconds. It
+reports each failing page with the first thing wrong, and a route with parameters that has no page
+in `smokePages` is red too, never silently skipped.
+
+It runs in three places, always against the dev server in play and never one of its own: `npx
+bfg-site smoke` (yours, at `E2E_BASE_URL` or the site's port), verify's first stage (yours, or
+verify's own with `--own-dev-server`), and the e2e gate, Playwright's global setup, before any
+test. Chromium comes from the site's own `@playwright/test`, loaded from its install at run time,
+so a site needs its browsers installed (`npx playwright install chromium`). When it's red, restart
+the dev server and run it again.
+
 ### Linking with `file:`
 
 A site links the setup by `file:`, so the presets' runtime imports (Astro's React integration,
@@ -120,7 +145,8 @@ instead: the Playwright preset imports Playwright's types only, and the site pas
 ## Commands
 
 - `npm run test:coverage`: the setup's own tests, held to 100%, in two Vitest projects: `unit`,
-  and `browser` (the e2e helpers in headless Chromium, one file at a time).
+  and `browser` (the e2e helpers and the smoke check in headless Chromium, the smoke check against
+  a tiny server of the test's own, one file at a time).
 - `npm run typecheck`: the setup, and the example site (`astro check` and `tsc`).
 - `npm run example:test`, `npm run example:build`: the example site's tests and build.
 - `npm run example:lint`: the example's oxlint, then knip.

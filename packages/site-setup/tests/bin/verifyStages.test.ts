@@ -74,11 +74,17 @@ const staticPlan = (checks: readonly PlannedCheck[]): StagePlan => ({
 });
 
 describe("the stages a run runs", () => {
-  it("are every stage for verify, cheapest first, e2e last on your dev server", () => {
+  it("are every stage for verify: smoke first, then cheapest first, e2e last, on your dev server", () => {
     // Act
     const stages = stagesOf(VERIFY, CONFIG, NO_REPORTS).map((stage) => planOf(stage));
     // Assert
     expect(stages).toEqual([
+      {
+        name: "smoke",
+        prepare: [],
+        checks: [plain("npx bfg-site smoke")],
+        devServer: { kind: "yours" },
+      },
       staticPlan(STATIC_CHECKS),
       { name: "unit", prepare: [], checks: [plain("npx bfg-site coverage")], devServer: NONE },
       {
@@ -102,11 +108,12 @@ describe("the stages a run runs", () => {
     ]);
   });
 
-  it("put e2e on a dev server of verify's own when asked", () => {
+  it("put smoke and e2e on a dev server of verify's own when asked", () => {
     // Act
     const stages = stagesOf(VERIFY_OWN, CONFIG, NO_REPORTS).map((stage) => planOf(stage));
     // Assert
     expect(stages.map((stage) => stage.devServer)).toEqual([
+      { kind: "own" },
       NONE,
       NONE,
       NONE,
@@ -117,7 +124,7 @@ describe("the stages a run runs", () => {
 });
 
 describe("the stages the build and one stage run", () => {
-  it("are every stage but e2e for the build, its coverage recorded, its reports kept", () => {
+  it("are every stage but smoke and e2e for the build, its coverage recorded, its reports kept", () => {
     // Act
     const stages = stagesOf(BUILD, CONFIG, REPORTS).map((stage) => planOf(stage));
     // Assert
@@ -199,12 +206,17 @@ describe("a run's rules", () => {
     { run: BUILD, result: red("static"), on: false },
     { run: BUILD, result: green("static"), on: true },
     { run: VERIFY, result: red("static"), on: true },
-  ])("go on after a stage, for $run.kind, unless the build's is red", ({ run, result, on }) => {
-    // Act
-    const goes = goesOn(run, result);
-    // Assert
-    expect(goes).toBe(on);
-  });
+    { run: VERIFY, result: red("smoke"), on: false },
+    { run: VERIFY, result: green("smoke"), on: true },
+  ])(
+    "go on after a stage, for $run.kind, unless smoke or the build's is red",
+    ({ run, result, on }) => {
+      // Act
+      const goes = goesOn(run, result);
+      // Assert
+      expect(goes).toBe(on);
+    },
+  );
 });
 
 describe("e2e's gate", () => {

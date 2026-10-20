@@ -1,15 +1,22 @@
 import { reportPathsIn, TEST_REPORT_DIR_ENV, type ReportTarget } from "../reports/reportRuns.ts";
-import { STAGE_NAMES, type DevServerSource, type StageName, type VerifyRun } from "./verifyArgs.ts";
+import {
+  STAGE_NAMES,
+  usesDevServer,
+  type DevServerSource,
+  type StageName,
+  type VerifyRun,
+} from "./verifyArgs.ts";
 import { npx, type Check } from "./ports.ts";
 import type { SiteConfig } from "./siteConfig.ts";
 
 /**
- * The test stages, cheapest first, and what a run of them decides: which stages run, what each runs
- * at once, whether e2e runs, and the verdict. verifyRun.ts runs the processes; verifyArgs.ts reads
+ * The stages, the dev server's smoke check first and then the tests, cheapest first, and what a run
+ * of them decides: which stages run, what each runs at once, whether the run stops early, whether
+ * e2e runs, and the verdict. verifyRun.ts runs the processes; verifyArgs.ts reads
  * what was asked; this is the plan and the rules.
  */
 
-/** The dev server a stage runs against: none (every stage but e2e), the maintainer's, or its own. */
+/** The dev server a stage runs against: none (all but smoke and e2e), the maintainer's, or its own. */
 export type StageDevServer = { readonly kind: "none" } | DevServerSource;
 
 /** A stage: what it runs first, one after another, then its checks, all at once. */
@@ -81,6 +88,14 @@ const vitestStage = (name: "integration" | "property", reports: ReportTarget): S
   devServer: NO_SERVER,
 });
 
+/** The smoke check: every page of the dev server answering, opening cleanly and reading Ready. */
+const smokeStage = (devServer: DevServerSource): Stage => ({
+  name: "smoke",
+  prepare: [],
+  checks: [npx("smoke", "bfg-site", "smoke")],
+  devServer,
+});
+
 const e2eStage = (devServer: DevServerSource): Stage => ({
   name: "e2e",
   prepare: [],
@@ -97,6 +112,7 @@ interface StageOptions {
 }
 
 const stageMakers: Readonly<Record<StageName, (options: StageOptions) => Stage>> = {
+  smoke: ({ devServer }) => smokeStage(devServer),
   static: ({ config, reports }) => staticStage(config, reports),
   unit: ({ record, reports }) => unitStage(record, reports),
   integration: ({ reports }) => vitestStage("integration", reports),
@@ -105,8 +121,9 @@ const stageMakers: Readonly<Record<StageName, (options: StageOptions) => Stage>>
 };
 
 /**
- * The stages `run` runs, in order (e2e last, run only if `e2eGate` lets it), their reports into
- * `reports`: verify and the build keep a folder of them; a single stage, none.
+ * The stages `run` runs, in order (smoke first; e2e last, run only if `e2eGate` lets it), their
+ * reports into `reports`: verify and the build keep a folder of them; a single stage, none. The
+ * build runs neither smoke nor e2e: it has no dev server.
  */
 export function stagesOf(run: VerifyRun, config: SiteConfig, reports: ReportTarget): Stage[] {
   if (run.kind === "stage") {
@@ -116,7 +133,7 @@ export function stagesOf(run: VerifyRun, config: SiteConfig, reports: ReportTarg
     run.kind === "build"
       ? { config, record: true, devServer: { kind: "yours" }, reports }
       : { config, record: false, devServer: run.devServer, reports };
-  return STAGE_NAMES.filter((name) => run.kind === "verify" || name !== "e2e").map((name) =>
+  return STAGE_NAMES.filter((name) => run.kind === "verify" || !usesDevServer(name)).map((name) =>
     stageMakers[name](options),
   );
 }
@@ -141,9 +158,12 @@ export interface StageResult {
 export const stageGreen = (result: StageResult): boolean =>
   result.checks.every((each) => each.outcome.kind === "passed");
 
-/** Whether to go on after a stage: the build stops at the first red; the rest report them all. */
+/**
+ * Whether to go on after a stage: every run stops at a red smoke check (a sick dev server makes
+ * the rest pointless), and the build at its first red; otherwise the rest report them all.
+ */
 export const goesOn = (run: VerifyRun, result: StageResult): boolean =>
-  run.kind !== "build" || stageGreen(result);
+  stageGreen(result) || (run.kind !== "build" && result.stage !== "smoke");
 
 /** The dev server e2e would run against: verify's own (started once e2e may run), or the maintainer's. */
 export type E2EServer =

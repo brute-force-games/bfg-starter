@@ -40,14 +40,14 @@ const READINGS: { argv: string[]; reading: VerifyRunReading }[] = [
     argv: ["--build", "--own-dev-server"],
     reading: {
       kind: "unreadable",
-      problem: { kind: "own-dev-server-without-e2e", run: { kind: "build" } },
+      problem: { kind: "own-dev-server-unused", run: { kind: "build" } },
     },
   },
   {
     argv: ["--stage", "unit", "--own-dev-server"],
     reading: {
       kind: "unreadable",
-      problem: { kind: "own-dev-server-without-e2e", run: { kind: "stage", stage: "unit" } },
+      problem: { kind: "own-dev-server-unused", run: { kind: "stage", stage: "unit" } },
     },
   },
 ];
@@ -72,19 +72,19 @@ describe("what verify says of a command line it can't run", () => {
     },
     { problem: { kind: "unknown-stage", stage: "lint" }, words: 'No stage "lint".' },
     {
-      problem: { kind: "own-dev-server-without-e2e", run: { kind: "build" } },
-      words: '--own-dev-server is for a run with e2e in it, not "--build".',
+      problem: { kind: "own-dev-server-unused", run: { kind: "build" } },
+      words: '--own-dev-server is for a run with smoke or e2e in it, not "--build".',
     },
     {
-      problem: { kind: "own-dev-server-without-e2e", run: { kind: "stage", stage: "unit" } },
-      words: '--own-dev-server is for a run with e2e in it, not "unit".',
+      problem: { kind: "own-dev-server-unused", run: { kind: "stage", stage: "unit" } },
+      words: '--own-dev-server is for a run with smoke or e2e in it, not "unit".',
     },
   ])("says what's wrong, and how it's run: $problem.kind", ({ problem, words }) => {
     // Act
     const described = describeVerifyRunProblem(problem);
     // Assert
     expect(described).toBe(
-      `${words}\nUsage: bfg-site verify [--build | --stage <static | unit | integration | property | e2e>] [--own-dev-server]`,
+      `${words}\nUsage: bfg-site verify [--build | --stage <smoke | static | unit | integration | property | e2e>] [--own-dev-server]`,
     );
   });
 });

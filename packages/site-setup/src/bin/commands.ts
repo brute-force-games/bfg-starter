@@ -4,6 +4,7 @@ import { coverageRun, readCoverageAsk } from "./coverage.ts";
 import { deadCodeGate } from "./deadCode.ts";
 import { freshBuild } from "./freshBuild.ts";
 import type { SitePorts } from "./ports.ts";
+import { smokeCommand } from "./smoke.ts";
 import { verifyCommand } from "./verifyCommand.ts";
 import { describeSiteConfigProblem, readSiteConfig, type SiteConfig } from "./siteConfig.ts";
 
@@ -45,6 +46,7 @@ function complexityCommand(
 }
 
 const COMMANDS: Readonly<Record<string, BinCommand>> = {
+  smoke: withConfig(smokeCommand),
   verify: withConfig(verifyCommand),
   coverage: withConfig((args, site, config) =>
     Promise.resolve(coverageRun(site, config, readCoverageAsk(args))),

@@ -1,8 +1,10 @@
 import type { Command } from "../reports/complexityReport.ts";
+import type { SmokePorts } from "../smoke/smokeCheck.ts";
 
 /**
  * What `bfg-site` reaches outside itself, but for the site's files (read and written in place, so
- * its tests use a real folder): the processes it runs, the console, the clock and the environment.
+ * its tests use a real folder): the processes it runs, the console, the clock, the environment, and
+ * the browser the smoke check uses.
  * Each command takes these, so it's tested with stand-ins; nodeProcesses.ts is the real thing,
  * tested on real processes.
  */
@@ -65,6 +67,8 @@ export interface SitePorts {
   /** A line to standard error. */
   readonly complain: (line: string) => void;
   readonly processes: ProcessPorts;
+  /** The network and the browser the smoke check opens pages with. */
+  readonly smoke: SmokePorts;
 }
 
 /** A check with no variables of its own, run through npx. */

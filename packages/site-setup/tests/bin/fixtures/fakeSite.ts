@@ -11,6 +11,7 @@ import type {
   SitePorts,
 } from "../../../src/bin/ports.ts";
 import { siteConfigSchema, type SiteConfig } from "../../../src/bin/siteConfig.ts";
+import { fakeSmoke, type FakePage, type SmokeSeen } from "../../fixtures/smokePages.ts";
 
 /**
  * A site for bfg-site's commands to run in: a real, fresh folder for its files, and stand-ins for
@@ -29,6 +30,8 @@ export interface Script {
   readonly startedState: ProcessState;
   /** What runHere also does, by the check's name, given the check: writes files (Vitest's coverage summary). */
   readonly sideEffects: Readonly<Record<string, (check: Check) => void>>;
+  /** The pages the smoke check finds, by their full address; none unless named. */
+  readonly pages: Readonly<Record<string, FakePage>>;
 }
 
 export const SCRIPT: Script = {
@@ -37,6 +40,7 @@ export const SCRIPT: Script = {
   answers: {},
   startedState: { kind: "running" },
   sideEffects: {},
+  pages: {},
 };
 
 /** What the stand-ins saw: the checks run, the lines said, the processes stopped. */
@@ -47,6 +51,7 @@ export interface Seen {
   readonly started: Check[];
   readonly stopped: string[];
   readonly asked: string[];
+  readonly smoke: SmokeSeen;
 }
 
 export interface FakeSite {
@@ -93,7 +98,16 @@ function fakeProcesses(script: Script, seen: Seen): ProcessPorts {
 /** A site in a fresh folder, its processes as `script` says. */
 export function fakeSite(script: Partial<Script> = {}, env: Record<string, string> = {}): FakeSite {
   const root = mkdtempSync(join(tmpdir(), "bfg-site-test-"));
-  const seen: Seen = { ran: [], said: [], complained: [], started: [], stopped: [], asked: [] };
+  const smoke = fakeSmoke(script.pages ?? SCRIPT.pages);
+  const seen: Seen = {
+    ran: [],
+    said: [],
+    complained: [],
+    started: [],
+    stopped: [],
+    asked: [],
+    smoke: smoke.seen,
+  };
   return {
     site: {
       root,
@@ -107,6 +121,7 @@ export function fakeSite(script: Partial<Script> = {}, env: Record<string, strin
         seen.complained.push(line);
       },
       processes: fakeProcesses({ ...SCRIPT, ...script }, seen),
+      smoke: smoke.ports,
     },
     seen,
   };
