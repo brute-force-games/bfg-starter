@@ -157,7 +157,11 @@ instead: the Playwright preset imports Playwright's types only, and the site pas
 
 - **Its tools are peer dependencies:** a site installs Astro, React, Vitest, Playwright, oxlint,
   knip and oxfmt (and Storybook and Pagefind if it uses them) and pins them; the setup says which
-  ranges it supports.
+  ranges it supports. A site with React islands tests them with Testing Library, two optional
+  peers: `@testing-library/react` (render, and find by role and name) and
+  `@testing-library/user-event` (act as a person does, never `fireEvent` by hand), with the site's
+  own `@testing-library/jest-dom` matchers; the example's `tests/unit/Counter.test.tsx` shows
+  them.
 - **The config entries load in plain Node, before any bundler:** they import only their peer
   tools, `node:` and relative files (with explicit `.ts`), never a workspace package.
 - **Its presets are tested at 100%** (`npm run test:coverage`); `example/` is a site on all of

@@ -1,12 +1,12 @@
 {
   "name": "bfg-starter",
   "private": true,
-  "type": "module",
   "description": "Brute Force Games' shared site setup: @brute-force-games/site-setup (packages/site-setup), the presets every static site extends, and example/, a site that uses them all. The plan: the repo migration plan, \"The shared site setup\".",
   "workspaces": [
     "packages/*",
     "example"
   ],
+  "type": "module",
   "scripts": {
     "test": "vitest",
     "test:coverage": "d=$(mktemp -d \"${TMPDIR:-/tmp}/bfg-starter-coverage-XXXXXX\") && echo \"Coverage report: $d/index.html\" && vitest run --coverage --coverage.reportsDirectory=\"$d\"",
@@ -25,6 +25,8 @@
     "@storybook/react": "10.6.2",
     "@storybook/react-vite": "10.6.2",
     "@testing-library/jest-dom": "7.0.1",
+    "@testing-library/react": "16.3.3",
+    "@testing-library/user-event": "14.6.8",
     "@types/node": "26.6.5",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
