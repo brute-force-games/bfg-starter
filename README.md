@@ -12,7 +12,7 @@ flowchart LR
   setup -.-> bfg["site-bruteforce.games"]
 ```
 
-## What's in it so far
+## What's in it
 
 | Entry | What it gives a site |
 | --- | --- |
@@ -119,9 +119,13 @@ instead: the Playwright preset imports Playwright's types only, and the site pas
 
 ## Commands
 
-- `npm run test:coverage`: the setup's own tests, held to 100%.
+- `npm run test:coverage`: the setup's own tests, held to 100%, in two Vitest projects: `unit`,
+  and `browser` (the e2e helpers in headless Chromium, one file at a time).
 - `npm run typecheck`: the setup, and the example site (`astro check` and `tsc`).
 - `npm run example:test`, `npm run example:build`: the example site's tests and build.
+- `npm run example:lint`: the example's oxlint, then knip.
+- `npm run example:e2e`: the example's end-to-end tests, against its dev server, which you start.
+- `npm -w example run verify`: the example's `bfg-site verify`, every stage.
 
 The old app (a TanStack Router demo of local-first multiplayer) is in git history, at `b35dee9`;
 its game modules (`modules/`, submodules) are left as they were, to be archived.
