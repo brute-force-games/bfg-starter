@@ -62,9 +62,32 @@ export interface SmokeConfig {
   readonly smokeSkip: readonly string[];
 }
 
+/**
+ * A page to open: its route, the path asked for, and the status it must answer. A page answers
+ * 200, but for Astro's own error pages at the root, which answer a fixed status: 404.astro for any
+ * path the site doesn't have (asked for at NOT_FOUND_PATH), 500.astro at /500. They're checked
+ * like any page, so a broken error page is still caught.
+ */
+export interface SmokePage {
+  readonly route: string;
+  readonly path: string;
+  readonly status: number;
+}
+
+/** A path no site has, for its not-found page. */
+export const NOT_FOUND_PATH = "/bfg-smoke-no-such-page";
+
+/** The page `path` is checked as: an error page at its status, any other at 200. */
+function smokePageOf(path: string): SmokePage {
+  if (path === "/404") {
+    return { route: path, path: NOT_FOUND_PATH, status: 404 };
+  }
+  return { route: path, path, status: path === "/500" ? 500 : 200 };
+}
+
 /** The pages to open, and the routes with parameters no page was named for. */
 export interface SmokeTargets {
-  readonly paths: readonly string[];
+  readonly pages: readonly SmokePage[];
   readonly unlisted: readonly string[];
 }
 
@@ -81,5 +104,8 @@ export function smokeTargetsOf(routes: readonly PageRoute[], config: SmokeConfig
       ? [route.pattern]
       : [],
   );
-  return { paths: [...new Set([...statics, ...config.smokePages])], unlisted };
+  return {
+    pages: [...new Set([...statics, ...config.smokePages])].map((path) => smokePageOf(path)),
+    unlisted,
+  };
 }

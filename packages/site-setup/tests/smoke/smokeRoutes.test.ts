@@ -2,11 +2,13 @@ import { mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import {
+  NOT_FOUND_PATH,
   pageRoutesIn,
   patternMatches,
   smokeTargetsOf,
   type PageRoute,
 } from "../../src/smoke/smokeRoutes.ts";
+import { pageAt } from "../fixtures/smokePages.ts";
 
 /** Which pages the smoke check opens (src/smoke/smokeRoutes.ts): found in src/pages, and named. */
 
@@ -94,11 +96,31 @@ describe("what the smoke check opens", () => {
       smokeSkip: ["/raw", "/feeds/[name]"],
     });
     // Assert
-    expect(targets).toEqual({ paths: ["/", "/rooms/demo"], unlisted: [] });
+    expect(targets).toEqual({ pages: [pageAt("/"), pageAt("/rooms/demo")], unlisted: [] });
   });
 
   it("reports a route with parameters that no page was named for", () => {
     const targets = smokeTargetsOf(routes, { smokePages: [], smokeSkip: [] });
-    expect(targets).toEqual({ paths: ["/", "/raw"], unlisted: ["/rooms/[id]", "/feeds/[name]"] });
+    expect(targets).toEqual({
+      pages: [pageAt("/"), pageAt("/raw")],
+      unlisted: ["/rooms/[id]", "/feeds/[name]"],
+    });
+  });
+
+  it("checks Astro's error pages at their own status: 404 at a path no site has, 500 at /500", () => {
+    // Arrange
+    const errorPages: PageRoute[] = [
+      { kind: "static", path: "/404" },
+      { kind: "static", path: "/500" },
+      { kind: "static", path: "/docs/404" },
+    ];
+    // Act
+    const targets = smokeTargetsOf(errorPages, { smokePages: [], smokeSkip: [] });
+    // Assert
+    expect(targets.pages).toEqual([
+      { route: "/404", path: NOT_FOUND_PATH, status: 404 },
+      { route: "/500", path: "/500", status: 500 },
+      pageAt("/docs/404"),
+    ]);
   });
 });

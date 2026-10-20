@@ -134,7 +134,9 @@ parameters through `smokePages`), it asks for the page and wants a 200, then ope
 Chromium and wants no uncaught error, no response of 500 or more while it loads (Vite answers 504
 for a dependency it re-optimized), and the page's status reading "Ready" within 15 seconds. It
 reports each failing page with the first thing wrong, and a route with parameters that has no page
-in `smokePages` is red too, never silently skipped.
+in `smokePages` is red too, never silently skipped. Astro's own error pages at the root are checked at
+their own status, not skipped: `404.astro` at a path no site has (it must answer 404), and
+`500.astro` at `/500` (500); either still has to open without an error and read Ready.
 
 It runs in three places, always against the dev server in play and never one of its own: `npx
 bfg-site smoke` (yours, at `E2E_BASE_URL` or the site's port), verify's first stage (yours, or

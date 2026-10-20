@@ -11,7 +11,8 @@ import {
   type PageVisit,
   type SmokeOutcome,
 } from "../../src/smoke/smokeCheck.ts";
-import { fakeSmoke, HEALTHY } from "../fixtures/smokePages.ts";
+import { NOT_FOUND_PATH } from "../../src/smoke/smokeRoutes.ts";
+import { fakeSmoke, HEALTHY, pageAt } from "../fixtures/smokePages.ts";
 
 /** The smoke check (src/smoke/smokeCheck.ts), its server and browser stood in for. */
 
@@ -57,12 +58,19 @@ describe("opening the pages", () => {
       [`${SERVER}/stuck`]: { status: 200, visit: { ...CLEAN, ready: false } },
     });
     // Act
-    const failures = await smokePages(SERVER, ["/", "/broken", "/stuck", "/gone"], ports);
+    const failures = await smokePages(
+      SERVER,
+      ["/", "/broken", "/stuck", "/gone"].map((path) => pageAt(path)),
+      ports,
+    );
     // Assert
     expect(failures).toEqual([
-      { path: "/broken", problem: { kind: "http-status", status: 500 } },
-      { path: "/stuck", problem: { kind: "never-ready", seconds: 15 } },
-      { path: "/gone", problem: { kind: "unreachable", message: "TypeError: fetch failed" } },
+      { page: pageAt("/broken"), problem: { kind: "http-status", status: 500, expected: 200 } },
+      { page: pageAt("/stuck"), problem: { kind: "never-ready", seconds: 15 } },
+      {
+        page: pageAt("/gone"),
+        problem: { kind: "unreachable", message: "TypeError: fetch failed" },
+      },
     ]);
     expect(seen.visited).toEqual([`${SERVER}/`, `${SERVER}/stuck`]);
     expect(seen.closed).toBe(1);
@@ -84,7 +92,7 @@ describe("opening the pages", () => {
         }),
     };
     // Act, Assert
-    await expect(smokePages(SERVER, ["/"], ports)).rejects.toThrow("browser crashed");
+    await expect(smokePages(SERVER, [pageAt("/")], ports)).rejects.toThrow("browser crashed");
     expect(closed).toBe(true);
   });
 });
@@ -123,7 +131,7 @@ describe("smoke-checking a site", () => {
     expect(outcome).toEqual({
       kind: "checked",
       baseUrl: SERVER,
-      paths: ["/about", "/", "/rooms/demo"],
+      pages: ["/about", "/", "/rooms/demo"].map((path) => pageAt(path)),
       failures: [],
       unlisted: [],
     });
@@ -157,7 +165,9 @@ describe("smoke-checking a site whose server is sick or gone", () => {
     const outcome = await smokeSite(siteWith("index.astro"), NO_PAGES, SERVER, ports);
     // Assert
     expect(outcome).toMatchObject({
-      failures: [{ path: "/", problem: { kind: "http-status", status: 500 } }],
+      failures: [
+        { page: pageAt("/"), problem: { kind: "http-status", status: 500, expected: 200 } },
+      ],
     });
   });
 });
@@ -168,16 +178,19 @@ describe("what a smoke check says", () => {
     const outcome: SmokeOutcome = {
       kind: "checked",
       baseUrl: SERVER,
-      paths: ["/", "/a", "/b", "/c", "/d", "/e"],
+      pages: ["/", "/a", "/b", "/c", "/d", "/e"].map((path) => pageAt(path)),
       failures: [
-        { path: "/", problem: { kind: "http-status", status: 500 } },
-        { path: "/a", problem: { kind: "unreachable", message: "timed out" } },
+        { page: pageAt("/"), problem: { kind: "http-status", status: 500, expected: 200 } },
+        { page: pageAt("/a"), problem: { kind: "unreachable", message: "timed out" } },
         {
-          path: "/b",
+          page: pageAt("/b"),
           problem: { kind: "server-error", error: { url: `${SERVER}/x.js`, status: 504 } },
         },
-        { path: "/c", problem: { kind: "page-error", message: "_jsxDEV is not a function" } },
-        { path: "/d", problem: { kind: "never-ready", seconds: 15 } },
+        {
+          page: pageAt("/c"),
+          problem: { kind: "page-error", message: "_jsxDEV is not a function" },
+        },
+        { page: pageAt("/d"), problem: { kind: "never-ready", seconds: 15 } },
       ],
       unlisted: ["/rooms/[id]"],
     };
@@ -185,7 +198,7 @@ describe("what a smoke check says", () => {
     const lines = smokeLines(outcome);
     // Assert
     expect(lines).toEqual([
-      "  ✗ /: HTTP 500",
+      "  ✗ /: HTTP 500, not 200",
       "  ✗ /a: no answer (timed out)",
       "  ✗ /b: HTTP 504 for http://localhost:4330/x.js",
       "  ✗ /c: uncaught error: _jsxDEV is not a function",
@@ -200,10 +213,28 @@ describe("what a smoke check says", () => {
     const outcome: SmokeOutcome = {
       kind: "checked",
       baseUrl: SERVER,
-      paths: [],
+      pages: [],
       failures: [],
       unlisted: ["/x/[y]"],
     };
     expect(smokePasses(outcome)).toBe(false);
+  });
+});
+
+describe("what a smoke check says of an error page", () => {
+  it("names the path an error page was asked for", () => {
+    // Arrange
+    const notFound = { route: "/404", path: NOT_FOUND_PATH, status: 404 };
+    const outcome: SmokeOutcome = {
+      kind: "checked",
+      baseUrl: SERVER,
+      pages: [notFound],
+      failures: [{ page: notFound, problem: { kind: "http-status", status: 200, expected: 404 } }],
+      unlisted: [],
+    };
+    // Act
+    const [line] = smokeLines(outcome);
+    // Assert
+    expect(line).toBe("  ✗ /404 (asked for /bfg-smoke-no-such-page): HTTP 200, not 404");
   });
 });

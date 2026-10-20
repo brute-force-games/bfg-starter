@@ -1,4 +1,5 @@
 import type { PageVisit, SmokePorts } from "../../src/smoke/smokeCheck.ts";
+import type { SmokePage } from "../../src/smoke/smokeRoutes.ts";
 
 /**
  * A dev server and browser for the smoke check, stood in for: each page's HTTP status and what the
@@ -10,6 +11,9 @@ export interface FakePage {
   readonly status: number;
   readonly visit: PageVisit;
 }
+
+/** An ordinary page to check: `path`, at 200. */
+export const pageAt = (path: string): SmokePage => ({ route: path, path, status: 200 });
 
 /** A page that answers 200, opens cleanly and reads Ready. */
 export const HEALTHY: FakePage = {
@@ -31,12 +35,12 @@ export interface FakeSmoke {
 /** The smoke check's ports over `pages`, by their full address. */
 export function fakeSmoke(pages: Readonly<Record<string, FakePage>>): FakeSmoke {
   const seen: SmokeSeen = { visited: [], closed: 0 };
-  const pageAt = (url: string): FakePage | undefined =>
+  const servedAt = (url: string): FakePage | undefined =>
     Object.hasOwn(pages, url) ? pages[url] : undefined;
   return {
     ports: {
       fetchPage: (input) => {
-        const page = pageAt(input instanceof Request ? input.url : input.toString());
+        const page = servedAt(input instanceof Request ? input.url : input.toString());
         return page === undefined
           ? Promise.reject(new TypeError("fetch failed"))
           : Promise.resolve(new Response("", { status: page.status }));
@@ -46,7 +50,7 @@ export function fakeSmoke(pages: Readonly<Record<string, FakePage>>): FakeSmoke 
           timeoutMs: 15_000,
           visit: (url) => {
             seen.visited.push(url);
-            return Promise.resolve(pageAt(url)?.visit ?? HEALTHY.visit);
+            return Promise.resolve(servedAt(url)?.visit ?? HEALTHY.visit);
           },
           close: () => {
             seen.closed += 1;

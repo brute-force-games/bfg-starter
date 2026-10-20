@@ -54,8 +54,12 @@ async function visitIn(page: Page, url: string, timeoutMs: number): Promise<Page
   page.on("pageerror", (error) => {
     pageErrors.push(error.message);
   });
+  // The page's own document is the HTTP check's (an error page answers its status on purpose);
+  // what it loads must not fail.
   page.on("response", (response) => {
-    if (response.status() >= 500) {
+    const document =
+      response.request().isNavigationRequest() && response.frame() === page.mainFrame();
+    if (response.status() >= 500 && !document) {
       serverErrors.push({ url: response.url(), status: response.status() });
     }
   });

@@ -54,7 +54,7 @@ describe("bfg-site smoke, failing", () => {
     const status = await smokeCommand([], site, configOf());
     // Assert
     expect(status).toBe(1);
-    expect(seen.complained[0]).toBe("  ✗ /: HTTP 500");
+    expect(seen.complained[0]).toBe("  ✗ /: HTTP 500, not 200");
   });
 
   it("fails when no dev server answers, never starting one", async () => {

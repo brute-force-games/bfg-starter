@@ -1,6 +1,6 @@
 import { join } from "node:path";
 import { onCase, type Cases } from "@brute-force-games/cases";
-import { pageRoutesIn, smokeTargetsOf, type SmokeConfig } from "./smokeRoutes.ts";
+import { pageRoutesIn, smokeTargetsOf, type SmokeConfig, type SmokePage } from "./smokeRoutes.ts";
 
 /**
  * The smoke check: is the dev server healthy, page by page, before any heavy run starts? For every
@@ -33,13 +33,13 @@ export interface PageVisit {
 /** What's wrong with a page: the first thing found. */
 export type PageProblem =
   | { readonly kind: "unreachable"; readonly message: string }
-  | { readonly kind: "http-status"; readonly status: number }
+  | { readonly kind: "http-status"; readonly status: number; readonly expected: number }
   | { readonly kind: "server-error"; readonly error: ServerError }
   | { readonly kind: "page-error"; readonly message: string }
   | { readonly kind: "never-ready"; readonly seconds: number };
 
 export interface PageFailure {
-  readonly path: string;
+  readonly page: SmokePage;
   readonly problem: PageProblem;
 }
 
@@ -57,11 +57,17 @@ export interface SmokePorts {
   readonly openBrowser: () => Promise<SmokeBrowser>;
 }
 
-/** The page's HTTP answer: its status, or why there was none. */
-async function httpProblem(url: string, fetchPage: typeof fetch): Promise<PageProblem | undefined> {
+/** The page's HTTP answer: wrong if not `expected`, or why there was none. */
+async function httpProblem(
+  url: string,
+  expected: number,
+  fetchPage: typeof fetch,
+): Promise<PageProblem | undefined> {
   try {
     const response = await fetchPage(url, { signal: AbortSignal.timeout(SMOKE_TIMEOUT_MS) });
-    return response.status === 200 ? undefined : { kind: "http-status", status: response.status };
+    return response.status === expected
+      ? undefined
+      : { kind: "http-status", status: response.status, expected };
   } catch (error) {
     return { kind: "unreachable", message: String(error) };
   }
@@ -80,22 +86,22 @@ export function visitProblem(visit: PageVisit, timeoutMs: number): PageProblem |
   return visit.ready ? undefined : { kind: "never-ready", seconds: timeoutMs / 1000 };
 }
 
-/** Opens each of `paths` at `baseUrl`, one at a time: the pages that failed. */
+/** Opens each of `pages` at `baseUrl`, one at a time: the pages that failed. */
 export async function smokePages(
   baseUrl: string,
-  paths: readonly string[],
+  pages: readonly SmokePage[],
   ports: SmokePorts,
 ): Promise<PageFailure[]> {
   const failures: PageFailure[] = [];
   const browser = await ports.openBrowser();
   try {
-    for (const path of paths) {
-      const url = new URL(path, baseUrl).href;
+    for (const page of pages) {
+      const url = new URL(page.path, baseUrl).href;
       const problem =
-        (await httpProblem(url, ports.fetchPage)) ??
+        (await httpProblem(url, page.status, ports.fetchPage)) ??
         visitProblem(await browser.visit(url), browser.timeoutMs);
       if (problem !== undefined) {
-        failures.push({ path, problem });
+        failures.push({ page, problem });
       }
     }
   } finally {
@@ -110,7 +116,7 @@ export type SmokeOutcome =
   | {
       readonly kind: "checked";
       readonly baseUrl: string;
-      readonly paths: readonly string[];
+      readonly pages: readonly SmokePage[];
       readonly failures: readonly PageFailure[];
       readonly unlisted: readonly string[];
     };
@@ -122,15 +128,15 @@ export async function smokeSite(
   baseUrl: string,
   ports: SmokePorts,
 ): Promise<SmokeOutcome> {
-  if ((await httpProblem(baseUrl, ports.fetchPage))?.kind === "unreachable") {
+  if ((await httpProblem(baseUrl, 200, ports.fetchPage))?.kind === "unreachable") {
     return { kind: "no-dev-server", baseUrl };
   }
-  const { paths, unlisted } = smokeTargetsOf(pageRoutesIn(join(root, "src", "pages")), config);
+  const { pages, unlisted } = smokeTargetsOf(pageRoutesIn(join(root, "src", "pages")), config);
   return {
     kind: "checked",
     baseUrl,
-    paths,
-    failures: await smokePages(baseUrl, paths, ports),
+    pages,
+    failures: await smokePages(baseUrl, pages, ports),
     unlisted,
   };
 }
@@ -141,15 +147,17 @@ export const smokePasses = (outcome: SmokeOutcome): boolean =>
 
 const problemWords: Cases<PageProblem, "kind", string> = {
   unreachable: ({ message }) => `no answer (${message})`,
-  "http-status": ({ status }) => `HTTP ${String(status)}`,
+  "http-status": ({ status, expected }) => `HTTP ${String(status)}, not ${String(expected)}`,
   "server-error": ({ error }) => `HTTP ${String(error.status)} for ${error.url}`,
   "page-error": ({ message }) => `uncaught error: ${message}`,
   "never-ready": ({ seconds }) => `its status didn't read Ready within ${String(seconds)}s`,
 };
 
-/** A failed page's line: its path, and the first thing wrong. */
-const failureLine = ({ path, problem }: PageFailure): string =>
-  `  ✗ ${path}: ${onCase(problemWords, problem.kind, problem)}`;
+/** A failed page's line: its route (and the path asked for, if another), and the first thing wrong. */
+const failureLine = ({ page, problem }: PageFailure): string => {
+  const asked = page.path === page.route ? "" : ` (asked for ${page.path})`;
+  return `  ✗ ${page.route}${asked}: ${onCase(problemWords, problem.kind, problem)}`;
+};
 
 /** What a smoke check says: a line per failed page or unchecked route, and a summary last. */
 export function smokeLines(outcome: SmokeOutcome): string[] {
@@ -158,7 +166,7 @@ export function smokeLines(outcome: SmokeOutcome): string[] {
       `No dev server at ${outcome.baseUrl}. Start it with \`npm run dev\`, then run this again.`,
     ];
   }
-  const { baseUrl, paths, failures, unlisted } = outcome;
+  const { baseUrl, pages, failures, unlisted } = outcome;
   return [
     ...failures.map((failure) => failureLine(failure)),
     ...unlisted.map(
@@ -166,7 +174,7 @@ export function smokeLines(outcome: SmokeOutcome): string[] {
         `  ✗ ${pattern}: has parameters; name a page for it in bfg-site.json's smokePages (or list it in smokeSkip)`,
     ),
     smokePasses(outcome)
-      ? `Smoke: ${String(paths.length)} pages healthy at ${baseUrl}.`
-      : `Smoke: red at ${baseUrl} (${String(failures.length)} of ${String(paths.length)} pages failed, ${String(unlisted.length)} routes unchecked). Restart the dev server if it's stale.`,
+      ? `Smoke: ${String(pages.length)} pages healthy at ${baseUrl}.`
+      : `Smoke: red at ${baseUrl} (${String(failures.length)} of ${String(pages.length)} pages failed, ${String(unlisted.length)} routes unchecked). Restart the dev server if it's stale.`,
   ];
 }
