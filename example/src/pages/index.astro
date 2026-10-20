@@ -1,0 +1,15 @@
+---
+import BaseLayout from "@brute-force-games/site-setup/layouts/BaseLayout.astro";
+import { Counter } from "../components/Counter";
+---
+
+<BaseLayout
+  site="A site on the shared setup"
+  title="Home"
+  description="A site on @brute-force-games/site-setup, every entry used."
+  nav={[{ href: "/", label: "Home" }]}
+>
+  <h1>A site on the shared setup</h1>
+  <p>Astro pages on the shared layout and tokens, a React island, and the test stages: all from @brute-force-games/site-setup.</p>
+  <Counter client:load />
+</BaseLayout>

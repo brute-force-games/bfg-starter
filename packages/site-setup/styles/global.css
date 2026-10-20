@@ -1,0 +1,8 @@
+/* A Brute Force Games site's page, on its tokens (styles/tokens.css). */
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  line-height: 1.5;
+}

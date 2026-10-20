@@ -1,0 +1,68 @@
+import { existsSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { playwrightConfigOf, sitePlaywrightConfig } from "../src/playwright.ts";
+
+/** A site's end-to-end config (src/playwright.ts): its dev server, one worker, its run's folders. */
+
+const SITE = { port: 4330 };
+const RUN = { outputDir: "/runs/e2e", baseUrl: undefined };
+
+describe("a site's e2e config", () => {
+  it("tests the site's own dev server, its port, never starting one", () => {
+    // Act
+    const config = playwrightConfigOf(SITE, RUN);
+    // Assert
+    expect(config).toMatchObject({
+      testDir: "tests/e2e",
+      outputDir: "/runs/e2e",
+      workers: 1,
+      fullyParallel: false,
+      reporter: [["list"]],
+      use: { baseURL: "http://localhost:4330", trace: "retain-on-failure" },
+    });
+    expect(config.webServer).toBeUndefined();
+    expect(config.projects?.map((project) => project.name)).toEqual(["chromium"]);
+  });
+
+  it("goes where E2E_BASE_URL says, and takes the site's own browsers and timeouts", () => {
+    // Act
+    const config = playwrightConfigOf(
+      { port: 4330, projects: [{ name: "solo" }], timeout: 5, expectTimeout: 1 },
+      { ...RUN, baseUrl: "http://127.0.0.1:9999" },
+    );
+    // Assert
+    expect(config).toMatchObject({
+      use: { baseURL: "http://127.0.0.1:9999" },
+      projects: [{ name: "solo" }],
+      timeout: 5,
+      expect: { timeout: 1 },
+    });
+  });
+});
+
+describe("a site's e2e config, this run's", () => {
+  it("makes the run's output folder once, and hands it to the workers through the environment", () => {
+    // Arrange
+    const env: NodeJS.ProcessEnv = {};
+    // Act
+    const config = sitePlaywrightConfig(SITE, env);
+    // Assert
+    const made = env["E2E_RUN_DIR"];
+    if (made === undefined) {
+      throw new Error("no output folder was made");
+    }
+    expect(config.outputDir).toBe(made);
+    expect(made.startsWith(tmpdir())).toBe(true);
+    expect(existsSync(made)).toBe(true);
+  });
+
+  it("keeps a folder the main process made, and reads the server's address", () => {
+    // Act
+    const config = sitePlaywrightConfig(SITE, {
+      E2E_RUN_DIR: "/runs/given",
+      E2E_BASE_URL: "http://127.0.0.1:9999",
+    });
+    // Assert
+    expect(config).toMatchObject({ outputDir: "/runs/given", use: { baseURL: "http://127.0.0.1:9999" } });
+  });
+});

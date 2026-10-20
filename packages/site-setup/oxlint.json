@@ -1,0 +1,5 @@
+{
+  "$schema": "../../node_modules/oxlint/configuration_schema.json",
+  "extends": ["../../../bfg-core/.oxlintrc.json"],
+  "ignorePatterns": ["dist", "coverage", ".astro", "storybook-static"]
+}

@@ -1,0 +1,4 @@
+{
+  "$schema": "../node_modules/oxlint/configuration_schema.json",
+  "extends": ["../node_modules/@brute-force-games/site-setup/oxlint.json"]
+}

@@ -1,0 +1,57 @@
+/*
+ * Every design token a Brute Force Games site can set (@brute-force-games/site-setup/styles/tokens.css):
+ * the site's own and those bfg-core's screens (ui-kit, room-ui, the games' screens) style
+ * themselves with, which the host page defines. Light by default, dark by the system's choice.
+ * The values are site-bruteforce.games': a site's theme overrides values, never names.
+ */
+:root {
+  color-scheme: light dark;
+  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --radius-md: 0.5rem;
+  --width-prose: 42rem;
+  --color-bg: #fbfaf7;
+  --color-text: #1d1b18;
+  --color-text-muted: #5e5a52;
+  --color-border: #d9d4ca;
+  --color-accent: #2f5bd3;
+  --color-accent-contrast: #ffffff;
+  --color-mark-blue: #2f5bd3;
+  --color-mark-red: #c8372d;
+  /* Each member's colour (room-ui's MemberTag): eight named slots, by their profile id. */
+  --color-member-red: #c8372d;
+  --color-member-orange: #d2691e;
+  --color-member-amber: #b8860b;
+  --color-member-green: #2e8b57;
+  --color-member-teal: #1f8a8a;
+  --color-member-blue: #2f5bd3;
+  --color-member-violet: #7b4fc9;
+  --color-member-pink: #c2417f;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #15171c;
+    --color-text: #ecebe7;
+    --color-text-muted: #a8a49b;
+    --color-border: #3a3d45;
+    --color-accent: #8ba7ff;
+    --color-accent-contrast: #10131a;
+    --color-mark-blue: #8ba7ff;
+    --color-mark-red: #ff8a7f;
+    --color-member-red: #ff8a7f;
+    --color-member-orange: #ffad66;
+    --color-member-amber: #f2c94c;
+    --color-member-green: #6fcf97;
+    --color-member-teal: #56cccc;
+    --color-member-blue: #8ba7ff;
+    --color-member-violet: #b79cff;
+    --color-member-pink: #ff8fc2;
+  }
+}

@@ -135,3 +135,5 @@ storybook-static
 .vscode/chrome-debug-profile/*
 
 reports/*
+# Astro's generated types (astro sync), in each site.
+.astro/

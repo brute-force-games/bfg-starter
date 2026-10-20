@@ -1,0 +1,5 @@
+{
+  "//": "The setup's own TypeScript: its presets and their tests, against the base it gives every site.",
+  "extends": "./tsconfig.base.json",
+  "include": ["src", "tests"]
+}

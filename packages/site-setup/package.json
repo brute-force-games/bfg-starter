@@ -1,0 +1,26 @@
+{
+  "name": "@brute-force-games/site-setup",
+  "private": true,
+  "type": "module",
+  "description": "What every Brute Force Games static site shares, as presets a site extends: its Astro config, its test stages' Vitest config, its Playwright config, its TypeScript and oxlint bases, its style tokens and its base layout. The plan: the repo migration plan, \"The shared site setup\".",
+  "exports": {
+    "./astro": "./src/astro.ts",
+    "./vitest": "./src/vitest.ts",
+    "./tsconfig.json": "./tsconfig.base.json",
+    "./playwright": "./src/playwright.ts",
+    "./lint": "./oxlint.json",
+    "./styles/tokens.css": "./styles/tokens.css",
+    "./styles/global.css": "./styles/global.css",
+    "./layouts/BaseLayout.astro": "./layouts/BaseLayout.astro"
+  },
+  "peerDependencies": {
+    "@astrojs/react": "^7.0.0",
+    "@playwright/test": "^1.64.0",
+    "astro": "^7.0.0",
+    "oxlint": "^1.89.0",
+    "oxlint-tsgolint": ">=7.0.0",
+    "react": "^19.0.0",
+    "vitest": "^5.0.0"
+  },
+  "coverageMinimum": 100
+}
