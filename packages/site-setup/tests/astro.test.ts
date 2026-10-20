@@ -58,3 +58,21 @@ describe("a site's Astro config, linking bfg-core's packages", () => {
     expect(config.vite?.optimizeDeps?.include).toEqual([...LINKED_RUNTIME, "mermaid"]);
   });
 });
+
+describe("a site's Astro config, on a dev server of verify's own", () => {
+  it("keeps Astro's and Vite's caches in the run's folder", () => {
+    // Act
+    const config = siteAstroConfig(SITE, { BFG_DEV_SERVER_CACHE: "/runs/one/dev-server" });
+    // Assert
+    expect(config.cacheDir).toBe("/runs/one/dev-server/astro");
+    expect(config.vite?.cacheDir).toBe("/runs/one/dev-server/vite");
+  });
+
+  it("leaves the usual caches alone otherwise", () => {
+    // Act
+    const config = siteAstroConfig(SITE, {});
+    // Assert
+    expect(config.cacheDir).toBeUndefined();
+    expect(config.vite?.cacheDir).toBeUndefined();
+  });
+});

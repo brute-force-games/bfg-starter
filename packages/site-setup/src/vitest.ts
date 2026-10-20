@@ -1,4 +1,5 @@
 /// <reference types="vitest/config" />
+import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { getViteConfig } from "astro/config";
@@ -71,9 +72,42 @@ export function siteTestConfig({
 }
 
 /** The site's test config, this run's: its tests reported where `env` says (BFG_TEST_REPORT_DIR). */
-export function siteTestConfigIn(options: SiteTestOptions, env: NodeJS.ProcessEnv): InlineConfig {
+/** The package Vitest's html reporter loads: a site that keeps test reports installs it. */
+export const HTML_REPORTER_PACKAGE = "@vitest/ui";
+
+/** Whether a package resolves from the site's folder. */
+export type HasPackage = (name: string) => boolean;
+
+/** Whether `name` resolves from the site at `root` (its node_modules, as Node looks). */
+export const packageIn =
+  (root: string): HasPackage =>
+  (name) => {
+    try {
+      createRequire(join(root, "package.json")).resolve(`${name}/package.json`);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+/** Why a run that keeps test reports can't: the html reporter's package isn't installed. */
+export const missingHtmlReporter = (testReportDir: string): string =>
+  `${TEST_REPORT_DIR_ENV} (${testReportDir}) asks for Vitest's HTML report, which needs ` +
+  `${HTML_REPORTER_PACKAGE}: add it to the site's devDependencies, at its vitest's version.`;
+
+export function siteTestConfigIn(
+  options: SiteTestOptions,
+  env: NodeJS.ProcessEnv,
+  hasPackage: HasPackage = packageIn(process.cwd()),
+): InlineConfig {
   const testReportDir = env[TEST_REPORT_DIR_ENV];
-  return siteTestConfig(testReportDir === undefined ? options : { ...options, testReportDir });
+  if (testReportDir === undefined) {
+    return siteTestConfig(options);
+  }
+  if (!hasPackage(HTML_REPORTER_PACKAGE)) {
+    throw new Error(missingHtmlReporter(testReportDir));
+  }
+  return siteTestConfig({ ...options, testReportDir });
 }
 
 /** The site's Vitest config: its test stages, over its own Astro config. */

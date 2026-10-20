@@ -35,7 +35,36 @@ flowchart LR
 | `./styles/tokens.css`, `./styles/global.css` | the design tokens (a site overrides values, never names) and the body rule |
 | `./layouts/BaseLayout.astro` | the page shell: head, title, description, a nav, and slots for the head and the page |
 
-Still to come: the `bfg-site` command (verify, quality, fresh builds).
+### The `bfg-site` command
+
+The scripts a site runs, in its folder (`npx bfg-site <command>`):
+
+- `verify`: the test stages, cheapest first (static, unit, integration, property, e2e). Each
+  check's output goes to a fresh folder, and the run's reports to `reports/<date-time>-<commit>/`.
+  e2e runs only once the stages below it are green and your dev server answers. `--build` runs
+  every stage but e2e and stops at the first red one; `--stage <name>` runs one stage;
+  `--own-dev-server` runs e2e on a dev server verify starts on a free port and stops afterwards
+  (its caches stay in the run's folder).
+- `coverage [--record] [--reports=<run folder>] [vitest arguments]`: the unit tests with coverage,
+  in a folder of their own. A green run of the whole suite raises
+  `<qualityFolder>/coverage-minimum.json`, if the site keeps one.
+- `quality`: `coverage`, with the run recorded in `<qualityFolder>/history.json` (coverage
+  totals, complexity findings, dead code by kind, unreachable code).
+- `dead-code`: knip's findings, every kind held at zero but unused exports and types, which may
+  not rise above `<qualityFolder>/dead-code-baseline.json`, and lower it when they fall.
+- `complexity <run folder>`: the complexity report, into a run's folder.
+- `fresh-build <target> -- <command, one argument with {out}>`: the build in a fresh folder under
+  `.builds/`, swapped in for `<target>` only when it succeeds.
+- `check-node`: `.nvmrc`, devbox.json's `nodejs@<major>` and package.json's `engines.node`,
+  whichever the site has, must agree with each other and with the running Node.
+
+### `bfg-site.json`
+
+At the site's root. `devServerPort` is required: where verify looks for your dev server, unless
+`E2E_BASE_URL` says otherwise. The rest have defaults: `qualityFolder` (`"docs/quality"`),
+`sources` (`["src", "scripts"]`, for the complexity and unreachable-code counts), and
+`staticChecks` (the site's own checks, `{ "name", "program", "args" }`, run beside the shared
+static ones).
 
 A site's config is then a few lines:
 

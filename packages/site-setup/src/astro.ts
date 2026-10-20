@@ -1,5 +1,6 @@
 import react from "@astrojs/react";
 import type { AstroUserConfig, ViteUserConfig } from "astro";
+import { devServerCachesFrom } from "./bin/devServerCaches.ts";
 
 /**
  * A Brute Force Games site's Astro config: static pages with React islands, on its own dev port,
@@ -57,13 +58,17 @@ export function siteAstroConfig(
   env: NodeJS.ProcessEnv = process.env,
 ): AstroUserConfig {
   const runtime = linked === undefined ? [] : LINKED_RUNTIME;
+  // A dev server of verify's own keeps its caches in its run's folder, never the maintainer's.
+  const caches = devServerCachesFrom(env);
   return {
+    ...(caches === undefined ? {} : { cacheDir: caches.astro }),
     output: "static",
     site: site ?? env[SITE_URL_ENV] ?? `http://localhost:${String(port)}`,
     integrations: [react()],
     server: { port },
     vite: {
       ...(linked === undefined ? { server: { strictPort: true } } : linkedVite(root, linked)),
+      ...(caches === undefined ? {} : { cacheDir: caches.vite }),
       optimizeDeps: { include: [...runtime, ...optimize] },
       // The facilitator's worker is bundled on its own, as modules.
       worker: { format: "es" },
