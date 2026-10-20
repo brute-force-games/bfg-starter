@@ -1,10 +1,11 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
+import { devices } from "@playwright/test";
 import { tmpdir } from "node:os";
 import { DEV_SERVER_GATE, playwrightConfigOf, sitePlaywrightConfig } from "../src/playwright.ts";
 
 /** A site's end-to-end config (src/playwright.ts): its dev server, gated; one worker; its run's folder. */
 
-const SITE = { port: 4330 };
+const SITE = { port: 4330, devices };
 const RUN = { outputDir: "/runs/e2e", baseUrl: "http://localhost:4330" };
 
 describe("a site's e2e config", () => {
@@ -22,14 +23,14 @@ describe("a site's e2e config", () => {
       use: { baseURL: "http://localhost:4330", trace: "retain-on-failure" },
     });
     expect(config.webServer).toBeUndefined();
-    expect(config.projects?.map((project) => project.name)).toEqual(["chromium"]);
+    expect(config.projects).toEqual([{ name: "chromium", use: { ...devices["Desktop Chrome"] } }]);
     expect(existsSync(DEV_SERVER_GATE)).toBe(true);
   });
 
   it("takes the site's own browsers and timeouts", () => {
     // Act
     const config = playwrightConfigOf(
-      { port: 4330, projects: [{ name: "solo" }], timeout: 5, expectTimeout: 1 },
+      { ...SITE, projects: [{ name: "solo" }], timeout: 5, expectTimeout: 1 },
       RUN,
     );
     // Assert
@@ -70,5 +71,18 @@ describe("a site's e2e config, this run's", () => {
     const config = sitePlaywrightConfig(SITE, { E2E_RUN_DIR: "/runs/given", BFG_REPORT_DIR: "/reports/run" });
     // Assert
     expect(config.reporter).toEqual([["list"], ["html", { outputFolder: "/reports/run/e2e", open: "never" }]]);
+  });
+});
+
+describe("the preset's imports", () => {
+  it("takes only Playwright's types, never its code, so a site's runner loads one copy", () => {
+    // A runtime import would resolve from bfg-starter's node_modules when a site links the setup
+    // by file:, and Playwright refuses a second copy of itself.
+    const source = readFileSync(new URL("../src/playwright.ts", import.meta.url), "utf8");
+    const imports = [...source.matchAll(/\bimport\s+([^;]*?)\s+from\s+"@playwright\/test"/gu)].map(
+      ([, what]) => what,
+    );
+    expect(imports.length).toBeGreaterThan(0);
+    expect(imports.filter((what) => !String(what).startsWith("type "))).toEqual([]);
   });
 });

@@ -1,3 +1,4 @@
+import { join } from "node:path";
 import type { ReportTarget } from "../../src/reports/reportRuns.ts";
 import type { VerifyRun } from "../../src/bin/verifyArgs.ts";
 import { verify } from "../../src/bin/verifyRun.ts";
@@ -104,6 +105,37 @@ describe("a verify run that stops early", () => {
   });
 });
 
+describe("a verify run's caches", () => {
+  it("are its own for every check, never the site's, so your dev server's stay as they are", async () => {
+    // Arrange
+    const { site, seen } = fakeSite({ answers: { [YOURS]: "up" } });
+    // Act
+    await verify(site, plan(VERIFY));
+    // Assert
+    const folder = seen.said.slice(0, 1).join("").replace("Each check's output: ", "");
+    expect(folder.startsWith(join(site.scratch, "bfg-site-verify-"))).toBe(true);
+    expect(seen.ran.map((check) => check.env["BFG_DEV_SERVER_CACHE"])).toEqual(
+      seen.ran.map(() => join(folder, "checks-cache")),
+    );
+    expect(seen.ran).toHaveLength(11);
+  });
+
+  it("keep an own dev server's apart from the checks'", async () => {
+    // Arrange
+    const { site, seen } = fakeSite({ answers: { [OWN]: "up" } });
+    // Act
+    await verify(site, plan(VERIFY_OWN));
+    // Assert
+    const server = seen.started.map((check) => check.env["BFG_DEV_SERVER_CACHE"]);
+    const e2e = seen.ran
+      .filter((check) => check.name === "e2e")
+      .map((check) => check.env["BFG_DEV_SERVER_CACHE"]);
+    expect(server).toHaveLength(1);
+    expect(e2e).toHaveLength(1);
+    expect(server).not.toEqual(e2e);
+  });
+});
+
 describe("a verify run on a dev server of its own", () => {
   it("starts it, runs e2e against it once it answers, and stops it", async () => {
     // Arrange
@@ -115,9 +147,9 @@ describe("a verify run on a dev server of its own", () => {
     expect(seen.started.map((check) => check.args)).toEqual([
       ["astro", "dev", "--ignore-lock", "--port", "4999"],
     ]);
-    expect(seen.ran.at(-1)).toEqual(
-      expect.objectContaining({ name: "e2e", env: { BFG_REPORT_DIR: "/r", E2E_BASE_URL: OWN } }),
-    );
+    const e2e = seen.ran.filter((check) => check.name === "e2e");
+    expect(e2e.map((check) => check.env["E2E_BASE_URL"])).toEqual([OWN]);
+    expect(e2e.map((check) => check.env["BFG_REPORT_DIR"])).toEqual(["/r"]);
     expect(seen.stopped).toEqual(["own dev server"]);
   });
 

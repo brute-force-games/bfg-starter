@@ -24,6 +24,8 @@ describe("a site's config", () => {
         qualityFolder: "docs/quality",
         sources: ["src", "scripts"],
         staticChecks: [],
+        unitProject: "unit",
+        formatIgnoreFiles: [".gitignore"],
       },
     });
   });

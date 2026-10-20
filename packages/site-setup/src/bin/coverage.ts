@@ -16,7 +16,7 @@ import { jsonAt, writeJson } from "./siteFiles.ts";
 
 /**
  * `bfg-site coverage [--record] [--reports=<run folder>] [vitest arguments]`: the site's unit tests
- * with coverage, in a folder of its own (a fresh one, or verify's run folder), so runs side by side
+ * (its `unitProject`) with coverage, in a folder of its own (a fresh one, or verify's run folder), so runs side by side
  * never read, clear or overwrite each other's output. It says where the HTML report is, records the
  * run into the quality history when asked (`bfg-site quality`), and exits as Vitest did. A green
  * run of the whole suite raises the site's coverage minimum to what it reached, if it keeps one.
@@ -77,7 +77,7 @@ export function coverageRun(site: SitePorts, config: SiteConfig, ask: CoverageAs
       "--coverage",
       `--coverage.reportsDirectory=${reports}`,
       "--project",
-      "unit",
+      config.unitProject,
       ...ask.vitestArgs,
     ),
     env: testReportEnv,

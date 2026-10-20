@@ -1,10 +1,12 @@
+import { readFileSync } from "node:fs";
 import { z } from "zod";
 
 /**
  * The least unit-test coverage a site accepts, in percent, per metric, kept in
  * <quality folder>/coverage-minimum.json, which the site's Vitest config reads. It ratchets: each
  * green coverage run raises it to what the run reached (coverage.ts), and nothing lowers it. A site
- * without the file has no ratchet. Pure.
+ * without the file has no ratchet. Plain node: and zod only, so a site's Vitest config can read the
+ * file through it (`@brute-force-games/site-setup/coverage-minimum`) before any bundler.
  */
 export const COVERAGE_MINIMUM_FILE = "coverage-minimum.json";
 
@@ -19,6 +21,10 @@ export const coverageMinimumsSchema = z.object({
 export type CoverageMinimums = z.infer<typeof coverageMinimumsSchema>;
 type CoverageMetric = keyof CoverageMinimums;
 const COVERAGE_METRICS: readonly CoverageMetric[] = coverageMinimumsSchema.keyof().options;
+
+/** The minimums kept at `path`, the site's coverage-minimum.json. */
+export const readCoverageMinimums = (path: string): CoverageMinimums =>
+  coverageMinimumsSchema.parse(JSON.parse(readFileSync(path, "utf8")));
 
 /** A percentage rounded down to a tenth, so a run that matches it exactly still meets it. */
 export const tenthBelow = (value: number): number => Math.floor(value * 10) / 10;

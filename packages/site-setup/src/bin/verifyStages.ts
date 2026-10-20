@@ -28,11 +28,17 @@ const complexityChecks = (reports: ReportTarget): Check[] =>
 
 const staticStage = (config: SiteConfig, reports: ReportTarget): Stage => ({
   name: "static",
-  // Astro's generated types, which the type checks read: made once, before they all start.
-  prepare: [npx("astro sync", "astro", "sync", "--force")],
+  // Astro's generated types, which the type checks read: made once, before they all start. No
+  // `--force`: the run's caches are its own and new (verifyRun.ts), so nothing stale is kept.
+  prepare: [npx("astro sync", "astro", "sync")],
   checks: [
     npx("node version", "bfg-site", "check-node"),
-    npx("format", "oxfmt", "--check", "--ignore-path", ".gitignore"),
+    npx(
+      "format",
+      "oxfmt",
+      "--check",
+      ...config.formatIgnoreFiles.flatMap((file) => ["--ignore-path", file]),
+    ),
     npx("lint", "oxlint", "--type-aware"),
     npx("dead code", "bfg-site", "dead-code"),
     npx("astro check", "astro", "check"),

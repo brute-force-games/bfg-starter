@@ -6,8 +6,9 @@ import { onCase, type Cases } from "@brute-force-games/cases";
 /**
  * What a site tells `bfg-site`, in bfg-site.json at its root: its dev server's port (where verify
  * looks for the maintainer's server before e2e), where its quality records are kept, which folders
- * its complexity and unreachable-code counts read, and any static checks of its own, run beside the
- * shared ones.
+ * its complexity and unreachable-code counts read, its unit tests' Vitest project (the one
+ * coverage counts), the ignore files the format check reads, and any static checks of its own, run
+ * beside the shared ones.
  */
 export const SITE_CONFIG_FILE = "bfg-site.json";
 
@@ -22,6 +23,8 @@ export const siteConfigSchema = z.object({
   qualityFolder: z.string().min(1).default("docs/quality"),
   sources: z.array(z.string().min(1)).min(1).default(["src", "scripts"]),
   staticChecks: z.array(checkSchema).default([]),
+  unitProject: z.string().min(1).default("unit"),
+  formatIgnoreFiles: z.array(z.string().min(1)).min(1).default([".gitignore"]),
 });
 export type SiteConfig = z.infer<typeof siteConfigSchema>;
 

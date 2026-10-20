@@ -77,6 +77,15 @@ describe("a coverage run", () => {
     expect(seen.ran.map((check) => check.env)).toEqual([{}]);
   });
 
+  it("runs the site's unit project, by the name it gives", () => {
+    // Arrange
+    const { site, seen } = fakeSite();
+    // Act
+    coverageRun(site, configOf({ unitProject: "app" }), ASK);
+    // Assert
+    expect(seen.ran.map((check) => check.args.slice(-2))).toEqual([["--project", "app"]]);
+  });
+
   it("keeps its reports in verify's run folder, its tests' among them", () => {
     // Arrange
     const { site, seen } = fakeSite();

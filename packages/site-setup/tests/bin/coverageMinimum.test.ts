@@ -1,6 +1,10 @@
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   raisedLines,
   raisedMinimums,
+  readCoverageMinimums,
   tenthBelow,
   type CoverageMinimums,
 } from "../../src/bin/coverageMinimum.ts";
@@ -34,5 +38,15 @@ describe("the coverage minimum", () => {
     const lines = raisedLines(BEFORE, { ...BEFORE, statements: 85.5 });
     // Assert
     expect(lines).toEqual(["Coverage minimum raised: statements 80% → 85.5%."]);
+  });
+
+  it("is read from the site's file", () => {
+    // Arrange
+    const path = join(mkdtempSync(join(tmpdir(), "bfg-site-minimum-")), "coverage-minimum.json");
+    writeFileSync(path, JSON.stringify(BEFORE));
+    // Act
+    const read = readCoverageMinimums(path);
+    // Assert
+    expect(read).toEqual(BEFORE);
   });
 });

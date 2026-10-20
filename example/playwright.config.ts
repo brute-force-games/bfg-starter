@@ -1,4 +1,8 @@
+import { devices } from "@playwright/test";
 import { sitePlaywrightConfig } from "@brute-force-games/site-setup/playwright";
 
-/** The example site's end-to-end tests: the shared preset, against its own dev server (port 4330). */
-export default sitePlaywrightConfig({ port: 4330 });
+/**
+ * The example site's end-to-end tests: the shared preset, against its own dev server (port 4330),
+ * with the site's own Playwright devices.
+ */
+export default sitePlaywrightConfig({ port: 4330, devices });

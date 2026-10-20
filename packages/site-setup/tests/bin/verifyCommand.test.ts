@@ -25,7 +25,7 @@ describe("bfg-site verify", () => {
     const code = await verifyCommand(["--stage", "property"], site, CONFIG);
     // Assert
     expect(code).toBe(0);
-    expect(seen.ran.map((check) => check.env)).toEqual([{}]);
+    expect(seen.ran.map((check) => Object.keys(check.env))).toEqual([["BFG_DEV_SERVER_CACHE"]]);
     expect(readdirSync(site.root)).toEqual([]);
   });
 

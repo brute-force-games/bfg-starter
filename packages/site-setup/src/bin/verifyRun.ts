@@ -7,6 +7,7 @@ import {
   yourDevServerUrl,
   type OwnDevServer,
 } from "./ownDevServer.ts";
+import { DEV_SERVER_CACHE_ENV } from "./devServerCaches.ts";
 import type { Check, Running, SitePorts } from "./ports.ts";
 import type { SiteConfig } from "./siteConfig.ts";
 import type { VerifyRun } from "./verifyArgs.ts";
@@ -29,6 +30,11 @@ import { checkLine, ownDevServerUnanswered, skippedLine, verdictLine } from "./v
  * and its rules are verifyStages.ts; this is the processes, through the site's ports. e2e runs
  * against the maintainer's dev server, or with `--own-dev-server` one started here, on a free port,
  * its caches in this run's folder, and stopped once e2e ends.
+ *
+ * Every check runs with Astro's and Vite's caches in this run's folder too (BFG_DEV_SERVER_CACHE,
+ * which the Astro preset reads): `astro sync`, `astro check` and Vitest all start Vite, and in the
+ * site's own caches they'd re-optimize the dependencies of the maintainer's running dev server
+ * under it ("_jsxDEV is not a function").
  */
 
 /** A run in progress: the site, its log folder, and what every check is told. */
@@ -158,7 +164,12 @@ export async function verify(
   site: SitePorts,
   { run: asked, config, reports, env }: VerifyPlan,
 ): Promise<boolean> {
-  const run: Run = { site, folder: mkdtempSync(join(site.scratch, "bfg-site-verify-")), env };
+  const folder = mkdtempSync(join(site.scratch, "bfg-site-verify-"));
+  const run: Run = {
+    site,
+    folder,
+    env: { ...env, [DEV_SERVER_CACHE_ENV]: join(folder, "checks-cache") },
+  };
   site.say(`Each check's output: ${run.folder}`);
   if (reports.kind === "folder") {
     site.say(`Reports: ${reports.dir}`);

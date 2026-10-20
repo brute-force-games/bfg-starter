@@ -1,10 +1,12 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import type { IssueType, KnipConfiguration } from "knip";
 
 /**
  * A Brute Force Games site's dead-code check (knip): every kind of finding is an error, held at
  * zero. A site's knip.ts gives what knip can't follow by itself (entries it loads by glob or
  * injects, generated files, binaries run by name), each with why. Loaded in plain Node before any
- * bundler (review row 8): it imports only its peer tools.
+ * bundler (review row 8): it imports only its peer tools and node:.
  */
 
 export interface SiteKnipOptions {
@@ -14,10 +16,19 @@ export interface SiteKnipOptions {
   readonly ignore?: readonly string[];
   /** Packages run by name (a binary, a plugin) rather than imported. */
   readonly ignoreDependencies?: readonly string[];
+  /** The site's folder: where knip runs, unless given. */
+  readonly root?: string;
 }
 
-/** Astro's content collections load these by glob (src/content.config.ts), never by import. */
+/**
+ * Astro's content collections load these by glob (src/content.config.ts), never by import: an
+ * entry only for a site that has a content/ folder (knip hints at an entry that matches nothing).
+ */
 export const CONTENT_ENTRIES: readonly string[] = ["content/**/*.{md,mdx}"];
+
+/** The content entries, if the site at `root` has content. */
+const contentEntriesIn = (root: string): readonly string[] =>
+  existsSync(join(root, "content")) ? CONTENT_ENTRIES : [];
 
 /** Every kind of dead code knip reports, each held at zero. */
 export const DEAD_CODE_RULES: Readonly<Partial<Record<IssueType, "error">>> = {
@@ -40,9 +51,10 @@ export function siteKnipConfig({
   entry = [],
   ignore = [],
   ignoreDependencies = [],
+  root = process.cwd(),
 }: SiteKnipOptions = {}): KnipConfiguration {
   return {
-    entry: [...CONTENT_ENTRIES, ...entry],
+    entry: [...contentEntriesIn(root), ...entry],
     ignore: [...ignore],
     ignoreDependencies: [...ignoreDependencies],
     rules: { ...DEAD_CODE_RULES },

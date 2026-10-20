@@ -68,7 +68,7 @@ const STATIC_CHECKS = [
 ];
 const staticPlan = (checks: readonly PlannedCheck[]): StagePlan => ({
   name: "static",
-  prepare: ["npx astro sync --force"],
+  prepare: ["npx astro sync"],
   checks,
   devServer: NONE,
 });
@@ -163,6 +163,22 @@ describe("the stages one stage runs", () => {
     expect(stages).toEqual([
       { name: "unit", prepare: [], checks: [plain("npx bfg-site coverage")], devServer: NONE },
     ]);
+  });
+
+  it("check the format with every ignore file the site names", () => {
+    // Arrange
+    const config = configOf({ formatIgnoreFiles: [".gitignore", ".oxfmtignore"] });
+    const run: VerifyRun = { kind: "stage", stage: "static", devServer: { kind: "yours" } };
+    // Act
+    const [stage] = stagesOf(run, config, NO_REPORTS).map((each) => planOf(each));
+    // Assert
+    expect(stage).toEqual(
+      staticPlan([
+        plain("npx bfg-site check-node"),
+        plain("npx oxfmt --check --ignore-path .gitignore --ignore-path .oxfmtignore"),
+        ...STATIC_CHECKS.slice(2),
+      ]),
+    );
   });
 
   it("run the site's own static checks beside the shared ones", () => {

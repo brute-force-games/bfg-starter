@@ -19,9 +19,9 @@ flowchart LR
 | `./astro` | `siteAstroConfig({ root, site?, port, linked?, optimize? })`: static pages (at `site`, else `SITE_URL`, else its dev server) with React islands, its own dev port, and the Vite settings `file:`-linked bfg-core packages need |
 | `./vitest` | `siteVitestConfig(options)`: the unit, integration and property stages, coverage in a fresh folder per run, held to the site's minimums |
 | `./tsconfig.json` | the TypeScript base a site's `tsconfig.json` extends |
-| `./playwright` | `sitePlaywrightConfig({ port })`: e2e against the site's own dev server (never started for it; no run at all without it, the gate saying how to start it), each run's output in a fresh folder |
+| `./playwright` | `sitePlaywrightConfig({ port, devices })` (`devices` the site's own, from its `@playwright/test`): e2e against the site's own dev server (never started for it; no run at all without it, the gate saying how to start it), each run's output in a fresh folder |
 | `./lint` | the oxlint base a site's `.oxlintrc.json` extends (bfg-core's preset) |
-| `./knip` | `siteKnipConfig({ entry?, ignore?, ignoreDependencies? })`, a site's `knip.ts`: every kind of dead code held at zero, its content collections an entry |
+| `./knip` | `siteKnipConfig({ entry?, ignore?, ignoreDependencies?, root? })`, a site's `knip.ts`: every kind of dead code held at zero, its content collections an entry if it has a `content/` folder |
 | `./oxfmt` | `siteOxfmtConfig({ ignore? })`, a site's `oxfmt.config.ts` (oxfmt has no `extends`): authored prose, lock files and tool output left alone |
 | `./content` | `markdownIn(folder)`, `yamlIn(folder)`: a content collection's loader, over content/`folder` |
 | `./storybook` | `siteStorybookConfig({ root, linked? })`, a site's `.storybook/main.ts`: React on Vite, its own stories, no telemetry, its links served as in its Astro config |
@@ -32,6 +32,8 @@ flowchart LR
 | `./lint/complexity` | the complexity report's oxlint base (each function's cyclomatic and cognitive complexity over 10) a site's `.oxlintrc.complexity.json` extends |
 | `./reports/runs`, `./reports/folder` | each run's HTML reports: a folder of its own, `reports/<date-time>-<commit>/`, the newest `REPORTS_KEEP` (5) kept; the Vitest and Playwright presets add their HTML reports there when a run sets `BFG_TEST_REPORT_DIR` and `BFG_REPORT_DIR` |
 | `./reports/complexity` | the complexity report: oxlint's SARIF, rendered to HTML by sarif-explorer |
+| `./dev-server-caches` | `devServerCachesFrom(env)`: the caches of a dev server of verify's own (`BFG_DEV_SERVER_CACHE`), for a site's Astro config not yet on the preset |
+| `./coverage-minimum` | `readCoverageMinimums(path)` and the ratchet's schema: a site's Vitest config reads its `coverage-minimum.json` through it |
 | `./styles/tokens.css`, `./styles/global.css` | the design tokens (a site overrides values, never names) and the body rule |
 | `./layouts/BaseLayout.astro` | the page shell: head, title, description, a nav, and slots for the head and the page |
 
@@ -62,9 +64,10 @@ The scripts a site runs, in its folder (`npx bfg-site <command>`):
 
 At the site's root. `devServerPort` is required: where verify looks for your dev server, unless
 `E2E_BASE_URL` says otherwise. The rest have defaults: `qualityFolder` (`"docs/quality"`),
-`sources` (`["src", "scripts"]`, for the complexity and unreachable-code counts), and
-`staticChecks` (the site's own checks, `{ "name", "program", "args" }`, run beside the shared
-static ones).
+`sources` (`["src", "scripts"]`, for the complexity and unreachable-code counts), `unitProject`
+(`"unit"`, the Vitest project coverage counts), `formatIgnoreFiles` (`[".gitignore"]`, each given to
+the format check as `--ignore-path`), and `staticChecks` (the site's own checks,
+`{ "name", "program", "args" }`, run beside the shared static ones).
 
 A site's config is then a few lines:
 
@@ -73,6 +76,14 @@ A site's config is then a few lines:
 import { siteAstroConfig } from "@brute-force-games/site-setup/astro";
 export default siteAstroConfig({ root: import.meta.dirname, site: "https://bruteforce.games", port: 4322 });
 ```
+
+### Linking with `file:`
+
+A site links the setup by `file:`, so the presets' runtime imports (Astro's React integration,
+`astro/config`, the bin's tools) resolve from bfg-starter's `node_modules`, not the site's: a site
+keeps the same pins as bfg-starter. Anything a runner checks for identity comes from the site
+instead: the Playwright preset imports Playwright's types only, and the site passes its own
+`devices` (Playwright refuses a second copy of itself). A test holds the preset to that.
 
 ## Its rules
 

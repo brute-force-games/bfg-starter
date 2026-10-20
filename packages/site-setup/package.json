@@ -23,7 +23,9 @@
     "./lint/complexity": "./oxlint.complexity.json",
     "./reports/runs": "./src/reports/reportRuns.ts",
     "./reports/folder": "./src/reports/reportFolder.ts",
-    "./reports/complexity": "./src/reports/complexityReport.ts"
+    "./reports/complexity": "./src/reports/complexityReport.ts",
+    "./dev-server-caches": "./src/bin/devServerCaches.ts",
+    "./coverage-minimum": "./src/bin/coverageMinimum.ts"
   },
   "bin": {
     "bfg-site": "./src/bin/bfg-site.ts"
