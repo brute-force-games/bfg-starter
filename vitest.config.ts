@@ -6,13 +6,25 @@ import { z } from "zod";
 
 /**
  * The setup's own tests (packages/site-setup/tests), held to its `coverageMinimum` (100): its
- * presets are code every site runs. The example site runs its own tests, through the presets
+ * presets are code every site runs. Coverage leaves out only what the user approved
+ * (packages/site-setup/coverageExclusions.approved.json). The example site runs its own tests, through the presets
  * (`npm run example:test`).
  */
 
 const setup = z
   .object({ coverageMinimum: z.number().min(0).max(100) })
   .parse(JSON.parse(readFileSync("packages/site-setup/package.json", "utf8")));
+
+const approved = z
+  .object({
+    exclusions: z.array(
+      z.object({
+        glob: z.string(),
+        reason: z.object({ kind: z.literal("astro-hook"), checkedBy: z.string() }),
+      }),
+    ),
+  })
+  .parse(JSON.parse(readFileSync("packages/site-setup/coverageExclusions.approved.json", "utf8")));
 
 export default defineConfig({
   test: {
@@ -25,6 +37,7 @@ export default defineConfig({
       reportsDirectory: join(tmpdir(), `bfg-starter-coverage-${String(process.pid)}-${String(Date.now())}`),
       reporter: ["text-summary", "json-summary", "html"],
       include: ["packages/site-setup/src/**/*.ts"],
+      exclude: approved.exclusions.map(({ glob }) => `packages/site-setup/${glob}`),
       thresholds: {
         lines: setup.coverageMinimum,
         branches: setup.coverageMinimum,

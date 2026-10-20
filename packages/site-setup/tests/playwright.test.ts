@@ -1,20 +1,21 @@
 import { existsSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { playwrightConfigOf, sitePlaywrightConfig } from "../src/playwright.ts";
+import { DEV_SERVER_GATE, playwrightConfigOf, sitePlaywrightConfig } from "../src/playwright.ts";
 
-/** A site's end-to-end config (src/playwright.ts): its dev server, one worker, its run's folders. */
+/** A site's end-to-end config (src/playwright.ts): its dev server, gated; one worker; its run's folder. */
 
 const SITE = { port: 4330 };
-const RUN = { outputDir: "/runs/e2e", baseUrl: undefined };
+const RUN = { outputDir: "/runs/e2e", baseUrl: "http://localhost:4330" };
 
 describe("a site's e2e config", () => {
-  it("tests the site's own dev server, its port, never starting one", () => {
+  it("tests the dev server the run chose, never starting one, and gates the run on it", () => {
     // Act
     const config = playwrightConfigOf(SITE, RUN);
     // Assert
     expect(config).toMatchObject({
       testDir: "tests/e2e",
       outputDir: "/runs/e2e",
+      globalSetup: DEV_SERVER_GATE,
       workers: 1,
       fullyParallel: false,
       reporter: [["list"]],
@@ -22,26 +23,22 @@ describe("a site's e2e config", () => {
     });
     expect(config.webServer).toBeUndefined();
     expect(config.projects?.map((project) => project.name)).toEqual(["chromium"]);
+    expect(existsSync(DEV_SERVER_GATE)).toBe(true);
   });
 
-  it("goes where E2E_BASE_URL says, and takes the site's own browsers and timeouts", () => {
+  it("takes the site's own browsers and timeouts", () => {
     // Act
     const config = playwrightConfigOf(
       { port: 4330, projects: [{ name: "solo" }], timeout: 5, expectTimeout: 1 },
-      { ...RUN, baseUrl: "http://127.0.0.1:9999" },
+      RUN,
     );
     // Assert
-    expect(config).toMatchObject({
-      use: { baseURL: "http://127.0.0.1:9999" },
-      projects: [{ name: "solo" }],
-      timeout: 5,
-      expect: { timeout: 1 },
-    });
+    expect(config).toMatchObject({ projects: [{ name: "solo" }], timeout: 5, expect: { timeout: 1 } });
   });
 });
 
 describe("a site's e2e config, this run's", () => {
-  it("makes the run's output folder once, and hands it to the workers through the environment", () => {
+  it("makes the run's folder once, and leaves it and the site's dev server for the workers and the gate", () => {
     // Arrange
     const env: NodeJS.ProcessEnv = {};
     // Act
@@ -54,9 +51,11 @@ describe("a site's e2e config, this run's", () => {
     expect(config.outputDir).toBe(made);
     expect(made.startsWith(tmpdir())).toBe(true);
     expect(existsSync(made)).toBe(true);
+    expect(env["E2E_BASE_URL"]).toBe("http://localhost:4330");
+    expect(config.use?.baseURL).toBe("http://localhost:4330");
   });
 
-  it("keeps a folder the main process made, and reads the server's address", () => {
+  it("keeps a folder the main process made, and goes where E2E_BASE_URL says", () => {
     // Act
     const config = sitePlaywrightConfig(SITE, {
       E2E_RUN_DIR: "/runs/given",

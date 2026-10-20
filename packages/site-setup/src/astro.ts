@@ -33,8 +33,8 @@ export const LINKED_DEDUPE: readonly string[] = ["react", "react-dom", "zod", "t
 export interface SiteAstroOptions {
   /** The site's own folder (its astro.config.ts's `import.meta.dirname`). */
   root: string;
-  /** Where it's served: its canonical URL. */
-  site: string;
+  /** Where it's served: its canonical URL; SITE_URL's if not given, else its dev server's. */
+  site?: string;
   /** Its dev server's port: each site its own, so they run side by side. */
   port: number;
   /** Where the `file:`-linked bfg-core (and bfg-games) checkouts are, if it links them. */
@@ -43,23 +43,23 @@ export interface SiteAstroOptions {
   optimize?: readonly string[];
 }
 
+/** The variable a build reads the site's URL from, when the config doesn't give one. */
+export const SITE_URL_ENV = "SITE_URL";
+
 /** The Vite settings for packages linked from `linked`, beside a site at `root`. */
 const linkedVite = (root: string, linked: string): ViteUserConfig => ({
   server: { strictPort: true, fs: { allow: [root, linked] } },
   resolve: { dedupe: [...LINKED_DEDUPE] },
 });
 
-export function siteAstroConfig({
-  root,
-  site,
-  port,
-  linked,
-  optimize = [],
-}: SiteAstroOptions): AstroUserConfig {
+export function siteAstroConfig(
+  { root, site, port, linked, optimize = [] }: SiteAstroOptions,
+  env: NodeJS.ProcessEnv = process.env,
+): AstroUserConfig {
   const runtime = linked === undefined ? [] : LINKED_RUNTIME;
   return {
     output: "static",
-    site,
+    site: site ?? env[SITE_URL_ENV] ?? `http://localhost:${String(port)}`,
     integrations: [react()],
     server: { port },
     vite: {

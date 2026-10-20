@@ -1,3 +1,4 @@
+import type { AstroUserConfig } from "astro";
 import { LINKED_DEDUPE, LINKED_RUNTIME, siteAstroConfig } from "../src/astro.ts";
 
 /** A site's Astro config (src/astro.ts): static, React, its port; linked packages' Vite settings. */
@@ -5,7 +6,7 @@ import { LINKED_DEDUPE, LINKED_RUNTIME, siteAstroConfig } from "../src/astro.ts"
 const SITE = { root: "/sites/one", site: "https://one.example", port: 4400 };
 
 /** The names of a config's integrations; a config with none fails the test. */
-function integrationNames(config: ReturnType<typeof siteAstroConfig>): string[] {
+function integrationNames(config: AstroUserConfig): string[] {
   const { integrations } = config;
   if (integrations === undefined) {
     throw new Error("the config has no integrations");
@@ -31,6 +32,19 @@ describe("a site's Astro config", () => {
     expect(siteAstroConfig({ ...SITE, optimize: ["mermaid"] }).vite?.optimizeDeps?.include).toEqual([
       "mermaid",
     ]);
+  });
+});
+
+describe("a site's Astro config, its URL", () => {
+  const UNNAMED = { root: "/sites/one", port: 4400 };
+  const FROM_ENV = { SITE_URL: "https://env.example" };
+
+  it.each([
+    { given: "the config's", options: SITE, env: FROM_ENV, url: "https://one.example" },
+    { given: "SITE_URL's", options: UNNAMED, env: FROM_ENV, url: "https://env.example" },
+    { given: "its dev server's", options: UNNAMED, env: {}, url: "http://localhost:4400" },
+  ])("is $given when that's the first there is", ({ options, env, url }) => {
+    expect(siteAstroConfig(options, env).site).toBe(url);
   });
 });
 

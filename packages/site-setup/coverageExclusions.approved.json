@@ -1,0 +1,11 @@
+{
+  "approval": "Only the user approves a change to this list. An agent that adds, changes or removes an exclusion asks in bfg-core's docs/USER_WORK_QUEUE.md and updates this file only once the user says yes, citing the U item.",
+  "approvedOn": "2026-10-19",
+  "approvedIn": "U10 (the user: \"Approve the exclusion\")",
+  "exclusions": [
+    {
+      "glob": "src/integrations/astro/**",
+      "reason": { "kind": "astro-hook", "checkedBy": "the example's build and dev server" }
+    }
+  ]
+}
