@@ -1,5 +1,5 @@
 import { tmpdir } from "node:os";
-import { siteTestConfig, siteVitestConfig } from "../src/vitest.ts";
+import { siteTestConfig, siteTestConfigIn, siteVitestConfig } from "../src/vitest.ts";
 
 /** A site's test stages (src/vitest.ts): the three projects, and coverage in a folder per run. */
 
@@ -39,6 +39,19 @@ describe("a site's test config", () => {
       exclude: ["src/**/*.stories.tsx"],
       thresholds: { "src/**": minimum },
     });
+  });
+});
+
+describe("a site's test reports", () => {
+  it("are none for plain runs: Vitest's own reporters", () => {
+    expect(siteTestConfigIn({}, {}).reporters).toBeUndefined();
+  });
+
+  it("are HTML too, in the folder a verify's run gives", () => {
+    expect(siteTestConfigIn({}, { BFG_TEST_REPORT_DIR: "/runs/one/tests/unit" }).reporters).toEqual([
+      "default",
+      ["html", { outputDir: "/runs/one/tests/unit" }],
+    ]);
   });
 });
 

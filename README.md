@@ -29,11 +29,13 @@ flowchart LR
 | `./integrations/storybook` | `storybookRoute({ root, includeInBuild })`: Storybook at /storybook/, a snapshot rebuilt in the background in dev, and in the built site unless left out |
 | `./integrations/stale-code` | `staleCodeWarning()`: in dev, every tab told which file changed (`bfg:code-changed`), for code hot reload can't refresh |
 | `./integrations/page-search` | `pageSearch({ glob })`: Pagefind's static search index over the built pages `glob` picks |
+| `./lint/complexity` | the complexity report's oxlint base (each function's cyclomatic and cognitive complexity over 10) a site's `.oxlintrc.complexity.json` extends |
+| `./reports/runs`, `./reports/folder` | each run's HTML reports: a folder of its own, `reports/<date-time>-<commit>/`, the newest `REPORTS_KEEP` (5) kept; the Vitest and Playwright presets add their HTML reports there when a run sets `BFG_TEST_REPORT_DIR` and `BFG_REPORT_DIR` |
+| `./reports/complexity` | the complexity report: oxlint's SARIF, rendered to HTML by sarif-explorer |
 | `./styles/tokens.css`, `./styles/global.css` | the design tokens (a site overrides values, never names) and the body rule |
 | `./layouts/BaseLayout.astro` | the page shell: head, title, description, a nav, and slots for the head and the page |
 
-Still to come: each run's HTML reports, and the `bfg-site` command (verify, quality, fresh
-builds).
+Still to come: the `bfg-site` command (verify, quality, fresh builds).
 
 A site's config is then a few lines:
 

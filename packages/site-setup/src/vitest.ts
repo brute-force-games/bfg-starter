@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { getViteConfig } from "astro/config";
 import type { InlineConfig } from "vitest/node";
+import { TEST_REPORT_DIR_ENV } from "./reports/reportRuns.ts";
 
 /**
  * A Brute Force Games site's test stages, as Vitest runs them over its Astro config: unit,
@@ -27,6 +28,11 @@ export interface SiteTestOptions {
   readonly exclusions?: readonly string[];
   /** Where this run's coverage goes: a fresh folder of its own unless given one. */
   readonly coverageFolder?: string;
+  /**
+   * Where this run's tests are reported as HTML (Vitest's html reporter), when it's one of a
+   * verify's (BFG_TEST_REPORT_DIR): plain `vitest`, an IDE's runs, report nothing.
+   */
+  readonly testReportDir?: string;
 }
 
 /** The stages Vitest runs, each a project over its own folder of tests. */
@@ -40,11 +46,13 @@ export function siteTestConfig({
   coverageMinimums = {},
   exclusions = [],
   coverageFolder = freshCoverageFolder(),
+  testReportDir,
 }: SiteTestOptions = {}): InlineConfig {
   return {
     environment: "jsdom",
     globals: true,
     setupFiles: ["./tests/setup.ts"],
+    ...(testReportDir === undefined ? {} : { reporters: ["default", ["html", { outputDir: testReportDir }]] }),
     // No results cache: it's one file every run reads and writes, and runs side by side must not
     // share state.
     cache: false,
@@ -62,6 +70,12 @@ export function siteTestConfig({
   };
 }
 
+/** The site's test config, this run's: its tests reported where `env` says (BFG_TEST_REPORT_DIR). */
+export function siteTestConfigIn(options: SiteTestOptions, env: NodeJS.ProcessEnv): InlineConfig {
+  const testReportDir = env[TEST_REPORT_DIR_ENV];
+  return siteTestConfig(testReportDir === undefined ? options : { ...options, testReportDir });
+}
+
 /** The site's Vitest config: its test stages, over its own Astro config. */
 export const siteVitestConfig = (options: SiteTestOptions = {}) =>
-  getViteConfig({ test: siteTestConfig(options) });
+  getViteConfig({ test: siteTestConfigIn(options, process.env) });

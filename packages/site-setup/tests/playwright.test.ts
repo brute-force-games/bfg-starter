@@ -64,4 +64,11 @@ describe("a site's e2e config, this run's", () => {
     // Assert
     expect(config).toMatchObject({ outputDir: "/runs/given", use: { baseURL: "http://127.0.0.1:9999" } });
   });
+
+  it("adds Playwright's HTML report to a verify's run folder", () => {
+    // Act
+    const config = sitePlaywrightConfig(SITE, { E2E_RUN_DIR: "/runs/given", BFG_REPORT_DIR: "/reports/run" });
+    // Assert
+    expect(config.reporter).toEqual([["list"], ["html", { outputFolder: "/reports/run/e2e", open: "never" }]]);
+  });
 });

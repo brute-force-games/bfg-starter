@@ -2,7 +2,7 @@
   "name": "@brute-force-games/site-setup",
   "private": true,
   "type": "module",
-  "description": "What every Brute Force Games static site shares, as presets a site extends: its Astro config, its test stages' Vitest config, its Playwright config and dev-server gate, its TypeScript, oxlint, knip and oxfmt bases, its style tokens and its base layout. The plan: the repo migration plan, \"The shared site setup\".",
+  "description": "What every Brute Force Games static site shares, as presets a site extends: its Astro config, its test stages' Vitest config, its Playwright config and dev-server gate, its TypeScript, oxlint, knip and oxfmt bases, its style tokens and its base layout, its content collections, Storybook and integrations, and each run's HTML reports. The plan: the repo migration plan, \"The shared site setup\".",
   "exports": {
     "./astro": "./src/astro.ts",
     "./vitest": "./src/vitest.ts",
@@ -19,7 +19,11 @@
     "./integrations/storybook": "./src/integrations/astro/storybookRoute.ts",
     "./integrations/stale-code": "./src/integrations/astro/staleCode.ts",
     "./integrations/page-search": "./src/integrations/astro/pageSearch.ts",
-    "./content": "./src/content.ts"
+    "./content": "./src/content.ts",
+    "./lint/complexity": "./oxlint.complexity.json",
+    "./reports/runs": "./src/reports/reportRuns.ts",
+    "./reports/folder": "./src/reports/reportFolder.ts",
+    "./reports/complexity": "./src/reports/complexityReport.ts"
   },
   "peerDependencies": {
     "@astrojs/react": "^7.0.0",
@@ -29,9 +33,11 @@
     "knip": "^6.42.0",
     "oxfmt": ">=0.74.0",
     "oxlint": "^1.89.0",
+    "oxlint-plugin-complexity": "^4.0.0",
     "oxlint-tsgolint": ">=7.0.0",
     "pagefind": "^1.5.0",
     "react": "^19.0.0",
+    "sarif-explorer": ">=0.1.0",
     "storybook": "^10.6.0",
     "vite": ">=7.0.0",
     "vitest": "^5.0.0"
@@ -41,7 +47,13 @@
     "@storybook/react-vite": {
       "optional": true
     },
+    "oxlint-plugin-complexity": {
+      "optional": true
+    },
     "pagefind": {
+      "optional": true
+    },
+    "sarif-explorer": {
       "optional": true
     },
     "storybook": {

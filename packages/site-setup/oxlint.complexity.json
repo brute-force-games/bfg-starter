@@ -1,0 +1,25 @@
+{
+  "jsPlugins": [
+    "oxlint-plugin-complexity"
+  ],
+  "plugins": [],
+  "categories": {},
+  "ignorePatterns": [
+    "dist",
+    "coverage",
+    ".astro",
+    "storybook-static",
+    ".builds",
+    "reports"
+  ],
+  "rules": {
+    "complexity/complexity": [
+      "warn",
+      {
+        "cyclomatic": 10,
+        "cognitive": 10,
+        "minLines": 0
+      }
+    ]
+  }
+}

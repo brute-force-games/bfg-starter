@@ -2,7 +2,8 @@ import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { defineConfig, devices, type PlaywrightTestConfig, type Project } from "@playwright/test";
+import { defineConfig, devices, type PlaywrightTestConfig, type Project, type ReporterDescription } from "@playwright/test";
+import { REPORT_DIR_ENV, reportPathsIn } from "./reports/reportRuns.ts";
 
 /**
  * A Brute Force Games site's end-to-end tests (tests/e2e/), modelled on site-bruteforce.games': a
@@ -34,12 +35,20 @@ export interface SitePlaywrightOptions {
 export interface E2ERun {
   readonly outputDir: string;
   readonly baseUrl: string;
+  /** The run's reports folder, when it's one of a verify's: Playwright's HTML report goes there. */
+  readonly reportDir?: string;
 }
 
 /** The dev-server gate: Playwright's global setup, by its file. */
 export const DEV_SERVER_GATE = fileURLToPath(new URL("devServerUp.ts", import.meta.url));
 
 const CHROME: readonly Project[] = [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }];
+
+/** The run's reporters: the list, and the HTML report in its reports folder if it has one. */
+const reportersFor = ({ reportDir }: E2ERun): ReporterDescription[] =>
+  reportDir === undefined
+    ? [["list"]]
+    : [["list"], ["html", { outputFolder: reportPathsIn(reportDir).e2e, open: "never" }]];
 
 /** The site's Playwright config for `run`. */
 export function playwrightConfigOf(
@@ -55,7 +64,7 @@ export function playwrightConfigOf(
     expect: { timeout: expectTimeout },
     fullyParallel: false,
     workers: 1,
-    reporter: [["list"]],
+    reporter: reportersFor(run),
     use: { baseURL: run.baseUrl, trace: "retain-on-failure" },
     projects: [...projects],
   });
@@ -74,5 +83,6 @@ export function sitePlaywrightConfig(
   const baseUrl = env[DEV_SERVER_URL_ENV] ?? `http://localhost:${String(options.port)}`;
   env[E2E_RUN_DIR_ENV] = outputDir;
   env[DEV_SERVER_URL_ENV] = baseUrl;
-  return playwrightConfigOf(options, { outputDir, baseUrl });
+  const reportDir = env[REPORT_DIR_ENV];
+  return playwrightConfigOf(options, reportDir === undefined ? { outputDir, baseUrl } : { outputDir, baseUrl, reportDir });
 }
