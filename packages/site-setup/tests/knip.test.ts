@@ -24,6 +24,7 @@ describe("a site's knip config", () => {
       entry: [],
       ignore: [],
       ignoreDependencies: [],
+      ignoreBinaries: [],
       rules: DEAD_CODE_RULES,
     });
     expect(new Set(Object.values(DEAD_CODE_RULES))).toEqual(new Set(["error"]));
@@ -36,12 +37,13 @@ describe("a site's knip config", () => {
     expect(siteKnipConfig({ root: site }).entry).toEqual([...CONTENT_ENTRIES]);
   });
 
-  it("adds the site's own entries, ignored files and packages run by name", () => {
+  it("adds the site's own entries, ignored files, and packages and programs run by name", () => {
     // Act
     const config = siteKnipConfig({
       entry: ["src/routes/Injected.astro"],
       ignore: ["src/generated/**"],
       ignoreDependencies: ["sarif-explorer"],
+      ignoreBinaries: ["mktemp"],
       root: site,
     });
     // Assert
@@ -49,6 +51,7 @@ describe("a site's knip config", () => {
       entry: ["src/routes/Injected.astro"],
       ignore: ["src/generated/**"],
       ignoreDependencies: ["sarif-explorer"],
+      ignoreBinaries: ["mktemp"],
     });
   });
 

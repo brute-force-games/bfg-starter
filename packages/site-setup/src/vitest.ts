@@ -3,7 +3,7 @@ import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { getViteConfig } from "astro/config";
-import type { InlineConfig } from "vitest/node";
+import type { CoverageReporter, InlineConfig } from "vitest/node";
 import { TEST_REPORT_DIR_ENV } from "./reports/reportRuns.ts";
 
 /**
@@ -22,9 +22,21 @@ export interface CoverageMinimum {
   readonly lines: number;
 }
 
+/** A coverage report beside the shared ones: Vitest's name for it, with its options or not. */
+export type CoverageReport = CoverageReporter | [CoverageReporter, Record<string, unknown>];
+
 export interface SiteTestOptions {
-  /** Coverage minimums, by the glob each holds (the site's whole code, a folder of it); none: no gate. */
+  /**
+   * Coverage minimums, by the glob each holds (a folder of the site's code); none: no gate. A
+   * minimum for the whole site, every file counted together, is Vitest's own `"**"` key.
+   */
   readonly coverageMinimums?: Readonly<Record<string, CoverageMinimum>>;
+  /** What coverage counts, by glob: the site's src/ unless given (a site that covers scripts/ too). */
+  readonly coverageInclude?: readonly string[];
+  /** Coverage reports beside text-summary, json-summary and html (Cobertura, for a viewer). */
+  readonly extraCoverageReporters?: readonly CoverageReport[];
+  /** The unit stage's project: "unit" unless given (bfg-site.json's `unitProject`, which coverage counts). */
+  readonly unitProject?: string;
   /** What coverage leaves out, by glob (each with its reason, in the site's own list). */
   readonly exclusions?: readonly string[];
   /** Where this run's coverage goes: a fresh folder of its own unless given one. */
@@ -39,12 +51,18 @@ export interface SiteTestOptions {
 /** The stages Vitest runs, each a project over its own folder of tests. */
 const STAGES = ["unit", "integration", "property"] as const;
 
+/** What coverage counts unless the site says. */
+export const SITE_COVERAGE_INCLUDE: readonly string[] = ["src/**/*.{ts,tsx}"];
+
 /** A fresh folder for one run's coverage, never a shared ./coverage another run could clear. */
 const freshCoverageFolder = (): string =>
   join(tmpdir(), `bfg-site-coverage-${String(process.pid)}-${String(Date.now())}`);
 
 export function siteTestConfig({
   coverageMinimums = {},
+  coverageInclude = SITE_COVERAGE_INCLUDE,
+  extraCoverageReporters = [],
+  unitProject = "unit",
   exclusions = [],
   coverageFolder = freshCoverageFolder(),
   testReportDir,
@@ -59,14 +77,18 @@ export function siteTestConfig({
     // No results cache: it's one file every run reads and writes, and runs side by side must not
     // share state.
     cache: false,
+    // Each stage's tests are in tests/<stage>; the unit stage's project takes the site's name for it.
     projects: STAGES.map((stage) => ({
       extends: true,
-      test: { name: stage, include: [`tests/${stage}/**/*.test.{ts,tsx}`] },
+      test: {
+        name: stage === "unit" ? unitProject : stage,
+        include: [`tests/${stage}/**/*.test.{ts,tsx}`],
+      },
     })),
     coverage: {
       reportsDirectory: coverageFolder,
-      reporter: ["text-summary", "json-summary", "html"],
-      include: ["src/**/*.{ts,tsx}"],
+      reporter: ["text-summary", "json-summary", "html", ...extraCoverageReporters],
+      include: [...coverageInclude],
       exclude: [...exclusions],
       thresholds: { ...coverageMinimums },
     },

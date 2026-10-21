@@ -16,6 +16,8 @@ export interface SiteKnipOptions {
   readonly ignore?: readonly string[];
   /** Packages run by name (a binary, a plugin) rather than imported. */
   readonly ignoreDependencies?: readonly string[];
+  /** Programs the site's scripts run that no package provides (the system's `mktemp`, say). */
+  readonly ignoreBinaries?: readonly string[];
   /** The site's folder: where knip runs, unless given. */
   readonly root?: string;
 }
@@ -30,7 +32,11 @@ export const CONTENT_ENTRIES: readonly string[] = ["content/**/*.{md,mdx}"];
 const contentEntriesIn = (root: string): readonly string[] =>
   existsSync(join(root, "content")) ? CONTENT_ENTRIES : [];
 
-/** Every kind of dead code knip reports, each held at zero. */
+/**
+ * Every kind of dead code knip reports, each held at zero: a bare `knip` exits non-zero on any.
+ * Unused exports and types are errors here too; a site ratchets those two down through `bfg-site
+ * dead-code`, whose baseline lets them stand but never rise (README, "The `bfg-site` command").
+ */
 export const DEAD_CODE_RULES: Readonly<Partial<Record<IssueType, "error">>> = {
   files: "error",
   dependencies: "error",
@@ -51,12 +57,14 @@ export function siteKnipConfig({
   entry = [],
   ignore = [],
   ignoreDependencies = [],
+  ignoreBinaries = [],
   root = process.cwd(),
 }: SiteKnipOptions = {}): KnipConfiguration {
   return {
     entry: [...contentEntriesIn(root), ...entry],
     ignore: [...ignore],
     ignoreDependencies: [...ignoreDependencies],
+    ignoreBinaries: [...ignoreBinaries],
     rules: { ...DEAD_CODE_RULES },
   };
 }

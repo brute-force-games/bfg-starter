@@ -51,6 +51,33 @@ describe("a site's test config", () => {
   });
 });
 
+describe("a site's own coverage and unit project", () => {
+  it("counts what the site names, writes its extra reports too, and keeps its unit project's name", () => {
+    // Act
+    const config = siteTestConfig({
+      coverageInclude: ["src/**/*.{ts,tsx}", "scripts/**/*.ts"],
+      extraCoverageReporters: [["cobertura", { file: "coverage.cobertura.xml", projectRoot: "." }]],
+      unitProject: "app",
+      coverageMinimums: { "**": { statements: 90, branches: 85, functions: 90, lines: 90 } },
+    });
+    // Assert
+    expect(config.coverage).toMatchObject({
+      include: ["src/**/*.{ts,tsx}", "scripts/**/*.ts"],
+      reporter: [
+        "text-summary",
+        "json-summary",
+        "html",
+        ["cobertura", { file: "coverage.cobertura.xml", projectRoot: "." }],
+      ],
+      thresholds: { "**": { statements: 90, branches: 85, functions: 90, lines: 90 } },
+    });
+    expect(config.projects).toContainEqual({
+      extends: true,
+      test: { name: "app", include: ["tests/unit/**/*.test.{ts,tsx}"] },
+    });
+  });
+});
+
 describe("a site's test reports", () => {
   it("are none for plain runs: Vitest's own reporters", () => {
     expect(siteTestConfigIn({}, {}).reporters).toBeUndefined();

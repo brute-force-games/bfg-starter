@@ -1,5 +1,8 @@
 import type { AstroUserConfig } from "astro";
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { z } from "zod";
 import {
   LINKED_DEDUPE,
   LINKED_RUNTIME,
@@ -108,6 +111,40 @@ const packageOf = (entry: string): string =>
     .slice(0, entry.startsWith("@") ? 2 : 1)
     .join("/");
 
+/** bfg-core's packages, beside bfg-starter, as a site links them. */
+const PLATFORM = fileURLToPath(new URL("../../../../bfg-core/platform/", import.meta.url));
+
+/** The source files of the package in `dir`, and its name. */
+function sourcesOf(dir: string): { readonly name: string; readonly files: string[] } {
+  const src = join(PLATFORM, dir, "src");
+  const { name } = z
+    .object({ name: z.string() })
+    .parse(JSON.parse(readFileSync(join(PLATFORM, dir, "package.json"), "utf8")));
+  const files = readdirSync(src, { recursive: true, encoding: "utf8" })
+    .filter((file) => /\.tsx?$/u.test(file))
+    .map((file) => join(src, file));
+  return { name, files };
+}
+
+/** Each runtime import of `dependency` (or a subpath of it) in bfg-core's packages, nested form. */
+function nestedImportsOf(dependency: string): string[] {
+  const escaped = dependency.replaceAll(/[/.]/gu, (char) => `\\${char}`);
+  const imports = new RegExp(
+    String.raw`^import (?!type )[^;]*? from "(${escaped}(?:/[^"]*)?)"`,
+    "gmu",
+  );
+  return readdirSync(PLATFORM)
+    .filter((dir) => existsSync(join(PLATFORM, dir, "src")))
+    .map((dir) => sourcesOf(dir))
+    .flatMap(({ name, files }) =>
+      files.flatMap((file) =>
+        [...readFileSync(file, "utf8").matchAll(imports)].map(
+          ([, spec]) => `${name} > ${String(spec)}`,
+        ),
+      ),
+    );
+}
+
 describe("the linked runtime's entries", () => {
   it("are each, if bare, a package the site dedupes, so they resolve to the site's one copy", () => {
     const bare = LINKED_RUNTIME.filter((entry) => !entry.includes(" > "));
@@ -119,6 +156,18 @@ describe("the linked runtime's entries", () => {
   it("name what only a linked package uses through it, Vite's nested form", () => {
     expect(LINKED_RUNTIME).toContain("@brute-force-games/identity > @hpke/core");
   });
+
+  it.each(["@hpke/core", "@noble/hashes"])(
+    "name every import of %s in bfg-core's packages, so a new one can't be missed",
+    (dependency) => {
+      // Act
+      const imported = [...new Set(nestedImportsOf(dependency))].toSorted();
+      // Assert
+      expect(LINKED_RUNTIME.filter((entry) => entry.includes(` > ${dependency}`))).toEqual(
+        imported,
+      );
+    },
+  );
 });
 
 describe("a site's Astro config, its packages in dev SSR", () => {

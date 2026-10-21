@@ -11,8 +11,9 @@ import { devServerCachesFrom } from "./bin/devServerCaches.ts";
 /**
  * What bfg-core's packages import at runtime, pre-bundled up front: Vite would otherwise find them
  * only once a page loads them, re-bundle mid-session ("504 Outdated Optimize Dep") and the page
- * would fail to hydrate. Sealing's HPKE (identity), the stores and their synchronizers
- * (multiplayer-tinybase), and the schemas and codecs every package uses.
+ * would fail to hydrate. Sealing's HPKE (identity), seeded randomness's HKDF and HMAC streams
+ * (shared-types), the stores and their synchronizers (multiplayer-tinybase), and the schemas and
+ * codecs every package uses.
  *
  * A bare entry (`zod`, `tinybase/synchronizers`) resolves from the site, so its package must be in
  * LINKED_DEDUPE (one copy, the site's); a package only a linked package uses, which the site
@@ -21,6 +22,9 @@ import { devServerCachesFrom } from "./bin/devServerCaches.ts";
  */
 export const LINKED_RUNTIME: readonly string[] = [
   "@brute-force-games/identity > @hpke/core",
+  "@brute-force-games/shared-types > @noble/hashes/hkdf.js",
+  "@brute-force-games/shared-types > @noble/hashes/hmac.js",
+  "@brute-force-games/shared-types > @noble/hashes/sha2.js",
   "cbor2",
   "tinybase",
   "tinybase/persisters/persister-indexed-db",
