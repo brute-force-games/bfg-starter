@@ -1,5 +1,6 @@
 {
-  "//": "The setup's own TypeScript: its presets and their tests, against the base it gives every site.",
+  "//": "The setup's own TypeScript: its presets and their tests, against the base it gives every site. The record runner's alias-site fixture is a site of its own, with its own tsconfig.",
   "extends": "./tsconfig.base.json",
-  "include": ["src", "tests"]
+  "include": ["src", "tests"],
+  "exclude": ["tests/bin/fixtures/aliasSite"]
 }

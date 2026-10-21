@@ -15,7 +15,13 @@ const config: KnipConfig = {
   ignoreWorkspaces: ["example"],
   workspaces: {
     "packages/site-setup": {
-      entry: ["tests/**/*.test.{ts,tsx}"],
+      // The record runner's tests load these games modules by path, as a site's bfg-site.json
+      // names one (the alias site's through its own tsconfig), so nothing imports them.
+      entry: [
+        "tests/**/*.test.{ts,tsx}",
+        "tests/bin/fixtures/*Games.ts",
+        "tests/bin/fixtures/aliasSite/**/*.ts",
+      ],
       project: ["src/**/*.{ts,tsx}", "tests/**/*.{ts,tsx}"],
       astro: false,
       ignoreDependencies: ["@storybook/react-vite", "pagefind"],

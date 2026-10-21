@@ -26,7 +26,7 @@ describe("bfg-site's command line", () => {
       // Assert
       expect(code).toBe(2);
       expect(seen.complained).toEqual([
-        "Usage: bfg-site <smoke | verify | coverage | quality | dead-code | complexity | fresh-build | check-node> [arguments]",
+        "Usage: bfg-site <smoke | verify | coverage | quality | dead-code | complexity | fresh-build | check-node | audit | check-proof> [arguments]",
       ]);
     },
   );

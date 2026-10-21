@@ -32,6 +32,22 @@ describe("a site's config", () => {
     });
   });
 
+  it("reads the site's games module", () => {
+    // Arrange
+    const { site } = fakeSite();
+    const games = { games: "./src/games/registry.ts" };
+    writeFileSync(
+      join(site.root, "bfg-site.json"),
+      JSON.stringify({ devServerPort: 4330, ...games }),
+    );
+    // Act
+    const reading = readSiteConfig(site.root);
+    // Assert
+    expect(reading).toMatchObject({ kind: "read", config: games });
+  });
+});
+
+describe("a site's config, unreadable", () => {
   it("can't be read when it's missing", () => {
     // Arrange
     const { site } = fakeSite();

@@ -35,8 +35,10 @@
     "./e2e-guard": "./src/e2eGuard.ts"
   },
   "dependencies": {
+    "@brute-force-games/audit-cli": "file:../../../bfg-core/platform/audit-cli",
     "@brute-force-games/cases": "file:../../../bfg-core/platform/cases",
     "@brute-force-games/room-view": "file:../../../bfg-core/platform/room-view",
+    "tsx": "4.23.15",
     "zod": "4.6.7"
   },
   "peerDependencies": {

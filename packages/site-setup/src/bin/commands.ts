@@ -4,6 +4,7 @@ import { coverageRun, readCoverageAsk } from "./coverage.ts";
 import { deadCodeGate } from "./deadCode.ts";
 import { freshBuild } from "./freshBuild.ts";
 import type { SitePorts } from "./ports.ts";
+import { auditCommand, checkProofCommand } from "./recordCommands.ts";
 import { smokeCommand } from "./smoke.ts";
 import { verifyCommand } from "./verifyCommand.ts";
 import { describeSiteConfigProblem, readSiteConfig, type SiteConfig } from "./siteConfig.ts";
@@ -58,6 +59,8 @@ const COMMANDS: Readonly<Record<string, BinCommand>> = {
   complexity: withConfig(complexityCommand),
   "fresh-build": (args, site) => Promise.resolve(freshBuild(site, args)),
   "check-node": (_args, site) => Promise.resolve(checkNode(site, process.version)),
+  audit: withConfig(auditCommand),
+  "check-proof": withConfig(checkProofCommand),
 };
 
 const COMMAND_NAMES: readonly string[] = Object.keys(COMMANDS);

@@ -65,6 +65,12 @@ The scripts a site runs, in its folder (`npx bfg-site <command>`):
   `.builds/`, swapped in for `<target>` only when it succeeds.
 - `check-node`: `.nvmrc`, devbox.json's `nodejs@<major>` and package.json's `engines.node`,
   whichever the site has, must agree with each other and with the running Node.
+- `audit <record.cbor> [--json]`: a game record (`bfg/game-record/…`, a room's exported copy)
+  audited offline with the site's own games, as bfg-core's `bfg-audit` does (decision 0033): 0
+  clean, 1 findings, 2 a file that can't be trusted, 64 asked wrongly or a games module it can't
+  use.
+- `check-proof <proof.cbor> [--json]`: a cheat proof (`bfg/cheat-proof/1`) checked the same way,
+  as `bfg-verify` does: 0 it convicts, 1 it doesn't.
 
 ### The scripts a site starts with
 
@@ -95,7 +101,11 @@ At the site's root. `devServerPort` is required: where verify looks for your dev
 the format check as `--ignore-path`), `staticChecks` (the site's own checks,
 `{ "name", "program", "args" }`, run beside the shared static ones), `smokePages` (`[]`, pages the
 smoke check opens beside the routes it finds: at least one for each route with parameters, such as
-`"/rooms/demo"` for `/rooms/[id]`) and `smokeSkip` (`[]`, routes or patterns it leaves out).
+`"/rooms/demo"` for `/rooms/[id]`), `smokeSkip` (`[]`, routes or patterns it leaves out) and `games` (none: a module, from the
+site's root, exporting `games: GameLookup`, for `audit` and `check-proof`; without it they use the
+reference games only). Both commands run bfg-core's audit-cli in a process of its own under tsx
+(site-setup's own, so a site needn't have it), in the site's root, so the games module may import
+through the site's tsconfig path aliases.
 
 A site's config is then a few lines:
 

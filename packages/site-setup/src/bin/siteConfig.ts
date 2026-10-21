@@ -28,6 +28,12 @@ export const siteConfigSchema = z.object({
   formatIgnoreFiles: z.array(z.string().min(1)).min(1).default([".gitignore"]),
   smokePages: z.array(z.string().startsWith("/")).default([]),
   smokeSkip: z.array(z.string().startsWith("/")).default([]),
+  /**
+   * The site's games, for `audit` and `check-proof`: a module, from the site's root, exporting
+   * `games` (a GameLookup). It loads under tsx, in the site's root, so its tsconfig's path
+   * aliases resolve. Without it, records are checked with the reference games.
+   */
+  games: z.string().min(1).optional(),
 });
 export type SiteConfig = z.infer<typeof siteConfigSchema>;
 
